@@ -1,0 +1,19 @@
+{
+  "name": "sat-lockin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAT practice that names the trap behind every wrong answer",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "python3 build-single-file.py || true"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "pg": "^8.13.1"
+  }
+}

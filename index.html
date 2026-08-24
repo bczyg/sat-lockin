@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAT LockIn</title>
+<!-- Webfonts are a nicety: if the app is opened offline this link fails
+     silently and the fallback stacks in styles.css take over. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div id="shell"></div>
+
+<div id="modal-root" class="modal-root hidden">
+  <div class="modal-backdrop" data-close="1"></div>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2 id="modal-title">Title</h2>
+      <button class="icon-btn" data-close="1" aria-label="Close"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="js/brand.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data-rw.js"></script>
+<script src="js/data-math.js"></script>
+<script src="js/tags.js"></script>
+<script src="js/strategies.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/cloud.js"></script>
+<script src="js/generate.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
