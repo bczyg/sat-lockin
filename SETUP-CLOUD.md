@@ -132,21 +132,49 @@ changes nothing. Verified by applying it twice against a clean database.
 ### 2.3 Sending sign-in codes
 
 Students sign in with a 6 digit code sent to their email. A code rather than a magic link,
-deliberately, so it works from any URL including a file opened off a USB stick.
+deliberately, so it works from any URL.
 
-1. 🔑 Sign up at resend.com. The free tier covers a class comfortably.
-2. Create an API key.
-3. Add to Railway Variables:
+**The email step is optional while you are testing.** With no mail key set, the server writes
+each code to its own log instead of sending it. On Railway that is your service's **Deploy
+Logs** tab, and a line reading `[mail] no RESEND_API_KEY set. Code for you@example.com is
+123456`. That is enough to sign in and try everything.
 
-   | Variable | Value |
-   |---|---|
-   | `RESEND_API_KEY` | your Resend key |
-   | `MAIL_FROM` | `SAT LockIn <login@satlockin.com>` once you have verified the domain in Resend, or `onboarding@resend.dev` to start |
+To send real email:
 
-Until you set this up, the server writes each code to its deploy log instead of emailing it,
-which is fine while you are testing on your own.
+| Variable | Required | What it is |
+|---|---|---|
+| `RESEND_API_KEY` | yes, to send at all | An API key from resend.com. The free tier covers a class. |
+| `MAIL_FROM` | recommended | The sender, for example `SAT LockIn <login@satlockin.com>`. Defaults to `SAT LockIn <onboarding@resend.dev>`. |
+| `APP_NAME` | optional | Appears in the subject line and the email body. Defaults to `SAT LockIn`. |
+| `CODES_PER_HOUR` | optional | Sign-in codes one address can request per hour. Defaults to 8. |
 
-### 2.4 Make yourself the teacher
+Remember `DATABASE_URL` is a prerequisite. Sign-in writes to the database, so with no database
+the auth endpoints answer "Accounts are switched off on this server" no matter what the mail
+settings say.
+
+**The Resend detail that will catch you out.** The default sender, `onboarding@resend.dev`, is
+Resend's shared test address, and Resend restricts it to delivering to the email address that
+owns the Resend account. It is fine for testing on yourself, and it will silently fail to
+reach students. Before a class rollout:
+
+1. Resend → **Domains** → **Add Domain** → `satlockin.com`
+2. Add the DNS records it gives you at your registrar, the same place you pointed the domain
+   at Railway
+3. Wait for it to verify, then set `MAIL_FROM` to something at that domain, for example
+   `SAT LockIn <login@satlockin.com>`
+
+### Abuse and cost limits, already in place
+
+`/api/auth/request` is public, because it has to be for anyone to sign up. Two limits stop it
+becoming a way to spend your mail quota:
+
+- One code per address per 45 seconds
+- Eight codes per address per hour, tunable with `CODES_PER_HOUR`
+
+Both were tested against a real database. Codes themselves are stored only as hashes, expire
+after 20 minutes, are single use, and lock out after 6 wrong guesses.
+
+### 2.4 Make yourself the teacher### 2.4 Make yourself the teacher
 
 1. Sign in with your own email.
 2. Home screen → your name → **Account → I am the teacher**.
