@@ -7,7 +7,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "python3 build-single-file.py || true"
+    "verify": "node scripts/verify.js",
+    "bundle": "python3 build-single-file.py",
+    "schema": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f db/schema.sql"
   },
   "engines": {
     "node": ">=20"

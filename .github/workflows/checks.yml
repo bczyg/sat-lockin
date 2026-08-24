@@ -1,0 +1,42 @@
+# Runs on every push and pull request. Catches a malformed question or a
+# style regression before it reaches a student mid-test.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify question bank and house style
+        run: node scripts/verify.js
+
+      - name: Confirm the server starts and answers
+        run: |
+          node server.js &
+          SERVER=$!
+          for i in $(seq 1 20); do
+            if curl -sf http://127.0.0.1:8080/healthz > /tmp/health.json; then break; fi
+            sleep 0.5
+          done
+          echo "health: $(cat /tmp/health.json)"
+          curl -sf -o /dev/null http://127.0.0.1:8080/ || (echo "the app did not serve"; kill $SERVER; exit 1)
+          # server-side files must never be reachable over HTTP
+          for p in /server.js /.env /lib/db.js /db/schema.sql /js/../lib/auth.js; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --path-as-is "http://127.0.0.1:8080$p")
+            echo "  $p -> $code"
+            if [ "$code" != "404" ]; then echo "SECURITY: $p is reachable"; kill $SERVER; exit 1; fi
+          done
+          kill $SERVER
+        env:
+          PORT: 8080

@@ -96,7 +96,10 @@ dependency-free `server.js` that serves it on `$PORT` and can also host the AI t
 student's browser.
 
 ```bash
-npm start          # http://localhost:8080
+npm start          # serve the app, http://localhost:8080
+npm run verify     # question bank integrity and house style checks
+npm run bundle     # rebuild the single-file version in dist/
+npm run schema     # apply db/schema.sql to $DATABASE_URL by hand
 ```
 
 Railway detects `package.json`, installs, and runs `node server.js`. `/healthz` reports
@@ -179,3 +182,23 @@ Red is never a palette color, only a momentary error state, because red exposure
 color effect with solid evidence of hurting performance on achievement tasks. All five pass
 WCAG AA contrast. The palette only changes the app around the test: inside a timed module the
 colors stay fixed, on purpose.
+
+
+## Continuous integration
+
+`.github/workflows/checks.yml` runs on every push and pull request:
+
+- every script parses
+- all 128 questions are structurally sound: four choices, one answer in range, a real strategy
+  tag, a real trap behind every wrong choice, fill-in answers that parse as numbers
+- the blueprint can still assemble a full adaptive test, 27/27 and 22/22
+- house style holds: no em dashes in the app's own voice, US spelling, no emoji as icons
+- the server boots, answers `/healthz`, and does not serve `server.js`, `.env`, `lib/`, or
+  `db/` over HTTP, including through a `/js/../` traversal
+
+Run the same checks locally with `npm run verify`.
+
+`.github/workflows/schema.yml` applies `db/schema.sql` to Railway Postgres, either when the
+schema changes on `main` or on demand from the Actions tab. It needs a `DATABASE_PUBLIC_URL`
+secret, because Railway's internal database host is not reachable from GitHub. This workflow
+is optional: the server applies the schema on boot anyway.

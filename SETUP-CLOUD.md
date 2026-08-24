@@ -101,7 +101,35 @@ should report `"accounts": true`.
 You do not need to touch `js/config.js`. The app asks the server what it supports when it
 loads, so accounts appear on their own once the database is attached.
 
-### 2.2 Sending sign-in codes
+### 2.2 Running the schema from GitHub Actions (optional)
+
+You do not need this. The server applies `db/schema.sql` on boot, so attaching the database is
+the whole setup. Use this if you would rather migrations were an explicit, logged step you can
+see and re-run, rather than something that happens invisibly at startup.
+
+**The detail that catches everyone:** Railway gives Postgres two connection strings.
+`DATABASE_URL` points at `postgres.railway.internal`, which only resolves inside Railway's
+private network, so GitHub cannot reach it. The workflow needs `DATABASE_PUBLIC_URL`, the TCP
+proxy address.
+
+1. Railway → your **Postgres** service → **Variables** → copy `DATABASE_PUBLIC_URL`.
+2. GitHub → repo **Settings → Secrets and variables → Actions → New repository secret**.
+   Name it `DATABASE_PUBLIC_URL` and paste the value.
+3. That is it. `.github/workflows/schema.yml` runs whenever `db/schema.sql` changes on `main`,
+   and you can also run it by hand from the **Actions** tab with **Run workflow**.
+
+It prints a table of every table with its column and row counts into the job summary, so you
+can see what the run actually did.
+
+If you go this route and would rather the app never held DDL rights at runtime, add
+`SKIP_DB_INIT=true` to your service variables. The server will then connect but leave the
+schema alone.
+
+The schema is written to be safe to run repeatedly. Every statement is `create table if not
+exists`, `create index if not exists`, or `create extension if not exists`, so re-running it
+changes nothing. Verified by applying it twice against a clean database.
+
+### 2.3 Sending sign-in codes
 
 Students sign in with a 6 digit code sent to their email. A code rather than a magic link,
 deliberately, so it works from any URL including a file opened off a USB stick.
@@ -118,7 +146,7 @@ deliberately, so it works from any URL including a file opened off a USB stick.
 Until you set this up, the server writes each code to its deploy log instead of emailing it,
 which is fine while you are testing on your own.
 
-### 2.3 Make yourself the teacher
+### 2.4 Make yourself the teacher
 
 1. Sign in with your own email.
 2. Home screen → your name → **Account → I am the teacher**.
@@ -129,7 +157,7 @@ Your **Class** chip then shows each student's questions answered, accuracy, late
 score, most common trap, and last activity, plus the traps catching the most students
 across the class, which is the useful thing for planning a lesson.
 
-### 2.4 What the database holds, and who can read what
+### 2.5 What the database holds, and who can read what
 
 | Table | Contents |
 |---|---|
