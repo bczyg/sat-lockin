@@ -375,6 +375,7 @@ const server = http.createServer(async (req, res) => {
       accounts: db.available(),
       database: db.configured() ? (db.available() ? 'connected' : 'error: ' + db.lastError()) : 'not configured',
       mail: mailConfigured,
+      mailDetail: mailStatus,
       tutor: !!ANTHROPIC_KEY
     });
   }
@@ -403,10 +404,12 @@ const server = http.createServer(async (req, res) => {
 });
 
 let mailConfigured = false;
+let mailStatus = { provider: 'log', configured: false };
 
 async function boot() {
   const mail = await import('./lib/mail.js');
   mailConfigured = mail.configured();
+  mailStatus = mail.status();
 
   if (db.configured()) {
     const ok = await db.init();
@@ -423,7 +426,12 @@ async function boot() {
     console.log(`SAT LockIn listening on ${PORT}`);
     console.log(`  static app:  http://localhost:${PORT}/`);
     console.log(`  accounts:    ${db.available() ? 'on' : 'off (no DATABASE_URL)'}`);
-    console.log(`  mail:        ${mailConfigured ? 'Resend configured' : 'off (codes go to this log)'}`);
+    const mailLine = mailStatus.provider === 'graph'
+    ? `Microsoft Graph, sending as ${mailStatus.sender}`
+    : mailStatus.provider === 'resend' ? 'Resend'
+    : 'off, codes go to this log';
+  console.log(`  mail:        ${mailLine}`);
+  if (mailStatus.warning) console.warn(`               ${mailStatus.warning}`);
     console.log(`  tutor:       ${ANTHROPIC_KEY ? 'enabled at POST /api/tutor' : 'off (no ANTHROPIC_API_KEY)'}`);
   });
 }

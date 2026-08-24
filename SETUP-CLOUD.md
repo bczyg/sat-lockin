@@ -134,34 +134,90 @@ changes nothing. Verified by applying it twice against a clean database.
 Students sign in with a 6 digit code sent to their email. A code rather than a magic link,
 deliberately, so it works from any URL.
 
-**The email step is optional while you are testing.** With no mail key set, the server writes
-each code to its own log instead of sending it. On Railway that is your service's **Deploy
-Logs** tab, and a line reading `[mail] no RESEND_API_KEY set. Code for you@example.com is
-123456`. That is enough to sign in and try everything.
+**While testing you need no mail setup at all.** With no provider configured the server writes
+each code to its own log. On Railway that is the **Deploy Logs** tab, showing a line like
+`[mail] no mail provider configured. Code for you@example.com is 483920`. That is enough to
+sign in and try everything.
 
-To send real email:
+Two providers are supported. Graph takes precedence if both are configured.
 
-| Variable | Required | What it is |
-|---|---|---|
-| `RESEND_API_KEY` | yes, to send at all | An API key from resend.com. The free tier covers a class. |
-| `MAIL_FROM` | recommended | The sender, for example `SAT LockIn <login@satlockin.com>`. Defaults to `SAT LockIn <onboarding@resend.dev>`. |
-| `APP_NAME` | optional | Appears in the subject line and the email body. Defaults to `SAT LockIn`. |
-| `CODES_PER_HOUR` | optional | Sign-in codes one address can request per hour. Defaults to 8. |
+#### Option A: Microsoft Graph (Microsoft 365)
 
-Remember `DATABASE_URL` is a prerequisite. Sign-in writes to the database, so with no database
-the auth endpoints answer "Accounts are switched off on this server" no matter what the mail
-settings say.
+Sends as a mailbox in your own tenant using an Entra app registration, so mail comes from your
+domain with your reputation and no third party involved.
 
-**The Resend detail that will catch you out.** The default sender, `onboarding@resend.dev`, is
-Resend's shared test address, and Resend restricts it to delivering to the email address that
-owns the Resend account. It is fine for testing on yourself, and it will silently fail to
-reach students. Before a class rollout:
+**Variables**
 
-1. Resend → **Domains** → **Add Domain** → `satlockin.com`
-2. Add the DNS records it gives you at your registrar, the same place you pointed the domain
-   at Railway
-3. Wait for it to verify, then set `MAIL_FROM` to something at that domain, for example
-   `SAT LockIn <login@satlockin.com>`
+| Variable | What it is |
+|---|---|
+| `GRAPH_TENANT_ID` | Directory (tenant) ID, a GUID. Entra portal, app registration Overview. |
+| `GRAPH_CLIENT_ID` | Application (client) ID, a GUID. Same page. |
+| `GRAPH_CLIENT_SECRET` | The secret **Value**, shown only once when you create it. The Secret ID is not the secret. |
+| `GRAPH_SENDER` | The mailbox to send from, for example `login@satlockin.com`. Must be a real mailbox in the tenant. |
+| `GRAPH_SAVE_TO_SENT` | Optional. `true` keeps a copy in the mailbox's Sent Items. Defaults to false. |
+
+All four of the first ones are required. Set three of them and the server falls back to
+logging, so `/healthz` reports exactly which one is missing rather than leaving you guessing.
+
+**Setting up the app registration**
+
+1. Entra admin center → **App registrations** → **New registration**. Name it anything, single
+   tenant, no redirect URI needed. This is a daemon app, not a sign-in app.
+2. **Certificates & secrets** → **New client secret**. Copy the **Value** immediately.
+   Note the expiry, because mail stops working the day it lapses.
+3. **API permissions** → **Add a permission** → **Microsoft Graph** → **Application
+   permissions** → `Mail.Send`. Not Delegated: there is no signed-in user here.
+4. **Grant admin consent** on that same page. Adding the permission is not enough on its own,
+   and forgetting this is the single most common cause of a 403 later.
+5. Make sure `GRAPH_SENDER` is a real mailbox. A **shared mailbox** is a good choice for a
+   no-reply sender: it works with Graph and needs no license.
+
+**Restrict which mailbox the app can send as**
+
+`Mail.Send` as an application permission lets the app send as *any* mailbox in the tenant.
+That is more authority than this app needs, so scope it to the one sender:
+
+```powershell
+# Exchange Online PowerShell, once
+New-ApplicationAccessPolicy -AppId <GRAPH_CLIENT_ID> `
+  -PolicyScopeGroupId login@satlockin.com `
+  -AccessRight RestrictAccess `
+  -Description "SAT LockIn sign-in codes only"
+```
+
+Worth doing before you hand the app registration's secret to a deployment.
+
+**Testing it without going through the sign-in screen**
+
+```bash
+npm run mailtest you@yourdomain.com
+```
+
+It prints which provider is active, which variables are set, and either confirms delivery or
+gives you the specific reason. It maps the useful Microsoft error codes: a wrong or expired
+client secret, a missing tenant, a missing `Mail.Send` consent, a sender mailbox that does not
+exist, and a Conditional Access policy blocking the service principal. On Railway, run it
+against the deployed environment with `railway run npm run mailtest you@yourdomain.com`.
+
+#### Option B: Resend
+
+| Variable | What it is |
+|---|---|
+| `RESEND_API_KEY` | An API key from resend.com. Free tier covers a class. |
+| `MAIL_FROM` | Sender, for example `SAT LockIn <login@satlockin.com>`. |
+
+The default sender, `onboarding@resend.dev`, is Resend's shared test address and only delivers
+to the address that owns the Resend account. It works when you test on yourself and silently
+fails to reach students, so verify your domain in Resend before a class rollout.
+
+#### Both options
+
+`APP_NAME` sets the name in the subject line and body. `CODES_PER_HOUR` caps how many codes
+one address can request per hour, defaulting to 8.
+
+Remember `DATABASE_URL` is a prerequisite either way. Sign-in writes to the database, so with
+no database the auth endpoints answer "Accounts are switched off on this server" whatever the
+mail settings say.
 
 ### Abuse and cost limits, already in place
 
@@ -171,10 +227,10 @@ becoming a way to spend your mail quota:
 - One code per address per 45 seconds
 - Eight codes per address per hour, tunable with `CODES_PER_HOUR`
 
-Both were tested against a real database. Codes themselves are stored only as hashes, expire
-after 20 minutes, are single use, and lock out after 6 wrong guesses.
+Codes are stored only as hashes, expire after 20 minutes, are single use, and lock out after
+6 wrong guesses.
 
-### 2.4 Make yourself the teacher### 2.4 Make yourself the teacher
+### 2.4 Make yourself the teacher### 2.4 Make yourself the teacher### 2.4 Make yourself the teacher
 
 1. Sign in with your own email.
 2. Home screen → your name → **Account → I am the teacher**.

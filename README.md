@@ -100,6 +100,7 @@ npm start          # serve the app, http://localhost:8080
 npm run verify     # question bank integrity and house style checks
 npm run bundle     # rebuild the single-file version in dist/
 npm run schema     # apply db/schema.sql to $DATABASE_URL by hand
+npm run mailtest you@example.com   # send one test email and explain any failure
 ```
 
 Railway detects `package.json`, installs, and runs `node server.js`. `/healthz` reports
@@ -136,7 +137,7 @@ js/app.js all screens
 db/schema.sql                 Postgres tables, applied automatically on boot
 lib/db.js                     database pool
 lib/auth.js                   sign in with an emailed one-time code
-lib/mail.js                   sending that code
+lib/mail.js                   sending that code, via Microsoft Graph or Resend
 lib/routes.js                 the JSON API: sync, classes, roster
 build-single-file.py bundles everything into dist/sat-lockin.html
 ```

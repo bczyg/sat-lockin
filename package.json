@@ -9,7 +9,8 @@
     "start": "node server.js",
     "verify": "node scripts/verify.js",
     "bundle": "python3 build-single-file.py",
-    "schema": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f db/schema.sql"
+    "schema": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f db/schema.sql",
+    "mailtest": "node scripts/mailtest.js"
   },
   "engines": {
     "node": ">=20"
