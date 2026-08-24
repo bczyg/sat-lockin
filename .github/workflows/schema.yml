@@ -31,9 +31,17 @@ on:
       - '.github/workflows/schema.yml'
   workflow_dispatch:
 
+# Two runs applying DDL at the same time can deadlock against each other, so
+# only one is allowed at a time. A hung psql connection would otherwise sit on
+# the default six hour timeout, so cap it at five minutes.
+concurrency:
+  group: schema
+  cancel-in-progress: false
+
 jobs:
   apply:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
 

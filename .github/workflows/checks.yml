@@ -21,6 +21,16 @@ jobs:
       - name: Verify question bank and house style
         run: node scripts/verify.js
 
+      - name: Confirm the committed bundle matches the sources
+        run: |
+          cp dist/sat-lockin.html /tmp/committed.html
+          python3 build-single-file.py
+          if ! cmp -s /tmp/committed.html dist/sat-lockin.html; then
+            echo "::error::dist/sat-lockin.html is out of date. Run 'npm run bundle' and commit the result."
+            exit 1
+          fi
+          echo "the committed bundle matches the sources"
+
       - name: Confirm the server starts and answers
         run: |
           node server.js &
