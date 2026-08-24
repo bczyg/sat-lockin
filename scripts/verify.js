@@ -100,6 +100,52 @@ for (const q of bank) {
   }
 }
 
+/* ---------- 3b. the answer key must not be gameable ----------
+   A real form spreads the key roughly evenly. An earlier version of this bank
+   keyed 55% of questions to B and never once to D, which a student could have
+   exploited to raise their score here without learning anything. */
+const keyCount = [0, 0, 0, 0];
+const mcItems = bank.filter((q) => q.type === 'mc');
+mcItems.forEach((q) => { keyCount[q.answer]++; });
+const letters = ['A', 'B', 'C', 'D'];
+keyCount.forEach((n, i) => {
+  const share = n / mcItems.length;
+  if (share < 0.15 || share > 0.35) {
+    fail(`answer key is skewed: ${letters[i]} is the key on ${n} of ${mcItems.length} questions ` +
+         `(${Math.round(share * 100)}%), outside the 15 to 35 percent band`);
+  }
+});
+notes.push(`answer key spread ${letters.map((l, i) => l + ' ' + keyCount[i]).join(', ')} across ${mcItems.length} items`);
+
+/* Length is the other classic tell: if the correct answer is reliably the
+   longest, it can be picked without reading the question. */
+let keyLongest = 0;
+mcItems.forEach((q) => {
+  const lens = q.choices.map((c) => String(c).replace(/<[^>]*>/g, '').trim().length);
+  const max = Math.max(...lens);
+  if (lens[q.answer] === max && lens.filter((x) => x === max).length === 1) keyLongest++;
+});
+const longShare = keyLongest / mcItems.length;
+if (longShare > 0.40) {
+  fail(`the correct answer is the single longest choice on ${Math.round(longShare * 100)}% of ` +
+       `questions, which is a tell; chance would be 25%`);
+}
+notes.push(`correct answer is longest on ${Math.round(longShare * 100)}% of items (chance is 25%)`);
+
+/* ---------- 3c. every trap needs enough questions to practice against ----------
+   A "practice this trap" drill with one question in it is not practice. */
+const trapCount = {};
+Object.keys(window.TRAPS).forEach((t) => { trapCount[t] = 0; });
+bank.forEach((q) => {
+  const tg = window.tagsFor(q);
+  Object.keys(tg.traps).forEach((k) => { trapCount[tg.traps[k]]++; });
+});
+const orphan = Object.entries(trapCount).filter(([, n]) => n === 0).map(([t]) => t);
+if (orphan.length) fail(`traps with no questions at all: ${orphan.join(', ')}`);
+const thin = Object.entries(trapCount).filter(([, n]) => n > 0 && n < 4).map(([t, n]) => `${t}(${n})`);
+notes.push(`trap coverage: ${Object.keys(trapCount).length} traps, ` +
+           `${thin.length} with fewer than 4 questions` + (thin.length ? ` [${thin.join(' ')}]` : ''));
+
 /* ---------- 4. the blueprint can still build a full test ---------- */
 await load('js/engine.js');
 const need = { rw: { count: 27, dom: {} }, math: { count: 22, dom: {} } };

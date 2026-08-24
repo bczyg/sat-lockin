@@ -6,6 +6,8 @@
 
    type:'spr' items carry `answers`, an array of accepted forms.
    Every item carries strategy / hint / steps / traps.
+
+   The answer key is balanced across A, B, C and D; verify.js checks it.
    ============================================================ */
 window.MATH_BANK = [];
 window.MATH_BANK.push(
@@ -18,11 +20,11 @@ window.MATH_BANK.push(
   prompt: "If 5(x − 3) = 40, what is the value of x?",
   choices: [
     "5",
-    "8",
     "11",
+    "8",
     "43"
   ],
-  answer: 2,
+  answer: 1,
   strategy: "Undo the operations in reverse order. Whatever is done last to the variable is what you undo first.",
   hint: "Divide both sides by 5 before you touch the parentheses.",
   steps: [
@@ -32,7 +34,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "This is 40 ÷ 8, or the answer to a different equation. Substitute it back: 5(5 − 3) = 10, not 40.",
-    1: "You stopped one step early, 8 is the value of x − 3, not of x.",
+    2: "You stopped one step early, 8 is the value of x − 3, not of x.",
     3: "This adds 3 to 40 instead of dividing first: distributing gives 5x − 15 = 40, so 5x = 55, not x = 43."
   }
 },
@@ -45,22 +47,22 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "A phone plan charges a fixed monthly fee plus $0.04 for each minute of international calling. The total monthly cost C, in dollars, for m minutes of international calling is given by C = 0.04m + 12. What does the 12 represent?",
   choices: [
-    "The cost, in dollars, of each minute of international calling",
     "The monthly cost, in dollars, when no international minutes are used",
+    "The cost, in dollars, of each minute of international calling",
     "The number of international minutes included in the plan",
     "The total cost, in dollars, of 12 international minutes"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "In y = mx + b, the slope is the per-unit rate and the intercept is the starting value. To interpret b, set the input to zero.",
   hint: "Let m = 0 and see what the equation says the cost is.",
   steps: [
     "Substitute m = 0: <div class=“mathwork”>C = 0.04(0) + 12 = 12</div>",
     "So $12 is the cost when zero international minutes are used, the fixed fee.",
     "The 0.04 is the per-minute rate, since it is multiplied by m.",
-    "Choice B describes the value at zero minutes."
+    "Choice A describes the value at zero minutes."
   ],
   traps: {
-    0: "That is 0.04, the coefficient of m. Rate and starting value are the two things this question type asks you to keep straight.",
+    1: "That is 0.04, the coefficient of m. Rate and starting value are the two things this question type asks you to keep straight.",
     2: "12 has units of dollars, not minutes. Always check units when interpreting a constant.",
     3: "12 minutes would cost 0.04(12) + 12 = $12.48. The 12 in the equation is a fee, not a quantity of minutes."
   }
@@ -92,12 +94,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "Line ℓ passes through the points (2, 5) and (6, 17) in the xy-plane. What is the slope of line ℓ?",
   choices: [
-    "1/3",
     "3",
+    "1/3",
     "4",
     "11/4"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Slope is rise over run: (y₂ − y₁)/(x₂ − x₁). Keep the order of the points the same in the numerator and denominator.",
   hint: "The y-values change by how much? The x-values?",
   steps: [
@@ -106,7 +108,7 @@ window.MATH_BANK.push(
     "Divide: <div class=“mathwork”>slope = 12 / 4 = 3</div>"
   ],
   traps: {
-    0: "This is run over rise, 4/12. The most common slope error is flipping the fraction.",
+    1: "This is run over rise, 4/12. The most common slope error is flipping the fraction.",
     2: "This is the change in x alone.",
     3: "This is (17 − 6)/(5 − 2), the coordinates got mixed between the two points. Label your points before subtracting."
   }
@@ -122,10 +124,10 @@ window.MATH_BANK.push(
   choices: [
     "6",
     "7",
-    "8",
-    "11"
+    "11",
+    "8"
   ],
-  answer: 2,
+  answer: 3,
   strategy: "Substitution is fastest when one equation already has a coefficient of 1. Solve that one for a variable and substitute.",
   hint: "The second equation gives x = y + 2.",
   steps: [
@@ -137,7 +139,7 @@ window.MATH_BANK.push(
   traps: {
     0: "This is 2y, or x + 1. Re-read what the question asks for, systems questions often ask for a combination, not for x alone.",
     1: "This is x + 2 or y + 4; check both values in both equations.",
-    3: "This is x + 2y. Write down x = 5 and y = 3 separately before combining them."
+    2: "This is x + 2y. Write down x = 5 and y = 3 separately before combining them."
   }
 },
 
@@ -236,12 +238,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "Line ℓ is defined by 3x + 4y = 12. Line k is parallel to line ℓ and passes through the point (0, −5). Which equation defines line k?",
   choices: [
-    "3x + 4y = −20",
+    "4x + 3y = −15",
     "4x − 3y = 15",
     "3x + 4y = 20",
-    "4x + 3y = −15"
+    "3x + 4y = −20"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Parallel lines share a slope. In standard form Ax + By = C, two lines are parallel exactly when A and B match (up to a common factor) and only C differs.",
   hint: "Keep 3x + 4y and just find the new constant by plugging in the point.",
   steps: [
@@ -251,9 +253,9 @@ window.MATH_BANK.push(
     "Sanity check the slope: 4y = −3x + 12 gives slope −3/4 for ℓ, and the same for k. ✓"
   ],
   traps: {
+    0: "Swaps the coefficients of x and y, which changes the slope to −4/3.",
     1: "Uses the negative reciprocal slope, 4/3. That is the condition for <em>perpendicular</em> lines, not parallel ones.",
-    2: "Right form but the sign of the constant is wrong: 4(−5) = −20, not +20.",
-    3: "Swaps the coefficients of x and y, which changes the slope to −4/3."
+    2: "Right form but the sign of the constant is wrong: 4(−5) = −20, not +20."
   }
 },
 
@@ -265,12 +267,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "At a bake sale, muffins cost $2 each and scones cost $3 each. A customer buys a total of 14 items and pays $34. How many scones does the customer buy?",
   choices: [
-    "4",
     "6",
+    "4",
     "8",
     "10"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Two unknowns need two equations: one counting items, one counting money. Define your variables in writing before you set anything up.",
   hint: "Let m be muffins and s be scones. Write the count equation and the cost equation.",
   steps: [
@@ -280,7 +282,7 @@ window.MATH_BANK.push(
     "Check: 8 muffins ($16) + 6 scones ($18) = $34, and 8 + 6 = 14 items. ✓"
   ],
   traps: {
-    0: "Try it: 10 muffins and 4 scones cost 20 + 12 = $32, not $34.",
+    1: "Try it: 10 muffins and 4 scones cost 20 + 12 = $32, not $34.",
     2: "This is the number of muffins. The question asks for scones, a substitution you completed but did not finish reading.",
     3: "10 scones and 4 muffins cost 30 + 8 = $38."
   }
@@ -314,11 +316,11 @@ window.MATH_BANK.push(
   prompt: "<div class=“mathwork”>y > 2x − 1\ny ≤ −x + 5</div>Which of the following ordered pairs (x, y) is a solution to the system of inequalities above?",
   choices: [
     "(0, −2)",
-    "(1, 3)",
+    "(4, 2)",
     "(2, 4)",
-    "(4, 2)"
+    "(1, 3)"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "Do not graph. Test each point in both inequalities and stop as soon as one fails. That is far faster than sketching two regions.",
   hint: "A solution has to satisfy both inequalities, not just one.",
   steps: [
@@ -329,8 +331,8 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Satisfies the second inequality but not the first.",
-    2: "Satisfies the first but misses the second by 1. Points that pass one test and fail the other are the whole point of this question type.",
-    3: "Satisfies the second inequality only."
+    1: "Satisfies the second inequality only.",
+    2: "Satisfies the first but misses the second by 1. Points that pass one test and fail the other are the whole point of this question type."
   }
 },
 
@@ -361,12 +363,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "The formula P = 2(l + w) gives the perimeter P of a rectangle with length l and width w. Which equation correctly expresses w in terms of P and l?",
   choices: [
-    "w = (P − 2l)/2",
-    "w = P/2 − 2l",
     "w = (P − l)/2",
+    "w = P/2 − 2l",
+    "w = (P − 2l)/2",
     "w = 2P − l"
   ],
-  answer: 0,
+  answer: 2,
   strategy: "Rearranging a formula uses the same moves as solving an equation, treat every letter except your target as a number.",
   hint: "Divide by 2 first, then subtract l.",
   steps: [
@@ -376,8 +378,8 @@ window.MATH_BANK.push(
     "Test with numbers: l = 3, w = 4 gives P = 14, and (14 − 6)/2 = 4. ✓"
   ],
   traps: {
+    0: "Forgot to distribute the 2 across both l and w: (14 − 3)/2 = 5.5, not 4.",
     1: "Divided only the P by 2 and left l doubled. Test it: (14/2) − 2(3) = 1, not 4.",
-    2: "Forgot to distribute the 2 across both l and w: (14 − 3)/2 = 5.5, not 4.",
     3: "Multiplied by 2 instead of dividing."
   }
 },
@@ -391,11 +393,11 @@ window.MATH_BANK.push(
   prompt: "The function f is defined by f(x) = 3x − 8. If f(c) = 19, what is the value of c?",
   choices: [
     "3.67",
-    "9",
+    "27",
     "11",
-    "27"
+    "9"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "f(c) = 19 just means “substitute c and set the result equal to 19.” Function notation is instruction, not difficulty.",
   hint: "Write 3c − 8 = 19.",
   steps: [
@@ -406,8 +408,8 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "This is (19 − 8)/3, subtracting 8 instead of adding it back.",
-    2: "This is 19 − 8, skipping the division by 3.",
-    3: "This is 3c, not c."
+    1: "This is 3c, not c.",
+    2: "This is 19 − 8, skipping the division by 3."
   }
 },
 
@@ -439,11 +441,11 @@ window.MATH_BANK.push(
   prompt: "A tank drains according to the equation V = 480 − 24t, where V is the volume of water remaining, in gallons, t minutes after draining begins. How many minutes does it take for the tank to drain completely?",
   choices: [
     "12",
-    "20",
     "24",
+    "20",
     "456"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "“Drains completely” translates to V = 0. Turn the words into an equation about the variable before computing.",
   hint: "Set V equal to 0.",
   steps: [
@@ -453,7 +455,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "This is 480/40 or a miscalculation of 480/24. Do the division carefully: 24 × 20 = 480.",
-    2: "This is the drain rate, 24 gallons per minute, not a time.",
+    1: "This is the drain rate, 24 gallons per minute, not a time.",
     3: "This is V after 1 minute (480 − 24), not the time to empty."
   }
 },
@@ -467,11 +469,11 @@ window.MATH_BANK.push(
   prompt: "A total of 240 tickets were sold for a concert. Adult tickets cost $18 each and student tickets cost $11 each, and total ticket receipts were $3,340. How many adult tickets were sold?",
   choices: [
     "80",
-    "100",
     "120",
+    "100",
     "140"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "On a two-equation word problem with answer choices, back-solving is often faster: test a choice in the money equation and let the count equation give you the other quantity.",
   hint: "If 100 adult tickets were sold, how many student tickets, and what is the total revenue?",
   steps: [
@@ -482,7 +484,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "80 adult and 160 student tickets give 1,440 + 1,760 = $3,200.",
-    2: "120 and 120 give 2,160 + 1,320 = $3,480.",
+    1: "120 and 120 give 2,160 + 1,320 = $3,480.",
     3: "This is the number of student tickets."
   }
 },
@@ -601,12 +603,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "Which expression is equivalent to (3x<sup>2</sup>y<sup>3</sup>)<sup>3</sup> / (9x<sup>3</sup>y<sup>2</sup>), where x and y are positive?",
   choices: [
-    "3x<sup>3</sup>y<sup>7</sup>",
+    "3x<sup>3</sup>y<sup>5</sup>",
     "3x<sup>9</sup>y<sup>7</sup>",
     "9x<sup>3</sup>y<sup>7</sup>",
-    "3x<sup>3</sup>y<sup>5</sup>"
+    "3x<sup>3</sup>y<sup>7</sup>"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Handle the outer power first: raise every factor inside to that power. Then divide by subtracting exponents.",
   hint: "(3x²y³)³ means 3³ · x⁶ · y⁹.",
   steps: [
@@ -616,9 +618,9 @@ window.MATH_BANK.push(
     "Result: 3x³y⁷"
   ],
   traps: {
+    0: "Subtracted the y exponents as 9 − 4 instead of 9 − 2.",
     1: "Multiplied the x exponents when dividing instead of subtracting, or applied the outer 3 twice.",
-    2: "Divided 27 by 9 incorrectly, or forgot to cube the 3 and left the 9 in the numerator.",
-    3: "Subtracted the y exponents as 9 − 4 instead of 9 − 2."
+    2: "Divided 27 by 9 incorrectly, or forgot to cube the 3 and left the 9 in the numerator."
   }
 },
 
@@ -630,12 +632,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "What is the minimum value of the function f(x) = x<sup>2</sup> − 8x + 11?",
   choices: [
-    "−5",
     "4",
+    "−5",
     "11",
     "−21"
   ],
-  answer: 0,
+  answer: 1,
   strategy: "A parabola's minimum occurs at x = −b/(2a). Find that x, then substitute back. The question usually wants the y-value, not the x-value.",
   hint: "First find where the minimum occurs, then find what the minimum <em>is</em>.",
   steps: [
@@ -645,7 +647,7 @@ window.MATH_BANK.push(
     "Since (x − 4)² is never negative, the smallest value of f is −5. ✓"
   ],
   traps: {
-    1: "This is the x-value where the minimum occurs, not the minimum value. The single most common error on vertex questions.",
+    0: "This is the x-value where the minimum occurs, not the minimum value. The single most common error on vertex questions.",
     2: "This is f(0), the y-intercept.",
     3: "Comes from computing 16 − 32 − 5 or a similar arithmetic slip. Recompute f(4) carefully."
   }
@@ -660,11 +662,11 @@ window.MATH_BANK.push(
   prompt: "What is the solution to the equation √(2x + 5) = x − 5?",
   choices: [
     "x = 2",
-    "x = 5",
     "x = 10",
+    "x = 5",
     "x = 12"
   ],
-  answer: 2,
+  answer: 1,
   strategy: "Squaring both sides of a radical equation can create extraneous roots. You must substitute every candidate back into the <em>original</em> equation.",
   hint: "Squaring gives a quadratic with two roots, but only one of them can actually be a solution. Why?",
   steps: [
@@ -675,7 +677,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "The extraneous root. It solves the squared equation but not the original, because it makes the right side negative. This is exactly what the question is testing.",
-    1: "Makes the right side 0 but the left side √15.",
+    2: "Makes the right side 0 but the left side √15.",
     3: "Gives √29 ≈ 5.39 on the left and 7 on the right."
   }
 },
@@ -709,10 +711,10 @@ window.MATH_BANK.push(
   choices: [
     "6",
     "8",
-    "24",
-    "26"
+    "26",
+    "24"
   ],
-  answer: 2,
+  answer: 3,
   strategy: "Work composed functions from the inside out. Compute the inner value first and write it down before applying the outer function.",
   hint: "Find f(2) first, then put that number into g.",
   steps: [
@@ -722,7 +724,7 @@ window.MATH_BANK.push(
   traps: {
     0: "This is f(g(2)), the composition performed in the wrong order: g(2) = 3, then f(3) = 6. Order matters.",
     1: "This is g(3) = 8, using x = 3 from the “+3” instead of f(2) = 5.",
-    3: "This is 5² + 1. The function subtracts 1."
+    2: "This is 5² + 1. The function subtracts 1."
   }
 },
 
@@ -734,12 +736,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "Which expression is equivalent to (x<sup>2</sup> − 9) / (x<sup>2</sup> + 5x + 6), where x ≠ −2 and x ≠ −3?",
   choices: [
-    "(x − 3)/(x + 2)",
+    "(x − 9)/(x + 6)",
     "(x + 3)/(x + 2)",
     "(x − 3)/(x − 2)",
-    "(x − 9)/(x + 6)"
+    "(x − 3)/(x + 2)"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Factor the numerator and denominator completely, then cancel common factors. Never cancel individual terms, only whole factors.",
   hint: "x² − 9 is a difference of squares.",
   steps: [
@@ -749,9 +751,9 @@ window.MATH_BANK.push(
     "Test with x = 1: original = (1 − 9)/(1 + 5 + 6) = −8/12 = −2/3; answer = (1 − 3)/(1 + 2) = −2/3. ✓"
   ],
   traps: {
+    0: "Canceled the x² terms directly. Terms cannot be canceled, only factors. This is the error the question is built to catch.",
     1: "Canceled the wrong factor, (x − 3) instead of (x + 3).",
-    2: "Sign error in factoring the denominator: x² + 5x + 6 factors with positive numbers, not negative ones.",
-    3: "Canceled the x² terms directly. Terms cannot be canceled, only factors. This is the error the question is built to catch."
+    2: "Sign error in factoring the denominator: x² + 5x + 6 factors with positive numbers, not negative ones."
   }
 },
 
@@ -764,11 +766,11 @@ window.MATH_BANK.push(
   prompt: "In the xy-plane, the graph of the function f(x) = a(x − 2)<sup>2</sup> + k has its vertex at (2, −1) and passes through the point (0, 7). What is the value of a?",
   choices: [
     "1/2",
-    "2",
     "4",
+    "2",
     "8"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Vertex form hands you the vertex directly: f(x) = a(x − h)² + k has vertex (h, k). Read off h and k, then use the extra point to find a.",
   hint: "The vertex tells you k. Then substitute the point (0, 7).",
   steps: [
@@ -779,7 +781,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Comes from 4a = 2 or from inverting the final division.",
-    2: "Comes from forgetting to subtract 1: 7 = 4a would give a = 1.75, but using 8/2 gives 4. Track the constant.",
+    1: "Comes from forgetting to subtract 1: 7 = 4a would give a = 1.75, but using 8/2 gives 4. Track the constant.",
     3: "This is 4a, not a."
   }
 },
@@ -811,12 +813,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "The value of a machine depreciates so that its value V, in dollars, after t years is given by V = 40,000(0.85)<sup>t</sup>. Which expression gives the machine's value after 18 months?",
   choices: [
-    "40,000(0.85)<sup>18</sup>",
     "40,000(0.85)<sup>3/2</sup>",
+    "40,000(0.85)<sup>18</sup>",
     "40,000(0.15)<sup>3/2</sup>",
     "40,000(1.15)<sup>3/2</sup>"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Check the units of the exponent's variable before substituting. If t is in years and the question gives months, convert first.",
   hint: "t is measured in years. How many years is 18 months?",
   steps: [
@@ -825,7 +827,7 @@ window.MATH_BANK.push(
     "The base stays 0.85 because that is the fraction of value retained each year."
   ],
   traps: {
-    0: "Substitutes 18 without converting months to years. This would model 18 years of depreciation.",
+    1: "Substitutes 18 without converting months to years. This would model 18 years of depreciation.",
     2: "0.15 is the fraction <em>lost</em> each year. The base of the exponential is the fraction retained: 1 − 0.15 = 0.85.",
     3: "1.15 would mean the machine gains 15% each year. Depreciation requires a base less than 1."
   }
@@ -887,12 +889,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "A ball is thrown upward from a rooftop. Its height above the ground, in feet, t seconds after it is thrown is given by h(t) = −16t<sup>2</sup> + 64t + 80. How many seconds after it is thrown does the ball hit the ground?",
   choices: [
-    "2",
-    "4",
     "5",
+    "4",
+    "2",
     "8"
   ],
-  answer: 2,
+  answer: 0,
   strategy: "“Hits the ground” means height = 0. Divide out the common factor before factoring, the arithmetic gets much easier.",
   hint: "Set h(t) = 0, then divide the whole equation by −16.",
   steps: [
@@ -902,8 +904,8 @@ window.MATH_BANK.push(
     "So t = 5 or t = −1. Time cannot be negative, so the ball lands at t = 5 seconds. ✓"
   ],
   traps: {
-    0: "t = 2 is when the ball reaches its highest point (−b/2a = 64/32 = 2), not when it lands.",
     1: "h(4) = −256 + 256 + 80 = 80 feet, so the ball is back at rooftop height, not on the ground.",
+    2: "t = 2 is when the ball reaches its highest point (−b/2a = 64/32 = 2), not when it lands.",
     3: "h(8) = −1,024 + 512 + 80, a negative height, meaning the ball landed earlier."
   }
 },
@@ -935,12 +937,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "A theater's revenue R, in dollars, from selling tickets at a price of p dollars each is modeled by R = −20p<sup>2</sup> + 800p. What ticket price produces the maximum revenue?",
   choices: [
-    "$10",
     "$20",
+    "$10",
     "$40",
     "$400"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "For a downward parabola, the maximum is at the vertex, x = −b/(2a). Here the question asks for the input (the price), so stop at the vertex's x-value.",
   hint: "Identify a = −20 and b = 800, then compute −b/(2a).",
   steps: [
@@ -950,7 +952,7 @@ window.MATH_BANK.push(
     "Check the value: R(20) = −20(400) + 16,000 = $8,000, and R(19) = $7,980 and R(21) = $7,980, both lower. ✓"
   ],
   traps: {
-    0: "Used −b/a ÷ 4 or a similar slip. Recompute: 2a = −40.",
+    1: "Used −b/a ÷ 4 or a similar slip. Recompute: 2a = −40.",
     2: "This is the p-intercept where revenue returns to zero (R = 0 at p = 0 and p = 40). The maximum lies halfway between them, at 20.",
     3: "This is 800/2, ignoring the coefficient a."
   }
@@ -964,12 +966,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "What value of x satisfies the equation 3/(x − 2) = 12/(x + 4)?",
   choices: [
-    "0",
     "4",
+    "0",
     "8",
     "12"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Cross-multiply proportions, then solve the resulting linear equation. Check that your answer does not make a denominator zero.",
   hint: "Cross-multiply to get 3(x + 4) = 12(x − 2).",
   steps: [
@@ -979,7 +981,7 @@ window.MATH_BANK.push(
     "Check: 3/(4 − 2) = 1.5 and 12/(4 + 4) = 1.5 ✓, and no denominator is zero."
   ],
   traps: {
-    0: "Gives 3/(−2) = −1.5 and 12/4 = 3. Not equal.",
+    1: "Gives 3/(−2) = −1.5 and 12/4 = 3. Not equal.",
     2: "Gives 3/6 = 0.5 and 12/12 = 1. Not equal.",
     3: "Comes from a sign error when distributing 12(x − 2)."
   }
@@ -1023,11 +1025,11 @@ window.MATH_BANK.push(
   prompt: "A jacket regularly priced at $80 is on sale for $68. What is the percent discount?",
   choices: [
     "12%",
-    "15%",
     "17.6%",
+    "15%",
     "85%"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Percent change = (change ÷ original) × 100. The original amount always goes in the denominator.",
   hint: "The discount is $12. Twelve is what percent of eighty?",
   steps: [
@@ -1038,7 +1040,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "That is the dollar discount, not the percent.",
-    2: "Divided by the sale price (12/68) instead of the original. The “original” is always the before value.",
+    1: "Divided by the sale price (12/68) instead of the original. The “original” is always the before value.",
     3: "That is the percent of the original price the customer still pays, not the discount."
   }
 },
@@ -1102,11 +1104,11 @@ window.MATH_BANK.push(
   prompt: "The table above shows the preferred reading format of 200 students. If a student who prefers print is selected at random, what is the probability that the student is in Grade 10?",
   choices: [
     "55/200",
-    "55/95",
     "95/200",
+    "55/95",
     "45/105"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "In a conditional probability, the phrase after “if” sets the denominator. Find that group's total first, then count the successes inside it.",
   hint: "You are only choosing among students who prefer print. How many students is that?",
   steps: [
@@ -1117,7 +1119,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Uses all 200 students as the denominator, ignoring the condition. This is the single most common two-way-table error.",
-    2: "That is the probability a randomly chosen student prefers print, a different question.",
+    1: "That is the probability a randomly chosen student prefers print, a different question.",
     3: "Uses the Digital column and the Grade 10 digital count."
   }
 },
@@ -1131,11 +1133,11 @@ window.MATH_BANK.push(
   prompt: "The population of a town increased by 20% from 2010 to 2015 and then decreased by 10% from 2015 to 2020. If the population in 2010 was 25,000, what was the population in 2020?",
   choices: [
     "25,000",
-    "27,000",
+    "30,000",
     "27,500",
-    "30,000"
+    "27,000"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "Apply percent changes one at a time, multiplying by (1 + rate). Percent changes never simply add, because the second change acts on the new amount.",
   hint: "Find the 2015 population before you take 10% off.",
   steps: [
@@ -1145,8 +1147,8 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Assumes +20% and −10% cancel out. They do not, because the 10% is taken from the larger 2015 figure.",
-    2: "Comes from combining the rates as +10% of the original (25,000 × 1.10). Percent changes compound, not add.",
-    3: "This is the 2015 population, you stopped one step early."
+    1: "This is the 2015 population, you stopped one step early.",
+    2: "Comes from combining the rates as +10% of the original (25,000 × 1.10). Percent changes compound, not add."
   }
 },
 
@@ -1160,10 +1162,10 @@ window.MATH_BANK.push(
   choices: [
     "6.4 miles",
     "24 miles",
-    "90 miles",
-    "900 miles"
+    "900 miles",
+    "90 miles"
   ],
-  answer: 2,
+  answer: 3,
   strategy: "Write the scale as a fraction with units, then multiply so the unwanted unit cancels.",
   hint: "3.75 inches × 24 miles per inch.",
   steps: [
@@ -1174,7 +1176,7 @@ window.MATH_BANK.push(
   traps: {
     0: "Divided instead of multiplied (24 ÷ 3.75). Check whether the answer should be larger or smaller than the scale factor.",
     1: "That is the scale itself, the distance for 1 inch.",
-    3: "Multiplied by 240 instead of 24, a decimal place slipped."
+    2: "Multiplied by 240 instead of 24, a decimal place slipped."
   }
 },
 
@@ -1284,12 +1286,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "In a triangle, two of the interior angles measure 43° and 68°. What is the measure of the third interior angle?",
   choices: [
-    "69°",
     "79°",
+    "69°",
     "111°",
     "180°"
   ],
-  answer: 0,
+  answer: 1,
   strategy: "The interior angles of any triangle sum to 180°. Subtract the known angles from 180.",
   hint: "Add the two known angles first.",
   steps: [
@@ -1298,7 +1300,7 @@ window.MATH_BANK.push(
     "Check: 43 + 68 + 69 = 180. ✓"
   ],
   traps: {
-    1: "An arithmetic slip: 180 − 101 rather than 180 − 111.",
+    0: "An arithmetic slip: 180 − 101 rather than 180 − 111.",
     2: "That is the sum of the two given angles, not the remaining angle. It is also the exterior angle at the third vertex.",
     3: "That is the total of all three angles."
   }
@@ -1313,11 +1315,11 @@ window.MATH_BANK.push(
   prompt: "A circle has a circumference of 18π. What is the area of the circle?",
   choices: [
     "9π",
-    "18π",
     "81π",
+    "18π",
     "324π"
   ],
-  answer: 2,
+  answer: 1,
   strategy: "Circle problems almost always route through the radius. Whatever you are given, find r first.",
   hint: "C = 2πr. What is r?",
   steps: [
@@ -1326,7 +1328,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "That is the radius times π, or the area of a circle with radius 3.",
-    1: "That repeats the circumference. Area and circumference have different units and different formulas.",
+    2: "That repeats the circumference. Area and circumference have different units and different formulas.",
     3: "Squared the diameter (18² = 324) instead of the radius."
   }
 },
@@ -1340,11 +1342,11 @@ window.MATH_BANK.push(
   prompt: "In right triangle ABC, angle C is a right angle, AC = 9, and BC = 12. What is the value of sin A?",
   choices: [
     "0.6",
-    "0.75",
     "0.8",
+    "0.75",
     "1.25"
   ],
-  answer: 2,
+  answer: 1,
   strategy: "SOH-CAH-TOA, but identify the angle first. “Opposite” and “adjacent” are relative to the angle named in the question.",
   hint: "Find the hypotenuse with the Pythagorean theorem, then ask which side is opposite angle A.",
   steps: [
@@ -1355,7 +1357,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "That is cos A (9/15), the adjacent side over the hypotenuse. Mixing up opposite and adjacent is the error this question targets.",
-    1: "That is tan A (12/9 is 1.33; 9/12 = 0.75), using the two legs rather than a leg and the hypotenuse.",
+    2: "That is tan A (12/9 is 1.33; 9/12 = 0.75), using the two legs rather than a leg and the hypotenuse.",
     3: "That is 15/12, the reciprocal of the right ratio. A sine can never exceed 1, use that as a check."
   }
 },
@@ -1444,12 +1446,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "In a circle with radius 10, a central angle measuring 54° intercepts an arc. What is the length of that arc?",
   choices: [
-    "3π",
+    "5.4π",
     "6π",
     "1.5π",
-    "5.4π"
+    "3π"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "An arc is a fraction of the full circumference, and that fraction is (central angle)/360.",
   hint: "The circumference is 20π. What fraction of the circle is 54°?",
   steps: [
@@ -1458,9 +1460,9 @@ window.MATH_BANK.push(
     "Multiply: <div class=“mathwork”>0.15 × 20π = 3π</div>"
   ],
   traps: {
+    0: "Multiplied 54 by 0.1, treating degrees as though they were a length.",
     1: "Used a diameter of 20 as the radius, doubling the answer.",
-    2: "Used the radius instead of the circumference (0.15 × 10π).",
-    3: "Multiplied 54 by 0.1, treating degrees as though they were a length."
+    2: "Used the radius instead of the circumference (0.15 × 10π)."
   }
 },
 
@@ -1472,12 +1474,12 @@ window.MATH_BANK.push(
   type: "mc",
   prompt: "In a right triangle, angle A is acute and tan A = 3/4. What is the value of sin A?",
   choices: [
-    "0.6",
-    "0.75",
     "0.8",
+    "0.75",
+    "0.6",
     "1.25"
   ],
-  answer: 0,
+  answer: 2,
   strategy: "Turn a given ratio into an actual triangle: tan A = opposite/adjacent means you can label the two legs 3 and 4, then find the hypotenuse.",
   hint: "Sketch a right triangle with legs 3 and 4. What is the hypotenuse?",
   steps: [
@@ -1486,8 +1488,8 @@ window.MATH_BANK.push(
     "sin A = opposite/hypotenuse = <div class=“mathwork”>3 / 5 = 0.6</div>"
   ],
   traps: {
+    0: "That is cos A (4/5), adjacent over hypotenuse.",
     1: "That is tan A itself, 3/4 = 0.75. The question asks for a different ratio.",
-    2: "That is cos A (4/5), adjacent over hypotenuse.",
     3: "That is 5/4, the reciprocal of cos A. Sine and cosine are always at most 1."
   }
 },
@@ -1541,11 +1543,11 @@ window.MATH_BANK.push(
   prompt: "In the figure, lines ℓ and m are parallel and are cut by transversal t. What is the value of x?",
   choices: [
     "5",
-    "15",
+    "45",
     "25",
-    "45"
+    "15"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "When parallel lines are cut by a transversal, corresponding angles are equal and co-interior angles sum to 180°. Decide which relationship the figure shows before writing an equation.",
   hint: "Both labeled angles sit on the same side of the transversal, in matching positions at each parallel line, so they are corresponding angles.",
   steps: [
@@ -1556,8 +1558,8 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Comes from a sign error such as 2x + 30 = 5x + 15.",
-    2: "Comes from setting the angles' sum to 180: 7x + 15 = 180 gives x ≈ 23.6, and rounding lands near 25. That relationship applies to co-interior angles, not corresponding ones.",
-    3: "This is the angle measure divided by something, or 3x. The question asks for x, not for the angle, 60° is the angle."
+    1: "This is the angle measure divided by something, or 3x. The question asks for x, not for the angle, 60° is the angle.",
+    2: "Comes from setting the angles' sum to 180: 7x + 15 = 180 gives x ≈ 23.6, and rounding lands near 25. That relationship applies to co-interior angles, not corresponding ones."
   }
 },
 
@@ -1570,11 +1572,11 @@ window.MATH_BANK.push(
   prompt: "In right triangle ABC, angle B is a right angle, AB = 5, and the measure of angle A is 60°. What is the length of BC?",
   choices: [
     "5√2",
-    "5√3",
+    "(10√3)/3",
     "10",
-    "(10√3)/3"
+    "5√3"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "With a 30-60-90 triangle, use the side ratio 1 : √3 : 2 (short leg : long leg : hypotenuse) from the reference sheet. The short leg is opposite the 30° angle.",
   hint: "Angle A is 60°, so angle C is 30°. Which side is opposite the 30° angle?",
   steps: [
@@ -1585,10 +1587,337 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "That is the 45-45-90 ratio. Check the angles before choosing a ratio.",
-    2: "That is the hypotenuse AC = 2 × 5 = 10, not the leg BC.",
-    3: "That is 5 ÷ tan 60°, which divides where it should multiply. BC is opposite the larger angle, so it must be longer than 5."
+    1: "That is 5 ÷ tan 60°, which divides where it should multiply. BC is opposite the larger angle, so it must be longer than 5.",
+    2: "That is the hypotenuse AC = 2 × 5 = 10, not the leg BC."
   }
 }
+);
+
+/* ---------- ADDED: coverage for thin trap types ---------- */
+window.MATH_BANK.push(
+
+
+{
+  id: "m062",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations in one variable",
+  difficulty: "H",
+  type: "mc",
+  prompt: "What is the solution to the equation \u221a(2x + 11) = x + 4?",
+  choices: [
+    "x = -5",
+    "x = -1",
+    "x = -1 and x = -5",
+    "x = 5"
+  ],
+  answer: 1,
+  strategy: "Square, solve, then substitute every candidate back into the original equation. Radical equations routinely produce a root that does not survive the check.",
+  hint: "One of the two roots makes the right-hand side negative. A square root never is.",
+  steps: [
+    "Square both sides: <div class=\'mathwork\'>2x + 11 = x\u00b2 + 8x + 16</div>",
+    "Collect: <div class=\'mathwork\'>x\u00b2 + 6x + 5 = 0\n(x + 1)(x + 5) = 0</div>",
+    "Candidates are x = -1 and x = -5.",
+    "Check: x = -1 gives \u221a9 = 3 and -1 + 4 = 3, so it works. x = -5 gives \u221a1 = 1 but -5 + 4 = -1, so it fails. The solution is x = -1."
+  ],
+  traps: {
+    0: "The extraneous root, which makes the right side -1 while a square root is always non-negative.",
+    2: "Both roots of the squared equation, reported without checking either one.",
+    3: "Comes from a sign error while expanding (x + 4)\u00b2."
+  }
+},
+
+
+{
+  id: "m064",
+  domain: "Problem-Solving and Data Analysis",
+  skill: "Probability",
+  difficulty: "M",
+  type: "mc",
+  figure: "<table class=\'data\'><tr><th></th><th>Cycled</th><th>Did not cycle</th><th>Total</th></tr><tr><th>Under 30</th><td>84</td><td>66</td><td>150</td></tr><tr><th>30 or over</th><td>39</td><td>111</td><td>150</td></tr><tr><th>Total</th><td>123</td><td>177</td><td>300</td></tr></table>",
+  figcap: "Whether 300 survey respondents cycled to work last week, by age group",
+  prompt: "The table shows survey results for 300 respondents. If one of the respondents who cycled is selected at random, what is the probability that the respondent is under 30?",
+  choices: [
+    "84/300",
+    "150/300",
+    "84/123",
+    "84/150"
+  ],
+  answer: 2,
+  strategy: "In a conditional probability the phrase after \u201cif\u201d sets the denominator. Find that group's total first, then count the successes inside it.",
+  hint: "You are choosing only among people who cycled. How many of those are there?",
+  steps: [
+    "The condition is \u201ca respondent who cycled,\u201d so the pool is the Cycled column: 123 people.",
+    "Among those 123, the number under 30 is 84.",
+    "So the probability is <div class=\'mathwork\'>84 / 123</div>",
+    "It reduces to 28/41, about 0.68, but 84/123 is the form given."
+  ],
+  traps: {
+    0: "Uses all 300 respondents as the denominator, which ignores the condition entirely. This is the most common two-way-table error there is.",
+    1: "The probability that a randomly chosen respondent is under 30, a different question.",
+    3: "Uses the under-30 row total as the denominator. That answers \u201cgiven the respondent is under 30, did they cycle?\u201d, which reverses the condition."
+  }
+},
+
+{
+  id: "m065",
+  domain: "Problem-Solving and Data Analysis",
+  skill: "Percentages",
+  difficulty: "M",
+  type: "mc",
+  prompt: "A bicycle originally priced at $260 is on sale for $208. What is the percent discount?",
+  choices: [
+    "25%",
+    "20%",
+    "52%",
+    "80%"
+  ],
+  answer: 1,
+  strategy: "Percent change is the change divided by the original amount. The before value always goes in the denominator.",
+  hint: "The discount is $52. Fifty-two is what percent of two hundred sixty?",
+  steps: [
+    "Find the change: <div class=\'mathwork\'>260 - 208 = 52</div>",
+    "Divide by the original price: <div class=\'mathwork\'>52 / 260 = 0.20</div>",
+    "So the discount is 20%.",
+    "Check: 20% of 260 is 52, and 260 - 52 = 208. \u2713"
+  ],
+  traps: {
+    0: "Divides by the sale price instead of the original: 52/208 = 25%. The original is always the before value.",
+    2: "The dollar discount read as a percentage.",
+    3: "The share of the original price the buyer still pays, not the discount."
+  }
+},
+
+{
+  id: "m066",
+  domain: "Problem-Solving and Data Analysis",
+  skill: "Rates",
+  difficulty: "M",
+  type: "mc",
+  prompt: "A machine fills 45 bottles every 90 seconds. Working at this rate, how many bottles does it fill in 1 hour and 15 minutes?",
+  choices: [
+    "2,250",
+    "3,375",
+    "56",
+    "4,500"
+  ],
+  answer: 0,
+  strategy: "Convert every quantity to one unit of time before dividing. Multi-step rate problems fail at the conversion far more often than at the arithmetic.",
+  hint: "How many seconds are in 1 hour and 15 minutes? And how many 90-second intervals is that?",
+  steps: [
+    "Convert the time: <div class=\'mathwork\'>1 hr 15 min = 75 min = 75 \u00d7 60 = 4,500 seconds</div>",
+    "Count the intervals: <div class=\'mathwork\'>4,500 \u00f7 90 = 50</div>",
+    "Each interval fills 45 bottles: <div class=\'mathwork\'>50 \u00d7 45 = 2,250</div>",
+    "Cross-check with a unit rate: 0.5 bottles per second \u00d7 4,500 s = 2,250. \u2713"
+  ],
+  traps: {
+    1: "Treats the time as 75 intervals rather than converting to seconds first: 75 \u00d7 45. The units were never reconciled.",
+    2: "Divides where it should multiply, giving intervals rather than bottles.",
+    3: "The number of seconds in the period, reported as bottles."
+  }
+},
+
+{
+  id: "m061",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations in one variable",
+  difficulty: "H",
+  type: "mc",
+  prompt: "What is the solution to the equation \u221a(3x + 4) = x \u2212 2?",
+  choices: [
+    "x = 0",
+    "x = 3",
+    "x = 0 and x = 7",
+    "x = 7"
+  ],
+  answer: 3,
+  strategy: "Squaring both sides can create solutions that fail in the original equation. Every candidate has to be substituted back before you pick.",
+  hint: "Squaring gives a quadratic with two roots. Look at the right-hand side to see which one cannot work.",
+  steps: [
+    "Square both sides: <div class=\'mathwork\'>3x + 4 = (x \u2212 2)\u00b2\n3x + 4 = x\u00b2 \u2212 4x + 4</div>",
+    "Collect on one side: <div class=\'mathwork\'>x\u00b2 \u2212 7x = 0\nx(x \u2212 7) = 0</div>",
+    "So the candidates are x = 0 and x = 7.",
+    "Check both in the original. x = 7 gives \u221a25 = 5 and 7 \u2212 2 = 5, so it works. x = 0 gives \u221a4 = 2 but 0 \u2212 2 = \u22122, and a square root is never negative, so x = 0 is extraneous."
+  ],
+  traps: {
+    0: "The extraneous root. It solves the squared equation but makes the right side negative, which a square root can never equal. This is exactly what the question is testing.",
+    1: "Gives \u221a13 on the left and 1 on the right.",
+    2: "Reports both roots of the squared equation without checking either one, which is the habit that produces the extraneous root in the first place."
+  }
+},
+
+{
+  id: "m063",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations in one variable",
+  difficulty: "M",
+  type: "mc",
+  prompt: "What is the solution to the equation \u221a(x + 7) = x \u2212 5?",
+  choices: [
+    "x = 2 and x = 9",
+    "x = 9",
+    "x = 2",
+    "x = 11"
+  ],
+  answer: 1,
+  strategy: "Square, solve, then substitute every candidate into the equation you started with. Radical equations routinely hand you a root that does not survive that check.",
+  hint: "One candidate makes the right-hand side negative, and the left-hand side is a square root.",
+  steps: [
+    "Square both sides: <div class=\'mathwork\'>x + 7 = (x \u2212 5)\u00b2\nx + 7 = x\u00b2 \u2212 10x + 25</div>",
+    "Collect: <div class=\'mathwork\'>x\u00b2 \u2212 11x + 18 = 0\n(x \u2212 2)(x \u2212 9) = 0</div>",
+    "Candidates: x = 2 and x = 9.",
+    "Check: x = 9 gives \u221a16 = 4 and 9 \u2212 5 = 4, so it works. x = 2 gives \u221a9 = 3 but 2 \u2212 5 = \u22123, so it is extraneous. The solution is x = 9."
+  ],
+  traps: {
+    0: "Both roots of the squared equation, reported without testing either against the original.",
+    2: "The extraneous root, which makes the right side \u22123 while the left side is a positive square root.",
+    3: "Comes from a sign slip while expanding (x \u2212 5)\u00b2."
+  }
+},
+
+{
+  id: "m067",
+  domain: "Advanced Math",
+  skill: "Nonlinear functions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "If f(x) = 2x \u2212 1 and g(x) = x\u00b2 + 3, what is the value of f(g(2))?",
+  choices: [
+    "12",
+    "14",
+    "13",
+    "49"
+  ],
+  answer: 2,
+  strategy: "Work a composition from the inside out, and write the inner value on its own line before you use it.",
+  hint: "Find g(2) first, then put that number into f.",
+  steps: [
+    "Inner function first: <div class=\'mathwork\'>g(2) = 2\u00b2 + 3 = 7</div>",
+    "Now apply f to that result: <div class=\'mathwork\'>f(7) = 2(7) \u2212 1 = 13</div>"
+  ],
+  traps: {
+    0: "This is g(f(2)), the composition performed in the wrong order: f(2) = 3, then g(3) = 12. Order matters, and reversing it is the error this question targets.",
+    1: "This is 2 \u00d7 g(2), with the \u2212 1 forgotten. One step short of the answer.",
+    3: "Squares g(2) instead of substituting it into f."
+  }
+}
+
+);
+window.MATH_BANK.push(
+
+{
+  id: "m068",
+  domain: "Advanced Math",
+  skill: "Equivalent expressions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "Which expression is equivalent to (x<sup>2</sup> \u2212 4)/(x<sup>2</sup> \u2212 x \u2212 6), where x \u2260 3 and x \u2260 \u22122?",
+  choices: [
+    "(x + 2)/(x \u2212 3)",
+    "(x \u2212 2)/(x + 3)",
+    "(x \u2212 2)/(x + 2)",
+    "(x \u2212 2)/(x \u2212 3)"
+  ],
+  answer: 3,
+  strategy: "On an \u201cequivalent expression\u201d question you can skip the algebra: pick an easy number, evaluate the original, then evaluate the choices and keep the one that matches.",
+  hint: "Try x = 0 in the original expression, then try it in each choice.",
+  steps: [
+    "Test with x = 0. The original gives <div class=\'mathwork\'>(0 \u2212 4)/(0 \u2212 0 \u2212 6) = \u22124/\u22126 = 2/3</div>",
+    "Evaluate each choice at x = 0: the first gives \u22122/3, the second \u22122/3, the third \u22121, and the fourth 2/3.",
+    "Only the fourth matches, so choice D is the answer.",
+    "The algebra confirms it: <div class=\'mathwork\'>(x \u2212 2)(x + 2) / [(x \u2212 3)(x + 2)] = (x \u2212 2)/(x \u2212 3)</div>"
+  ],
+  traps: {
+    0: "Cancels the wrong factor, keeping (x + 2) instead of (x \u2212 2). Testing x = 0 rules it out in seconds.",
+    1: "Sign error factoring the denominator. x\u00b2 \u2212 x \u2212 6 factors as (x \u2212 3)(x + 2), not (x + 3)(x \u2212 2).",
+    2: "Cancels the (x \u2212 3) rather than the shared (x + 2)."
+  }
+},
+
+{
+  id: "m069",
+  domain: "Algebra",
+  skill: "Linear inequalities",
+  difficulty: "M",
+  type: "mc",
+  prompt: "<div class=\'mathwork\'>y \u2265 2x \u2212 3\ny < \u2212x + 6</div>Which ordered pair (x, y) is a solution to the system of inequalities above?",
+  choices: [
+    "(0, 0)",
+    "(4, 4)",
+    "(1, 5)",
+    "(5, 0)"
+  ],
+  answer: 0,
+  strategy: "Do not graph. Test each pair in both inequalities and stop the moment one fails. Testing four points is far quicker than sketching two regions.",
+  hint: "A solution has to satisfy both lines, not just one.",
+  steps: [
+    "Test (0, 0): is 0 \u2265 2(0) \u2212 3 = \u22123? Yes. Is 0 < \u22120 + 6 = 6? Yes. Both hold, so this is the solution.",
+    "Test (4, 4): is 4 \u2265 2(4) \u2212 3 = 5? No. Eliminated.",
+    "Test (1, 5): is 5 \u2265 \u22121? Yes. Is 5 < \u22121 + 6 = 5? No, 5 is not less than 5. Eliminated.",
+    "Test (5, 0): is 0 \u2265 2(5) \u2212 3 = 7? No. Eliminated."
+  ],
+  traps: {
+    1: "Fails both inequalities, but it sits close enough to the boundary lines to look plausible on a rough sketch.",
+    2: "Satisfies the first inequality and misses the second by exactly nothing: y must be strictly less than 5. Watch whether the sign is < or \u2264.",
+    3: "Satisfies the second inequality only."
+  }
+},
+
+{
+  id: "m070",
+  domain: "Algebra",
+  skill: "Systems of two linear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "A theater sold 340 tickets in total. Adult tickets cost $14 each and child tickets cost $8 each, and the total receipts were $3,800. How many child tickets were sold?",
+  choices: [
+    "140",
+    "180",
+    "200",
+    "160"
+  ],
+  answer: 3,
+  strategy: "With numbers in the choices you can test them instead of solving. Pick a choice, get the other quantity from the total, and check the money.",
+  hint: "If 160 child tickets were sold, how many adult tickets is that, and what would the receipts come to?",
+  steps: [
+    "Test choice D, 160 child tickets. Then adult tickets are <div class=\'mathwork\'>340 \u2212 160 = 180</div>",
+    "Check the money: <div class=\'mathwork\'>180 \u00d7 14 = 2,520\n160 \u00d7 8 = 1,280\n2,520 + 1,280 = 3,800</div>",
+    "That matches the receipts exactly, so 160 is the answer.",
+    "The algebra agrees: with a + c = 340 and 14a + 8c = 3,800, substituting gives 4,760 \u2212 6c = 3,800, so c = 160."
+  ],
+  traps: {
+    0: "140 child tickets and 200 adult would bring in $3,920, which is $120 too much.",
+    1: "This is the number of adult tickets. The work is right and the wrong quantity gets reported, which is the most common way to lose this question.",
+    2: "200 child and 140 adult would bring in $3,560."
+  }
+},
+
+{
+  id: "m071",
+  domain: "Advanced Math",
+  skill: "Nonlinear functions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "If h(x) = 3x + 2 and k(x) = x<sup>2</sup> \u2212 1, what is the value of k(h(1))?",
+  choices: [
+    "2",
+    "25",
+    "24",
+    "0"
+  ],
+  answer: 2,
+  strategy: "Work from the inside out and write the inner value on its own line. The outer function is applied to that number, not to the original input.",
+  hint: "Find h(1) first, then put that result into k.",
+  steps: [
+    "Inner function: <div class=\'mathwork\'>h(1) = 3(1) + 2 = 5</div>",
+    "Now apply k to that: <div class=\'mathwork\'>k(5) = 5\u00b2 \u2212 1 = 24</div>"
+  ],
+  traps: {
+    0: "This is h(k(1)), the composition in the wrong order: k(1) = 0, then h(0) = 2.",
+    1: "This is 5\u00b2 with the \u2212 1 forgotten. One step short.",
+    3: "This is k(1), which applies the outer function to the original input instead of to h(1)."
+  }
+}
+
 );
 
 /* stamp the section onto every item */

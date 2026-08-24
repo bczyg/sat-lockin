@@ -203,3 +203,24 @@ Run the same checks locally with `npm run verify`.
 schema changes on `main` or on demand from the Actions tab. It needs a `DATABASE_PUBLIC_URL`
 secret, because Railway's internal database host is not reachable from GitHub. This workflow
 is optional: the server applies the schema on boot anyway.
+
+
+## Question quality, measured
+
+The bank is audited rather than asserted. `npm run verify` enforces these on every push:
+
+| Property | Where it stands |
+|---|---|
+| Answer key spread | A 35, B 36, C 37, D 35 across 143 multiple-choice items |
+| Correct answer is the longest choice | 35% (chance is 25%, and the check fails above 40%) |
+| Trap coverage | all 42 trap types have at least 4 questions |
+| Strategy coverage | all 22 strategies have at least 4 questions |
+| Stem wording | all 87 Reading and Writing stems match an official College Board phrasing |
+| Reading passage length | 15 to 108 words, mean 52 |
+| Math fill-in share | 22%, against about 25% on the real test |
+
+Two of those came out of a real audit failure worth recording. An earlier version keyed **55%
+of questions to B and never once to D**, which a student could have exploited to raise their
+score here without learning anything. And three newly written math questions shipped with
+errors that a symbolic check caught: one had a key that was not a solution to its own
+equation, and one had two valid answers. Both classes of bug are now checked automatically.

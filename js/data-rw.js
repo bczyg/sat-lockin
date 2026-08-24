@@ -2,7 +2,9 @@
    READING AND WRITING question bank
 
    Format follows the digital SAT: one short passage (25-150 words)
-   per question, four choices, four domains.
+   per question, four choices, four domains. Standard English
+   Conventions items are deliberately shorter, often a single
+   sentence, exactly as they are on the real test.
 
    Every item carries the teaching layer:
      strategy  the named move a strong test-taker makes here
@@ -10,9 +12,13 @@
      steps     the actual walkthrough, in order
      traps     why each wrong choice was written to be tempting
 
-   Em dashes appear only inside passages and answer choices, where they
-   are authentic SAT prose and one question tests them directly. The
-   app's own voice never uses them.
+   Em dashes appear only inside passages and answer choices, where
+   they are authentic SAT prose and one question tests them directly.
+   The app's own voice never uses them.
+
+   The answer key is balanced across A, B, C and D. Do not add a run
+   of questions that all key to the same letter: scripts/verify.js
+   checks the distribution.
    ============================================================ */
 window.RW_BANK = [];
 window.RW_BANK.push(
@@ -25,22 +31,22 @@ window.RW_BANK.push(
   passage: "<p>The axolotl, a salamander native to a few lakes near Mexico City, can regrow a lost limb—bone, muscle, nerve, and skin—in a matter of weeks. Most vertebrates cannot: a mouse that loses a leg forms a scar instead. Biologist Jessica Whited studies why. Her lab has found that within hours of an injury, axolotl cells near the wound switch on genes that are normally active only in embryos, effectively rewinding those cells to a more flexible state. Understanding that switch, Whited argues, is the first step toward asking whether mammalian cells could be coaxed to do something similar.</p>",
   prompt: "Which choice best states the main idea of the text?",
   choices: [
-    "Axolotls are the only vertebrates capable of regrowing a lost limb.",
     "Whited's lab has identified how axolotl cells revert to an embryo-like state after injury, work she views as groundwork for regeneration in mammals.",
+    "Axolotls are the only vertebrates capable of regrowing a lost limb.",
     "Whited has demonstrated that mammalian cells can be made to regrow limbs.",
     "Axolotls are threatened because they live in only a few lakes near Mexico City."
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Predict, then match. Say the main idea in your own words before you look at the choices, then eliminate anything that is (a) true but too small, (b) bigger than the text, or (c) not in the text at all.",
   hint: "The passage spends most of its words on one lab's finding and on what that finding might lead to. Which choice covers both of those and nothing more?",
   steps: [
     "Find the topic: axolotl limb regeneration and why it happens.",
     "Find the point: Whited's lab found injured axolotl cells turn on embryo genes, and she frames this as step one toward mammals.",
     "Your prediction: 'A lab found the cellular switch behind axolotl regeneration, which may eventually matter for mammals.'",
-    "Choice B is that prediction almost word for word. Confirm each half is in the text: the embryo-gene finding (sentence 4) and the mammal hope (sentence 5). Both check out."
+    "Choice A is that prediction almost word for word. Confirm each half is in the text: the embryo-gene finding (sentence 4) and the mammal hope (sentence 5). Both check out."
   ],
   traps: {
-    0: "“Only” is a word the text contradicts. It says <em>most</em> vertebrates cannot, not all. Watch absolute words in main-idea choices.",
+    1: "“Only” is a word the text contradicts. It says <em>most</em> vertebrates cannot, not all. Watch absolute words in main-idea choices.",
     2: "Overstates the result. The text says Whited wants to <em>ask whether</em> mammalian cells could do this, not that she showed they can.",
     3: "A true-sounding detail the text never makes. The lakes are mentioned to locate the animal, not to raise conservation."
   }
@@ -85,22 +91,22 @@ window.RW_BANK.push(
   passage: "<p>For decades ecologists assumed that a forest's largest trees mattered most to its carbon budget, and in sheer mass they do. But a survey of 48 temperate plots by Marta Ocampo complicates the picture. Ocampo's team measured not only how much carbon each tree held but how fast it was adding more. The oldest giants, they found, were nearly static—enormous but barely growing—while a cohort of mid-sized trees, individually unremarkable, accounted for most of the carbon newly captured each year.</p>",
   prompt: "Which choice best states the main idea of the text?",
   choices: [
-    "Ocampo's survey shows that a forest's largest trees hold less carbon than had been believed.",
     "Ocampo's team found that mid-sized trees, not the largest ones, account for most of a forest's yearly carbon gains.",
+    "Ocampo's survey shows that a forest's largest trees hold less carbon than had been believed.",
     "Ecologists have long recognized that a tree's growth rate matters more than its total mass.",
     "The 48 plots Ocampo surveyed were unusual in containing very few old trees."
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Watch for a stock-versus-flow distinction. Whenever a text separates <em>how much</em> something holds from <em>how fast</em> it accumulates, the answer almost always turns on that difference.",
   hint: "The text concedes one thing about big trees and then corrects a different thing. Which is which?",
   steps: [
     "Note the concession: “in sheer mass they do” matter most. So total carbon held by giants is not in dispute.",
     "Note the new measurement: how fast each tree was <em>adding</em> carbon.",
     "Note the result: giants were static; mid-sized trees captured most new carbon each year.",
-    "The main idea is about yearly gains, which is choice B. B keeps the concession intact instead of contradicting it."
+    "The main idea is about yearly gains, which is choice A, which keeps the concession intact instead of contradicting it."
   ],
   traps: {
-    0: "Flips stock for flow. The text never disputes how much carbon the giants hold, only how much they add.",
+    1: "Flips stock for flow. The text never disputes how much carbon the giants hold, only how much they add.",
     2: "Contradicts “For decades ecologists assumed.” The whole point is that this reverses an assumption.",
     3: "Invents a fact about the sample. Nothing says the plots were unusual, and if they were, the finding would be worthless."
   }
@@ -114,7 +120,7 @@ window.RW_BANK.push(
   type: "mc",
   blurb: "The following text is adapted from a short story.",
   passage: "<p>Every August, Nadia's grandmother repainted the shutters the same shade of green, mixing the color herself from two cans she kept in the cellar. Nadia had offered, more than once, to simply buy a matching gallon at the hardware store in town. Her grandmother would nod as though considering it, then set out the cans anyway. The mixing took an hour, the painting took a day, and by evening the house looked exactly as it had the summer before—which was, Nadia slowly came to understand, the entire point.</p>",
-  prompt: "Which choice best describes the main idea of the text?",
+  prompt: "Which choice best states the main idea of the text?",
   choices: [
     "Nadia disapproves of her grandmother's refusal to accept help.",
     "Nadia comes to see that her grandmother's laborious ritual is valuable precisely because it changes nothing.",
@@ -128,7 +134,7 @@ window.RW_BANK.push(
     "Identify the ritual: same color, same cans, same result, every August.",
     "Identify the effort: an hour of mixing plus a day of painting for zero visible change.",
     "Read the final clause: “which” refers to the house looking exactly as it had before. Sameness is the point.",
-    "Also note “slowly came to understand”, Nadia's shift from offering shortcuts to understanding is the arc. B captures the ritual and the realization."
+    "Also note “slowly came to understand”, Nadia's shift from offering shortcuts to understanding is the arc. Choice B captures the ritual and the realization."
   ],
   traps: {
     0: "Assigns Nadia an attitude the text retires. She offered help, but the ending shows understanding, not disapproval.",
@@ -146,22 +152,22 @@ window.RW_BANK.push(
   passage: "<p>Historians of technology often describe the shipping container as an invention that lowered the cost of moving goods. Ana Kalinić resists that framing. The steel box itself, she notes, was neither novel nor expensive; boxes had been stacked on ships for a century. What changed, in her account, was institutional: ports rebuilt their cranes, railways redesigned their flatcars, unions renegotiated who could handle cargo, and insurers rewrote their terms. The container's cost savings, Kalinić argues, were less the cause of that reorganization than its product.</p>",
   prompt: "Which choice best states the main idea of the text?",
   choices: [
-    "Kalinić argues that the shipping container's cost savings resulted from a broad institutional reorganization rather than causing it.",
     "Kalinić claims that the shipping container did not in fact reduce the cost of shipping goods.",
+    "Kalinić argues that the shipping container's cost savings resulted from a broad institutional reorganization rather than causing it.",
     "Kalinić shows that historians of technology have neglected the role of steel in modern shipping.",
     "Kalinić maintains that ports, railways, and unions initially resisted adopting the shipping container."
   ],
-  answer: 0,
+  answer: 1,
   strategy: "When a text ends with “less X than Y,” that clause <em>is</em> the main idea. Translate the comparison into plain cause-and-effect before reading the choices.",
   hint: "Translate the last sentence: which is the cause and which is the effect, in Kalinić's telling?",
   steps: [
     "Standard view: container → lower costs. Kalinić is arguing against this arrow.",
     "Her evidence: the box was old and cheap, so the box cannot be what changed.",
     "Her alternative: cranes, flatcars, labor rules, insurance, institutions reorganized.",
-    "Final sentence: savings were “less the cause of that reorganization than its product,” i.e. reorganization → savings. Choice A states exactly that reversal."
+    "Final sentence: savings were “less the cause of that reorganization than its product,” i.e. reorganization → savings. Choice B states exactly that reversal."
   ],
   traps: {
-    1: "She never denies the savings exist; she explains where they came from. Distinguish “X did not happen” from “X happened for a different reason.”",
+    0: "She never denies the savings exist; she explains where they came from. Distinguish “X did not happen” from “X happened for a different reason.”",
     2: "Steel appears only to show the box was ordinary. A choice that promotes a passing detail to the thesis is a classic wrong answer.",
     3: "Nothing about resistance. The institutions in the text act, rebuilt, redesigned, renegotiated, rewrote."
   }
@@ -176,23 +182,23 @@ window.RW_BANK.push(
   passage: "<p>Certain desert plants open their stomata—the pores through which they take in carbon dioxide—only at night, storing the gas as an acid until daylight. Botanist Reuben Achebe hypothesizes that this schedule is driven primarily by water conservation rather than by temperature: the plants seal up during the day, he argues, chiefly to avoid losing moisture, not to avoid heat.</p>",
   prompt: "Which finding, if true, would most directly support Achebe's hypothesis?",
   choices: [
-    "Plants grown in cool but very dry air kept their stomata closed during the day, while plants grown in hot but humid air opened theirs.",
-    "Plants grown in hot, dry air kept their stomata closed throughout the day.",
     "Plants that open their stomata at night grow more slowly than plants that open them during the day.",
+    "Plants grown in hot, dry air kept their stomata closed throughout the day.",
+    "Plants grown in cool but very dry air kept their stomata closed during the day, while plants grown in hot but humid air opened theirs.",
     "The acid these plants store overnight breaks down more quickly at high temperatures."
   ],
-  answer: 0,
+  answer: 2,
   strategy: "Two candidate causes are tangled together. The supporting evidence has to <em>pull them apart</em>: vary one while holding the other fixed.",
   hint: "Heat and dryness usually travel together in a desert. Which choice separates them?",
   steps: [
     "Name the competing explanations: dryness (Achebe) versus heat (the alternative).",
     "To support Achebe, you need a case where dryness and heat point in opposite directions.",
-    "Choice A does exactly that: cool + dry → closed (tracks dryness), hot + humid → open (does not track heat).",
+    "Choice C does exactly that: cool + dry → closed (tracks dryness), hot + humid → open (does not track heat).",
     "Since behavior follows moisture and ignores temperature, Achebe's explanation survives and the rival one does not."
   ],
   traps: {
+    0: "Growth rate is a different question. Evidence must be about the hypothesis actually stated.",
     1: "Hot <em>and</em> dry leaves both causes in play, so the result supports either hypothesis equally. Consistent is not the same as supporting.",
-    2: "Growth rate is a different question. Evidence must be about the hypothesis actually stated.",
     3: "This is about temperature affecting the stored acid, not about why the pores close, and if anything it points toward heat."
   }
 },
@@ -206,22 +212,22 @@ window.RW_BANK.push(
   passage: "<p>In many songbird species, males sing more elaborate songs than females. The standard explanation is sexual selection: females prefer complexity, so complexity spreads. Ornithologist Dara Lin proposes an alternative—that elaborate song in these species is a byproduct of the broad vocal repertoire both sexes need in order to defend territory, and that female song has simply been underrecorded, because females sing less often near nests, where observers tend to listen.</p>",
   prompt: "Which finding, if true, would most directly weaken Lin's proposal?",
   choices: [
-    "In several songbird species, females sing frequently while foraging far from their nests.",
     "Recordings made continuously across entire territories found that females of these species sing rarely and simply, even where both sexes defend territory.",
+    "In several songbird species, females sing frequently while foraging far from their nests.",
     "Males of these species sing most often at dawn, when few observers are in the field.",
     "Females of these species defend territory as aggressively as males do."
   ],
-  answer: 1,
+  answer: 0,
   strategy: "To weaken a claim, attack its load-bearing assumption. List the assumptions first, then find the choice that knocks one out.",
   hint: "Lin's proposal rests on two props: female song exists but is missed, and elaborate song comes from territory defense. What would remove both props at once?",
   steps: [
     "Assumption 1: females really do sing elaborately, observers just miss it because they listen near nests.",
     "Assumption 2: elaborate song is a byproduct of territory defense, which both sexes do.",
-    "Choice B removes the observation gap (“continuously across entire territories”) and still finds female song rare and simple, so the underrecording explanation fails.",
+    "Choice A removes the observation gap (“continuously across entire territories”) and still finds female song rare and simple, so the underrecording explanation fails.",
     "B also breaks assumption 2: females defend territory yet do not sing elaborately, so defense cannot be what produces elaborate song."
   ],
   traps: {
-    0: "This supports Lin by explaining how female song gets missed. On “weaken” questions, at least one choice always strengthens instead, underline the task word.",
+    1: "This supports Lin by explaining how female song gets missed. On “weaken” questions, at least one choice always strengthens instead, underline the task word.",
     2: "About males, and about observer coverage of males. It does not touch either of Lin's claims.",
     3: "Supports Lin's byproduct story: shared territory defense is precisely her proposed source of the repertoire."
   }
@@ -237,23 +243,23 @@ window.RW_BANK.push(
   prompt: "Which quotation from the story most effectively illustrates the student's claim?",
   choices: [
     "“The ferry was late again, and the gulls had taken up their usual places on the pilings.”",
-    "“I counted the rivets along the gangway, then the bolts on the railing, then the rivets again, while the agent waited with my ticket in his hand.”",
+    "“The engine's noise made conversation impossible, which I confess was a relief.”",
     "“My mother had asked me the same question in April, and I had not answered her then either.”",
-    "“The engine's noise made conversation impossible, which I confess was a relief.”"
+    "“I counted the rivets along the gangway, then the bolts on the railing, then the rivets again, while the agent waited with my ticket in his hand.”"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "Split the claim into its required parts, then demand that the quotation deliver every part. A quotation that hits one part and misses another is the trap, not the answer.",
   hint: "The claim needs two things at once: small mechanical details, and delay. Which quotation shows both in the same breath?",
   steps: [
     "Part 1 of the claim: “small mechanical details.” Part 2: “wish to postpone the decision.”",
     "B, part 1: rivets, bolts, gangway, railing, mechanical minutiae, itemized.",
     "B, part 2: “then the rivets again, while the agent waited with my ticket”, she is stalling while someone waits on her choice.",
-    "Only B satisfies both halves, so it is the strongest illustration."
+    "Only choice D satisfies both halves, so it is the strongest illustration."
   ],
   traps: {
     0: "Concrete detail, but the ferry and gulls are scenery, not mechanical minutiae, and nothing is being postponed.",
-    2: "Nails the avoidance half and completely misses the mechanical-detail half. The most tempting wrong answers are always the half-fits.",
-    3: "Mentions an engine and a relief at not talking, but she is not attending to details, and avoiding conversation is not deferring a decision."
+    1: "Mentions an engine and a relief at not talking, but she is not attending to details, and avoiding conversation is not deferring a decision.",
+    2: "Nails the avoidance half and completely misses the mechanical-detail half. The most tempting wrong answers are always the half-fits."
   }
 },
 
@@ -266,23 +272,23 @@ window.RW_BANK.push(
   passage: "<p>Sourdough starters—communities of yeast and bacteria kept alive by regular feeding—are often said to take on the character of the place where they are kept. To test this, food scientist Ilse Brandt collected starters from bakeries in fourteen cities and then maintained them side by side in a single laboratory, on identical flour and water, for six months. Brandt hypothesized that each starter's distinctive microbial makeup is largely inherited from its original community rather than continually reseeded by its surroundings.</p>",
   prompt: "Which result from Brandt's experiment, if true, would most directly support her hypothesis?",
   choices: [
-    "After six months in the shared laboratory, the fourteen starters' microbial communities remained clearly distinguishable from one another.",
-    "After six months in the shared laboratory, the fourteen starters had converged on a similar microbial makeup.",
     "Starters from cities with humid climates contained a greater number of bacterial species than starters from dry climates.",
+    "After six months in the shared laboratory, the fourteen starters had converged on a similar microbial makeup.",
+    "After six months in the shared laboratory, the fourteen starters' microbial communities remained clearly distinguishable from one another.",
     "Bakers in the fourteen cities had used noticeably different feeding schedules before the starters were collected."
   ],
-  answer: 0,
+  answer: 2,
   strategy: "Ask what the experiment was <em>designed</em> to hold constant. Support has to come from what varies once the shared condition is imposed.",
   hint: "Identical flour, identical water, identical room. If the environment were doing the work, what would the starters look like after six months?",
   steps: [
     "The design removes environmental differences: one lab, one flour, one water, six months.",
     "If surroundings continually reseed a starter, identical surroundings should make the starters converge.",
     "If makeup is inherited from the original community, differences should persist despite identical surroundings.",
-    "Choice A reports persistent differences under shared conditions, exactly the inherited-makeup prediction."
+    "Choice C reports persistent differences under shared conditions, exactly the inherited-makeup prediction."
   ],
   traps: {
+    0: "A correlation with origin climate, but it says nothing about whether differences persist once the environment is equalized.",
     1: "This is the prediction of the rival hypothesis. Converging would mean the environment, not inheritance, is in charge.",
-    2: "A correlation with origin climate, but it says nothing about whether differences persist once the environment is equalized.",
     3: "Explains why starters might have <em>started</em> different. Brandt's claim is about what keeps them different, which is the whole point of the six-month test."
   }
 },
@@ -310,7 +316,7 @@ window.RW_BANK.push(
     "The claim has two variables: canopy cover and temperature, moving oppositely.",
     "So the completion must cite both variables for at least two neighborhoods.",
     "Choice A gives the extremes: 41% → 88°F versus 8% → 97°F. High cover pairs with low temperature.",
-    "Check the table: both pairs are accurate. A works."
+    "Check the table: both pairs are accurate. Choice A works."
   ],
   traps: {
     1: "Accurate but inert. A single neighborhood cannot demonstrate an association, because there is nothing to compare it with.",
@@ -330,23 +336,23 @@ window.RW_BANK.push(
   passage: "<p>Surveys conducted in 2005 and 2023 asked adults whether they read a print newspaper at least once a week. A media analyst claims that the decline in print readership over this period was steepest among the youngest respondents.</p>",
   prompt: "Which choice best describes data from the graph that support the analyst's claim?",
   choices: [
-    "Among respondents ages 18–29, weekly print readership fell from 42% in 2005 to 6% in 2023, a larger drop than that of any older group.",
-    "In 2023, respondents ages 65 and older reported the highest weekly print readership, at 44%.",
     "Among respondents ages 45–64, weekly print readership fell from 47% to 26%.",
+    "In 2023, respondents ages 65 and older reported the highest weekly print readership, at 44%.",
+    "Among respondents ages 18–29, weekly print readership fell from 42% in 2005 to 6% in 2023, a larger drop than that of any older group.",
     "In 2005, respondents ages 18–29 reported lower weekly readership than respondents ages 45–64 did."
   ],
-  answer: 0,
+  answer: 2,
   strategy: "The claim word tells you the arithmetic. “Steepest decline” means you must compute changes and compare them, not read single bars.",
   hint: "Work out the 2005-minus-2023 drop for every age group before you pick.",
   steps: [
     "Compute the drops: 18–29: 42−6 = 36. 30–44: 38−11 = 27. 45–64: 47−26 = 21. 65+: 58−44 = 14.",
     "36 is the largest, so the youngest group did decline most steeply.",
     "The right answer must state the youngest group's change <em>and</em> compare it with the others.",
-    "Choice A gives both numbers and the comparison. Correct."
+    "Choice C gives both numbers and the comparison. Correct."
   ],
   traps: {
+    0: "True, and about a decline, but the wrong group and no comparison. It does not establish “steepest.”",
     1: "A true reading of one bar about the oldest group. It has nothing to do with the size of a decline.",
-    2: "True, and about a decline, but the wrong group and no comparison. It does not establish “steepest.”",
     3: "True (42 < 47) but about levels in a single year, not about change over time."
   }
 },
@@ -362,24 +368,24 @@ window.RW_BANK.push(
   passage: "<p>A team planted seeds of two related species at four soil temperatures. The researchers concluded that the alpine species is adapted to germinate in cool soils whereas the lowland species is not, pointing out that ______</p>",
   prompt: "Which choice most effectively uses data from the table to complete the statement?",
   choices: [
-    "at 10°C, 62% of alpine seeds germinated, compared with only 12% of lowland seeds.",
+    "at 20°C, more lowland seeds germinated than alpine seeds.",
     "at 25°C, 81% of lowland seeds germinated, the highest rate recorded for either species.",
     "alpine seeds germinated at their highest rate, 71%, at 15°C.",
-    "at 20°C, more lowland seeds germinated than alpine seeds."
+    "at 10°C, 62% of alpine seeds germinated, compared with only 12% of lowland seeds."
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Match the evidence to the exact claim. Here the claim is a contrast between two species <em>in cool soil</em>, so the data must be cool-soil data for both species.",
   hint: "Which row of the table counts as “cool”? And how many columns does the claim require?",
   steps: [
     "The conclusion contrasts alpine (adapted to cool) with lowland (not adapted to cool).",
     "So you need the coolest row, 10°C, and both species' numbers from it.",
     "At 10°C: alpine 62%, lowland 12%. The alpine rate is high, the lowland rate is very low.",
-    "Choice A reports precisely that contrast at the relevant temperature."
+    "Choice D reports precisely that contrast at the relevant temperature."
   ],
   traps: {
+    0: "True but at 20°C, not cool soil, so it cannot support a claim about cool-soil adaptation.",
     1: "Warm-soil data. It shows the lowland species does well in heat, which is a different claim from failing in cold.",
-    2: "One species only, so no contrast, and 15°C is not the coolest condition available.",
-    3: "True but at 20°C, not cool soil, so it cannot support a claim about cool-soil adaptation."
+    2: "One species only, so no contrast, and 15°C is not the coolest condition available."
   }
 },
 
@@ -394,23 +400,23 @@ window.RW_BANK.push(
   passage: "<p>Researchers recorded pollinator visits to flowers of three colors growing in full sun and in shade. They concluded that shade does not affect all flower colors in the same way: for some colors it increases visitation, while for others it reduces visitation.</p>",
   prompt: "Which choice best describes data from the graph that support the researchers' conclusion?",
   choices: [
-    "White flowers received more visits per hour in shade (19) than in full sun (12), whereas yellow and purple flowers each received fewer visits in shade than in full sun.",
-    "Yellow flowers received the most visits per hour of any group, 22 per hour in full sun.",
     "In shade, white flowers received 19 visits per hour, more than yellow flowers (14) or purple flowers (9).",
+    "Yellow flowers received the most visits per hour of any group, 22 per hour in full sun.",
+    "White flowers received more visits per hour in shade (19) than in full sun (12), whereas yellow and purple flowers each received fewer visits in shade than in full sun.",
     "Purple flowers showed a larger difference between full sun and shade than flowers of either other color."
   ],
-  answer: 0,
+  answer: 2,
   strategy: "When a conclusion says “not all the same way,” the evidence must show <em>both directions</em>. A choice showing only one direction, however accurate, cannot support it.",
   hint: "The conclusion has two halves: shade helps some colors, hurts others. Both halves need numbers.",
   steps: [
     "Half one, shade increases visits: white goes 12 → 19, an increase.",
     "Half two, shade decreases visits: yellow 22 → 14 and purple 17 → 9, both decreases.",
-    "Choice A reports the increase and the decreases together, so it covers the whole conclusion.",
+    "Choice C reports the increase and the decreases together, so it covers the whole conclusion.",
     "Verify against the bars: 12, 19, 22, 14, 17, 9. All match."
   ],
   traps: {
+    0: "Compares colors within shade only. Without the full-sun figures there is no change to speak of.",
     1: "A single maximum. It says nothing about how shade changes visitation.",
-    2: "Compares colors within shade only. Without the full-sun figures there is no change to speak of.",
     3: "Check the arithmetic: purple 17−9 = 8 and yellow 22−14 = 8. They tie, so “larger than either other color” is false. Ranked comparisons on a graph must be computed, never eyeballed."
   }
 },
@@ -455,22 +461,22 @@ window.RW_BANK.push(
   prompt: "Which choice most logically completes the text?",
   choices: [
     "the settlement's residents made repeated expeditions of 400 kilometers to quarry obsidian themselves.",
-    "the obsidian most likely reached the settlement through exchange with other groups rather than through direct acquisition.",
     "the settlement was founded by people who had migrated from the region of the volcanic source.",
+    "the obsidian most likely reached the settlement through exchange with other groups rather than through direct acquisition.",
     "obsidian was the most valuable material used by the settlement's residents."
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Let each clue eliminate an option. Ask what every sentence is doing there, SAT inference texts rarely include a detail that does not rule something out.",
   hint: "Two details do real work: the obsidian appears across several centuries, and the residents never traveled far for anything else.",
   steps: [
     "Clue 1, no local obsidian: it came from far away somehow.",
     "Clue 2, residents did not travel far for other materials: they were probably not making the 400 km trip themselves, which kills choice A.",
-    "Clue 3, obsidian appears in layers across centuries: this was an ongoing supply, not stock carried in once by founders, which kills choice C.",
-    "What remains is a continuing supply arriving without long trips by residents: exchange with other groups. Choice B."
+    "Clue 3, obsidian appears in layers across centuries: this was an ongoing supply, not stock carried in once by founders, which kills choice B.",
+    "What remains is a continuing supply arriving without long trips by residents: exchange with other groups. Choice C."
   ],
   traps: {
     0: "Directly contradicted by the absence of long-distance travel for anything else.",
-    2: "Tempting, because shared tool style does suggest a connection to the source region. But migration is a one-time arrival and cannot explain obsidian in every layer for centuries.",
+    1: "Tempting, because shared tool style does suggest a connection to the source region. But migration is a one-time arrival and cannot explain obsidian in every layer for centuries.",
     3: "Value is never discussed. The text tracks where the stone came from, not what it was worth."
   }
 },
@@ -485,23 +491,23 @@ window.RW_BANK.push(
   prompt: "Which choice most logically completes the text?",
   choices: [
     "the price of transit passes had never been a barrier to riding transit.",
-    "service frequency mattered more than price in the decision to give up driving.",
+    "the program would have succeeded if the passes had been discounted rather than free.",
     "parking permits were more expensive than transit passes.",
-    "the program would have succeeded if the passes had been discounted rather than free."
+    "service frequency mattered more than price in the decision to give up driving."
   ],
-  answer: 1,
+  answer: 3,
   strategy: "When a text says an assumption failed, the completion names the factor that actually explains the pattern. Find the variable that changed with the outcome.",
   hint: "Price was held constant across neighborhoods. Something else varied along with enrollment.",
   steps: [
     "The passes were equally valuable everywhere, so price cannot explain the difference in enrollment.",
     "What did vary: bus frequency, every ten minutes versus hourly.",
     "Enrollment tracked frequency, not price.",
-    "Conclusion: frequency outweighed price for many residents. Choice B."
+    "Conclusion: frequency outweighed price for many residents. Choice D."
   ],
   traps: {
     0: "Overshoots. Price failing to explain the <em>difference between neighborhoods</em> does not prove price never mattered to anyone.",
-    2: "Might be true in the world, but the text gives no permit prices. Inferences must come from the text you were given.",
-    3: "Backwards, free is already the strongest possible discount, so making it cost more could not help."
+    1: "Backwards, free is already the strongest possible discount, so making it cost more could not help.",
+    2: "Might be true in the world, but the text gives no permit prices. Inferences must come from the text you were given."
   }
 },
 
@@ -514,22 +520,22 @@ window.RW_BANK.push(
   passage: "<p>A thirty-year study of a fish species in an isolated lake recorded a steady decline in average adult body size. Warming water is known to reduce body size in many fish, and this lake did warm. But the decline began a full decade before the warming trend and coincided precisely with the opening of a gill-net fishery that removed the largest individuals. After the fishery closed, average body size began to recover even as the lake continued to warm. The evidence therefore indicates that ______</p>",
   prompt: "Which choice most logically completes the text?",
   choices: [
-    "warming water has no effect on the body size of fish in this lake.",
     "size-selective fishing, rather than warming, was the main driver of the decline in body size.",
+    "warming water has no effect on the body size of fish in this lake.",
     "the decline in body size would have occurred even in the absence of the fishery.",
     "body size in this species recovers only when water temperatures fall."
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Use timing to break a tie between two causes. A cause cannot precede its own effect, and a real cause should track the effect when it switches on and off.",
   hint: "Line up three dates: when the decline started, when warming started, and when size recovered.",
   steps: [
     "Decline started ten years <em>before</em> warming began, so warming cannot have started the decline.",
     "The decline started exactly when the fishery opened, onset matches.",
     "Size recovered when the fishery closed, while warming continued, removal of the suspected cause reverses the effect, and the rival cause is still present.",
-    "Onset and reversal both point to fishing. Choice B, and note it says “main driver,” not “only factor.”"
+    "Onset and reversal both point to fishing. Choice A, and note it says “main driver,” not “only factor.”"
   ],
   traps: {
-    0: "Too absolute. The evidence shows warming was not the main driver here; it does not show warming has zero effect.",
+    1: "Too absolute. The evidence shows warming was not the main driver here; it does not show warming has zero effect.",
     2: "Contradicted by the timing. Remove the fishery and the trend reverses.",
     3: "Reversed by the text: size recovered <em>while the lake kept warming</em>."
   }
@@ -575,11 +581,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
     "unremarkable",
-    "valuable",
     "controversial",
+    "valuable",
     "puzzling"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Cover the choices and write your own word in the blank first. Then pick the choice closest to your word, do not shop through the four options looking for one that could work.",
   hint: "“Therefore” means the blank follows from the first sentence. Specimens are usually scarce; this one has eleven.",
   steps: [
@@ -590,7 +596,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "Opposite of the logic. Eleven specimens where one is normal is the definition of remarkable.",
-    2: "Nothing in the text signals disagreement. Do not import drama the passage never mentions.",
+    1: "Nothing in the text signals disagreement. Do not import drama the passage never mentions.",
     3: "A rich find is not confusing. “Puzzling” would need some unexplained feature in the text."
   }
 },
@@ -604,12 +610,12 @@ window.RW_BANK.push(
   passage: "<p>Marine biologists once assumed the deep sea was nearly lifeless, a view that a century of sampling has since overturned. Even so, the <u>census</u> of deep-sea species remains far from complete: researchers trawling a single seamount in 2019 brought up dozens of animals matching nothing in any museum collection, and the pace of such discoveries shows no sign of slowing.</p>",
   prompt: "As used in the text, what does the word “census” most nearly mean?",
   choices: [
-    "prediction",
     "inventory",
+    "prediction",
     "government count",
     "argument"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Words-in-context questions are not vocabulary questions. Replace the word with your own from context, then choose the match, the dictionary's most common meaning is usually a trap.",
   hint: "What is “far from complete” here? Something that could be finished if we found every species.",
   steps: [
@@ -619,7 +625,7 @@ window.RW_BANK.push(
     "“Inventory” is that word. Substitute it and reread: the inventory of deep-sea species is far from complete. Perfect fit."
   ],
   traps: {
-    0: "A census records what exists now; a prediction is about the future.",
+    1: "A census records what exists now; a prediction is about the future.",
     2: "The everyday sense of “census”, a population count by a government, and therefore the tempting one. But no government appears, and species are counted by scientists.",
     3: "Nobody is arguing here; the sentence reports how much remains unknown."
   }
@@ -634,12 +640,12 @@ window.RW_BANK.push(
   passage: "<p>Ravens are famous for solving puzzles, but their reputation rests on a small number of laboratory birds. Skeptics point out that these individuals were hand-raised and extensively trained, so their performance may not be ______ the species as a whole.</p>",
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
-    "critical of",
     "representative of",
+    "critical of",
     "dependent on",
     "superior to"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Watch the preposition. The choice has to fit both the meaning and the grammar of the sentence.",
   hint: "A handful of unusual birds may not stand in for all ravens.",
   steps: [
@@ -649,7 +655,7 @@ window.RW_BANK.push(
     "“Representative of” matches, and the preposition “of” fits the sentence."
   ],
   traps: {
-    0: "Nonsense in context, performance cannot be critical of a species.",
+    1: "Nonsense in context, performance cannot be critical of a species.",
     2: "Sounds scientific but reverses the logic. The birds' performance depends on their training, not on the species.",
     3: "Superiority is not the issue. The question is whether these birds are typical, not whether they are better."
   }
@@ -665,22 +671,22 @@ window.RW_BANK.push(
   prompt: "As used in the text, what does the word “economy” most nearly mean?",
   choices: [
     "low cost",
-    "spareness",
     "system of trade",
+    "spareness",
     "practicality"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "When the colon explains the word, read the explanation as the definition. The text is telling you the meaning; you only have to match it.",
   hint: "Everything after the colon describes doing a great deal with very little.",
   steps: [
     "Locate the definition clue: the colon introduces an explanation of “economy.”",
     "The explanation: nothing added for effect, one small gesture doing a lot of work.",
     "That describes using minimal means. Predict: “spareness” or “restraint.”",
-    "Choice B is exactly that."
+    "Choice C is exactly that."
   ],
   traps: {
     0: "The money sense. Nothing in the sentence concerns what the production cost.",
-    2: "The most common meaning of “economy” in everyday reading, which is why it is offered here. It has no bearing on choreography.",
+    1: "The most common meaning of “economy” in everyday reading, which is why it is offered here. It has no bearing on choreography.",
     3: "Close but wrong flavor: practicality is about usefulness, while the text praises how little the piece uses."
   }
 },
@@ -694,12 +700,12 @@ window.RW_BANK.push(
   passage: "<p>Historians of the period disagree about the treaty's importance but not about its ambiguity. Its central clause was drafted so that it could be read one way in London and another in Delhi, and both governments signed the document without ever ______ the difference.</p>",
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
-    "resolving",
     "noticing",
+    "resolving",
     "exaggerating",
     "translating"
   ],
-  answer: 0,
+  answer: 1,
   strategy: "Use every clue about what the people involved knew. If a text says something was done on purpose, no one in it can be unaware of it.",
   hint: "The clause was drafted deliberately to be read two ways, so the negotiators clearly knew about the double meaning.",
   steps: [
@@ -709,7 +715,7 @@ window.RW_BANK.push(
     "“Resolving” fits, and it explains why historians still discuss the ambiguity."
   ],
   traps: {
-    1: "The trap that ignores “drafted so that.” You cannot deliberately build an ambiguity and then not notice it.",
+    0: "The trap that ignores “drafted so that.” You cannot deliberately build an ambiguity and then not notice it.",
     2: "Backwards: signing without comment plays the difference <em>down</em>, not up.",
     3: "There is no second language in the text, two capitals read the same English clause differently."
   }
@@ -725,23 +731,23 @@ window.RW_BANK.push(
   prompt: "As used in the text, what does the word “temper” most nearly mean?",
   choices: [
     "strengthen",
-    "qualify",
+    "resent",
     "withdraw",
-    "resent"
+    "qualify"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "Let the contrast word decide. “But” tells you the second half of the sentence pushes against the first, so the answer must run against “optimistic.”",
   hint: "She keeps the forecast but attaches a condition to it. Is that the same as taking it back?",
   steps: [
     "“Optimistic, <em>but</em>…” signals a pull in the opposite direction.",
     "What she actually does: names a condition, the harvest, that makes the growth doubtful.",
     "She neither boosts the forecast nor retracts it; she limits it.",
-    "“Qualify” means exactly to add a limiting condition. Choice B."
+    "“Qualify” means exactly to add a limiting condition. Choice D."
   ],
   traps: {
     0: "Runs the wrong way against “but.” Direction errors are the most common mistake on this question type.",
-    2: "Too far. The forecast still stands; only its conditions are spelled out.",
-    3: "“Temper” can suggest emotion, but nothing here says she dislikes her own forecast."
+    1: "“Temper” can suggest emotion, but nothing here says she dislikes her own forecast.",
+    2: "Too far. The forecast still stands; only its conditions are spelled out."
   }
 },
 
@@ -755,11 +761,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
     "derivative",
-    "descriptive",
+    "polemical",
     "speculative",
-    "polemical"
+    "descriptive"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "On hard vocabulary blanks, define each choice in your own words before choosing, then test each definition against the clue after the colon.",
   hint: "The colon spells it out: plenty of new evidence, no interpretation offered.",
   steps: [
@@ -770,8 +776,8 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "Tempting because it sounds like a criticism of scholarship. But the evidence is new, “other historians had overlooked” it, so nothing is being copied.",
-    2: "The exact opposite. Speculating means going beyond the evidence, and this book refuses to go beyond it.",
-    3: "A polemic is all argument. This book makes no argument at all."
+    1: "A polemic is all argument. This book makes no argument at all.",
+    2: "The exact opposite. Speculating means going beyond the evidence, and this book refuses to go beyond it."
   }
 },
 
@@ -785,22 +791,22 @@ window.RW_BANK.push(
   prompt: "As used in the text, what does the word “plastic” most nearly mean?",
   choices: [
     "synthetic",
-    "malleable",
     "provisional",
+    "malleable",
     "mechanical"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Find the word the text is contrasting with, and choose the opposite of it. Contrast structures hand you the meaning.",
   hint: "The old picture was “fixed.” The new picture is the opposite of fixed.",
   steps: [
     "Spot the contrast: nineteenth-century “fixed” versus twentieth-century “more ______.”",
     "The blank must mean roughly the opposite of fixed, capable of change.",
     "Confirm with the rest of the sentence: brain regions get “recruited for entirely different tasks.” That is change in function.",
-    "“Malleable” means shapeable, the opposite of fixed. Choice B."
+    "“Malleable” means shapeable, the opposite of fixed. Choice C."
   ],
   traps: {
     0: "The everyday sense of plastic as a material. The SAT offers this precisely because it is the first meaning that comes to mind.",
-    2: "Provisional means temporary. It describes how confident we are in the picture, not what the picture says about the brain.",
+    1: "Provisional means temporary. It describes how confident we are in the picture, not what the picture says about the brain.",
     3: "Mechanical suggests fixed parts working in fixed ways, closer to the old view being replaced."
   }
 },
@@ -815,23 +821,23 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
     "fortify",
-    "obscure",
+    "calibrate",
     "dislodge",
-    "calibrate"
+    "obscure"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "When a later sentence describes the cure, the blank names the disease. Read the whole text before filling any blank.",
   hint: "Winds later swept the panels clean. What had the engineers expected dust to do that cleaning would undo?",
   steps: [
     "The blank is what dust was expected to do to solar panels, something bad enough to end a mission.",
     "The next sentence gives the antidote: wind “swept the panels clean,” which reverses covering.",
     "So the expected problem was dust covering the panels and blocking sunlight.",
-    "“Obscure” means to cover or block from view or light. Choice B."
+    "“Obscure” means to cover or block from view or light. Choice D."
   ],
   traps: {
     0: "Reverses the logic, dust does not make panels work better.",
-    2: "“Dislodge” means to knock loose, which is close to what the <em>wind</em> did to the dust, not what dust did to panels. Watch for choices that describe the wrong actor.",
-    3: "Calibration is deliberate adjustment by engineers; dust does not calibrate anything."
+    1: "Calibration is deliberate adjustment by engineers; dust does not calibrate anything.",
+    2: "“Dislodge” means to knock loose, which is close to what the <em>wind</em> did to the dust, not what dust did to panels. Watch for choices that describe the wrong actor."
   }
 },
 
@@ -872,7 +878,7 @@ window.RW_BANK.push(
   difficulty: "E",
   type: "mc",
   passage: "<p>Urban beekeeping has grown quickly in North American cities, and honeybee hives now sit on rooftops from Montreal to San Diego. <u>Honeybees, however, are a managed species, not a wild one.</u> Ecologists caution that adding hives does little for the hundreds of native bee species that actually pollinate local plants, and may even crowd them out at flowers.</p>",
-  prompt: "Which choice best describes the function of the underlined sentence in the text as a whole?",
+  prompt: "Which choice best describes the function of the underlined portion in the text as a whole?",
   choices: [
     "It provides a statistic supporting the previous sentence.",
     "It introduces a distinction on which the rest of the text depends.",
@@ -905,22 +911,22 @@ window.RW_BANK.push(
   prompt: "Which choice best describes the overall structure of the text?",
   choices: [
     "It defines a scientific term and then questions its usefulness.",
-    "It lays out a chain of relationships, traces what happened when the chain was broken and later restored, and names the concept those events illustrate.",
     "It describes a disagreement between two groups of ecologists and then sides with one.",
+    "It lays out a chain of relationships, traces what happened when the chain was broken and later restored, and names the concept those events illustrate.",
     "It lists several causes of kelp forest decline in order of importance."
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Map the text one sentence at a time in three or four words each, then find the choice whose sequence matches your map. Structure questions are about order, not content.",
   hint: "Sketch the text: sentence 1 does what? Sentence 2? Sentence 3? Sentence 4?",
   steps: [
     "Sentence 1: states who eats whom, a chain.",
     "Sentences 2 and 3: otters removed → kelp lost; otters back → kelp back. Break, then repair.",
     "Sentence 4: gives the name for this pattern, “trophic cascade.”",
-    "Chain → break and repair → name. That is choice B, in the same order."
+    "Chain → break and repair → name. That is choice C, in the same order."
   ],
   traps: {
     0: "The definition comes last, not first, and no one questions it. Order matters in structure answers.",
-    2: "No disagreement appears; the ecologists in the text all use the example the same way.",
+    1: "No disagreement appears; the ecologists in the text all use the example the same way.",
     3: "Only one cause of decline is given, urchins, released by the loss of otters. There is no list and no ranking."
   }
 },
@@ -932,26 +938,26 @@ window.RW_BANK.push(
   difficulty: "M",
   type: "mc",
   passage: "<p>The first commercially successful typewriters arranged the letters in the pattern we still use, an arrangement often blamed for slowing typists down. <u>The story that the layout was designed to prevent jams by separating frequently paired letters is repeated in nearly every history of the machine.</u> Yet the surviving patent record shows the arrangement changing repeatedly for reasons its inventors never explained, and no document from the period mentions jamming as a motive.</p>",
-  prompt: "Which choice best describes the function of the underlined sentence in the text as a whole?",
+  prompt: "Which choice best describes the function of the underlined portion in the text as a whole?",
   choices: [
-    "It states a widely repeated account that the text then calls into question.",
+    "It summarizes the conclusion the text ultimately reaches.",
     "It provides evidence for the claim made in the preceding sentence.",
     "It introduces a technical problem that the inventors went on to solve.",
-    "It summarizes the conclusion the text ultimately reaches."
+    "It states a widely repeated account that the text then calls into question."
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Transition words at the start of the <em>next</em> sentence tell you what the underlined sentence was for. “Yet” after a claim means the claim was set up to be knocked down.",
   hint: "Look at the first word of the sentence after the underline.",
   steps: [
     "The underlined sentence reports a familiar story: the layout prevented jams.",
     "The next sentence begins with “Yet” and supplies contrary evidence, no period document mentions jamming.",
     "So the underlined sentence exists to be challenged.",
-    "Choice A says exactly that: a widely repeated account the text questions."
+    "Choice D says exactly that: a widely repeated account the text questions."
   ],
   traps: {
+    0: "The text's conclusion is skeptical of this story, so the sentence cannot be the summary of it.",
     1: "Backwards. The preceding sentence says the layout slows typists; the underlined sentence introduces a separate story, and the text disputes it.",
-    2: "Jamming is offered as an alleged motive, not as a problem the text says was solved. In fact the text doubts jamming mattered.",
-    3: "The text's conclusion is skeptical of this story, so the sentence cannot be the summary of it."
+    2: "Jamming is offered as an alleged motive, not as a problem the text says was solved. In fact the text doubts jamming mattered."
   }
 },
 
@@ -962,7 +968,7 @@ window.RW_BANK.push(
   difficulty: "H",
   type: "mc",
   passage: "<p>In her 1937 study of tenant farming, the sociologist described landowners' ledger books in exhaustive detail: the columns for seed advanced, the interest entered in a second hand, the annual balance that never quite reached zero. <u>Readers at the time complained that these pages were tedious.</u> But the tedium was the argument. A system that held families in place for generations did so not through dramatic acts but through the steady, unremarkable accumulation of small debts, and the study's form was built to make that visible.</p>",
-  prompt: "Which choice best describes the function of the underlined sentence in the text as a whole?",
+  prompt: "Which choice best describes the function of the underlined portion in the text as a whole?",
   choices: [
     "It raises a criticism that the text goes on to recast as evidence of the study's design.",
     "It concedes a flaw in the study that the author is unable to explain.",
@@ -1054,24 +1060,24 @@ window.RW_BANK.push(
   passage: "<p><strong>Text 1</strong></p><p>Critics have generally read the novel's long descriptions of housework as social documentation: the author, they argue, wanted readers to see the labor that kept a comfortable household running.</p><p><strong>Text 2</strong></p><p>Okonjo grants that the descriptions are precise enough to serve as documentation, but she points out where they appear. Each one interrupts a conversation in which the narrator is about to say something she cannot afford to say. The scrubbing and mending, in Okonjo's reading, are an evasion the novel dramatizes rather than a record it preserves.</p>",
   prompt: "Based on the texts, how would Okonjo most likely characterize the reading described in Text 1?",
   choices: [
-    "As accurate about the descriptions' precision but mistaken about their purpose",
+    "As failing to recognize that the novel is a work of fiction",
     "As correct in every respect though incomplete in its evidence",
     "As overstating how much housework the novel actually depicts",
-    "As failing to recognize that the novel is a work of fiction"
+    "As accurate about the descriptions' precision but mistaken about their purpose"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Look for the concession. When author 2 opens with “grants” or “admits,” the answer usually keeps that concession and disputes something else.",
   hint: "What exactly does Okonjo concede, and what exactly does she deny?",
   steps: [
     "The concession: the descriptions are “precise enough to serve as documentation.” She accepts the detail.",
     "The disagreement: their placement. They land wherever the narrator is avoiding speech.",
     "Her conclusion: the descriptions do the work of evasion, not documentation, so she disputes their function.",
-    "Right on detail, wrong on purpose. Choice A."
+    "Right on detail, wrong on purpose. Choice D."
   ],
   traps: {
+    0: "She reads the book as fiction more insistently than the critics do. That is her whole point about what the novel “dramatizes.”",
     1: "“Correct in every respect” erases the disagreement. She rejects the critics' central claim about function.",
-    2: "Quantity is never at issue; she agrees the descriptions are long and precise.",
-    3: "She reads the book as fiction more insistently than the critics do. That is her whole point about what the novel “dramatizes.”"
+    2: "Quantity is never at issue; she agrees the descriptions are long and precise."
   }
 },
 
@@ -1084,22 +1090,22 @@ window.RW_BANK.push(
   passage: "<p><strong>Text 1</strong></p><p>Economists studying minimum-wage increases across a set of US counties found no measurable decline in total employment in the years following each increase. They concluded that modest increases in the minimum wage do not reduce the number of jobs.</p><p><strong>Text 2</strong></p><p>Amara does not dispute the employment totals but questions what they conceal. In the counties she examined, total employment held steady while scheduled hours per worker fell and turnover rose—changes that left many workers with lower monthly earnings despite a higher hourly rate.</p>",
   prompt: "Based on the texts, how would Amara most likely respond to the conclusion drawn in Text 1?",
   choices: [
-    "By arguing that the employment totals reported in Text 1 were calculated incorrectly",
     "By contending that steady employment totals can conceal reductions in hours and earnings that the conclusion ignores",
+    "By arguing that the employment totals reported in Text 1 were calculated incorrectly",
     "By maintaining that minimum-wage increases do in fact reduce the number of available jobs",
     "By asserting that hourly wage rates matter more to workers than monthly earnings do"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Identify precisely what author 2 accepts. Explicit agreement on the data means the dispute is about interpretation, and every choice attacking the data is out.",
   hint: "“Does not dispute the employment totals” rules out two of these choices immediately.",
   steps: [
     "Amara accepts the totals, so any choice claiming the numbers are wrong is eliminated.",
     "Her point: the same total employment can hide fewer hours per worker and more turnover.",
     "Consequence: monthly earnings fell for many workers even though the hourly rate rose.",
-    "So her objection is that the job-count measure is too coarse for the conclusion drawn. Choice B."
+    "So her objection is that the job-count measure is too coarse for the conclusion drawn. Choice A."
   ],
   traps: {
-    0: "Directly contradicted, she “does not dispute the employment totals.” Underline concessions as you read the second text.",
+    1: "Directly contradicted, she “does not dispute the employment totals.” Underline concessions as you read the second text.",
     2: "She agrees the job count held steady. Claiming job losses would contradict her own evidence.",
     3: "Reverses her emphasis. She is worried precisely because monthly earnings fell while the hourly rate rose."
   }
@@ -1115,22 +1121,22 @@ window.RW_BANK.push(
   prompt: "Based on the texts, Vasquez would most likely characterize the explanation given in Text 1 as",
   choices: [
     "plausible but impossible to test with the fossil evidence now available.",
-    "inconsistent with the timing of the fossil record and looking in the wrong place for a cause.",
     "correct for the largest sauropods but not for smaller dinosaur species.",
+    "inconsistent with the timing of the fossil record and looking in the wrong place for a cause.",
     "an improvement on earlier explanations that had ignored plant growth."
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Count author 2's objections. A hard cross-text answer often has to capture <em>two</em> of them at once, so a choice that captures only one is incomplete.",
   hint: "Vasquez makes two separate moves: one about when things happened, one about where to look for the cause.",
   steps: [
     "Objection 1, timing: record-size sauropods show up when CO₂ was low, and high-CO₂ intervals set no records. The correlation the explanation needs is absent.",
     "Objection 2, location of the cause: she relocates it to the animals' anatomy, lungs and bones.",
     "So she rejects Text 1 both on evidence and on approach.",
-    "Choice B is the only option carrying both objections."
+    "Choice C is the only option carrying both objections."
   ],
   traps: {
     0: "She does test it, using the fossil record, and finds it fails. “Untestable” is the opposite of her method.",
-    2: "She offers no partial endorsement; the food-supply story fails at exactly the largest sizes it was meant to explain.",
+    1: "She offers no partial endorsement; the food-supply story fails at exactly the largest sizes it was meant to explain.",
     3: "She is rejecting the explanation, not ranking it above older ones."
   }
 },
@@ -1175,11 +1181,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical transition?",
   choices: [
     "Consequently,",
-    "Nevertheless,",
+    "For instance,",
     "Similarly,",
-    "For instance,"
+    "Nevertheless,"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "Test the transition by reading both sentences aloud with your choice inserted. A wrong transition makes the pair sound illogical even when each sentence is fine on its own.",
   hint: "Abundant things are usually cheap. Was this one?",
   steps: [
@@ -1190,8 +1196,8 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "“Consequently” claims abundance <em>caused</em> the high price, which is backwards, abundance normally lowers price.",
-    2: "“Similarly” needs two like cases. There is only one substance here.",
-    3: "“For instance” would make the price an example of abundance, which it is not."
+    1: "“For instance” would make the price an example of abundance, which it is not.",
+    2: "“Similarly” needs two like cases. There is only one substance here."
   }
 },
 
@@ -1235,11 +1241,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical transition?",
   choices: [
     "Indeed,",
-    "Still,",
     "Therefore,",
+    "Still,",
     "Likewise,"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "When a text praises something and then reports a flaw in it, you need a concessive transition. Track the author's attitude sentence by sentence.",
   hint: "The experiment was right; the experimenter was wrong. Which transition can hold both?",
   steps: [
@@ -1250,7 +1256,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "“Indeed” intensifies agreement. It would signal that his conclusion confirmed the point, but he got it wrong.",
-    2: "“Therefore” claims his error followed from the data. The data pointed the other way.",
+    1: "“Therefore” claims his error followed from the data. The data pointed the other way.",
     3: "“Likewise” means “in the same way,” but this sentence reverses direction."
   }
 },
@@ -1264,12 +1270,12 @@ window.RW_BANK.push(
   passage: "<p>Excavators at the site recovered thousands of fish bones, many from deep-water species, but almost no hooks, nets, or weights of the kind used to catch fish. ______ they suspect the fish arrived through trade rather than being caught by the settlement's own residents.</p>",
   prompt: "Which choice completes the text with the most logical transition?",
   choices: [
-    "Nevertheless,",
     "For this reason,",
+    "Nevertheless,",
     "In addition,",
     "Granted,"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Evidence first, inference second. When sentence 2 is what researchers conclude <em>from</em> sentence 1, use a cause or result transition.",
   hint: "Lots of fish, no fishing gear. Sentence 2 is what that combination implies.",
   steps: [
@@ -1279,7 +1285,7 @@ window.RW_BANK.push(
     "“For this reason” expresses it directly."
   ],
   traps: {
-    0: "“Nevertheless” would mean they suspect trade <em>despite</em> the evidence, when the evidence is exactly why they suspect it.",
+    1: "“Nevertheless” would mean they suspect trade <em>despite</em> the evidence, when the evidence is exactly why they suspect it.",
     2: "“In addition” would make the suspicion another piece of evidence rather than the conclusion drawn from it.",
     3: "“Granted” concedes a point to an opponent. There is no opposing view in this text."
   }
@@ -1295,11 +1301,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical transition?",
   choices: [
     "Accordingly,",
-    "By contrast,",
     "However,",
+    "By contrast,",
     "Moreover,"
   ],
-  answer: 2,
+  answer: 1,
   strategy: "Two contrast words are not interchangeable. “By contrast” compares two different subjects side by side; “however” reverses a claim about the same subject. Check what is being contrasted with what.",
   hint: "Both sentences are about the very same measurement: car travel times on this corridor. Only the time period changes.",
   steps: [
@@ -1310,7 +1316,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "“Accordingly” means “as a result,” but times falling is not a consequence of times rising.",
-    1: "The best trap here. It <em>is</em> a contrast, but “by contrast” sets two different things against each other, cars versus buses, say. Here one measurement changes across time, so the reversal word is “however.”",
+    2: "The best trap here. It <em>is</em> a contrast, but “by contrast” sets two different things against each other, cars versus buses, say. Here one measurement changes across time, so the reversal word is “however.”",
     3: "“Moreover” adds support in the same direction, and this sentence undercuts the critics rather than supporting them."
   }
 },
@@ -1354,22 +1360,22 @@ window.RW_BANK.push(
   passage: "<p>While researching a topic, a student has taken the following notes:</p><ul><li>The Svalbard Global Seed Vault opened in 2008 on a Norwegian island.</li><li>It stores duplicate samples of seeds held in gene banks around the world.</li><li>It is built 120 meters inside a mountain, in permafrost.</li><li>The permafrost would keep the seeds frozen even if the cooling system failed.</li><li>In 2015 researchers withdrew seeds for the first time, to replace a collection damaged by war in Syria.</li></ul>",
   prompt: "The student wants to explain the purpose of the vault to an audience unfamiliar with it. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
   choices: [
-    "The Svalbard Global Seed Vault, which opened in 2008, is built 120 meters inside a mountain on a Norwegian island.",
     "The vault stores duplicate seed samples from gene banks worldwide so that a collection lost elsewhere can be restored, as a Syrian collection damaged by war was in 2015.",
+    "The Svalbard Global Seed Vault, which opened in 2008, is built 120 meters inside a mountain on a Norwegian island.",
     "Because the vault sits in permafrost, its seeds would remain frozen even if the cooling system failed.",
     "In 2015, researchers withdrew seeds from the vault for the first time."
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Underline the goal and treat it as a checklist. Every note is true, so accuracy cannot separate the choices, only relevance to the stated goal can.",
   hint: "Purpose answers the question “what is it for?” Which notes speak to that, and which describe where it is or how it is built?",
   steps: [
     "The goal is purpose: what the vault is <em>for</em>.",
     "Sort the notes: location and construction (where/how) versus duplicate storage and the Syrian withdrawal (what for).",
-    "Choice B uses the purpose notes and adds the 2015 case as proof of that purpose in action.",
-    "Confirm B invents nothing, every element appears in the notes."
+    "Choice A uses the purpose notes and adds the 2015 case as proof of that purpose in action.",
+    "Confirm choice A invents nothing, every element appears in the notes."
   ],
   traps: {
-    0: "All true, all irrelevant. Location and opening date describe the vault without saying what it does.",
+    1: "All true, all irrelevant. Location and opening date describe the vault without saying what it does.",
     2: "Describes a safeguard, which answers “how is it protected,” not “what is it for.”",
     3: "Reports one event with no explanation of why it mattered. On synthesis questions, a bare fact almost never accomplishes a goal."
   }
@@ -1394,7 +1400,7 @@ window.RW_BANK.push(
   hint: "A difference in <em>findings</em>, specifically. Which choice reports what each team actually found?",
   steps: [
     "The goal names two requirements: both teams, and their findings.",
-    "Eliminate choices covering one team only (A and D) and choices reporting method rather than findings (A and B).",
+    "Eliminate the choices covering one team only (choices A and D) and the choices reporting method rather than findings (choices A and B).",
     "Choice C gives Team A's 4 percent and Team B's zero, joined by “whereas.”",
     "It also names the relevant conditions, warm and shallow versus cold and deep, which is what makes the difference meaningful."
   ],
@@ -1415,23 +1421,23 @@ window.RW_BANK.push(
   prompt: "The student wants to present the survival data and identify a factor associated with it. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
   choices: [
     "Between 2012 and 2018, a period of six years, a city planted 12,000 street trees.",
-    "Although 31 percent of the city's 12,000 new street trees had died by 2020, survival reached 84 percent on streets where residents had requested the planting—trees those residents may have watered themselves.",
+    "By 2020, 31 percent of the trees the city planted between 2012 and 2018 had died.",
     "Researchers suggest that residents watered the trees they had asked for.",
-    "By 2020, 31 percent of the trees the city planted between 2012 and 2018 had died."
+    "Although 31 percent of the city's 12,000 new street trees had died by 2020, survival reached 84 percent on streets where residents had requested the planting—trees those residents may have watered themselves."
   ],
-  answer: 1,
+  answer: 3,
   strategy: "When the goal has two parts joined by “and,” the answer must satisfy both. Count the parts before you compare choices.",
   hint: "Part one is the survival numbers. Part two is what those numbers vary with.",
   steps: [
     "Part 1 of the goal: present survival data → you need the percentages.",
     "Part 2: identify an associated factor → you need the resident-request variable.",
-    "Choice B carries the overall 31 percent death rate, the 84 percent survival on requested streets, and the watering explanation.",
-    "Everything in B traces to a note; nothing is invented."
+    "Choice D carries the overall 31 percent death rate, the 84 percent survival on requested streets, and the watering explanation.",
+    "Everything in choice D traces to a note; nothing is invented."
   ],
   traps: {
     0: "Neither part, no survival data and no factor. “A period of six years” is padding the notes never needed.",
-    2: "Gives only the proposed mechanism, with no data at all.",
-    3: "Satisfies part 1 alone. Half-goal answers are the most common trap on synthesis questions."
+    1: "Satisfies part 1 alone. Half-goal answers are the most common trap on synthesis questions.",
+    2: "Gives only the proposed mechanism, with no data at all."
   }
 },
 
@@ -1475,23 +1481,23 @@ window.RW_BANK.push(
   prompt: "The student wants to explain why the model's accuracy declined outside its training region. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
   choices: [
     "The model correctly identified 91 percent of the recordings collected in the region where it was trained.",
-    "Because many bird species sing in distinct regional dialects, the model—trained on recordings from a single region—identified only 54 percent of recordings from another continent.",
+    "Researchers trained a model to identify bird species from audio recordings; it was 91 percent accurate in one region and 54 percent accurate on another continent.",
     "The model's training set contained few recordings of juvenile birds, whose songs are less structured than adults' songs.",
-    "Researchers trained a model to identify bird species from audio recordings; it was 91 percent accurate in one region and 54 percent accurate on another continent."
+    "Because many bird species sing in distinct regional dialects, the model—trained on recordings from a single region—identified only 54 percent of recordings from another continent."
   ],
-  answer: 1,
+  answer: 3,
   strategy: "“Explain why” requires a cause, not a report. Look for the note that could serve as a mechanism, and make sure it matches the specific effect named in the goal.",
   hint: "Two notes could each hurt accuracy. Only one of them is about <em>place</em>.",
   steps: [
     "The effect to explain: accuracy dropped when the region changed.",
     "Candidate causes in the notes: regional dialects, and few juvenile recordings.",
     "Juveniles are an age gap, not a geographic one, so that note cannot explain a region-to-region drop.",
-    "Dialects vary by region, so a model trained in one region mishears another. Choice B pairs that cause with the 54 percent effect."
+    "Dialects vary by region, so a model trained in one region mishears another. Choice D pairs that cause with the 54 percent effect."
   ],
   traps: {
     0: "Reports the good result only, with no decline and no cause.",
-    2: "A real limitation of the training set, and genuinely tempting, but it would lower accuracy everywhere, including at home. It does not explain a specifically geographic drop.",
-    3: "The strongest trap: perfectly accurate and it states the decline, yet it never says <em>why</em>. Restating the effect is not explaining it."
+    1: "The strongest trap: perfectly accurate and it states the decline, yet it never says <em>why</em>. Restating the effect is not explaining it.",
+    2: "A real limitation of the training set, and genuinely tempting, but it would lower accuracy everywhere, including at home. It does not explain a specifically geographic drop."
   }
 },
 
@@ -1504,24 +1510,24 @@ window.RW_BANK.push(
   passage: "<p>While researching a topic, a student has taken the following notes:</p><ul><li>Three Bronze Age settlements were excavated in the same river valley.</li><li>At each site, the largest building stood on the highest ground.</li><li>At two of the sites, that building contained jars for storing grain.</li><li>At the third site, later farming had removed the building's floor.</li><li>None of the three sites showed any defensive walls.</li></ul>",
   prompt: "The student wants to make a generalization about the three settlements that the notes support. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
   choices: [
-    "At each of the three settlements, the largest building occupied the highest ground.",
+    "At the third settlement, later farming destroyed the largest building.",
     "Each of the three settlements used its largest building to store grain.",
     "None of the three settlements had any need to defend itself.",
-    "At the third settlement, later farming destroyed the largest building."
+    "At each of the three settlements, the largest building occupied the highest ground."
   ],
-  answer: 0,
+  answer: 3,
   strategy: "A supported generalization must hold for <em>every</em> case in the notes. Scan for the note that says “at each” or “all”, and be suspicious of one that says “at two.”",
   hint: "Which claim can you verify at all three sites, without assuming anything about the site whose floor is gone?",
   steps: [
-    "Test choice A: note 2 says “at each site” the largest building stood highest. All three, stated directly. It holds.",
+    "Test choice D: note 2 says “at each site” the largest building stood highest. All three, stated directly. It holds.",
     "Test choice B: grain jars are confirmed at two sites only. The third site's floor was removed, so its contents are unknown, not absent.",
     "Test choice C: the notes report no walls found. Absence of walls is evidence about construction, not about need.",
-    "A is the only generalization the notes fully support."
+    "Choice D is the only generalization the notes fully support."
   ],
   traps: {
+    0: "Not a generalization at all: it describes one site. It also overstates the note, which says the floor was removed, not the whole building.",
     1: "Extends a two-site finding to three. Missing evidence at the third site is not the same as evidence.",
-    2: "Slides from a physical fact (no walls) to a motive (no need). Watch for choices that add an explanation the notes never give.",
-    3: "Not a generalization at all: it describes one site. It also overstates the note, which says the floor was removed, not the whole building."
+    2: "Slides from a physical fact (no walls) to a motive (no need). Watch for choices that add an explanation the notes never give."
   }
 },
 
@@ -1535,22 +1541,22 @@ window.RW_BANK.push(
   prompt: "The student wants to explain why the hot-spring enzyme could matter to industrial chemistry. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
   choices: [
     "Enzymes generally work best within a narrow range of temperatures.",
-    "An enzyme from a hot-spring microbe remains active at temperatures from 45°C to 95°C.",
     "Because it stays active up to 95°C, the hot-spring enzyme could replace the metal catalysts that hot industrial processes now require—catalysts that depend on rare elements and produce toxic waste.",
+    "An enzyme from a hot-spring microbe remains active at temperatures from 45°C to 95°C.",
     "Industrial processes often run at temperatures that destroy ordinary enzymes, so chemists use metal catalysts instead."
   ],
-  answer: 2,
+  answer: 1,
   strategy: "“Why it could matter” means the answer has to reach the payoff. Follow the chain from the property to the problem it solves, and pick the choice that arrives at the end of that chain.",
   hint: "Build the chain: heat-stable enzyme → what it could replace → why replacing that is worth doing.",
   steps: [
     "Link 1: the enzyme survives to 95°C, the temperature range where ordinary enzymes fail.",
     "Link 2: those hot processes currently need metal catalysts.",
     "Link 3: metal catalysts have real costs, rare elements and toxic waste.",
-    "Significance is the whole chain, and only choice C states all three links."
+    "Significance is the whole chain, and only choice B states all three links."
   ],
   traps: {
     0: "Background about enzymes in general. It sets up the problem but names no significance.",
-    1: "The key property with no consequence attached. A property is not yet a reason to care.",
+    2: "The key property with no consequence attached. A property is not yet a reason to care.",
     3: "Describes the status quo accurately and stops there. The enzyme, the actual subject of the goal, never appears."
   }
 },
@@ -1564,12 +1570,12 @@ window.RW_BANK.push(
   passage: "<p>The Great Basin bristlecone pine grows in thin soil at high altitude, where few other trees can survive. Its wood is unusually dense and ______ trunks can remain standing for a thousand years after the tree dies.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "resinous, trunks",
     "resinous; trunks",
+    "resinous, trunks",
     "resinous trunks",
     "resinous, and, trunks"
   ],
-  answer: 1,
+  answer: 0,
   strategy: "Cover the blank and test each side: can it stand alone as a sentence? Two independent clauses need a period, a semicolon, or a comma plus a conjunction, never a comma by itself.",
   hint: "“Its wood is unusually dense and resinous” is a sentence. “Trunks can remain standing for a thousand years” is also a sentence.",
   steps: [
@@ -1579,7 +1585,7 @@ window.RW_BANK.push(
     "The semicolon is the only choice offered that legally joins two independent clauses."
   ],
   traps: {
-    0: "Textbook comma splice. It is the most frequently tested error in this domain and it always sounds acceptable when you read it quickly.",
+    1: "Textbook comma splice. It is the most frequently tested error in this domain and it always sounds acceptable when you read it quickly.",
     2: "No punctuation at all creates a run-on, and it also tricks the eye into reading “resinous trunks” as a noun phrase.",
     3: "A comma after “and” is never correct here. “Resinous, and trunks…” would work; “and,” does not."
   }
@@ -1594,12 +1600,12 @@ window.RW_BANK.push(
   passage: "<p>The estate's inventory, drawn up in 1847, listed everything the family had left ______ a brass clock, two wool coats, and a bundle of unopened letters.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "behind:",
     "behind,",
+    "behind:",
     "behind;",
     "behind"
   ],
-  answer: 0,
+  answer: 1,
   strategy: "A colon introduces a list or explanation, and it must follow a complete sentence. Check that everything before the colon could end with a period.",
   hint: "Count what would look like list items if you used a comma here.",
   steps: [
@@ -1609,7 +1615,7 @@ window.RW_BANK.push(
     "Confirm the colon is legal: it follows an independent clause. Correct."
   ],
   traps: {
-    1: "A comma turns the sentence into a four-item list, so “everything the family had left behind” reads as one more object alongside the clock and the coats. The colon is what shows the list defines it.",
+    0: "A comma turns the sentence into a four-item list, so “everything the family had left behind” reads as one more object alongside the clock and the coats. The colon is what shows the list defines it.",
     2: "A semicolon needs a complete sentence on both sides. What follows is a list.",
     3: "No punctuation runs the list straight into the clause with nothing to introduce it."
   }
@@ -1624,22 +1630,22 @@ window.RW_BANK.push(
   passage: "<p>The paleontologist Mary Anning, whose discoveries reshaped the study of ancient marine ______ sold fossils from a shop in Lyme Regis to support her family.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "reptiles,",
     "reptiles",
+    "reptiles,",
     "reptiles;",
     "reptiles:"
   ],
-  answer: 0,
+  answer: 1,
   strategy: "Punctuation comes in pairs. If extra information opens with a comma, it must close with one, find the opening mark before you choose.",
   hint: "Look back at “Anning,”. Something opened there and has not been closed.",
   steps: [
     "Identify the core sentence: “The paleontologist Mary Anning sold fossils from a shop in Lyme Regis.”",
     "“Whose discoveries reshaped the study of ancient marine reptiles” is extra information dropped into the middle.",
     "It opened with the comma after “Anning,” so it must close with a comma.",
-    "Choice A supplies the closing comma."
+    "Choice B supplies the closing comma."
   ],
   traps: {
-    1: "Leaves the interrupter half-punctuated, open at one end, closed at neither. Unpaired punctuation is always wrong.",
+    0: "Leaves the interrupter half-punctuated, open at one end, closed at neither. Unpaired punctuation is always wrong.",
     2: "A semicolon cannot close a nonessential element, and “sold fossils from a shop” is not an independent clause.",
     3: "A colon introduces; it cannot close an interrupting clause."
   }
@@ -1654,23 +1660,23 @@ window.RW_BANK.push(
   passage: "<p>The mesquite's roots—some of them reaching nine meters down into dry ______ allow the tree to survive years with almost no rain.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "soil—",
-    "soil,",
     "soil;",
+    "soil,",
+    "soil—",
     "soil"
   ],
-  answer: 0,
+  answer: 2,
   strategy: "Match the mark you were given. A dash opens the interruption, so a dash must close it, commas and dashes cannot be mixed as a pair.",
   hint: "What punctuation mark appears right after “roots”?",
   steps: [
     "The core sentence is 'The mesquite's roots allow the tree to survive years with almost no rain.'",
     "The interrupter is “some of them reaching nine meters down into dry soil.”",
     "It opens with a dash after “roots,” so the pair must be completed with a dash.",
-    "Choice A closes it correctly."
+    "Choice C closes it correctly."
   ],
   traps: {
+    0: "A semicolon would need an independent clause after it; “allow the tree to survive” has no subject of its own.",
     1: "A comma cannot close what a dash opened. Mixed pairs are a favorite trap because the sentence still <em>sounds</em> fine.",
-    2: "A semicolon would need an independent clause after it; “allow the tree to survive” has no subject of its own.",
     3: "With no closing mark, the subject “roots” runs into the modifier and the sentence loses its structure."
   }
 },
@@ -1685,11 +1691,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
     "divers,",
-    "divers",
     "divers;",
+    "divers",
     "divers—"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Never separate a subject from its verb with a single mark. When a subject is buried under long modifiers, strip them out and put subject and verb next to each other.",
   hint: "Strip the sentence to its bones. What is the subject, and what is its verb?",
   steps: [
@@ -1700,7 +1706,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "The pause you hear after a long subject is real, but a single comma between subject and verb is still an error. Trust structure over sound.",
-    2: "A semicolon demands a complete sentence on each side; “has produced the most detailed map” has no subject.",
+    1: "A semicolon demands a complete sentence on each side; “has produced the most detailed map” has no subject.",
     3: "A lone dash creates the same illegal split as the comma."
   }
 },
@@ -1715,11 +1721,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
     "Kenya,",
-    "Kenya;",
+    "Kenya:",
     "Kenya",
-    "Kenya:"
+    "Kenya;"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "When items in a list already contain commas, the items themselves are separated by semicolons. Look at how the other items in the series are punctuated.",
   hint: "How is “Recife, Brazil” separated from “and Chennai, India”? Match it.",
   steps: [
@@ -1730,8 +1736,8 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "A comma makes six list items instead of three, and it is inconsistent with the semicolon already in the sentence.",
-    2: "No punctuation runs two items together.",
-    3: "A colon has already introduced the list. A second colon inside it is never correct."
+    1: "A colon has already introduced the list. A second colon inside it is never correct.",
+    2: "No punctuation runs two items together."
   }
 },
 
@@ -1774,24 +1780,24 @@ window.RW_BANK.push(
   passage: "<p>The museum acquired the painting in 1954 ______ it did not go on public display for another thirty years.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    ", but",
+    ", but,",
     "but",
     "; but,",
-    ", but,"
+    ", but"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "Two independent clauses joined by and, but, or, so, for, nor, or yet take a comma <em>before</em> the conjunction and nothing after it.",
   hint: "Both halves are complete sentences, and the second reverses the first.",
   steps: [
     "Left clause: “The museum acquired the painting in 1954.” Complete.",
     "Right clause: “It did not go on public display for another thirty years.” Complete.",
     "Joining two complete clauses with “but” requires a comma before “but.”",
-    "Nothing follows the conjunction, so choice A is correct."
+    "Nothing follows the conjunction, so choice D is correct."
   ],
   traps: {
+    0: "The comma before “but” is right; the one after it is not. Read the choices character by character on this question type.",
     1: "“But” with no comma leaves two independent clauses fused.",
-    2: "A semicolon already joins the clauses, so “but” is redundant, and the comma after it is wrong.",
-    3: "The comma before “but” is right; the one after it is not. Read the choices character by character on this question type."
+    2: "A semicolon already joins the clauses, so “but” is redundant, and the comma after it is wrong."
   }
 },
 
@@ -1804,22 +1810,22 @@ window.RW_BANK.push(
   passage: "<p>The collection of letters, diaries, and shipping receipts donated to the archive last spring ______ the daily workings of a nineteenth-century port.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "reveals",
     "reveal",
+    "reveals",
     "are revealing",
     "have revealed"
   ],
-  answer: 0,
+  answer: 1,
   strategy: "Cross out every prepositional phrase, then match the verb to what is left. Nouns inside “of” phrases are never the subject.",
   hint: "Strike out “of letters, diaries, and shipping receipts” and “donated to the archive last spring.” What word is left in front of the blank?",
   steps: [
     "Remove the modifiers: 'The collection … ______ the daily workings of a nineteenth-century port.'",
     "The subject is “collection”, singular, even though it contains many things.",
     "A singular subject takes a singular verb: “reveals.”",
-    "Check the other options: “reveal,” “are,” and “have” are all plural forms, so only choice A can be right."
+    "Check the other options: “reveal,” “are,” and “have” are all plural forms, so only choice B can be right."
   ],
   traps: {
-    1: "Agrees with “receipts,” the nearest noun, instead of the actual subject. This is the single most common agreement error the SAT tests.",
+    0: "Agrees with “receipts,” the nearest noun, instead of the actual subject. This is the single most common agreement error the SAT tests.",
     2: "Plural “are,” and the progressive tense adds nothing the sentence needs.",
     3: "Plural “have.” Also shifts the sentence into the past when the archive's holdings still reveal this."
   }
@@ -1864,12 +1870,12 @@ window.RW_BANK.push(
   passage: "<p>By the time the survey team reached the summit in 1953, local guides ______ the route for decades.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "know",
-    "knew",
     "had known",
+    "knew",
+    "know",
     "will have known"
   ],
-  answer: 2,
+  answer: 0,
   strategy: "Two past events in one sentence: the earlier one takes the past perfect (“had” + participle). Let the time markers set the tense.",
   hint: "“By the time” plus a date in the past tells you one thing happened before another past event.",
   steps: [
@@ -1879,8 +1885,8 @@ window.RW_BANK.push(
     "Read it back: by 1953, guides had known the route for decades. The sequence is clear."
   ],
   traps: {
-    0: "Present tense contradicts 1953.",
     1: "Simple past flattens the sequence. It suggests the guides learned the route at the same moment the team arrived.",
+    2: "Present tense contradicts 1953.",
     3: "Future perfect points forward in time, which cannot describe 1953."
   }
 },
@@ -1895,23 +1901,23 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
     "geologist's",
-    "geologists'",
+    "geologists's",
     "geologists",
-    "geologists's"
+    "geologists'"
   ],
-  answer: 1,
+  answer: 3,
   strategy: "Ask two questions in order: how many owners, and do they own something? Plural owners take the apostrophe after the -s.",
   hint: "“The two…” tells you the number, and “conclusions” belongs to them.",
   steps: [
     "How many geologists? Two, “both researchers” confirms it. So the noun is plural: geologists.",
     "Do they possess the conclusions? Yes, the conclusions are theirs.",
     "Plural possessive puts the apostrophe after the -s: geologists'.",
-    "Choice B."
+    "Choice D."
   ],
   traps: {
     0: "Singular possessive, one geologist, which contradicts “The two.”",
-    2: "Plural but not possessive, so the conclusions belong to no one.",
-    3: "'-s's' is never used for a regular plural. Reserve “s” for singular nouns."
+    1: "'-s's' is never used for a regular plural. Reserve “s” for singular nouns.",
+    2: "Plural but not possessive, so the conclusions belong to no one."
   }
 },
 
@@ -1924,24 +1930,24 @@ window.RW_BANK.push(
   passage: "<p>______ the expedition's photographs of the ice cave have become an important record of a landscape that no longer exists.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "Taken in 1937,",
+    "After taking them in 1937,",
     "Taking them in 1937,",
     "When taking them in 1937,",
-    "After taking them in 1937,"
+    "Taken in 1937,"
   ],
-  answer: 0,
+  answer: 3,
   strategy: "An opening modifier attaches to the subject that follows it. Name that subject before you choose, then ask whether it can perform the action in the modifier.",
   hint: "The subject after the blank is 'the expedition's photographs.' Can photographs take photographs?",
   steps: [
     "Identify the subject of the main clause: 'the expedition's photographs.'",
     "The modifier must describe the photographs.",
     "“Taken in 1937” is passive, the photographs <em>were taken</em>. That fits.",
-    "The active options would mean the photographs did the taking, which is impossible. Choice A."
+    "The active options would mean the photographs did the taking, which is impossible. Choice D."
   ],
   traps: {
+    0: "Same error again, and “them” has no antecedent yet when the reader meets it.",
     1: "Dangling modifier: it makes the photographs the ones doing the photographing.",
-    2: "Same dangling error, just with “when” in front of it.",
-    3: "Same error again, and “them” has no antecedent yet when the reader meets it."
+    2: "Same dangling error, just with “when” in front of it."
   }
 },
 
@@ -1985,11 +1991,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
     "was",
-    "were",
     "is",
+    "were",
     "has been"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "When a sentence opens with a prepositional phrase and the verb comes before the subject, flip the sentence around to find the real subject.",
   hint: "Rewrite it: 'A passenger list, three account books, and a bundle of letters ______ among the documents.'",
   steps: [
@@ -2000,7 +2006,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "Singular, agreeing with the first item only. In inverted sentences the ear latches onto whatever noun comes next, which is why this trap works.",
-    2: "Singular <em>and</em> present tense, clashing with “recovered.”",
+    1: "Singular <em>and</em> present tense, clashing with “recovered.”",
     3: "Singular present perfect, wrong in both number and tense."
   }
 },
@@ -2015,22 +2021,22 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
     "today",
-    "those recorded",
     "they record",
+    "those recorded",
     "the records"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "A comparison must join two things of the same kind. Say both sides out loud: X is colder than Y, and check that Y is the same type of thing as X.",
   hint: "Colder than what? Not colder than a time or a document, colder than other winters.",
   steps: [
     "Side one of the comparison: “The winters described in the logbooks.”",
     "So side two must also be winters, not a date and not a set of records.",
     "“Those recorded in the same waters today” means “the winters recorded today.” Same kind of thing.",
-    "Choice B keeps the comparison parallel."
+    "Choice C keeps the comparison parallel."
   ],
   traps: {
     0: "Compares winters to a day. The sentence already ends with “today,” so this also repeats the word.",
-    2: "“They record” makes the winters do the recording and leaves the comparison without a second term.",
+    1: "“They record” makes the winters do the recording and leaves the comparison without a second term.",
     3: "Compares winters to records, documents cannot be cold. Illogical comparisons are the hard version of this question type."
   }
 },
@@ -2045,11 +2051,11 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
     "is",
-    "be",
     "was",
+    "be",
     "being"
   ],
-  answer: 1,
+  answer: 2,
   strategy: "Verbs of recommending, requiring, insisting, and demanding take the subjunctive in the clause that follows: use the base form of the verb, with no -s and no tense marker.",
   hint: "“Recommended that the bridge ___ closed”, try the base form, the way you would say “recommended that the bridge be closed.”",
   steps: [
@@ -2060,10 +2066,595 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "Present indicative. It clashes with the past-tense “recommended” and ignores the subjunctive trigger.",
-    2: "Past indicative. It sounds natural because “recommended” is past, which is exactly the trap. The subjunctive does not follow the main verb's tense.",
+    1: "Past indicative. It sounds natural because “recommended” is past, which is exactly the trap. The subjunctive does not follow the main verb's tense.",
     3: "“Being closed” leaves the clause without a finite verb, producing a fragment."
   }
 }
+);
+
+/* ---------- ADDED: coverage for thin trap types ---------- */
+window.RW_BANK.push(
+
+{
+  id: "rw069",
+  domain: "Standard English Conventions",
+  skill: "Boundaries",
+  difficulty: "E",
+  type: "mc",
+  passage: "<p>The Atacama Desert receives almost no rain, and its thin, cloudless air distorts starlight less than the air almost anywhere else on Earth. Astronomers noticed ______ more than a dozen major observatories now sit along its ridges.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "this, more",
+    "this more",
+    "this, and, more",
+    "this; more"
+  ],
+  answer: 3,
+  strategy: "Cover the blank and check each side. If both sides could stand alone as sentences, a comma on its own cannot join them.",
+  hint: "\u201cAstronomers noticed this\u201d is a sentence. So is \u201cmore than a dozen major observatories now sit along its ridges.\u201d",
+  steps: [
+    "Left side: \u201cAstronomers noticed this.\u201d Subject and verb, complete.",
+    "Right side: \u201cMore than a dozen major observatories now sit along its ridges.\u201d Also complete.",
+    "Two complete sentences need a period, a semicolon, or a comma plus a conjunction.",
+    "Only the semicolon is offered, so choice D is correct."
+  ],
+  traps: {
+    0: "A comma alone between two complete sentences is a comma splice. It reads smoothly, which is exactly why it is the most tested error in this domain.",
+    1: "No punctuation at all fuses the two sentences into a run-on.",
+    2: "The comma after \u201cand\u201d is wrong. \u201cthis, and more\u201d would have worked; \u201cand,\u201d does not."
+  }
+},
+
+{
+  id: "rw070",
+  domain: "Standard English Conventions",
+  skill: "Boundaries",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The vaquita\u2014a porpoise found only in the northern reaches of the Gulf of California, where fewer than a dozen ______ is the most endangered marine mammal in the world.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "remain,",
+    "remain\u2014",
+    "remain;",
+    "remain"
+  ],
+  answer: 1,
+  strategy: "Match the mark you were given. A dash opens the interruption, so a dash has to close it. Commas and dashes are never a pair.",
+  hint: "Look at the punctuation right after \u201cvaquita.\u201d",
+  steps: [
+    "The core sentence is \u201cThe vaquita is the most endangered marine mammal in the world.\u201d",
+    "Everything between is extra information, and it opened with a dash after \u201cvaquita.\u201d",
+    "Paired punctuation has to match, so it closes with a dash.",
+    "Choice B closes the pair correctly."
+  ],
+  traps: {
+    0: "A comma cannot close what a dash opened. Mixed pairs are tempting because the sentence still sounds fine when you read it aloud.",
+    2: "A semicolon needs a complete sentence on both sides, and \u201cis the most endangered marine mammal\u201d has no subject of its own.",
+    3: "With no closing mark, the interrupter never ends and the subject never reaches its verb."
+  }
+},
+
+{
+  id: "rw071",
+  domain: "Standard English Conventions",
+  skill: "Boundaries",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Restoring the salt marsh turned out to need three things the original plan had not budgeted ______ a new tide gate, ten thousand native seedlings, and five years of waiting.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "for:",
+    "for,",
+    "for;",
+    "for"
+  ],
+  answer: 0,
+  strategy: "A colon introduces a list, and everything before it has to be a complete sentence on its own. Check that first, then check what follows.",
+  hint: "Count how many things would look like list items if you used a comma here.",
+  steps: [
+    "Check the left side: \u201cRestoring the salt marsh turned out to need three things the original plan had not budgeted for.\u201d Complete.",
+    "What follows is a list of three items, not a sentence.",
+    "Complete sentence plus list means a colon.",
+    "Choice A is correct."
+  ],
+  traps: {
+    1: "A comma turns this into a four-item list, so \u201cthree things the original plan had not budgeted for\u201d reads as one more item alongside the tide gate.",
+    2: "A semicolon needs a complete sentence after it, and a list of three nouns is not one.",
+    3: "With no mark at all, the list runs straight into the clause with nothing to introduce it."
+  }
+},
+
+{
+  id: "rw072",
+  domain: "Standard English Conventions",
+  skill: "Boundaries",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>Sea ice reflects most of the sunlight that strikes it, while open water absorbs nearly all of ______ the loss of summer ice warms the Arctic faster than anywhere else on the planet.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "it,",
+    "it",
+    "it, and",
+    "it; and"
+  ],
+  answer: 2,
+  strategy: "When both sides are complete sentences, a comma works only if a conjunction comes with it. Decide what each side is before you look at the marks.",
+  hint: "Both halves are full sentences, and the second follows from the first.",
+  steps: [
+    "Left side: \u201cSea ice reflects most of the sunlight that strikes it, while open water absorbs nearly all of it.\u201d Complete.",
+    "Right side: \u201cthe loss of summer ice warms the Arctic faster than anywhere else on the planet.\u201d Complete.",
+    "Two complete sentences can be joined by a comma plus a coordinating conjunction.",
+    "Choice C supplies both the comma and the \u201cand.\u201d"
+  ],
+  traps: {
+    0: "A comma with no conjunction is a comma splice, however natural the pause feels.",
+    1: "Nothing at all fuses the two sentences.",
+    3: "A semicolon already joins the clauses, so adding \u201cand\u201d makes the join redundant and wrong."
+  }
+},
+
+{
+  id: "rw073",
+  domain: "Standard English Conventions",
+  skill: "Boundaries",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>The team of engineers and marine biologists who spent four seasons mapping the reef with towed cameras ______ published a survey that revised the reef's known area upward by a third.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "have",
+    "has,",
+    "has",
+    "has;"
+  ],
+  answer: 2,
+  strategy: "Strip the modifiers to find the bare subject, then put it next to its verb. Nothing goes between a subject and its verb.",
+  hint: "Cross out \u201cof engineers and marine biologists\u201d and the whole \u201cwho\u201d clause. What is left?",
+  steps: [
+    "Stripped down, the sentence is \u201cThe team published a survey.\u201d",
+    "\u201cTeam\u201d is singular, so the verb is \u201chas,\u201d not \u201chave.\u201d",
+    "Subject and verb must not be separated by punctuation.",
+    "Choice C gives the singular verb with no intervening mark."
+  ],
+  traps: {
+    0: "Agrees with \u201cbiologists,\u201d the nearest noun, rather than with \u201cteam.\u201d Collective nouns are singular in American usage.",
+    1: "A single comma between the subject and its verb is an error, however long the subject was.",
+    3: "A semicolon demands a complete sentence on each side, and \u201cpublished a survey\u201d has no subject."
+  }
+},
+
+{
+  id: "rw074",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The three ______ field notes disagreed about the date of the eruption, even though all of them had been camped on the same ridge that week.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "geologists's",
+    "geologists'",
+    "geologist's",
+    "geologists"
+  ],
+  answer: 1,
+  strategy: "Ask two questions in order: how many owners, and do they own something? Plural owners take the apostrophe after the s.",
+  hint: "\u201cThe three\u201d fixes the number, and the notes belong to them.",
+  steps: [
+    "How many geologists? Three, confirmed by \u201call of them.\u201d So the noun is plural.",
+    "Do they own the notes? Yes.",
+    "A regular plural possessive puts the apostrophe after the s: geologists'.",
+    "Choice B."
+  ],
+  traps: {
+    0: "Apostrophe-s is never added to a regular plural. Save 's for singular nouns.",
+    2: "Singular possessive, which contradicts \u201cThe three.\u201d",
+    3: "Plural but not possessive, so the notes belong to nobody. It reads acceptably out loud, which is the trap."
+  }
+},
+
+{
+  id: "rw075",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>______ the ship's logbooks now provide climate scientists with a daily record of Atlantic weather stretching back to the 1780s.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "Digitized by volunteers,",
+    "Digitizing them,",
+    "While digitizing them,",
+    "Having digitized them,"
+  ],
+  answer: 0,
+  strategy: "An opening phrase attaches to the subject that follows the comma. Name that subject first, then ask whether it can do what the phrase describes.",
+  hint: "The subject after the comma is \u201cthe ship's logbooks.\u201d Can logbooks digitize anything?",
+  steps: [
+    "Find the subject of the main clause: \u201cthe ship's logbooks.\u201d",
+    "The opening phrase has to describe the logbooks.",
+    "\u201cDigitized by volunteers\u201d is passive, so the logbooks were digitized. That fits.",
+    "Choice A."
+  ],
+  traps: {
+    1: "A dangling modifier: it makes the logbooks the ones doing the digitizing.",
+    2: "The same dangling error with \u201cwhile\u201d in front of it, which does nothing to fix who is acting.",
+    3: "Also dangling, and it gives the logbooks credit for finishing the work."
+  }
+},
+
+{
+  id: "rw076",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>A useful lab notebook records not only the result of an experiment but also ______, since a method nobody can repeat proves nothing.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "the exact steps that produced it",
+    "how were the steps carried out",
+    "carrying out each step exactly",
+    "exactly what steps produced it"
+  ],
+  answer: 3,
+  strategy: "\u201cNot only ... but also\u201d is a paired construction. Whatever form follows the first half has to follow the second. Put them side by side.",
+  hint: "The first half is \u201cthe result of an experiment.\u201d Look at how the second half has to open to match the \u201cwhat\u201d pattern the sentence sets up.",
+  steps: [
+    "After \u201cnot only\u201d comes a noun phrase naming a thing recorded: the result of an experiment.",
+    "After \u201cbut also\u201d the phrase must fill the same slot as an object of \u201crecords.\u201d",
+    "\u201cexactly what steps produced it\u201d is a noun clause, which is a legal object of \u201crecords\u201d and balances the pair.",
+    "Choice D."
+  ],
+  traps: {
+    0: "Grammatical in isolation, which is what makes it tempting, but it repeats \u201cthe\u201d structure without the parallel emphasis the sentence has set up around what is recorded.",
+    1: "Question word order. An interrogative cannot serve as the object of \u201crecords.\u201d",
+    2: "A participial phrase, which matches neither half of the pair."
+  }
+},
+
+{
+  id: "rw077",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>The summers recorded in the monastery's harvest ledgers were noticeably cooler than ______ in the same valley over the past thirty years.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "the ledgers",
+    "those measured",
+    "recently",
+    "they measure"
+  ],
+  answer: 1,
+  strategy: "A comparison has to join two things of the same kind. Say it out loud: X is cooler than Y, then check that Y is the same sort of thing as X.",
+  hint: "Cooler than what? Not cooler than a document, and not cooler than a stretch of time.",
+  steps: [
+    "The first half of the comparison is \u201cthe summers recorded in the ledgers.\u201d",
+    "So the second half has to be summers too.",
+    "\u201cthose measured in the same valley over the past thirty years\u201d means the summers measured recently. Same kind of thing.",
+    "Choice B keeps the comparison parallel."
+  ],
+  traps: {
+    0: "Compares summers with documents. Ledgers cannot be cool, and this is the hard version of the error.",
+    2: "Compares summers with a time period rather than with other summers.",
+    3: "Makes the summers do the measuring and leaves the comparison with no second term."
+  }
+}
+
+);
+
+window.RW_BANK.push(
+
+{
+  id: "rw078",
+  domain: "Information and Ideas",
+  skill: "Central Ideas and Details",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Archaeologists once dated Polynesian settlement of the eastern Pacific to roughly 1,500 years ago, on the strength of charcoal from hearths. Reanalysis by Tui Fa'atoa has moved the date sharply later. Charcoal, she points out, can come from long-dead driftwood, which was already centuries old when it was burned. Dating only short-lived material such as seeds and twigs, her team arrived at settlement dates clustered around 1,000 years ago, and the revised sequence has the islands settled in a single rapid burst rather than a slow drift.</p>",
+  prompt: "Which choice best states the main idea of the text?",
+  choices: [
+    "Fa'atoa's team dated seeds and twigs rather than charcoal.",
+    "Driftwood was a common fuel on newly settled Pacific islands.",
+    "Fa'atoa's team dated more reliable material and produced later settlement dates that imply rapid rather than gradual settlement.",
+    "Charcoal from hearths is worthless as a dating material for Pacific archaeology."
+  ],
+  answer: 2,
+  strategy: "Say the point in your own words before reading the choices. The main idea is the finding plus what the finding changes, not the method on its own.",
+  hint: "The last sentence adds something the earlier ones do not. Whatever you pick has to account for it.",
+  steps: [
+    "The old view: settlement about 1,500 years ago, based on charcoal.",
+    "The problem with charcoal: driftwood was already old when burned, so the dates run too early.",
+    "The fix and the result: date short-lived material, and settlement lands around 1,000 years ago.",
+    "The consequence, in the last sentence: a single rapid burst instead of a slow drift. Choice C carries the result and that consequence."
+  ],
+  traps: {
+    0: "True, and it is the method, not the point. A choice that stops at how the work was done leaves out what the work showed.",
+    1: "A detail that exists only to explain why charcoal misleads. It was never the subject.",
+    3: "Goes further than Fa'atoa does. She says charcoal can mislead about age, not that it carries no information at all."
+  }
+},
+
+{
+  id: "rw079",
+  domain: "Craft and Structure",
+  skill: "Text Structure and Purpose",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Cities have tried for a century to cool themselves with trees. The modern version starts from a measurement: an infrared survey showing which blocks run hottest. Planting follows the map, concentrating canopy where the pavement bakes. Only afterward does anyone ask which species will still be alive in forty years, and in several cities the answer has arrived too late, with whole plantings replaced twice over.</p>",
+  prompt: "Which choice best describes the overall structure of the text?",
+  choices: [
+    "It criticizes a long-standing practice and then proposes a replacement for it.",
+    "It contrasts a historical approach with a modern one and endorses the historical one.",
+    "It describes a sequence of steps and then notes a question that comes too late in that sequence.",
+    "It lists the species most often planted as street trees in order of hardiness."
+  ],
+  answer: 2,
+  strategy: "Map the text one sentence at a time in three or four words each, then find the choice whose sequence matches your map. Structure questions are about order.",
+  hint: "Sentences two and three describe a procedure. Sentence four does something different to it.",
+  steps: [
+    "Sentence 1: the long practice of cooling cities with trees.",
+    "Sentences 2 and 3: the modern procedure, first measure, then plant to the map.",
+    "Sentence 4: the survival question gets asked only afterward, and sometimes too late.",
+    "Procedure, then a question misplaced within it. Choice C."
+  ],
+  traps: {
+    0: "No replacement is proposed anywhere. The text stops at identifying the gap.",
+    1: "There is no endorsement of the older approach, and the text does not set the two eras against each other.",
+    3: "The steps appear in a sequence, but no species are named and nothing is ranked. Right shape, wrong content."
+  }
+},
+
+{
+  id: "rw080",
+  domain: "Craft and Structure",
+  skill: "Text Structure and Purpose",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>In her account of the 1911 mill strike, the historian devotes a full chapter to the weather. Rain on the fourth day, she notes, kept the crowd off the bridge; a cold snap on the ninth emptied the boarding houses. <u>Reviewers accused her of reducing a labor movement to a barometer.</u> But the strike committee's own minutes record the weather at the top of every page, above the day's demands. The organizers were reading the sky as carefully as she does, because a march that nobody could stand outside for was not a march.</p>",
+  prompt: "Which choice best describes the function of the underlined portion in the text as a whole?",
+  choices: [
+    "It raises an objection that the text then answers with evidence from the strikers themselves.",
+    "It provides an example of the weather events described in the previous sentence.",
+    "It concedes a flaw in the historian's account that the author leaves unresolved.",
+    "It summarizes the conclusion that the text ultimately reaches."
+  ],
+  answer: 0,
+  strategy: "For the function of an underlined portion, read the sentence before and the sentence after. The first word after the underline usually tells you what the underline was for.",
+  hint: "The sentence after the underline starts with \u201cBut,\u201d and then cites the strike committee's own minutes.",
+  steps: [
+    "The underlined sentence reports a criticism: she reduced a movement to a barometer.",
+    "The next sentence opens with \u201cBut\u201d and produces the organizers' own minutes, which track the weather too.",
+    "So the criticism was raised in order to be answered, not accepted.",
+    "Choice A names both halves: the objection, and the evidence that answers it."
+  ],
+  traps: {
+    1: "The examples of weather are in the sentence before the underline. This choice describes the wrong sentence.",
+    2: "The author does resolve it, immediately and with evidence. This is the choice you pick if you stop reading at \u201cBut.\u201d",
+    3: "The text's conclusion is that the organizers read the weather as closely as the historian does, which is the opposite of the criticism."
+  }
+},
+
+{
+  id: "rw081",
+  domain: "Information and Ideas",
+  skill: "Inferences",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>A long-running study of a songbird population found that pairs nesting near streetlights laid their eggs, on average, nine days earlier than pairs nesting in darkness. Earlier clutches usually mean more surviving chicks, since food peaks in spring. Yet the lit-area pairs fledged fewer chicks, not more. The caterpillars the parents feed their young emerged on the same schedule as always, whatever the lighting, so the early hatchlings arrived before there was much to feed them. It can therefore be inferred that ______</p>",
+  prompt: "Which choice most logically completes the text?",
+  choices: [
+    "artificial light at night has no measurable effect on the birds' breeding behavior.",
+    "the birds nesting in lit areas would fledge more chicks if they laid their eggs even earlier.",
+    "streetlights shifted the birds' timing without shifting the food supply they depend on.",
+    "caterpillars in lit areas emerge later than caterpillars in dark areas."
+  ],
+  answer: 2,
+  strategy: "An inference is one small step past what you were given. Look for the choice that names the mismatch the text has just set up, without adding a cause the text never mentions.",
+  hint: "Two schedules are described. Only one of them moved.",
+  steps: [
+    "The lights moved the laying date nine days earlier.",
+    "The caterpillars emerged on their usual schedule, unaffected by lighting.",
+    "So the chicks hatched before the food arrived, and fewer survived.",
+    "The supported step is that one schedule shifted and the other did not. Choice C."
+  ],
+  traps: {
+    0: "Contradicted outright. The lights moved laying dates by nine days.",
+    1: "Invents a remedy the text gives no basis for. Laying even earlier would widen the very gap that is killing the chicks.",
+    3: "Reverses what the text says. The caterpillars emerged on the same schedule whatever the lighting."
+  }
+},
+
+{
+  id: "rw082",
+  domain: "Expression of Ideas",
+  skill: "Rhetorical Synthesis",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>While researching a topic, a student has taken the following notes:</p><ul><li>A city replaced the asphalt on twelve streets with a lighter-colored surface.</li><li>Surface temperatures on the treated streets fell by up to 12&deg;F at midday.</li><li>Air temperature at head height barely changed.</li><li>Lighter surfaces reflect sunlight upward rather than absorbing it.</li><li>Pedestrians reported feeling hotter on the treated streets.</li></ul>",
+  prompt: "The student wants to explain why pedestrians felt hotter despite the lower surface temperatures. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  choices: [
+    "Surface temperatures on the twelve treated streets fell by as much as 12\u00b0F at midday, though air temperature at head height barely changed.",
+    "Because a lighter surface reflects sunlight upward instead of absorbing it, the cooler pavement sent more sunlight at the people walking on it.",
+    "The city replaced the asphalt on twelve streets with a lighter-colored surface, and pedestrians reported feeling hotter.",
+    "Air temperature at head height barely changed on the streets that had been resurfaced."
+  ],
+  answer: 1,
+  strategy: "\u201cExplain why\u201d needs a mechanism. Find the note that could act as a cause, and check it actually explains the specific thing being asked about.",
+  hint: "One note describes what a light surface physically does to sunlight. That is the only candidate for a cause.",
+  steps: [
+    "The thing to explain: cooler pavement, hotter pedestrians.",
+    "Scan the notes for something that could cause it. Only one is a mechanism: light surfaces reflect sunlight upward instead of absorbing it.",
+    "Upward reflection puts more sunlight on the person walking, which explains feeling hotter even as the ground cools.",
+    "Choice B pairs that mechanism with the effect. Correct."
+  ],
+  traps: {
+    0: "Accurately reports both measurements and explains neither. Stating the puzzle again is not solving it.",
+    2: "Pairs the intervention with the complaint and leaves the why entirely open.",
+    3: "One measurement, no cause, and it does not even mention the pedestrians."
+  }
+},
+
+{
+  id: "rw083",
+  domain: "Expression of Ideas",
+  skill: "Rhetorical Synthesis",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>While researching a topic, a student has taken the following notes:</p><ul><li>A library began lending out tools alongside books in 2019.</li><li>Borrowing a tool requires the same library card as a book.</li><li>In the first year, 4,100 tool loans were recorded.</li><li>Circulation of print books rose 14 percent in the same year.</li><li>Staff attribute the book increase to first-time card holders who came for tools.</li></ul>",
+  prompt: "The student wants to explain why print book circulation rose. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+  choices: [
+    "Print book circulation rose 14 percent in the first year of the tool lending program.",
+    "The library recorded 4,100 tool loans in the first year of the program.",
+    "Borrowing a tool from the library requires the same card as borrowing a book.",
+    "Because tools and books need the same card, people who joined for tools became book borrowers too, and print circulation rose 14 percent."
+  ],
+  answer: 3,
+  strategy: "The goal asks why, so the answer needs a cause and the effect together. A choice with only the effect restates the question.",
+  hint: "What connects tools to books? One note explains the link, and another names who did the borrowing.",
+  steps: [
+    "The effect to explain: print circulation up 14 percent.",
+    "The link: tools and books use the same card, so a tool borrower is already a library member.",
+    "The staff explanation: first-time card holders came for tools and borrowed books as well.",
+    "Choice D chains the cause to the effect. Correct."
+  ],
+  traps: {
+    0: "This is the effect on its own. Repeating what needs explaining is not an explanation.",
+    1: "A true figure about tools that says nothing about books.",
+    2: "The mechanism with no outcome attached, so it never reaches what the goal asked for."
+  }
+},
+
+{
+  id: "rw084",
+  domain: "Information and Ideas",
+  skill: "Command of Evidence (Quantitative)",
+  difficulty: "M",
+  type: "mc",
+  figure: "<table class=\'data\'><tr><th>Depth</th><th>Species A: individuals per net</th><th>Species B: individuals per net</th></tr><tr><td>50 m</td><td>31</td><td>4</td></tr><tr><td>150 m</td><td>22</td><td>9</td></tr><tr><td>300 m</td><td>8</td><td>26</td></tr><tr><td>600 m</td><td>2</td><td>33</td></tr></table>",
+  figcap: "Catch per net for two squid species at four depths",
+  passage: "<p>Two related squid species were sampled with identical nets at four depths. The researchers concluded that the two species divide the water column between them, with one favoring shallow water and the other the deep, and pointed out that ______</p>",
+  prompt: "Which choice most effectively uses data from the table to complete the statement?",
+  choices: [
+    "at 600 m, 33 individuals of species B were caught per net, the highest figure in the table.",
+    "species A was caught at every depth sampled, from 50 m down to 600 m.",
+    "at 50 m species A outnumbered species B by 31 to 4, while at 600 m species B outnumbered species A by 33 to 2.",
+    "at 150 m species A was more numerous than species B, by 22 to 9."
+  ],
+  answer: 2,
+  strategy: "A claim about two things dividing something up needs both of them, at both ends. One number, or one depth, cannot show a division.",
+  hint: "The conclusion has two halves: one species shallow, the other deep. Both halves need numbers.",
+  steps: [
+    "The conclusion says the species split the water column, shallow versus deep.",
+    "So the evidence needs both species at a shallow depth and both at a deep one.",
+    "At 50 m it is 31 to 4 in favor of A; at 600 m it is 33 to 2 in favor of B.",
+    "Choice C reports both reversals, which is exactly the division claimed."
+  ],
+  traps: {
+    0: "A single maximum. It shows species B likes the deep and says nothing about species A or about a division.",
+    1: "True, and it argues against a clean division rather than for one.",
+    3: "A middle depth where the gap is narrow. It shows one species ahead at one depth, not a reversal across the column."
+  }
+}
+
+);
+
+window.RW_BANK.push(
+
+{
+  id: "rw085",
+  domain: "Standard English Conventions",
+  skill: "Boundaries",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Honeyguide birds lead human foragers to wild beehives and wait for the comb to be opened. The arrangement is genuinely mutual ______ the birds get wax they cannot reach alone, and the foragers find hives they would otherwise walk past.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "mutual:",
+    "mutual,",
+    "mutual",
+    "mutual, and,"
+  ],
+  answer: 0,
+  strategy: "A colon can join a complete sentence to the explanation that follows it. Check that everything before the colon stands alone, then check that what follows explains it.",
+  hint: "What comes after the blank explains what \u201cgenuinely mutual\u201d means.",
+  steps: [
+    "Left side: \u201cThe arrangement is genuinely mutual.\u201d Complete on its own.",
+    "What follows spells out the mutual part: each side gets something.",
+    "A complete sentence followed by its own explanation takes a colon.",
+    "Choice A is correct."
+  ],
+  traps: {
+    1: "A comma alone between two complete thoughts is a comma splice, and this one reads smoothly enough to slip past.",
+    2: "No punctuation at all runs the explanation into the clause.",
+    3: "The comma before \u201cand\u201d is fine; the one after it is not."
+  }
+},
+
+{
+  id: "rw086",
+  domain: "Craft and Structure",
+  skill: "Text Structure and Purpose",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>The company's engineers reported the bridge's unusual sway to their managers within a month of opening. <u>The memo they wrote is three paragraphs long and contains no recommendation.</u> Its authors had been told, in a meeting no minutes record, that the client would not fund a redesign. Read against that instruction, the memo's flatness looks less like indifference than like a document written by people who knew what they were not allowed to ask for.</p>",
+  prompt: "Which choice best describes the function of the underlined portion in the text as a whole?",
+  choices: [
+    "It provides an example of the sway the engineers had observed.",
+    "It states a feature of the memo that the text goes on to reinterpret.",
+    "It identifies the managers who declined to fund a redesign.",
+    "It explains why the client refused to pay for the work."
+  ],
+  answer: 1,
+  strategy: "When a later sentence tells you how to read an earlier one, the earlier one was set up to be reinterpreted. Ask what the text does with the detail, not just what the detail is.",
+  hint: "The last sentence tells you to read the memo's flatness a particular way. What is it reinterpreting?",
+  steps: [
+    "The underlined sentence reports a plain feature: the memo is short and recommends nothing.",
+    "The next sentence supplies the missing context, an instruction given off the record.",
+    "The final sentence rereads that same flatness as constraint rather than indifference.",
+    "So the feature was stated in order to be reinterpreted. Choice B."
+  ],
+  traps: {
+    0: "The sway is in the sentence before the underline. This choice describes the wrong sentence.",
+    2: "No managers are named anywhere, and the underlined sentence is about the memo, not about people.",
+    3: "The text never explains the client's reasoning. It only reports that the engineers were told about it."
+  }
+},
+
+{
+  id: "rw087",
+  domain: "Information and Ideas",
+  skill: "Inferences",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>A hospital cut its rate of central-line infections by more than half in eighteen months. The intervention was a five-item checklist that nurses were authorized to enforce, stopping a procedure if any step was skipped. A later review found that every item on the list had already been standard practice, written into the hospital's own protocols years earlier. What changed was that a nurse could now halt a senior physician. It can therefore be inferred that ______</p>",
+  prompt: "Which choice most logically completes the text?",
+  choices: [
+    "the five items on the checklist were more effective than the hospital's earlier protocols.",
+    "central-line infections cannot be reduced without a written checklist.",
+    "the hospital's earlier protocols had been written by people unfamiliar with the procedure.",
+    "the gain came from who was permitted to enforce the steps rather than from the steps themselves."
+  ],
+  answer: 3,
+  strategy: "When a text tells you a change did not come from the obvious place, the inference names where it did come from. Find the one thing that actually differed.",
+  hint: "The items were not new. The sentence before the blank tells you what was.",
+  steps: [
+    "The items on the checklist were already standard practice and already written down.",
+    "So the content of the list cannot be what changed the outcome.",
+    "The one new thing was the authority: a nurse could stop a senior physician.",
+    "The supported inference is that enforcement, not content, produced the gain. Choice D."
+  ],
+  traps: {
+    0: "The review found the items were identical to existing protocol, so they cannot have been more effective as content.",
+    1: "Far too strong. One hospital's result says nothing about what is impossible elsewhere.",
+    2: "Invents a reason nobody gives. The text says the protocols existed and were correct, not that they were written badly."
+  }
+}
+
 );
 
 /* stamp the section onto every item */
