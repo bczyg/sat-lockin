@@ -1,24 +1,26 @@
 # Applies db/schema.sql to Railway Postgres.
 #
-# The server already applies the schema on boot, so this workflow is not
-# required. It exists for when you would rather migrations were an explicit,
-# logged step you can see and re-run, instead of something that happens
-# invisibly at startup.
+# You do not need this. The server applies the schema on boot, so attaching
+# the database is the whole setup. This exists for when you would rather
+# migrations were an explicit, logged step you can see and re-run.
 #
-# One setup step, and one detail that catches everyone:
+# SETUP: one connection string, from Railway to GitHub.
 #
-#   Railway gives Postgres two connection strings. DATABASE_URL points at
+#   Railway gives Postgres two of them. DATABASE_URL points at
 #   postgres.railway.internal, which only resolves inside Railway's private
-#   network, so GitHub cannot reach it. You need DATABASE_PUBLIC_URL, the
-#   TCP proxy address.
+#   network, so GitHub cannot reach it. You want DATABASE_PUBLIC_URL, the TCP
+#   proxy address.
 #
 #   In Railway: Postgres service -> Variables -> copy DATABASE_PUBLIC_URL
-#   In GitHub:  Settings -> Secrets and variables -> Actions -> New secret
+#   In GitHub:  Settings -> Secrets and variables -> Actions
+#               -> Secrets tab -> New repository secret
 #               Name: DATABASE_PUBLIC_URL
 #
-# The schema is written to be safe to run repeatedly: every statement is
-# create table if not exists, create index if not exists, or create extension
-# if not exists. Re-running it changes nothing.
+#   That page holds both Secrets and Variables. Either tab works here, since
+#   this workflow looks in both, but Secrets is the right home for a
+#   connection string because it contains a password.
+#
+# The schema is safe to run repeatedly: every statement is "if not exists".
 name: schema
 
 on:
@@ -35,18 +37,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the secret is present
-        env:
-          DATABASE_PUBLIC_URL: ${{ secrets.DATABASE_PUBLIC_URL }}
-        run: |
-          if [ -z "$DATABASE_PUBLIC_URL" ]; then
-            echo "::error::DATABASE_PUBLIC_URL is not set. Copy it from the Railway Postgres service"
-            echo "::error::(Variables tab) into GitHub Settings -> Secrets and variables -> Actions."
-            echo "::error::Use DATABASE_PUBLIC_URL, not DATABASE_URL: the internal host is not"
-            echo "::error::reachable from GitHub."
-            exit 1
-          fi
-
       - name: Install the Postgres client
         run: |
           sudo apt-get update -qq
@@ -54,28 +44,71 @@ jobs:
 
       - name: Apply the schema
         env:
-          PGCONN: ${{ secrets.DATABASE_PUBLIC_URL }}
+          # Looked for in four places so it works wherever you put it.
+          # Values are never printed, only whether each one is set.
+          SEC_PUBLIC: ${{ secrets.DATABASE_PUBLIC_URL }}
+          VAR_PUBLIC: ${{ vars.DATABASE_PUBLIC_URL }}
+          SEC_URL: ${{ secrets.DATABASE_URL }}
+          VAR_URL: ${{ vars.DATABASE_URL }}
         run: |
-          psql "$PGCONN" -v ON_ERROR_STOP=1 -f db/schema.sql
-          echo "schema applied"
+          set -euo pipefail
 
-      - name: Report the tables
-        env:
-          PGCONN: ${{ secrets.DATABASE_PUBLIC_URL }}
-        run: |
+          echo "Looking for a connection string:"
+          for pair in "SEC_PUBLIC:secret DATABASE_PUBLIC_URL" \
+                      "VAR_PUBLIC:variable DATABASE_PUBLIC_URL" \
+                      "SEC_URL:secret DATABASE_URL" \
+                      "VAR_URL:variable DATABASE_URL"; do
+            name="${pair%%:*}"; label="${pair#*:}"
+            value="${!name:-}"
+            if [ -n "$value" ]; then
+              echo "  found: $label (${#value} characters)"
+            else
+              echo "  not set: $label"
+            fi
+          done
+
+          CONN="${SEC_PUBLIC:-}"
+          [ -z "$CONN" ] && CONN="${VAR_PUBLIC:-}"
+          [ -z "$CONN" ] && CONN="${SEC_URL:-}"
+          [ -z "$CONN" ] && CONN="${VAR_URL:-}"
+
+          if [ -z "$CONN" ]; then
+            echo "::error::No connection string found in this repository."
+            echo "::error::Copy DATABASE_PUBLIC_URL from the Railway Postgres service"
+            echo "::error::(Variables tab) into GitHub: Settings -> Secrets and variables"
+            echo "::error::-> Actions -> Secrets -> New repository secret, named"
+            echo "::error::DATABASE_PUBLIC_URL. If you added it in Railway instead, that"
+            echo "::error::configures the app, not this workflow. GitHub needs its own copy."
+            exit 1
+          fi
+
+          # Mask it whatever its source, so a variable-sourced URL is not logged.
+          echo "::add-mask::$CONN"
+
+          if printf '%s' "$CONN" | grep -q 'railway\.internal'; then
+            echo "::error::That connection string points at postgres.railway.internal,"
+            echo "::error::which only resolves inside Railway's private network. GitHub"
+            echo "::error::cannot reach it. Use DATABASE_PUBLIC_URL instead: Railway ->"
+            echo "::error::Postgres service -> Variables -> DATABASE_PUBLIC_URL."
+            exit 1
+          fi
+
+          echo "Applying db/schema.sql"
+          psql "$CONN" -v ON_ERROR_STOP=1 -f db/schema.sql
+          echo "done"
+
           {
             echo "### Schema applied"
             echo ""
             echo "| table | columns | rows |"
             echo "|---|---|---|"
-            psql "$PGCONN" -At -F '|' -c "
+            psql "$CONN" -At -c "
               select '| ' || c.relname
                      || ' | ' || (select count(*) from information_schema.columns
                                    where table_schema='public' and table_name=c.relname)
                      || ' | ' || coalesce(s.n_live_tup, 0) || ' |'
                 from pg_class c
                 left join pg_stat_user_tables s on s.relname = c.relname
-               where c.relkind='r'
-                 and c.relnamespace = 'public'::regnamespace
+               where c.relkind='r' and c.relnamespace='public'::regnamespace
                order by c.relname;"
           } >> "$GITHUB_STEP_SUMMARY"
