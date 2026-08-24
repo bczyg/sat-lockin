@@ -38,6 +38,7 @@ create table if not exists login_codes (
   attempts    int not null default 0,
   created_at  timestamptz not null default now()
 );
+create index if not exists login_codes_expiry_idx on login_codes (expires_at);
 
 -- ---------- sessions ----------
 -- Only the hash of the token is stored, so a database leak cannot be
@@ -49,6 +50,8 @@ create table if not exists sessions (
   expires_at  timestamptz not null
 );
 create index if not exists sessions_user_idx on sessions (user_id);
+-- the boot-time sweep deletes expired rows, so give it an index to use
+create index if not exists sessions_expiry_idx on sessions (expires_at);
 
 -- ---------- classes ----------
 create table if not exists classes (
