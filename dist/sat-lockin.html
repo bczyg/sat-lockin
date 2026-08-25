@@ -760,6 +760,157 @@ body{background:var(--shell-bg)}
 .home .mission .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
 .home .mission .btn.ghost:hover{background:rgba(255,255,255,.16);color:#fff;border-color:#fff}
 
+/* ---- logging a practice test ---- */
+.mode-card.log .icon{background:var(--brand-soft)}
+.log-group{margin:16px 0}
+.log-dom{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--shell-soft);margin-bottom:8px}
+.log-opts{display:flex;flex-wrap:wrap;gap:8px}
+.log-opts.col{flex-direction:column;flex-wrap:nowrap}
+.log-opt{
+  border:1.5px solid var(--shell-line);background:#fff;border-radius:10px;
+  padding:9px 14px;font-family:var(--body);font-size:14.5px;color:var(--shell-ink);text-align:left;
+  transition:border-color .1s ease,background .1s ease;
+}
+.log-opt:hover{border-color:var(--brand);background:var(--brand-soft)}
+.log-opt.wide{display:flex;flex-direction:column;gap:3px;padding:13px 16px;width:100%}
+.log-opt.wide .lo-felt{font-size:15px;line-height:1.4}
+.log-opt.wide .lo-name{font-size:12px;color:var(--shell-soft);font-weight:600}
+.log-opt.wide:hover .lo-name{color:var(--brand)}
+.log-opt.alt{border-style:dashed}
+.log-opt.alt:hover{border-color:var(--spot-dark);background:var(--spot-soft)}
+
+/* ============================================================
+   LANDING PAGE
+   The one place in the app that argues rather than drills, so it gets
+   larger type and more room. The exam screens stay untouched.
+   ============================================================ */
+.landing{max-width:1000px}
+.lead-mark{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-.03em;padding:34px 0 0}
+.lead-mark span{color:var(--brand)}
+.lead{padding:44px 0 30px;max-width:44ch}
+.lead h1{
+  font-family:var(--display);font-size:clamp(34px,5.2vw,54px);font-weight:800;
+  letter-spacing:-.035em;line-height:1.04;text-wrap:balance;
+}
+.lead h1 span{color:var(--brand)}
+.lead-sub{font-size:17.5px;line-height:1.6;color:var(--shell-soft);margin-top:20px;max-width:60ch}
+
+/* the live question */
+.demo{
+  background:#fff;border:1px solid var(--shell-line);border-radius:var(--r-lg);
+  padding:26px 28px;margin:8px 0 30px;
+}
+.demo-tag{
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--brand);margin-bottom:12px;
+}
+.demo-q{font-size:17px;line-height:1.5;font-weight:600;margin-bottom:18px}
+.demo-choices{display:flex;flex-direction:column;gap:9px;max-width:520px}
+.demo-choice{
+  display:flex;gap:12px;align-items:center;text-align:left;
+  border:2px solid var(--shell-line);background:#fff;border-radius:10px;
+  padding:11px 14px;font-family:var(--body);font-size:16px;color:var(--shell-ink);
+}
+.demo-choice:hover{border-color:var(--brand);background:var(--brand-soft)}
+.demo-choice .ltr{
+  flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--shell-ink);
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;
+}
+.demo-choice.right{border-color:var(--green);background:var(--green-soft)}
+.demo-choice.right .ltr{background:var(--green);border-color:var(--green);color:#fff}
+.demo-choice.wrong{border-color:var(--red);background:var(--red-soft)}
+.demo-choice.wrong .ltr{background:var(--red);border-color:var(--red);color:#fff}
+.demo-choice.dim{opacity:.5}
+.demo-note{font-size:14px;color:var(--shell-soft);margin:16px 0 0}
+.demo-reveal{
+  margin-top:20px;padding:18px 20px;background:var(--brand-soft);
+  border-radius:12px;border-left:4px solid var(--brand);
+}
+.demo-reveal p{margin:0 0 11px;font-size:15.5px;line-height:1.6;color:var(--brand-ink)}
+.demo-reveal p:last-child{margin-bottom:0}
+.demo-actions{margin-top:16px}
+.demo-actions .btn{background:#fff;color:var(--shell-soft);border-color:var(--shell-line)}
+.demo-actions .btn:hover{background:var(--shell-bg);color:var(--shell-ink)}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.two-col h3{margin-bottom:8px}
+@media (max-width:700px){ .two-col{grid-template-columns:1fr} }
+
+.auth-inline{display:flex;justify-content:center;margin-top:6px}
+.auth-inline .auth-card{box-shadow:none;border:1px solid var(--shell-line)}
+
+/* ============================================================
+   STRATEGY CARDS
+   Warm on purpose. Missing a card is the normal case here, so nothing
+   in this palette should read as a warning.
+   ============================================================ */
+.mode-card.cards .icon{background:var(--spot-soft)}
+.mode-card.cards .icon .ic{color:var(--spot-dark)}
+
+.prog-wrap{display:flex;gap:26px;align-items:center;background:#fff;border:1px solid var(--shell-line);
+  border-radius:var(--r-lg);padding:24px 26px;margin:18px 0 20px;flex-wrap:wrap}
+.ring{
+  --pct:0;
+  flex:none;width:104px;height:104px;border-radius:50%;
+  background:conic-gradient(var(--brand) calc(var(--pct) * 1%), var(--shell-bg) 0);
+  display:grid;place-items:center;
+}
+.ring-in{width:80px;height:80px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
+.ring-n{font-family:var(--display);font-size:29px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.ring-of{font-size:11.5px;color:var(--shell-soft);margin-top:1px}
+.prog-text{flex:1;min-width:240px}
+.prog-text h3{font-size:19px;margin-bottom:6px}
+.prog-text p{margin:0;font-size:14.5px}
+.prog-run{margin-top:8px !important;color:var(--brand);font-weight:600;font-size:13.5px}
+
+.card.cheer{background:linear-gradient(180deg,#fff,var(--brand-soft))}
+
+.flash{
+  background:#fff;border:1px solid var(--shell-line);border-radius:var(--r-lg);
+  padding:40px 32px;text-align:center;margin-bottom:20px;
+}
+.flash-cue{font-size:17px;color:var(--shell-soft);line-height:1.5}
+.flash-cue strong{color:var(--shell-ink)}
+.flash-ask{font-family:var(--display);font-size:clamp(24px,3.6vw,34px);font-weight:800;
+  letter-spacing:-.03em;margin-top:10px}
+.flash-hint{font-size:13px;color:var(--shell-soft);margin:18px auto 0;max-width:52ch;line-height:1.55}
+.flash-answer{margin-top:26px;padding:22px;background:var(--brand-soft);border-radius:14px;text-align:left}
+.fa-name{font-family:var(--display);font-size:23px;font-weight:800;letter-spacing:-.02em;color:var(--brand-ink)}
+.fa-move{font-size:16px;line-height:1.6;margin:10px 0 0;color:var(--shell-ink)}
+.fa-why{font-size:14px;line-height:1.6;margin:10px 0 0;color:var(--shell-soft)}
+.flash-rate{display:flex;gap:9px;justify-content:center;align-items:center;margin-top:22px;flex-wrap:wrap}
+.fr-q{font-size:14px;color:var(--shell-soft);margin-right:6px}
+.fr-btn{
+  border:2px solid var(--shell-line);background:#fff;border-radius:999px;
+  padding:10px 20px;font-family:var(--body);font-size:14.5px;font-weight:700;color:var(--shell-ink);
+}
+.fr-btn.good:hover{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.fr-btn.mid:hover{border-color:var(--spot-dark);background:var(--spot-soft);color:var(--spot-dark)}
+.fr-btn.no:hover{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-ink)}
+
+.cheer-toast{
+  background:var(--spot-soft);border:1px solid var(--spot-line);color:var(--spot-dark);
+  border-radius:999px;padding:11px 20px;font-size:14.5px;font-weight:600;
+  text-align:center;margin:0 auto 20px;max-width:520px;
+}
+
+.deck-sec{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--shell-soft);margin:16px 0 8px}
+.deck-sec:first-child{margin-top:0}
+.deck-row{display:grid;grid-template-columns:1fr 92px 84px;gap:12px;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--shell-line);font-size:14.5px}
+.deck-row:last-child{border-bottom:none}
+.boxes{display:flex;gap:4px}
+.bx{width:14px;height:8px;border-radius:2px;background:var(--shell-bg);border:1px solid var(--shell-line)}
+.bx.on{background:var(--brand);border-color:var(--brand)}
+.bx.lock{background:var(--green);border-color:var(--green)}
+.deck-row .n{text-align:right;font-size:12px}
+@media (max-width:640px){
+  .deck-row{grid-template-columns:1fr 92px}
+  .deck-row .n{display:none}
+}
+
 </style>
 <div id="shell"></div>
 
@@ -5559,140 +5710,182 @@ window.TRAPS = {
   /* --- scope --- */
   'extreme':        { fam:'scope', name:'Too strong',
     tell:'Watch for only, never, all, none, entirely, proves, at all, in every respect.',
-    fix:'SAT texts hedge. When you see an absolute word, go back and check whether the text really goes that far.' },
+    fix:'SAT texts hedge. When you see an absolute word, go back and check whether the text really goes that far.',
+    felt:'The choice I picked said something absolute, like only, never or all' },
   'too-narrow':     { fam:'scope', name:'A detail pretending to be the point',
     tell:'A true, specific detail offered to you as the main idea.',
-    fix:'Ask whether the choice covers the whole text, especially the last sentence.' },
+    fix:'Ask whether the choice covers the whole text, especially the last sentence.',
+    felt:'I picked a true detail from the text instead of the overall point' },
   'not-in-text':    { fam:'scope', name:'Made up',
     tell:'It sounds like something the passage would say, but no sentence actually says it.',
-    fix:'Point at the line. If your finger has nowhere to go, cross it off.' },
+    fix:'Point at the line. If your finger has nowhere to go, cross it off.',
+    felt:'It sounded like something the passage would say, but I cannot find where it says it' },
   'unstated-cause': { fam:'scope', name:'An invented reason',
     tell:'It slides from a fact to a motive, a need, or an intention the text never gives you.',
-    fix:'Keep what happened separate from why. The text has to hand you the why.' },
+    fix:'Keep what happened separate from why. The text has to hand you the why.',
+    felt:'I picked a reason or motive the text never actually gave' },
   'contradicts':    { fam:'scope', name:'The text says the opposite',
     tell:'It often reuses the passage words while flipping what they meant.',
-    fix:'Familiar wording is not evidence. Check the claim against the sentence it came from.' },
+    fix:'Familiar wording is not evidence. Check the claim against the sentence it came from.',
+    felt:'It used words from the passage, so I trusted it without checking' },
 
   /* --- partial --- */
   'half-right':     { fam:'partial', name:'Half right',
     tell:'It nails one thing the question asked for and quietly misses another.',
-    fix:'Split the task into parts and tick off every part before you commit.' },
+    fix:'Split the task into parts and tick off every part before you commit.',
+    felt:'The first half of my choice was right and I stopped reading there' },
   'one-sided':      { fam:'partial', name:'Only one side',
     tell:'One group, one year, or one species when the claim needs two.',
-    fix:'If the claim compares two things, your answer needs both of them in it.' },
+    fix:'If the claim compares two things, your answer needs both of them in it.',
+    felt:'My choice only covered one side of a comparison' },
   'restates':       { fam:'partial', name:'Repeats instead of explains',
     tell:'It tells you the result again when the question asked why it happened.',
-    fix:'"Explain why" needs a mechanism. Saying the effect twice is not a cause.' },
+    fix:'"Explain why" needs a mechanism. Saying the effect twice is not a cause.',
+    felt:'I picked something that repeated the result instead of explaining why' },
   'one-step-short': { fam:'partial', name:'One step short',
     tell:'A real number from the correct work, just not the final one.',
-    fix:'Ask "am I done?" and re-read the last line of the question before you commit.' },
+    fix:'Ask "am I done?" and re-read the last line of the question before you commit.',
+    felt:'I did the work right but stopped one step early' },
   'wrong-target':   { fam:'partial', name:'Answered a different question',
     tell:'Perfect work, wrong thing reported. x instead of x + y. The vertex x instead of the minimum value. The rate instead of the time.',
-    fix:'Circle what is being asked for before you solve, then check your answer against that circle.' },
+    fix:'Circle what is being asked for before you solve, then check your answer against that circle.',
+    felt:'My math was right but I answered for the wrong quantity' },
 
   /* --- direction --- */
   'reversed':       { fam:'direction', name:'Backwards',
     tell:'Right relationship, wrong way round. Cause and effect swapped, or a rise read as a fall.',
-    fix:'Say it as an arrow, A causes B, then check which way the text points it.' },
+    fix:'Say it as an arrow, A causes B, then check which way the text points it.',
+    felt:'I had the right idea but backwards' },
   'opposite-task':  { fam:'direction', name:'Does the opposite job',
     tell:'It supports when you were asked to weaken, or gives the rival theory prediction.',
-    fix:'Underline the task word. On a weaken question, expect a strengthener sitting in the choices.' },
+    fix:'Underline the task word. On a weaken question, expect a strengthener sitting in the choices.',
+    felt:'I supported the claim when the question asked me to weaken it, or the reverse' },
   'wrong-relationship': { fam:'direction', name:'Wrong kind of link',
     tell:'A transition of the wrong type. Contrast where the logic is causal, example where it is opposition.',
-    fix:'Name the relationship in plain words before you read the four transition words.' },
+    fix:'Name the relationship in plain words before you read the four transition words.',
+    felt:'I picked the wrong kind of transition, like contrast where it was cause' },
   'wrong-order':    { fam:'direction', name:'Right pieces, wrong order',
     tell:'The moves of the text, or the steps of a composition, in the wrong sequence.',
-    fix:'Structure questions are about order. Compose from the inside out, and map the text in order.' },
+    fix:'Structure questions are about order. Compose from the inside out, and map the text in order.',
+    felt:'I did the steps in the wrong order' },
   'flipped-ratio':  { fam:'direction', name:'Upside-down fraction',
     tell:'Run over rise. 15/12 instead of 12/15. The reciprocal of the ratio you want.',
-    fix:'Say the numerator and denominator out loud. Sine and cosine can never be bigger than 1.' },
+    fix:'Say the numerator and denominator out loud. Sine and cosine can never be bigger than 1.',
+    felt:'I flipped the fraction, or used the reciprocal' },
   'sign-slip':      { fam:'direction', name:'Sign error',
     tell:'The right size number with the wrong sign, or a negative dropped while distributing.',
-    fix:'Substitute in parentheses, and check one value back in the original equation.' },
+    fix:'Substitute in parentheses, and check one value back in the original equation.',
+    felt:'I lost a negative sign somewhere' },
 
   /* --- referent --- */
   'true-but-irrelevant': { fam:'referent', name:'True but beside the point',
     tell:'A correct statement that does not do the job you were asked to do.',
-    fix:'Ask "does this accomplish the task?" rather than "is this true?"' },
+    fix:'Ask "does this accomplish the task?" rather than "is this true?"',
+    felt:'My choice was true but it did not do what the question asked' },
   'wrong-actor':    { fam:'referent', name:'Wrong person or wrong sentence',
     tell:'The right action done by the wrong thing, or a description of a different part of the text.',
-    fix:'Check the subject of the choice against the subject in the text.' },
+    fix:'Check the subject of the choice against the subject in the text.',
+    felt:'It described the right thing happening to the wrong person or sentence' },
   'dictionary-default': { fam:'referent', name:'The everyday meaning',
     tell:'Money for "economy". Material for "plastic". The first meaning that comes to mind.',
-    fix:'Your own word from the sentence beats the dictionary every time.' },
+    fix:'Your own word from the sentence beats the dictionary every time.',
+    felt:'I went with the everyday meaning of the word' },
   'close-but-off':  { fam:'referent', name:'Nearly right',
     tell:'The right neighborhood of meaning with the wrong emphasis. Practicality for spareness, provisional for malleable.',
-    fix:'Put your two finalists next to the text, word by word, rather than next to each other.' },
+    fix:'Put your two finalists next to the text, word by word, rather than next to each other.',
+    felt:'I was down to two and picked the one that was nearly right' },
   'misread-data':   { fam:'referent', name:'Misread the chart',
     tell:'Wrong row, wrong group, "more" and "less" flipped, or a difference that turns out to be a tie.',
-    fix:'Recompute the comparison from the numbers. Never accept a ranking you did not check.' },
+    fix:'Recompute the comparison from the numbers. Never accept a ranking you did not check.',
+    felt:'I read the wrong row, column or group on the graph or table' },
   'wrong-denominator': { fam:'referent', name:'Wrong denominator',
     tell:'It uses the whole table when the question narrowed you to one column, or the sale price instead of the original.',
-    fix:'Whatever follows "if" sets the denominator, and percent change divides by the original.' },
+    fix:'Whatever follows "if" sets the denominator, and percent change divides by the original.',
+    felt:'I divided by the wrong total' },
 
   /* --- mechanics --- */
   'comma-splice':   { fam:'mechanics', name:'Comma splice',
     tell:'Two complete sentences held together by nothing but a comma.',
-    fix:'Complete plus complete needs a period, a semicolon, or a comma plus and, but, or, so.' },
+    fix:'Complete plus complete needs a period, a semicolon, or a comma plus and, but, or, so.',
+    felt:'I joined two full sentences with just a comma' },
   'wrong-mark':     { fam:'mechanics', name:'Wrong mark for the job',
     tell:'A real punctuation mark used where the structure needs a different one. A comma before a list, a semicolon before a fragment.',
-    fix:'Work out what is on each side first: sentence, list, or fragment. That tells you the mark.' },
+    fix:'Work out what is on each side first: sentence, list, or fragment. That tells you the mark.',
+    felt:'I picked the wrong punctuation mark for the job' },
   'unpaired':       { fam:'mechanics', name:'Unpaired punctuation',
     tell:'A dash closed off with a comma, or an interrupter that opens and never closes.',
-    fix:'Punctuation comes in pairs. Find the opening mark before you pick the closing one.' },
+    fix:'Punctuation comes in pairs. Find the opening mark before you pick the closing one.',
+    felt:'I mismatched the punctuation pair, like closing a dash with a comma' },
   'split-subject-verb': { fam:'mechanics', name:'Subject cut off from its verb',
     tell:'A lone comma or dash sitting between a long subject and its verb.',
-    fix:'Strip the modifiers and put the subject next to its verb. Nothing goes between them.' },
+    fix:'Strip the modifiers and put the subject next to its verb. Nothing goes between them.',
+    felt:'I put a comma between the subject and its verb' },
   'agreement-by-ear': { fam:'mechanics', name:'Agreement by ear',
     tell:'The verb matches the nearest noun, or the head count of a collective noun, instead of the real subject.',
-    fix:'Cross out every "of" phrase, then match the verb to whatever is left.' },
+    fix:'Cross out every "of" phrase, then match the verb to whatever is left.',
+    felt:'I matched the verb to the nearest noun instead of the real subject' },
   'wrong-tense':    { fam:'mechanics', name:'Tense or mood mismatch',
     tell:'A verb form fighting the time markers in the sentence, or an ordinary verb where the subjunctive belongs.',
-    fix:'Let the time markers decide. After recommend, require, or insist that, use the base form.' },
+    fix:'Let the time markers decide. After recommend, require, or insist that, use the base form.',
+    felt:'I picked the wrong verb tense or form' },
   'possessive-count': { fam:'mechanics', name:'Apostrophe in the wrong place',
     tell:'A singular possessive when there are two owners, or a plural with no possessive at all.',
-    fix:'Ask how many owners, then whether they own something. Two owners means apostrophe after the s.' },
+    fix:'Ask how many owners, then whether they own something. Two owners means apostrophe after the s.',
+    felt:'I put the apostrophe in the wrong place for the number of owners' },
   'dangling':       { fam:'mechanics', name:'Dangling modifier',
     tell:'An opening phrase describing an action the following subject could not possibly do.',
-    fix:'Name the subject right after the comma and check that it can actually do what the phrase describes.' },
+    fix:'Name the subject right after the comma and check that it can actually do what the phrase describes.',
+    felt:'The opening phrase did not match the subject that followed it' },
   'unparallel':     { fam:'mechanics', name:'Mismatched pair',
     tell:'The second half of "not only ... but also," or one item in a list, in a different grammatical form.',
-    fix:'Write the two halves next to each other and match their shapes.' },
+    fix:'Write the two halves next to each other and match their shapes.',
+    felt:'The two halves of the sentence did not match in form' },
   'illogical-comparison': { fam:'mechanics', name:'Comparing unlike things',
     tell:'It compares winters with records, or a thing with a date.',
-    fix:'Both sides of "than" have to be the same kind of thing. "Those" usually supplies the missing noun.' },
+    fix:'Both sides of "than" have to be the same kind of thing. "Those" usually supplies the missing noun.',
+    felt:'I compared two things that were not the same kind of thing' },
   'fragment':       { fam:'mechanics', name:'Fragment or run-on',
     tell:'A clause with no real verb, or two clauses jammed together with no mark at all.',
-    fix:'Every sentence needs a subject and a verb, and clauses need a legal join.' },
+    fix:'Every sentence needs a subject and a verb, and clauses need a legal join.',
+    felt:'I picked something that left a fragment or a run-on' },
   'sounds-right':   { fam:'mechanics', name:'Sounds fine, breaks the rule',
     tell:'A comma where you would pause. A past tense after a past tense verb. A stray comma after "and".',
-    fix:'Trust the structure over your ear, and read the choices character by character.' },
+    fix:'Trust the structure over your ear, and read the choices character by character.',
+    felt:'It sounded right when I read it in my head' },
 
   /* --- procedure --- */
   'unit-miss':      { fam:'procedure', name:'Units ignored',
     tell:'Thousands read as ones. Months used where the model wants years. Degrees treated as a length.',
-    fix:'Read the axis labels and the variable definitions before you substitute, and convert first.' },
+    fix:'Read the axis labels and the variable definitions before you substitute, and convert first.',
+    felt:'I missed the units, like thousands, or months versus years' },
   'operation-swap': { fam:'procedure', name:'Wrong operation',
     tell:'Divided where you should multiply. Added percents that needed to compound. Subtracted where the model adds.',
-    fix:'Predict whether your answer should come out bigger or smaller, then check your operation against that.' },
+    fix:'Predict whether your answer should come out bigger or smaller, then check your operation against that.',
+    felt:'I multiplied when I should have divided, or the other way round' },
   'formula-mixup':  { fam:'procedure', name:'Wrong formula',
     tell:'Circumference for area. Lateral surface for volume. Perpendicular slope for parallel. 45-45-90 for 30-60-90.',
-    fix:'Open the formula sheet, and name the condition the figure is actually giving you.' },
+    fix:'Open the formula sheet, and name the condition the figure is actually giving you.',
+    felt:'I used the wrong formula' },
   'wrong-ratio':    { fam:'procedure', name:'Wrong trig ratio',
     tell:'Cosine reported for sine, or a ratio built from the two legs instead of a leg and the hypotenuse.',
-    fix:'Label opposite, adjacent, and hypotenuse for the angle named, then write the ratio.' },
+    fix:'Label opposite, adjacent, and hypotenuse for the angle named, then write the ratio.',
+    felt:'I used the wrong trig ratio' },
   'extraneous-root':{ fam:'procedure', name:'A root that does not work',
     tell:'A solution of the squared equation that fails in the original, usually by making a square root negative.',
-    fix:'Every radical or rational equation gets both candidates checked in the original.' },
+    fix:'Every radical or rational equation gets both candidates checked in the original.',
+    felt:'I did not check my answer back in the original equation' },
   'algebra-rule':   { fam:'procedure', name:'Algebra rule misapplied',
     tell:'Terms canceled instead of factors. Exponents multiplied instead of added. A 2 that never got distributed.',
-    fix:'Only whole factors cancel. Test your simplified version against the original with x = 2.' },
+    fix:'Only whole factors cancel. Test your simplified version against the original with x = 2.',
+    felt:'I canceled or combined something I was not allowed to' },
   'setup-error':    { fam:'procedure', name:'Set up wrong',
     tell:'Quantities swapped. Growth factor and period reversed. The scale factor applied to the wrong side.',
-    fix:'Try your model on one easy input before you trust it.' },
+    fix:'Try your model on one easy input before you trust it.',
+    felt:'I set the problem up wrong before I started solving' },
   'arith-slip':     { fam:'procedure', name:'Arithmetic slip',
     tell:'A clean method with one bad number. 180 minus 101. A decimal in the wrong place.',
-    fix:'Redo that one calculation, then test the answer back in the question.' }
+    fix:'Redo that one calculation, then test the answer back in the question.',
+    felt:'The method was right and I made an arithmetic mistake' }
 };
 
 /* ---------------- strategy by RW skill (deterministic) ---------------- */
@@ -6636,7 +6829,9 @@ window.STRATEGIES = {
 
       /* questions she has missed and has not since got right -- the retry queue */
       missedQueue: function (n) {
-        var evs = this.data().events.filter(function (e) { return e.correct !== null; });
+        /* Only questions from this app can be retried. A miss logged from an
+           official practice test has no question here to come back to. */
+        var evs = this.data().events.filter(function (e) { return e.correct !== null && e.qid; });
         var last = {};
         evs.forEach(function (e) { last[e.qid] = e; });
         var out = [];
@@ -6726,7 +6921,48 @@ window.STRATEGIES = {
         return n;
       },
 
-      seenCount: function () {
+      /* Misses logged from an official practice test. Same event shape as
+       everything else, so the diagnosis screens pick them up for free. */
+    logMisses: function (session, rows) {
+      var evs = rows.map(function (r, i) {
+        return {
+          key: 'log-' + session.id + '-' + i,
+          attempt: 'log-' + session.id,
+          kind: 'logged',
+          source: session.label,
+          t: new Date().toISOString(),
+          qid: null,
+          section: session.section,
+          domain: r.domain || null,
+          skill: r.skill || null,
+          difficulty: null,
+          strat: r.strat || null,
+          trap: r.trap || null,
+          cause: r.cause,
+          correct: false,
+          seconds: 0
+        };
+      });
+      this.recordEvents(evs);
+      return evs.length;
+    },
+
+    /* How the logged misses break down: trapped, rushed, or a content gap.
+       Keeping those apart is the point, because they call for different work. */
+    logSummary: function () {
+      var out = { total: 0, trap: 0, rushed: 0, gap: 0, sessions: {} };
+      this.data().events.forEach(function (e) {
+        if (e.kind !== 'logged') return;
+        out.total++;
+        if (e.cause === 'rushed') out.rushed++;
+        else if (e.cause === 'gap') out.gap++;
+        else out.trap++;
+        if (e.source) out.sessions[e.source] = (out.sessions[e.source] || 0) + 1;
+      });
+      return out;
+    },
+
+    seenCount: function () {
         var c = {};
         this.data().events.forEach(function (e) { c[e.qid] = (c[e.qid] || 0) + 1; });
         return c;
@@ -7360,6 +7596,45 @@ window.STRATEGIES = {
     var authState = { email: '', stage: 'email', busy: false, msg: '', err: '' };
     var classState = { roster: null, traps: null, loading: false };
 
+    /* State for logging misses from an official practice test. */
+    var log = {
+      step: 'start',        // start | question | done
+      source: '',
+      section: 'rw',
+      count: 0,
+      idx: 0,
+      current: {},
+      rows: [],
+      expanded: false
+    };
+
+    /* Which traps actually occur on questions of a given skill, most common
+       first. The picker is built from the bank rather than a fixed list, so the
+       options a student sees are always the ones that skill can produce. */
+    function trapsForSkill(skill) {
+      var counts = {};
+      window.RW_BANK.concat(window.MATH_BANK).forEach(function (q) {
+        if (q.skill !== skill) return;
+        var t = window.tagsFor(q).traps;
+        Object.keys(t).forEach(function (k) { counts[t[k]] = (counts[t[k]] || 0) + 1; });
+      });
+      return Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+    }
+
+    function skillsForSection(sec) {
+      var out = {};
+      window.SATP.bankFor(sec).forEach(function (q) {
+        (out[q.domain] = out[q.domain] || []);
+        if (out[q.domain].indexOf(q.skill) < 0) out[q.domain].push(q.skill);
+      });
+      return out;
+    }
+
+    function stratForSkill(skill) {
+      var q = window.RW_BANK.concat(window.MATH_BANK).filter(function (x) { return x.skill === skill; })[0];
+      return q ? window.tagsFor(q).strat : null;
+    }
+
     function boot() {
       applyPalette(currentPalette());
       (window.RW_BANK || []).concat(window.MATH_BANK || []).forEach(function (q) { ALLQ[q.id] = q; });
@@ -7452,6 +7727,9 @@ window.STRATEGIES = {
       view === 'auth' ? authHTML() :
       view === 'class' ? classHTML() :
       view === 'coverage' ? coverageHTML() :
+      view === 'logger' ? loggerHTML() :
+      view === 'cards' ? cardsHTML() :
+      view === 'about' ? aboutHTML() :
       view === 'directions' ? directionsHTML() :
       view === 'break' ? breakHTML() :
       view === 'exam' ? examHTML() :
@@ -7612,6 +7890,23 @@ window.STRATEGIES = {
       '<div class="card-actions"><button class="btn" onclick="APP.go(\'skills\')">Pick a skill</button>' +
       '<button class="btn ghost" onclick="APP.quickMix()">Quick 10</button></div></div>';
 
+      var dueNow = dueCards().length;
+      var lockedNow = lockedCount();
+      h += '<div class="card mode-card cards"><div class="icon">' + ic('bolt') + '</div>' +
+        '<h3>Strategy cards</h3>' +
+        '<p>Quick recall on the 22 moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
+        '<div class="spacer"></div><div class="meta">' + lockedNow + ' of ' +
+        Object.keys(window.STRATS).length + ' locked in' + (dueNow ? ' \u00b7 ' + dueNow + ' due now' : ' \u00b7 none due') + '</div>' +
+        '<div class="card-actions"><button class="btn" onclick="APP.go(\'cards\')">' +
+        (dueNow ? 'Review ' + dueNow : 'Open deck') + '</button></div></div>';
+
+      h += '<div class="card mode-card log"><div class="icon">' + ic('sheet') + '</div>' +
+        '<h3>Log a practice test</h3>' +
+        '<p>Took a test in Bluebook? Walk through what you missed and this turns your real results into ' +
+        'practice aimed at exactly those mistakes.</p>' +
+        '<div class="spacer"></div><div class="meta">about 20 seconds per question</div>' +
+        '<div class="card-actions"><button class="btn" onclick="APP.openLogger()">Log a test</button></div></div>';
+
       h += '<div class="card mode-card diag"><div class="icon">' + ic('scope') + '</div>' +
       '<h3>Diagnosis</h3>' +
       '<p>See which traps keep working on you, which strategies are slipping, and everything you have missed and not yet fixed.</p>' +
@@ -7666,6 +7961,10 @@ window.STRATEGIES = {
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.trapBook()">Open</button></div></div>' +
       '<div class="card"><h3>Math reference sheet</h3><p>The formula sheet the real test gives you. Knowing when to open it is the skill.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.reference()">Open</button></div></div>' +
+      '<div class="card"><h3>Why strategies matter</h3><p>The argument, with a real question: every wrong ' +
+      'answer on the SAT was built for a specific mistake, and there are only so many of them.</p>' +
+      '<div class="spacer"></div><div class="card-actions">' +
+      '<button class="btn ghost sm" onclick="APP.go(\'about\')">Read it</button></div></div>' +
       '<div class="card"><h3>Where practice tests fit</h3><p>Take your full practice tests in ' +
       '<strong>Bluebook</strong>, the College Board app. That is the real software, the real questions, and the ' +
       'only scoring worth trusting. Come back here to work out why you missed what you missed.</p>' +
@@ -7958,12 +8257,282 @@ window.STRATEGIES = {
       });
     }
 
+
+
+    /* ============================================================
+       STRATEGY CARDS
+       The moves have to be available under time pressure, which means
+       recall practice, not rereading. Spaced repetition on a Leitner
+       schedule: get one right and it comes back later, miss it and it
+       comes back soon.
+
+       The tone here is deliberately warm. Missing a card is the normal
+       case and the point of the exercise, so nothing scolds.
+       ============================================================ */
+    var CKEY = 'decoy.cards.v1';
+    var BOX_DAYS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 21 };
+    var cards = { current: null, revealed: false, done: 0, streak: 0, justAdvanced: null };
+
+    function cardState() {
+      try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; }
+    }
+    function saveCardState(d) {
+      try { localStorage.setItem(CKEY, JSON.stringify(d)); } catch (e) {}
+    }
+
+    /* Which skills actually use this move, so the prompt is a real situation
+       rather than an abstract definition. */
+    function skillsForStrat(id) {
+      var out = [];
+      window.RW_BANK.concat(window.MATH_BANK).forEach(function (q) {
+        if (window.tagsFor(q).strat !== id && !(window.SKILL_STRAT[q.skill] === id)) return;
+        if (window.tagsFor(q).strat !== id) return;
+        if (out.indexOf(q.skill) < 0) out.push(q.skill);
+      });
+      return out;
+    }
+
+    function cardDeck() {
+      var st = cardState();
+      var now = Date.now();
+      return Object.keys(window.STRATS).map(function (id) {
+        var c = st[id] || { box: 1, due: 0, seen: 0, right: 0 };
+        return {
+          id: id, box: c.box, due: c.due, seen: c.seen, right: c.right,
+          isDue: !c.due || c.due <= now,
+          locked: c.box >= 4
+        };
+      });
+    }
+
+    function dueCards() {
+      return cardDeck().filter(function (c) { return c.isDue; })
+        .sort(function (a, b) { return a.box - b.box; });
+    }
+
+    function lockedCount() {
+      return cardDeck().filter(function (c) { return c.locked; }).length;
+    }
+
+    function cardsHTML() {
+      var deck = cardDeck();
+      var due = dueCards();
+      var locked = lockedCount();
+      var total = deck.length;
+      var pct = Math.round(100 * locked / total);
+
+      var h = '<div class="home"><div class="home-head"><div><div class="brand">Strategy cards</div>' +
+        '<div class="tagline">Quick recall, so the moves are there when the clock is running. ' +
+        'A few minutes beats an hour of rereading.</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
+
+      /* progress, framed as how far along rather than how far short */
+      h += '<div class="prog-wrap"><div class="ring" style="--pct:' + pct + '">' +
+        '<div class="ring-in"><div class="ring-n">' + locked + '</div>' +
+        '<div class="ring-of">of ' + total + '</div></div></div>' +
+        '<div class="prog-text"><h3>' + progressLine(locked, total) + '</h3>' +
+        '<p>A move counts as locked in once you have recalled it correctly a few times, spread out over days. ' +
+        'That spacing is what makes it stick.</p>';
+      if (cards.done) h += '<p class="prog-run">' + cards.done + ' reviewed just now' +
+        (cards.streak > 1 ? ', ' + cards.streak + ' in a row' : '') + '.</p>';
+      h += '</div></div>';
+
+      if (!cards.current) {
+        if (!due.length) {
+          h += '<div class="card cheer"><h3>Nothing due right now</h3>' +
+            '<p>Everything you have reviewed is still holding. Come back tomorrow and the ones that are ' +
+            'starting to fade will be waiting. In the meantime, the useful thing is questions.</p>' +
+            '<div class="card-actions"><button class="btn" onclick="APP.quickMix()">Do a 10-question set</button>' +
+            '<button class="btn ghost" onclick="APP.cardsCram()">Review anyway</button></div></div>';
+        } else {
+          h += '<div class="card cheer"><h3>' + due.length + ' card' + (due.length === 1 ? '' : 's') + ' ready</h3>' +
+            '<p>' + (locked === 0
+              ? 'First time through. You are not expected to know these yet, so guess freely and let the app sort out what needs repeating.'
+              : 'Some of these you will get instantly. Those are the ones that are working.') + '</p>' +
+            '<div class="card-actions"><button class="btn" onclick="APP.cardsStart()">Start</button></div></div>';
+        }
+      } else {
+        var meta = window.STRATS[cards.current.id];
+        var sk = skillsForStrat(cards.current.id);
+        var where = sk.length ? sk.slice(0, 2).join(' or ') : (meta.section === 'rw' ? 'Reading and Writing' : 'Math');
+        h += '<div class="flash">';
+        h += '<div class="flash-cue">You are on a <strong>' + esc(where) + '</strong> question.</div>';
+        h += '<div class="flash-ask">What is the move?</div>';
+        if (!cards.revealed) {
+          h += '<div class="card-actions" style="justify-content:center;margin-top:26px">' +
+            '<button class="btn big" style="max-width:280px" onclick="APP.cardsReveal()">Show me</button></div>' +
+            '<p class="flash-hint">Say it out loud first, even roughly. Trying to retrieve it is what builds the habit; ' +
+            'reading it again does not.</p>';
+        } else {
+          h += '<div class="flash-answer"><div class="fa-name">' + meta.name + '</div>' +
+            '<p class="fa-move">' + meta.move + '</p>' +
+            '<p class="fa-why">' + meta.why + '</p></div>';
+          h += '<div class="flash-rate"><div class="fr-q">How did that go?</div>' +
+            '<button class="fr-btn good" onclick="APP.cardsRate(\'good\')">I had it</button>' +
+            '<button class="fr-btn mid" onclick="APP.cardsRate(\'mid\')">Nearly</button>' +
+            '<button class="fr-btn no" onclick="APP.cardsRate(\'no\')">Not yet</button></div>';
+          h += '<p class="flash-hint">Answer honestly. Marking something you half-knew as \u201chad it\u201d just means ' +
+            'it comes back too late to help.</p>';
+        }
+        h += '</div>';
+        if (cards.justAdvanced) {
+          h += '<div class="cheer-toast">' + cards.justAdvanced + '</div>';
+        }
+      }
+
+      /* the whole deck, so progress is visible rather than hidden in a counter */
+      h += '<div class="section-title">Your deck</div><div class="card">';
+      ['rw', 'math'].forEach(function (sec) {
+        h += '<div class="deck-sec">' + (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</div>';
+        deck.filter(function (c) { return window.STRATS[c.id].section === sec; }).forEach(function (c) {
+          var meta = window.STRATS[c.id];
+          h += '<div class="deck-row"><div>' + meta.name + '</div>' +
+            '<div class="boxes">' + [1, 2, 3, 4, 5].map(function (b) {
+              return '<span class="bx' + (c.box >= b ? ' on' : '') + (c.locked && b <= c.box ? ' lock' : '') + '"></span>';
+            }).join('') + '</div>' +
+            '<div class="n">' + (c.locked ? 'locked in' : c.seen ? 'learning' : 'new') + '</div></div>';
+        });
+      });
+      h += '</div></div>';
+      return h;
+    }
+
+    function progressLine(locked, total) {
+      if (locked === 0) return 'Let us find out what you already know';
+      if (locked === total) return 'All ' + total + ' moves locked in';
+      if (locked < 5) return locked + ' moves locked in, and that is a start';
+      if (locked < total / 2) return locked + ' locked in, keep going';
+      if (locked < total - 3) return 'Over halfway: ' + locked + ' of ' + total;
+      return 'Nearly there, ' + (total - locked) + ' to go';
+    }
+
+    /* ============================================================
+       LANDING PAGE
+       The argument for why strategies matter, made with a real question
+       rather than a claim. No score-gain statistics: I have no way to
+       measure those honestly, and the mechanism is persuasive on its own.
+       ============================================================ */
+    var demo = { picked: null, qid: 'm024' };
+
+    function demoQuestion() {
+      return window.MATH_BANK.concat(window.RW_BANK).filter(function (q) { return q.id === demo.qid; })[0];
+    }
+
+    function landingDemoHTML() {
+      var q = demoQuestion();
+      if (!q) return '';
+      var tg = window.tagsFor(q);
+      var h = '<div class="demo"><div class="demo-tag">Try one</div>' +
+        '<div class="demo-q">' + q.prompt + '</div><div class="demo-choices">';
+      q.choices.forEach(function (c, i) {
+        var cls = 'demo-choice';
+        if (demo.picked !== null) {
+          if (i === q.answer) cls += ' right';
+          else if (i === demo.picked) cls += ' wrong';
+          else cls += ' dim';
+        }
+        h += '<button class="' + cls + '" onclick="APP.demoPick(' + i + ')">' +
+          '<span class="ltr">' + LETTERS[i] + '</span>' + c + '</button>';
+      });
+      h += '</div>';
+
+      if (demo.picked === null) {
+        h += '<p class="demo-note">Pick one. Nothing is recorded, and there is a point coming.</p>';
+      } else if (demo.picked === q.answer) {
+        var trapId = tg.traps[Object.keys(tg.traps)[0]];
+        var wrongIdx = Object.keys(tg.traps).filter(function (k) {
+          return tg.traps[k] === 'wrong-target';
+        })[0] || Object.keys(tg.traps)[0];
+        var tp = window.TRAPS[tg.traps[wrongIdx]];
+        h += '<div class="demo-reveal"><p><strong>Right.</strong> Now look at ' + LETTERS[wrongIdx] +
+          ', which is <strong>' + q.choices[wrongIdx] + '</strong>.</p>' +
+          '<p>That is not a random number. It is the x-value where the minimum happens, so anyone who did the ' +
+          'algebra correctly and then stopped a line too early lands exactly there. It was put in the list for ' +
+          'them. The catalog calls it <strong>' + tp.name + '</strong>.</p>' +
+          '<p>' + tp.fix + '</p></div>';
+      } else {
+        var tp2 = window.TRAPS[tg.traps[demo.picked]];
+        h += '<div class="demo-reveal"><p><strong>That is the one most people pick.</strong> ' +
+          'The answer was ' + LETTERS[q.answer] + '.</p>' +
+          '<p>Your choice was not a random wrong number. It is <strong>' + tp2.name + '</strong>: ' +
+          tp2.tell + ' Someone wrote it specifically for the person who does the work correctly and then ' +
+          'reports the wrong part of it.</p>' +
+          '<p><strong>The fix:</strong> ' + tp2.fix + '</p></div>';
+      }
+      h += '<div class="demo-actions"><button class="btn sm" onclick="APP.demoReset()">Reset</button></div></div>';
+      return h;
+    }
+
+    function argumentHTML() {
+      var h = '';
+      h += '<div class="lead">' +
+        '<h1>Every wrong answer on the SAT was<br><span>built to be picked.</span></h1>' +
+        '<p class="lead-sub">Nobody writes a wrong answer nobody would choose. Each one encodes a specific, ' +
+        'predictable mistake, aimed at a student who almost had it. There are a limited number of those ' +
+        'mistakes, they repeat on every test, and they can be learned.</p>' +
+        '</div>';
+
+      h += landingDemoHTML();
+
+      h += '<div class="section-title">Why this is worth your time</div><div class="card-grid">';
+      h += '<div class="card"><h3>The wrong answers are engineered</h3>' +
+        '<p>Test writers build distractors from the errors students actually make: the sign that gets dropped, ' +
+        'the quantity that gets reported instead of the one asked for, the word read in its everyday sense. ' +
+        'That is why a wrong answer so often feels reasonable. It was designed to.</p></div>';
+      h += '<div class="card"><h3>Some lost points are not knowledge gaps</h3>' +
+        '<p>There is a real difference between not knowing how to find a vertex and knowing perfectly well ' +
+        'and then reporting the x-value. The first needs teaching. The second needs one habit. This app keeps ' +
+        'them apart and shows you your own split, rather than telling you a number we cannot measure.</p></div>';
+      h += '<div class="card"><h3>The format multiplies early mistakes</h3>' +
+        '<p>The digital SAT is adaptive in two stages. How you do on the first module decides whether you get ' +
+        'the harder or the easier second module, and that decision caps your section score. Points lost early ' +
+        'to a trap cost more than the same points lost late.</p></div>';
+      h += '<div class="card"><h3>There is no penalty for guessing</h3>' +
+        '<p>A blank and a wrong answer score the same, so a blank is strictly worse than a guess. Knowing that, ' +
+        'plus knowing which choice a trap is hiding in, turns a question you cannot finish into one you can ' +
+        'still often get.</p></div>';
+      h += '</div>';
+
+      h += '<div class="section-title">What you learn here</div>';
+      h += '<div class="card"><div class="two-col">' +
+        '<div><h3>22 strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
+        'Circle the quantity before you solve. Name the relationship before you pick the transition. Each one is ' +
+        'a habit, not a fact.</p></div>' +
+        '<div><h3>42 traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
+        'allows, it does half the job, it points the right idea the wrong way, it describes the wrong thing, it ' +
+        'breaks a grammar rule, or it slips a step.</p></div>' +
+        '</div><p class="note" style="margin-top:16px">The app tracks which of those still work on you, and ' +
+        'gives you questions where that exact trap is waiting until it stops working.</p></div>';
+
+      h += '<div class="card" style="margin-top:14px"><h3>Where the real practice tests fit</h3>' +
+        '<p>Take your full practice tests in <strong>Bluebook</strong>, College Board\'s own app. That is the real ' +
+        'software, the real retired questions, and the only scoring worth trusting. This is not a replacement ' +
+        'for it and should not pretend to be.</p>' +
+        '<p>What Bluebook does not do is tell you <em>why</em> you missed what you missed. It gives you a score. ' +
+        'Bring the misses here, spend twenty seconds on each, and you get the other half.</p></div>';
+      return h;
+    }
+
+    function aboutHTML() {
+      var h = '<div class="home landing"><div class="home-head"><div><div class="brand">' + wordmark() + '</div>' +
+        '<div class="tagline">' + esc(window.BRAND.tagline) + '</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back to practice</button></div>';
+      h += argumentHTML();
+      h += '<div class="card-actions" style="margin-top:24px;justify-content:center">' +
+        '<button class="btn big" style="max-width:320px" onclick="APP.go(\'home\')">Start practicing</button></div>';
+      h += '</div>';
+      return h;
+    }
+
     /* ============================================================
        SIGN IN
        ============================================================ */
     function authHTML() {
       var C = window.Cloud, cfg = window.CONFIG || {};
-      var h = '<div class="auth-wrap"><div class="auth-card">';
+      var h = '<div class="home landing"><div class="lead-mark">' + wordmark() + '</div>';
+      h += argumentHTML();
+      h += '<div class="section-title">Get started</div>';
+      h += '<div class="auth-inline"><div class="auth-card">';
       h += '<div class="auth-mark">' + ic('target') + '</div>';
       h += '<h1>' + esc(window.BRAND.name) + '</h1>';
       h += '<p class="auth-sub">' + esc(window.BRAND.tagline) + '</p>';
@@ -8150,6 +8719,145 @@ window.STRATEGIES = {
       });
 
       h += '</div>';
+      return h;
+    }
+
+
+    /* ============================================================
+       LOG A PRACTICE TEST
+       She takes the real test in Bluebook. This turns each miss into the
+       same kind of record the app already keeps, so her official results
+       feed the same diagnosis as her practice here.
+       ============================================================ */
+    function loggerHTML() {
+      var h = '<div class="home"><div class="home-head"><div><div class="brand">Log a practice test</div>' +
+        '<div class="tagline">Took a test in Bluebook? Walk through what you missed and this turns it into ' +
+        'practice aimed at exactly those mistakes.</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
+
+      if (log.step === 'start') {
+        h += '<div class="card"><h3>Which test?</h3>' +
+          '<label class="fld"><span>Name it however you like</span>' +
+          '<input id="log-source" placeholder="Bluebook Practice Test 4" value="' + esc(log.source) + '"></label>' +
+          '<label class="fld"><span>Which section were these misses in?</span></label>' +
+          '<div class="card-actions">' +
+          '<button class="btn' + (log.section === 'rw' ? '' : ' subtle') + '" onclick="APP.logSection(\'rw\')">Reading and Writing</button>' +
+          '<button class="btn' + (log.section === 'math' ? '' : ' subtle') + '" onclick="APP.logSection(\'math\')">Math</button>' +
+          '</div>' +
+          '<label class="fld" style="margin-top:18px"><span>How many questions did you miss in it?</span>' +
+          '<input id="log-count" type="number" min="1" max="40" placeholder="6"></label>' +
+          '<div class="card-actions"><button class="btn" onclick="APP.logBegin()">Start walking through them</button></div>' +
+          '<p class="note" style="margin-top:14px">You will go through them one at a time. It takes about twenty ' +
+          'seconds each, and it is the most useful twenty seconds in your whole study session.</p></div></div>';
+        return h;
+      }
+
+      if (log.step === 'done') {
+        var byTrap = {};
+        log.rows.forEach(function (r) { if (r.trap) byTrap[r.trap] = (byTrap[r.trap] || 0) + 1; });
+        var ranked = Object.keys(byTrap).sort(function (a, b) { return byTrap[b] - byTrap[a]; });
+        var rushed = log.rows.filter(function (r) { return r.cause === 'rushed'; }).length;
+        var gap = log.rows.filter(function (r) { return r.cause === 'gap'; }).length;
+
+        h += '<div class="mission"><div class="m-body"><div class="m-kicker">' + esc(log.source) + '</div>' +
+          '<h2>' + log.rows.length + ' miss' + (log.rows.length === 1 ? '' : 'es') + ' logged</h2>';
+        if (ranked.length) {
+          var top = window.TRAPS[ranked[0]];
+          h += '<p>Your most common one was <strong>' + top.name + '</strong>, ' + byTrap[ranked[0]] +
+            ' of ' + log.rows.length + '. ' + top.fix + '</p>' +
+            '<div class="m-actions"><button class="btn" onclick="APP.drillTrap(\'' + ranked[0] + '\')">' +
+            'Practice that trap now</button>' +
+            '<button class="btn ghost" onclick="APP.go(\'diagnosis\')">See the full picture</button></div>';
+        } else {
+          h += '<p>None of these came down to a trap, so the work is elsewhere. Look at the breakdown below.</p>' +
+            '<div class="m-actions"><button class="btn ghost" onclick="APP.go(\'diagnosis\')">See the full picture</button></div>';
+        }
+        h += '</div></div>';
+
+        h += '<div class="tiles">' +
+          '<div class="tile"><div class="t-lbl">Caught by a trap</div><div class="t-val">' +
+          (log.rows.length - rushed - gap) + '</div><div class="t-sub">you knew it, the question got you</div></div>' +
+          '<div class="tile spot"><div class="t-lbl">Ran out of time</div><div class="t-val">' + rushed +
+          '</div><div class="t-sub">a pacing problem, not a knowledge one</div></div>' +
+          '<div class="tile"><div class="t-lbl">Did not know it</div><div class="t-val">' + gap +
+          '</div><div class="t-sub">content to go and learn</div></div></div>';
+
+        if (rushed >= 2) {
+          h += '<div class="card" style="margin-top:16px"><h3>About the pacing</h3>' +
+            '<p>' + rushed + ' of these were time, not difficulty. That is worth knowing, because more content ' +
+            'review will not fix it. Run a timed module here and watch the clock per question: the target is about ' +
+            '71 seconds in Reading and Writing and 95 in Math.</p>' +
+            '<div class="card-actions"><button class="btn ghost sm" onclick="APP.startSection(\'' + log.section + '\')">' +
+            'Run a timed module</button></div></div>';
+        }
+        if (gap >= 2) {
+          h += '<div class="card" style="margin-top:12px"><h3>About the content gaps</h3>' +
+            '<p>' + gap + ' of these were things you had not learned yet, which no amount of strategy fixes. ' +
+            'Those are worth taking to a teacher or a textbook rather than grinding more questions.</p></div>';
+        }
+
+        h += '<div class="section-title">Everything you logged</div><div class="card">';
+        log.rows.forEach(function (r, i) {
+          var t = r.trap && window.TRAPS[r.trap];
+          h += '<div class="skill-row" style="grid-template-columns:30px 1fr 200px">' +
+            '<div class="n" style="text-align:left">' + (i + 1) + '</div>' +
+            '<div>' + esc(r.skill || 'unspecified') + '</div>' +
+            '<div class="n" style="text-align:right">' +
+            (t ? t.name : r.cause === 'rushed' ? 'ran out of time' : 'did not know it') + '</div></div>';
+        });
+        h += '</div>';
+        h += '<div class="card-actions" style="margin-top:18px">' +
+          '<button class="btn" onclick="APP.logReset()">Log another test</button>' +
+          '<button class="btn subtle" onclick="APP.go(\'home\')">Done</button></div></div>';
+        return h;
+      }
+
+      /* ---- walking one miss ---- */
+      var n = log.idx + 1;
+      h += '<div class="card"><span class="pill">' + esc(log.source) + '</span>' +
+        '<h3>Miss ' + n + ' of ' + log.count + '</h3>';
+
+      if (!log.current.skill) {
+        h += '<p>What kind of question was it? If you are not sure, pick the closest.</p>';
+        var groups = skillsForSection(log.section);
+        Object.keys(groups).forEach(function (dom) {
+          h += '<div class="log-group"><div class="log-dom">' + esc(dom) + '</div><div class="log-opts">';
+          groups[dom].forEach(function (sk) {
+            h += '<button class="log-opt" onclick="APP.logSkill(' + JSON.stringify(sk).replace(/"/g, '&quot;') + ')">' +
+              esc(sk) + '</button>';
+          });
+          h += '</div></div>';
+        });
+      } else {
+        h += '<p class="note">' + esc(log.current.skill) + ' <button class="link-btn" onclick="APP.logBackSkill()">change</button></p>';
+        h += '<p style="margin-top:14px">What happened? Pick whichever is closest to the truth.</p><div class="log-opts col">';
+        var likely = trapsForSkill(log.current.skill);
+        var show = log.expanded ? Object.keys(window.TRAPS) : likely.slice(0, 6);
+        show.forEach(function (tid) {
+          var t = window.TRAPS[tid];
+          if (!t) return;
+          h += '<button class="log-opt wide" onclick="APP.logCause(\'trap\',\'' + tid + '\')">' +
+            '<span class="lo-felt">' + t.felt + '</span>' +
+            '<span class="lo-name">' + t.name + '</span></button>';
+        });
+        h += '<button class="log-opt wide alt" onclick="APP.logCause(\'rushed\')">' +
+          '<span class="lo-felt">I ran out of time and guessed</span>' +
+          '<span class="lo-name">pacing, not a trap</span></button>';
+        h += '<button class="log-opt wide alt" onclick="APP.logCause(\'gap\')">' +
+          '<span class="lo-felt">I did not know how to do it at all</span>' +
+          '<span class="lo-name">content gap, not a trap</span></button>';
+        h += '</div>';
+        if (!log.expanded) {
+          h += '<div class="card-actions" style="margin-top:12px">' +
+            '<button class="btn subtle sm" onclick="APP.logExpand()">None of these, show me all ' +
+            Object.keys(window.TRAPS).length + '</button></div>';
+        }
+      }
+      h += '</div>';
+      h += '<div class="card-actions" style="margin-top:16px">' +
+        '<button class="btn subtle sm" onclick="APP.logSkip()">Skip this one</button>' +
+        (log.rows.length ? '<button class="btn ghost sm" onclick="APP.logFinish()">Stop here and see the summary</button>' : '') +
+        '</div></div>';
       return h;
     }
 
@@ -8561,6 +9269,111 @@ window.STRATEGIES = {
         var it = (reviewData && reviewData.items.filter(function (i) { return i.qid === qid; })[0]) || {};
         askTutor('chat', text, questionContext(q, { choice: it.choice, text: it.text }));
       },
+
+      cardsStart: function () {
+        var due = dueCards();
+        if (!due.length) return;
+        cards.current = due[0];
+        cards.revealed = false;
+        cards.justAdvanced = null;
+        render();
+      },
+      cardsCram: function () {
+        var deck = cardDeck().sort(function (a, b) { return a.box - b.box; });
+        cards.current = deck[0];
+        cards.revealed = false;
+        render();
+      },
+      cardsReveal: function () { cards.revealed = true; render(); },
+      cardsRate: function (how) {
+        var st = cardState();
+        var id = cards.current.id;
+        var c = st[id] || { box: 1, due: 0, seen: 0, right: 0 };
+        var before = c.box;
+        c.seen++;
+        if (how === 'good') { c.box = Math.min(5, c.box + 1); c.right++; cards.streak++; }
+        else if (how === 'mid') { cards.streak = 0; }
+        else { c.box = 1; cards.streak = 0; }
+        c.due = Date.now() + BOX_DAYS[c.box] * 86400000;
+        st[id] = c;
+        saveCardState(st);
+        cards.done++;
+
+        cards.justAdvanced = null;
+        if (how === 'good' && c.box >= 4 && before < 4) {
+          cards.justAdvanced = 'That one is locked in. ' + lockedCount() + ' of ' +
+            Object.keys(window.STRATS).length + ' now.';
+        } else if (how === 'good' && cards.streak >= 3) {
+          cards.justAdvanced = cards.streak + ' in a row. It is sticking.';
+        } else if (how === 'no') {
+          cards.justAdvanced = 'Fine, that is what these are for. It will come back shortly.';
+        }
+
+        var due = dueCards().filter(function (d) { return d.id !== id || c.box === 1; });
+        cards.current = due.length ? due[0] : null;
+        cards.revealed = false;
+        if (!cards.current) cards.justAdvanced = null;
+        render();
+      },
+
+      demoPick: function (i) { demo.picked = i; render(); },
+      demoReset: function () { demo.picked = null; render(); },
+
+      /* ---------- logging an official practice test ---------- */
+      openLogger: function () { log.step = 'start'; log.rows = []; log.idx = 0; log.current = {}; view = 'logger'; render(); },
+      logSection: function (sec) {
+        var src = document.getElementById('log-source');
+        if (src) log.source = src.value;
+        log.section = sec; render();
+      },
+      logBegin: function () {
+        var src = document.getElementById('log-source');
+        var cnt = document.getElementById('log-count');
+        log.source = (src && src.value.trim()) || 'Practice test';
+        log.count = Math.max(1, Math.min(40, parseInt(cnt && cnt.value, 10) || 1));
+        log.rows = []; log.idx = 0; log.current = {}; log.expanded = false;
+        log.step = 'question';
+        render();
+      },
+      logSkill: function (skill) {
+        log.current.skill = skill;
+        log.current.strat = stratForSkill(skill);
+        var q = window.RW_BANK.concat(window.MATH_BANK).filter(function (x) { return x.skill === skill; })[0];
+        log.current.domain = q ? q.domain : null;
+        log.expanded = false;
+        render();
+      },
+      logBackSkill: function () { log.current = {}; log.expanded = false; render(); },
+      logExpand: function () { log.expanded = true; render(); },
+      logCause: function (cause, trap) {
+        log.rows.push({
+          skill: log.current.skill,
+          domain: log.current.domain,
+          strat: log.current.strat,
+          trap: cause === 'trap' ? trap : null,
+          cause: cause
+        });
+        log.idx++;
+        log.current = {};
+        log.expanded = false;
+        if (log.idx >= log.count) return APP.logFinish();
+        render();
+      },
+      logSkip: function () {
+        log.idx++;
+        log.current = {};
+        log.expanded = false;
+        if (log.idx >= log.count) return APP.logFinish();
+        render();
+      },
+      logFinish: function () {
+        if (log.rows.length) {
+          window.Store.logMisses({ id: String(Date.now()), label: log.source, section: log.section }, log.rows);
+        }
+        log.step = 'done';
+        render();
+      },
+      logReset: function () { log.step = 'start'; log.rows = []; log.idx = 0; log.current = {}; render(); },
 
       /* ---------- writing new questions ---------- */
       fillGaps: function () {

@@ -645,7 +645,9 @@
 
       /* questions she has missed and has not since got right -- the retry queue */
       missedQueue: function (n) {
-        var evs = this.data().events.filter(function (e) { return e.correct !== null; });
+        /* Only questions from this app can be retried. A miss logged from an
+           official practice test has no question here to come back to. */
+        var evs = this.data().events.filter(function (e) { return e.correct !== null && e.qid; });
         var last = {};
         evs.forEach(function (e) { last[e.qid] = e; });
         var out = [];
@@ -735,7 +737,48 @@
         return n;
       },
 
-      seenCount: function () {
+      /* Misses logged from an official practice test. Same event shape as
+       everything else, so the diagnosis screens pick them up for free. */
+    logMisses: function (session, rows) {
+      var evs = rows.map(function (r, i) {
+        return {
+          key: 'log-' + session.id + '-' + i,
+          attempt: 'log-' + session.id,
+          kind: 'logged',
+          source: session.label,
+          t: new Date().toISOString(),
+          qid: null,
+          section: session.section,
+          domain: r.domain || null,
+          skill: r.skill || null,
+          difficulty: null,
+          strat: r.strat || null,
+          trap: r.trap || null,
+          cause: r.cause,
+          correct: false,
+          seconds: 0
+        };
+      });
+      this.recordEvents(evs);
+      return evs.length;
+    },
+
+    /* How the logged misses break down: trapped, rushed, or a content gap.
+       Keeping those apart is the point, because they call for different work. */
+    logSummary: function () {
+      var out = { total: 0, trap: 0, rushed: 0, gap: 0, sessions: {} };
+      this.data().events.forEach(function (e) {
+        if (e.kind !== 'logged') return;
+        out.total++;
+        if (e.cause === 'rushed') out.rushed++;
+        else if (e.cause === 'gap') out.gap++;
+        else out.trap++;
+        if (e.source) out.sessions[e.source] = (out.sessions[e.source] || 0) + 1;
+      });
+      return out;
+    },
+
+    seenCount: function () {
         var c = {};
         this.data().events.forEach(function (e) { c[e.qid] = (c[e.qid] || 0) + 1; });
         return c;

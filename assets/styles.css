@@ -756,3 +756,154 @@ body{background:var(--shell-bg)}
 .home .mission .btn:hover{background:var(--spot);border-color:var(--spot);color:var(--spot-dark)}
 .home .mission .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
 .home .mission .btn.ghost:hover{background:rgba(255,255,255,.16);color:#fff;border-color:#fff}
+
+/* ---- logging a practice test ---- */
+.mode-card.log .icon{background:var(--brand-soft)}
+.log-group{margin:16px 0}
+.log-dom{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--shell-soft);margin-bottom:8px}
+.log-opts{display:flex;flex-wrap:wrap;gap:8px}
+.log-opts.col{flex-direction:column;flex-wrap:nowrap}
+.log-opt{
+  border:1.5px solid var(--shell-line);background:#fff;border-radius:10px;
+  padding:9px 14px;font-family:var(--body);font-size:14.5px;color:var(--shell-ink);text-align:left;
+  transition:border-color .1s ease,background .1s ease;
+}
+.log-opt:hover{border-color:var(--brand);background:var(--brand-soft)}
+.log-opt.wide{display:flex;flex-direction:column;gap:3px;padding:13px 16px;width:100%}
+.log-opt.wide .lo-felt{font-size:15px;line-height:1.4}
+.log-opt.wide .lo-name{font-size:12px;color:var(--shell-soft);font-weight:600}
+.log-opt.wide:hover .lo-name{color:var(--brand)}
+.log-opt.alt{border-style:dashed}
+.log-opt.alt:hover{border-color:var(--spot-dark);background:var(--spot-soft)}
+
+/* ============================================================
+   LANDING PAGE
+   The one place in the app that argues rather than drills, so it gets
+   larger type and more room. The exam screens stay untouched.
+   ============================================================ */
+.landing{max-width:1000px}
+.lead-mark{font-family:var(--display);font-size:26px;font-weight:800;letter-spacing:-.03em;padding:34px 0 0}
+.lead-mark span{color:var(--brand)}
+.lead{padding:44px 0 30px;max-width:44ch}
+.lead h1{
+  font-family:var(--display);font-size:clamp(34px,5.2vw,54px);font-weight:800;
+  letter-spacing:-.035em;line-height:1.04;text-wrap:balance;
+}
+.lead h1 span{color:var(--brand)}
+.lead-sub{font-size:17.5px;line-height:1.6;color:var(--shell-soft);margin-top:20px;max-width:60ch}
+
+/* the live question */
+.demo{
+  background:#fff;border:1px solid var(--shell-line);border-radius:var(--r-lg);
+  padding:26px 28px;margin:8px 0 30px;
+}
+.demo-tag{
+  font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--brand);margin-bottom:12px;
+}
+.demo-q{font-size:17px;line-height:1.5;font-weight:600;margin-bottom:18px}
+.demo-choices{display:flex;flex-direction:column;gap:9px;max-width:520px}
+.demo-choice{
+  display:flex;gap:12px;align-items:center;text-align:left;
+  border:2px solid var(--shell-line);background:#fff;border-radius:10px;
+  padding:11px 14px;font-family:var(--body);font-size:16px;color:var(--shell-ink);
+}
+.demo-choice:hover{border-color:var(--brand);background:var(--brand-soft)}
+.demo-choice .ltr{
+  flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--shell-ink);
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;
+}
+.demo-choice.right{border-color:var(--green);background:var(--green-soft)}
+.demo-choice.right .ltr{background:var(--green);border-color:var(--green);color:#fff}
+.demo-choice.wrong{border-color:var(--red);background:var(--red-soft)}
+.demo-choice.wrong .ltr{background:var(--red);border-color:var(--red);color:#fff}
+.demo-choice.dim{opacity:.5}
+.demo-note{font-size:14px;color:var(--shell-soft);margin:16px 0 0}
+.demo-reveal{
+  margin-top:20px;padding:18px 20px;background:var(--brand-soft);
+  border-radius:12px;border-left:4px solid var(--brand);
+}
+.demo-reveal p{margin:0 0 11px;font-size:15.5px;line-height:1.6;color:var(--brand-ink)}
+.demo-reveal p:last-child{margin-bottom:0}
+.demo-actions{margin-top:16px}
+.demo-actions .btn{background:#fff;color:var(--shell-soft);border-color:var(--shell-line)}
+.demo-actions .btn:hover{background:var(--shell-bg);color:var(--shell-ink)}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.two-col h3{margin-bottom:8px}
+@media (max-width:700px){ .two-col{grid-template-columns:1fr} }
+
+.auth-inline{display:flex;justify-content:center;margin-top:6px}
+.auth-inline .auth-card{box-shadow:none;border:1px solid var(--shell-line)}
+
+/* ============================================================
+   STRATEGY CARDS
+   Warm on purpose. Missing a card is the normal case here, so nothing
+   in this palette should read as a warning.
+   ============================================================ */
+.mode-card.cards .icon{background:var(--spot-soft)}
+.mode-card.cards .icon .ic{color:var(--spot-dark)}
+
+.prog-wrap{display:flex;gap:26px;align-items:center;background:#fff;border:1px solid var(--shell-line);
+  border-radius:var(--r-lg);padding:24px 26px;margin:18px 0 20px;flex-wrap:wrap}
+.ring{
+  --pct:0;
+  flex:none;width:104px;height:104px;border-radius:50%;
+  background:conic-gradient(var(--brand) calc(var(--pct) * 1%), var(--shell-bg) 0);
+  display:grid;place-items:center;
+}
+.ring-in{width:80px;height:80px;border-radius:50%;background:#fff;display:grid;place-items:center;text-align:center}
+.ring-n{font-family:var(--display);font-size:29px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.ring-of{font-size:11.5px;color:var(--shell-soft);margin-top:1px}
+.prog-text{flex:1;min-width:240px}
+.prog-text h3{font-size:19px;margin-bottom:6px}
+.prog-text p{margin:0;font-size:14.5px}
+.prog-run{margin-top:8px !important;color:var(--brand);font-weight:600;font-size:13.5px}
+
+.card.cheer{background:linear-gradient(180deg,#fff,var(--brand-soft))}
+
+.flash{
+  background:#fff;border:1px solid var(--shell-line);border-radius:var(--r-lg);
+  padding:40px 32px;text-align:center;margin-bottom:20px;
+}
+.flash-cue{font-size:17px;color:var(--shell-soft);line-height:1.5}
+.flash-cue strong{color:var(--shell-ink)}
+.flash-ask{font-family:var(--display);font-size:clamp(24px,3.6vw,34px);font-weight:800;
+  letter-spacing:-.03em;margin-top:10px}
+.flash-hint{font-size:13px;color:var(--shell-soft);margin:18px auto 0;max-width:52ch;line-height:1.55}
+.flash-answer{margin-top:26px;padding:22px;background:var(--brand-soft);border-radius:14px;text-align:left}
+.fa-name{font-family:var(--display);font-size:23px;font-weight:800;letter-spacing:-.02em;color:var(--brand-ink)}
+.fa-move{font-size:16px;line-height:1.6;margin:10px 0 0;color:var(--shell-ink)}
+.fa-why{font-size:14px;line-height:1.6;margin:10px 0 0;color:var(--shell-soft)}
+.flash-rate{display:flex;gap:9px;justify-content:center;align-items:center;margin-top:22px;flex-wrap:wrap}
+.fr-q{font-size:14px;color:var(--shell-soft);margin-right:6px}
+.fr-btn{
+  border:2px solid var(--shell-line);background:#fff;border-radius:999px;
+  padding:10px 20px;font-family:var(--body);font-size:14.5px;font-weight:700;color:var(--shell-ink);
+}
+.fr-btn.good:hover{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.fr-btn.mid:hover{border-color:var(--spot-dark);background:var(--spot-soft);color:var(--spot-dark)}
+.fr-btn.no:hover{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-ink)}
+
+.cheer-toast{
+  background:var(--spot-soft);border:1px solid var(--spot-line);color:var(--spot-dark);
+  border-radius:999px;padding:11px 20px;font-size:14.5px;font-weight:600;
+  text-align:center;margin:0 auto 20px;max-width:520px;
+}
+
+.deck-sec{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--shell-soft);margin:16px 0 8px}
+.deck-sec:first-child{margin-top:0}
+.deck-row{display:grid;grid-template-columns:1fr 92px 84px;gap:12px;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--shell-line);font-size:14.5px}
+.deck-row:last-child{border-bottom:none}
+.boxes{display:flex;gap:4px}
+.bx{width:14px;height:8px;border-radius:2px;background:var(--shell-bg);border:1px solid var(--shell-line)}
+.bx.on{background:var(--brand);border-color:var(--brand)}
+.bx.lock{background:var(--green);border-color:var(--green)}
+.deck-row .n{text-align:right;font-size:12px}
+@media (max-width:640px){
+  .deck-row{grid-template-columns:1fr 92px}
+  .deck-row .n{display:none}
+}

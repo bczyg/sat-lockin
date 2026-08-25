@@ -33,6 +33,45 @@
     var authState = { email: '', stage: 'email', busy: false, msg: '', err: '' };
     var classState = { roster: null, traps: null, loading: false };
 
+    /* State for logging misses from an official practice test. */
+    var log = {
+      step: 'start',        // start | question | done
+      source: '',
+      section: 'rw',
+      count: 0,
+      idx: 0,
+      current: {},
+      rows: [],
+      expanded: false
+    };
+
+    /* Which traps actually occur on questions of a given skill, most common
+       first. The picker is built from the bank rather than a fixed list, so the
+       options a student sees are always the ones that skill can produce. */
+    function trapsForSkill(skill) {
+      var counts = {};
+      window.RW_BANK.concat(window.MATH_BANK).forEach(function (q) {
+        if (q.skill !== skill) return;
+        var t = window.tagsFor(q).traps;
+        Object.keys(t).forEach(function (k) { counts[t[k]] = (counts[t[k]] || 0) + 1; });
+      });
+      return Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+    }
+
+    function skillsForSection(sec) {
+      var out = {};
+      window.SATP.bankFor(sec).forEach(function (q) {
+        (out[q.domain] = out[q.domain] || []);
+        if (out[q.domain].indexOf(q.skill) < 0) out[q.domain].push(q.skill);
+      });
+      return out;
+    }
+
+    function stratForSkill(skill) {
+      var q = window.RW_BANK.concat(window.MATH_BANK).filter(function (x) { return x.skill === skill; })[0];
+      return q ? window.tagsFor(q).strat : null;
+    }
+
     function boot() {
       applyPalette(currentPalette());
       (window.RW_BANK || []).concat(window.MATH_BANK || []).forEach(function (q) { ALLQ[q.id] = q; });
@@ -125,6 +164,9 @@
       view === 'auth' ? authHTML() :
       view === 'class' ? classHTML() :
       view === 'coverage' ? coverageHTML() :
+      view === 'logger' ? loggerHTML() :
+      view === 'cards' ? cardsHTML() :
+      view === 'about' ? aboutHTML() :
       view === 'directions' ? directionsHTML() :
       view === 'break' ? breakHTML() :
       view === 'exam' ? examHTML() :
@@ -285,6 +327,23 @@
       '<div class="card-actions"><button class="btn" onclick="APP.go(\'skills\')">Pick a skill</button>' +
       '<button class="btn ghost" onclick="APP.quickMix()">Quick 10</button></div></div>';
 
+      var dueNow = dueCards().length;
+      var lockedNow = lockedCount();
+      h += '<div class="card mode-card cards"><div class="icon">' + ic('bolt') + '</div>' +
+        '<h3>Strategy cards</h3>' +
+        '<p>Quick recall on the 22 moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
+        '<div class="spacer"></div><div class="meta">' + lockedNow + ' of ' +
+        Object.keys(window.STRATS).length + ' locked in' + (dueNow ? ' \u00b7 ' + dueNow + ' due now' : ' \u00b7 none due') + '</div>' +
+        '<div class="card-actions"><button class="btn" onclick="APP.go(\'cards\')">' +
+        (dueNow ? 'Review ' + dueNow : 'Open deck') + '</button></div></div>';
+
+      h += '<div class="card mode-card log"><div class="icon">' + ic('sheet') + '</div>' +
+        '<h3>Log a practice test</h3>' +
+        '<p>Took a test in Bluebook? Walk through what you missed and this turns your real results into ' +
+        'practice aimed at exactly those mistakes.</p>' +
+        '<div class="spacer"></div><div class="meta">about 20 seconds per question</div>' +
+        '<div class="card-actions"><button class="btn" onclick="APP.openLogger()">Log a test</button></div></div>';
+
       h += '<div class="card mode-card diag"><div class="icon">' + ic('scope') + '</div>' +
       '<h3>Diagnosis</h3>' +
       '<p>See which traps keep working on you, which strategies are slipping, and everything you have missed and not yet fixed.</p>' +
@@ -339,6 +398,10 @@
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.trapBook()">Open</button></div></div>' +
       '<div class="card"><h3>Math reference sheet</h3><p>The formula sheet the real test gives you. Knowing when to open it is the skill.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.reference()">Open</button></div></div>' +
+      '<div class="card"><h3>Why strategies matter</h3><p>The argument, with a real question: every wrong ' +
+      'answer on the SAT was built for a specific mistake, and there are only so many of them.</p>' +
+      '<div class="spacer"></div><div class="card-actions">' +
+      '<button class="btn ghost sm" onclick="APP.go(\'about\')">Read it</button></div></div>' +
       '<div class="card"><h3>Where practice tests fit</h3><p>Take your full practice tests in ' +
       '<strong>Bluebook</strong>, the College Board app. That is the real software, the real questions, and the ' +
       'only scoring worth trusting. Come back here to work out why you missed what you missed.</p>' +
@@ -631,12 +694,282 @@
       });
     }
 
+
+
+    /* ============================================================
+       STRATEGY CARDS
+       The moves have to be available under time pressure, which means
+       recall practice, not rereading. Spaced repetition on a Leitner
+       schedule: get one right and it comes back later, miss it and it
+       comes back soon.
+
+       The tone here is deliberately warm. Missing a card is the normal
+       case and the point of the exercise, so nothing scolds.
+       ============================================================ */
+    var CKEY = 'decoy.cards.v1';
+    var BOX_DAYS = { 1: 0, 2: 1, 3: 3, 4: 7, 5: 21 };
+    var cards = { current: null, revealed: false, done: 0, streak: 0, justAdvanced: null };
+
+    function cardState() {
+      try { return JSON.parse(localStorage.getItem(CKEY)) || {}; } catch (e) { return {}; }
+    }
+    function saveCardState(d) {
+      try { localStorage.setItem(CKEY, JSON.stringify(d)); } catch (e) {}
+    }
+
+    /* Which skills actually use this move, so the prompt is a real situation
+       rather than an abstract definition. */
+    function skillsForStrat(id) {
+      var out = [];
+      window.RW_BANK.concat(window.MATH_BANK).forEach(function (q) {
+        if (window.tagsFor(q).strat !== id && !(window.SKILL_STRAT[q.skill] === id)) return;
+        if (window.tagsFor(q).strat !== id) return;
+        if (out.indexOf(q.skill) < 0) out.push(q.skill);
+      });
+      return out;
+    }
+
+    function cardDeck() {
+      var st = cardState();
+      var now = Date.now();
+      return Object.keys(window.STRATS).map(function (id) {
+        var c = st[id] || { box: 1, due: 0, seen: 0, right: 0 };
+        return {
+          id: id, box: c.box, due: c.due, seen: c.seen, right: c.right,
+          isDue: !c.due || c.due <= now,
+          locked: c.box >= 4
+        };
+      });
+    }
+
+    function dueCards() {
+      return cardDeck().filter(function (c) { return c.isDue; })
+        .sort(function (a, b) { return a.box - b.box; });
+    }
+
+    function lockedCount() {
+      return cardDeck().filter(function (c) { return c.locked; }).length;
+    }
+
+    function cardsHTML() {
+      var deck = cardDeck();
+      var due = dueCards();
+      var locked = lockedCount();
+      var total = deck.length;
+      var pct = Math.round(100 * locked / total);
+
+      var h = '<div class="home"><div class="home-head"><div><div class="brand">Strategy cards</div>' +
+        '<div class="tagline">Quick recall, so the moves are there when the clock is running. ' +
+        'A few minutes beats an hour of rereading.</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
+
+      /* progress, framed as how far along rather than how far short */
+      h += '<div class="prog-wrap"><div class="ring" style="--pct:' + pct + '">' +
+        '<div class="ring-in"><div class="ring-n">' + locked + '</div>' +
+        '<div class="ring-of">of ' + total + '</div></div></div>' +
+        '<div class="prog-text"><h3>' + progressLine(locked, total) + '</h3>' +
+        '<p>A move counts as locked in once you have recalled it correctly a few times, spread out over days. ' +
+        'That spacing is what makes it stick.</p>';
+      if (cards.done) h += '<p class="prog-run">' + cards.done + ' reviewed just now' +
+        (cards.streak > 1 ? ', ' + cards.streak + ' in a row' : '') + '.</p>';
+      h += '</div></div>';
+
+      if (!cards.current) {
+        if (!due.length) {
+          h += '<div class="card cheer"><h3>Nothing due right now</h3>' +
+            '<p>Everything you have reviewed is still holding. Come back tomorrow and the ones that are ' +
+            'starting to fade will be waiting. In the meantime, the useful thing is questions.</p>' +
+            '<div class="card-actions"><button class="btn" onclick="APP.quickMix()">Do a 10-question set</button>' +
+            '<button class="btn ghost" onclick="APP.cardsCram()">Review anyway</button></div></div>';
+        } else {
+          h += '<div class="card cheer"><h3>' + due.length + ' card' + (due.length === 1 ? '' : 's') + ' ready</h3>' +
+            '<p>' + (locked === 0
+              ? 'First time through. You are not expected to know these yet, so guess freely and let the app sort out what needs repeating.'
+              : 'Some of these you will get instantly. Those are the ones that are working.') + '</p>' +
+            '<div class="card-actions"><button class="btn" onclick="APP.cardsStart()">Start</button></div></div>';
+        }
+      } else {
+        var meta = window.STRATS[cards.current.id];
+        var sk = skillsForStrat(cards.current.id);
+        var where = sk.length ? sk.slice(0, 2).join(' or ') : (meta.section === 'rw' ? 'Reading and Writing' : 'Math');
+        h += '<div class="flash">';
+        h += '<div class="flash-cue">You are on a <strong>' + esc(where) + '</strong> question.</div>';
+        h += '<div class="flash-ask">What is the move?</div>';
+        if (!cards.revealed) {
+          h += '<div class="card-actions" style="justify-content:center;margin-top:26px">' +
+            '<button class="btn big" style="max-width:280px" onclick="APP.cardsReveal()">Show me</button></div>' +
+            '<p class="flash-hint">Say it out loud first, even roughly. Trying to retrieve it is what builds the habit; ' +
+            'reading it again does not.</p>';
+        } else {
+          h += '<div class="flash-answer"><div class="fa-name">' + meta.name + '</div>' +
+            '<p class="fa-move">' + meta.move + '</p>' +
+            '<p class="fa-why">' + meta.why + '</p></div>';
+          h += '<div class="flash-rate"><div class="fr-q">How did that go?</div>' +
+            '<button class="fr-btn good" onclick="APP.cardsRate(\'good\')">I had it</button>' +
+            '<button class="fr-btn mid" onclick="APP.cardsRate(\'mid\')">Nearly</button>' +
+            '<button class="fr-btn no" onclick="APP.cardsRate(\'no\')">Not yet</button></div>';
+          h += '<p class="flash-hint">Answer honestly. Marking something you half-knew as \u201chad it\u201d just means ' +
+            'it comes back too late to help.</p>';
+        }
+        h += '</div>';
+        if (cards.justAdvanced) {
+          h += '<div class="cheer-toast">' + cards.justAdvanced + '</div>';
+        }
+      }
+
+      /* the whole deck, so progress is visible rather than hidden in a counter */
+      h += '<div class="section-title">Your deck</div><div class="card">';
+      ['rw', 'math'].forEach(function (sec) {
+        h += '<div class="deck-sec">' + (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</div>';
+        deck.filter(function (c) { return window.STRATS[c.id].section === sec; }).forEach(function (c) {
+          var meta = window.STRATS[c.id];
+          h += '<div class="deck-row"><div>' + meta.name + '</div>' +
+            '<div class="boxes">' + [1, 2, 3, 4, 5].map(function (b) {
+              return '<span class="bx' + (c.box >= b ? ' on' : '') + (c.locked && b <= c.box ? ' lock' : '') + '"></span>';
+            }).join('') + '</div>' +
+            '<div class="n">' + (c.locked ? 'locked in' : c.seen ? 'learning' : 'new') + '</div></div>';
+        });
+      });
+      h += '</div></div>';
+      return h;
+    }
+
+    function progressLine(locked, total) {
+      if (locked === 0) return 'Let us find out what you already know';
+      if (locked === total) return 'All ' + total + ' moves locked in';
+      if (locked < 5) return locked + ' moves locked in, and that is a start';
+      if (locked < total / 2) return locked + ' locked in, keep going';
+      if (locked < total - 3) return 'Over halfway: ' + locked + ' of ' + total;
+      return 'Nearly there, ' + (total - locked) + ' to go';
+    }
+
+    /* ============================================================
+       LANDING PAGE
+       The argument for why strategies matter, made with a real question
+       rather than a claim. No score-gain statistics: I have no way to
+       measure those honestly, and the mechanism is persuasive on its own.
+       ============================================================ */
+    var demo = { picked: null, qid: 'm024' };
+
+    function demoQuestion() {
+      return window.MATH_BANK.concat(window.RW_BANK).filter(function (q) { return q.id === demo.qid; })[0];
+    }
+
+    function landingDemoHTML() {
+      var q = demoQuestion();
+      if (!q) return '';
+      var tg = window.tagsFor(q);
+      var h = '<div class="demo"><div class="demo-tag">Try one</div>' +
+        '<div class="demo-q">' + q.prompt + '</div><div class="demo-choices">';
+      q.choices.forEach(function (c, i) {
+        var cls = 'demo-choice';
+        if (demo.picked !== null) {
+          if (i === q.answer) cls += ' right';
+          else if (i === demo.picked) cls += ' wrong';
+          else cls += ' dim';
+        }
+        h += '<button class="' + cls + '" onclick="APP.demoPick(' + i + ')">' +
+          '<span class="ltr">' + LETTERS[i] + '</span>' + c + '</button>';
+      });
+      h += '</div>';
+
+      if (demo.picked === null) {
+        h += '<p class="demo-note">Pick one. Nothing is recorded, and there is a point coming.</p>';
+      } else if (demo.picked === q.answer) {
+        var trapId = tg.traps[Object.keys(tg.traps)[0]];
+        var wrongIdx = Object.keys(tg.traps).filter(function (k) {
+          return tg.traps[k] === 'wrong-target';
+        })[0] || Object.keys(tg.traps)[0];
+        var tp = window.TRAPS[tg.traps[wrongIdx]];
+        h += '<div class="demo-reveal"><p><strong>Right.</strong> Now look at ' + LETTERS[wrongIdx] +
+          ', which is <strong>' + q.choices[wrongIdx] + '</strong>.</p>' +
+          '<p>That is not a random number. It is the x-value where the minimum happens, so anyone who did the ' +
+          'algebra correctly and then stopped a line too early lands exactly there. It was put in the list for ' +
+          'them. The catalog calls it <strong>' + tp.name + '</strong>.</p>' +
+          '<p>' + tp.fix + '</p></div>';
+      } else {
+        var tp2 = window.TRAPS[tg.traps[demo.picked]];
+        h += '<div class="demo-reveal"><p><strong>That is the one most people pick.</strong> ' +
+          'The answer was ' + LETTERS[q.answer] + '.</p>' +
+          '<p>Your choice was not a random wrong number. It is <strong>' + tp2.name + '</strong>: ' +
+          tp2.tell + ' Someone wrote it specifically for the person who does the work correctly and then ' +
+          'reports the wrong part of it.</p>' +
+          '<p><strong>The fix:</strong> ' + tp2.fix + '</p></div>';
+      }
+      h += '<div class="demo-actions"><button class="btn sm" onclick="APP.demoReset()">Reset</button></div></div>';
+      return h;
+    }
+
+    function argumentHTML() {
+      var h = '';
+      h += '<div class="lead">' +
+        '<h1>Every wrong answer on the SAT was<br><span>built to be picked.</span></h1>' +
+        '<p class="lead-sub">Nobody writes a wrong answer nobody would choose. Each one encodes a specific, ' +
+        'predictable mistake, aimed at a student who almost had it. There are a limited number of those ' +
+        'mistakes, they repeat on every test, and they can be learned.</p>' +
+        '</div>';
+
+      h += landingDemoHTML();
+
+      h += '<div class="section-title">Why this is worth your time</div><div class="card-grid">';
+      h += '<div class="card"><h3>The wrong answers are engineered</h3>' +
+        '<p>Test writers build distractors from the errors students actually make: the sign that gets dropped, ' +
+        'the quantity that gets reported instead of the one asked for, the word read in its everyday sense. ' +
+        'That is why a wrong answer so often feels reasonable. It was designed to.</p></div>';
+      h += '<div class="card"><h3>Some lost points are not knowledge gaps</h3>' +
+        '<p>There is a real difference between not knowing how to find a vertex and knowing perfectly well ' +
+        'and then reporting the x-value. The first needs teaching. The second needs one habit. This app keeps ' +
+        'them apart and shows you your own split, rather than telling you a number we cannot measure.</p></div>';
+      h += '<div class="card"><h3>The format multiplies early mistakes</h3>' +
+        '<p>The digital SAT is adaptive in two stages. How you do on the first module decides whether you get ' +
+        'the harder or the easier second module, and that decision caps your section score. Points lost early ' +
+        'to a trap cost more than the same points lost late.</p></div>';
+      h += '<div class="card"><h3>There is no penalty for guessing</h3>' +
+        '<p>A blank and a wrong answer score the same, so a blank is strictly worse than a guess. Knowing that, ' +
+        'plus knowing which choice a trap is hiding in, turns a question you cannot finish into one you can ' +
+        'still often get.</p></div>';
+      h += '</div>';
+
+      h += '<div class="section-title">What you learn here</div>';
+      h += '<div class="card"><div class="two-col">' +
+        '<div><h3>22 strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
+        'Circle the quantity before you solve. Name the relationship before you pick the transition. Each one is ' +
+        'a habit, not a fact.</p></div>' +
+        '<div><h3>42 traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
+        'allows, it does half the job, it points the right idea the wrong way, it describes the wrong thing, it ' +
+        'breaks a grammar rule, or it slips a step.</p></div>' +
+        '</div><p class="note" style="margin-top:16px">The app tracks which of those still work on you, and ' +
+        'gives you questions where that exact trap is waiting until it stops working.</p></div>';
+
+      h += '<div class="card" style="margin-top:14px"><h3>Where the real practice tests fit</h3>' +
+        '<p>Take your full practice tests in <strong>Bluebook</strong>, College Board\'s own app. That is the real ' +
+        'software, the real retired questions, and the only scoring worth trusting. This is not a replacement ' +
+        'for it and should not pretend to be.</p>' +
+        '<p>What Bluebook does not do is tell you <em>why</em> you missed what you missed. It gives you a score. ' +
+        'Bring the misses here, spend twenty seconds on each, and you get the other half.</p></div>';
+      return h;
+    }
+
+    function aboutHTML() {
+      var h = '<div class="home landing"><div class="home-head"><div><div class="brand">' + wordmark() + '</div>' +
+        '<div class="tagline">' + esc(window.BRAND.tagline) + '</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back to practice</button></div>';
+      h += argumentHTML();
+      h += '<div class="card-actions" style="margin-top:24px;justify-content:center">' +
+        '<button class="btn big" style="max-width:320px" onclick="APP.go(\'home\')">Start practicing</button></div>';
+      h += '</div>';
+      return h;
+    }
+
     /* ============================================================
        SIGN IN
        ============================================================ */
     function authHTML() {
       var C = window.Cloud, cfg = window.CONFIG || {};
-      var h = '<div class="auth-wrap"><div class="auth-card">';
+      var h = '<div class="home landing"><div class="lead-mark">' + wordmark() + '</div>';
+      h += argumentHTML();
+      h += '<div class="section-title">Get started</div>';
+      h += '<div class="auth-inline"><div class="auth-card">';
       h += '<div class="auth-mark">' + ic('target') + '</div>';
       h += '<h1>' + esc(window.BRAND.name) + '</h1>';
       h += '<p class="auth-sub">' + esc(window.BRAND.tagline) + '</p>';
@@ -823,6 +1156,145 @@
       });
 
       h += '</div>';
+      return h;
+    }
+
+
+    /* ============================================================
+       LOG A PRACTICE TEST
+       She takes the real test in Bluebook. This turns each miss into the
+       same kind of record the app already keeps, so her official results
+       feed the same diagnosis as her practice here.
+       ============================================================ */
+    function loggerHTML() {
+      var h = '<div class="home"><div class="home-head"><div><div class="brand">Log a practice test</div>' +
+        '<div class="tagline">Took a test in Bluebook? Walk through what you missed and this turns it into ' +
+        'practice aimed at exactly those mistakes.</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
+
+      if (log.step === 'start') {
+        h += '<div class="card"><h3>Which test?</h3>' +
+          '<label class="fld"><span>Name it however you like</span>' +
+          '<input id="log-source" placeholder="Bluebook Practice Test 4" value="' + esc(log.source) + '"></label>' +
+          '<label class="fld"><span>Which section were these misses in?</span></label>' +
+          '<div class="card-actions">' +
+          '<button class="btn' + (log.section === 'rw' ? '' : ' subtle') + '" onclick="APP.logSection(\'rw\')">Reading and Writing</button>' +
+          '<button class="btn' + (log.section === 'math' ? '' : ' subtle') + '" onclick="APP.logSection(\'math\')">Math</button>' +
+          '</div>' +
+          '<label class="fld" style="margin-top:18px"><span>How many questions did you miss in it?</span>' +
+          '<input id="log-count" type="number" min="1" max="40" placeholder="6"></label>' +
+          '<div class="card-actions"><button class="btn" onclick="APP.logBegin()">Start walking through them</button></div>' +
+          '<p class="note" style="margin-top:14px">You will go through them one at a time. It takes about twenty ' +
+          'seconds each, and it is the most useful twenty seconds in your whole study session.</p></div></div>';
+        return h;
+      }
+
+      if (log.step === 'done') {
+        var byTrap = {};
+        log.rows.forEach(function (r) { if (r.trap) byTrap[r.trap] = (byTrap[r.trap] || 0) + 1; });
+        var ranked = Object.keys(byTrap).sort(function (a, b) { return byTrap[b] - byTrap[a]; });
+        var rushed = log.rows.filter(function (r) { return r.cause === 'rushed'; }).length;
+        var gap = log.rows.filter(function (r) { return r.cause === 'gap'; }).length;
+
+        h += '<div class="mission"><div class="m-body"><div class="m-kicker">' + esc(log.source) + '</div>' +
+          '<h2>' + log.rows.length + ' miss' + (log.rows.length === 1 ? '' : 'es') + ' logged</h2>';
+        if (ranked.length) {
+          var top = window.TRAPS[ranked[0]];
+          h += '<p>Your most common one was <strong>' + top.name + '</strong>, ' + byTrap[ranked[0]] +
+            ' of ' + log.rows.length + '. ' + top.fix + '</p>' +
+            '<div class="m-actions"><button class="btn" onclick="APP.drillTrap(\'' + ranked[0] + '\')">' +
+            'Practice that trap now</button>' +
+            '<button class="btn ghost" onclick="APP.go(\'diagnosis\')">See the full picture</button></div>';
+        } else {
+          h += '<p>None of these came down to a trap, so the work is elsewhere. Look at the breakdown below.</p>' +
+            '<div class="m-actions"><button class="btn ghost" onclick="APP.go(\'diagnosis\')">See the full picture</button></div>';
+        }
+        h += '</div></div>';
+
+        h += '<div class="tiles">' +
+          '<div class="tile"><div class="t-lbl">Caught by a trap</div><div class="t-val">' +
+          (log.rows.length - rushed - gap) + '</div><div class="t-sub">you knew it, the question got you</div></div>' +
+          '<div class="tile spot"><div class="t-lbl">Ran out of time</div><div class="t-val">' + rushed +
+          '</div><div class="t-sub">a pacing problem, not a knowledge one</div></div>' +
+          '<div class="tile"><div class="t-lbl">Did not know it</div><div class="t-val">' + gap +
+          '</div><div class="t-sub">content to go and learn</div></div></div>';
+
+        if (rushed >= 2) {
+          h += '<div class="card" style="margin-top:16px"><h3>About the pacing</h3>' +
+            '<p>' + rushed + ' of these were time, not difficulty. That is worth knowing, because more content ' +
+            'review will not fix it. Run a timed module here and watch the clock per question: the target is about ' +
+            '71 seconds in Reading and Writing and 95 in Math.</p>' +
+            '<div class="card-actions"><button class="btn ghost sm" onclick="APP.startSection(\'' + log.section + '\')">' +
+            'Run a timed module</button></div></div>';
+        }
+        if (gap >= 2) {
+          h += '<div class="card" style="margin-top:12px"><h3>About the content gaps</h3>' +
+            '<p>' + gap + ' of these were things you had not learned yet, which no amount of strategy fixes. ' +
+            'Those are worth taking to a teacher or a textbook rather than grinding more questions.</p></div>';
+        }
+
+        h += '<div class="section-title">Everything you logged</div><div class="card">';
+        log.rows.forEach(function (r, i) {
+          var t = r.trap && window.TRAPS[r.trap];
+          h += '<div class="skill-row" style="grid-template-columns:30px 1fr 200px">' +
+            '<div class="n" style="text-align:left">' + (i + 1) + '</div>' +
+            '<div>' + esc(r.skill || 'unspecified') + '</div>' +
+            '<div class="n" style="text-align:right">' +
+            (t ? t.name : r.cause === 'rushed' ? 'ran out of time' : 'did not know it') + '</div></div>';
+        });
+        h += '</div>';
+        h += '<div class="card-actions" style="margin-top:18px">' +
+          '<button class="btn" onclick="APP.logReset()">Log another test</button>' +
+          '<button class="btn subtle" onclick="APP.go(\'home\')">Done</button></div></div>';
+        return h;
+      }
+
+      /* ---- walking one miss ---- */
+      var n = log.idx + 1;
+      h += '<div class="card"><span class="pill">' + esc(log.source) + '</span>' +
+        '<h3>Miss ' + n + ' of ' + log.count + '</h3>';
+
+      if (!log.current.skill) {
+        h += '<p>What kind of question was it? If you are not sure, pick the closest.</p>';
+        var groups = skillsForSection(log.section);
+        Object.keys(groups).forEach(function (dom) {
+          h += '<div class="log-group"><div class="log-dom">' + esc(dom) + '</div><div class="log-opts">';
+          groups[dom].forEach(function (sk) {
+            h += '<button class="log-opt" onclick="APP.logSkill(' + JSON.stringify(sk).replace(/"/g, '&quot;') + ')">' +
+              esc(sk) + '</button>';
+          });
+          h += '</div></div>';
+        });
+      } else {
+        h += '<p class="note">' + esc(log.current.skill) + ' <button class="link-btn" onclick="APP.logBackSkill()">change</button></p>';
+        h += '<p style="margin-top:14px">What happened? Pick whichever is closest to the truth.</p><div class="log-opts col">';
+        var likely = trapsForSkill(log.current.skill);
+        var show = log.expanded ? Object.keys(window.TRAPS) : likely.slice(0, 6);
+        show.forEach(function (tid) {
+          var t = window.TRAPS[tid];
+          if (!t) return;
+          h += '<button class="log-opt wide" onclick="APP.logCause(\'trap\',\'' + tid + '\')">' +
+            '<span class="lo-felt">' + t.felt + '</span>' +
+            '<span class="lo-name">' + t.name + '</span></button>';
+        });
+        h += '<button class="log-opt wide alt" onclick="APP.logCause(\'rushed\')">' +
+          '<span class="lo-felt">I ran out of time and guessed</span>' +
+          '<span class="lo-name">pacing, not a trap</span></button>';
+        h += '<button class="log-opt wide alt" onclick="APP.logCause(\'gap\')">' +
+          '<span class="lo-felt">I did not know how to do it at all</span>' +
+          '<span class="lo-name">content gap, not a trap</span></button>';
+        h += '</div>';
+        if (!log.expanded) {
+          h += '<div class="card-actions" style="margin-top:12px">' +
+            '<button class="btn subtle sm" onclick="APP.logExpand()">None of these, show me all ' +
+            Object.keys(window.TRAPS).length + '</button></div>';
+        }
+      }
+      h += '</div>';
+      h += '<div class="card-actions" style="margin-top:16px">' +
+        '<button class="btn subtle sm" onclick="APP.logSkip()">Skip this one</button>' +
+        (log.rows.length ? '<button class="btn ghost sm" onclick="APP.logFinish()">Stop here and see the summary</button>' : '') +
+        '</div></div>';
       return h;
     }
 
@@ -1234,6 +1706,111 @@
         var it = (reviewData && reviewData.items.filter(function (i) { return i.qid === qid; })[0]) || {};
         askTutor('chat', text, questionContext(q, { choice: it.choice, text: it.text }));
       },
+
+      cardsStart: function () {
+        var due = dueCards();
+        if (!due.length) return;
+        cards.current = due[0];
+        cards.revealed = false;
+        cards.justAdvanced = null;
+        render();
+      },
+      cardsCram: function () {
+        var deck = cardDeck().sort(function (a, b) { return a.box - b.box; });
+        cards.current = deck[0];
+        cards.revealed = false;
+        render();
+      },
+      cardsReveal: function () { cards.revealed = true; render(); },
+      cardsRate: function (how) {
+        var st = cardState();
+        var id = cards.current.id;
+        var c = st[id] || { box: 1, due: 0, seen: 0, right: 0 };
+        var before = c.box;
+        c.seen++;
+        if (how === 'good') { c.box = Math.min(5, c.box + 1); c.right++; cards.streak++; }
+        else if (how === 'mid') { cards.streak = 0; }
+        else { c.box = 1; cards.streak = 0; }
+        c.due = Date.now() + BOX_DAYS[c.box] * 86400000;
+        st[id] = c;
+        saveCardState(st);
+        cards.done++;
+
+        cards.justAdvanced = null;
+        if (how === 'good' && c.box >= 4 && before < 4) {
+          cards.justAdvanced = 'That one is locked in. ' + lockedCount() + ' of ' +
+            Object.keys(window.STRATS).length + ' now.';
+        } else if (how === 'good' && cards.streak >= 3) {
+          cards.justAdvanced = cards.streak + ' in a row. It is sticking.';
+        } else if (how === 'no') {
+          cards.justAdvanced = 'Fine, that is what these are for. It will come back shortly.';
+        }
+
+        var due = dueCards().filter(function (d) { return d.id !== id || c.box === 1; });
+        cards.current = due.length ? due[0] : null;
+        cards.revealed = false;
+        if (!cards.current) cards.justAdvanced = null;
+        render();
+      },
+
+      demoPick: function (i) { demo.picked = i; render(); },
+      demoReset: function () { demo.picked = null; render(); },
+
+      /* ---------- logging an official practice test ---------- */
+      openLogger: function () { log.step = 'start'; log.rows = []; log.idx = 0; log.current = {}; view = 'logger'; render(); },
+      logSection: function (sec) {
+        var src = document.getElementById('log-source');
+        if (src) log.source = src.value;
+        log.section = sec; render();
+      },
+      logBegin: function () {
+        var src = document.getElementById('log-source');
+        var cnt = document.getElementById('log-count');
+        log.source = (src && src.value.trim()) || 'Practice test';
+        log.count = Math.max(1, Math.min(40, parseInt(cnt && cnt.value, 10) || 1));
+        log.rows = []; log.idx = 0; log.current = {}; log.expanded = false;
+        log.step = 'question';
+        render();
+      },
+      logSkill: function (skill) {
+        log.current.skill = skill;
+        log.current.strat = stratForSkill(skill);
+        var q = window.RW_BANK.concat(window.MATH_BANK).filter(function (x) { return x.skill === skill; })[0];
+        log.current.domain = q ? q.domain : null;
+        log.expanded = false;
+        render();
+      },
+      logBackSkill: function () { log.current = {}; log.expanded = false; render(); },
+      logExpand: function () { log.expanded = true; render(); },
+      logCause: function (cause, trap) {
+        log.rows.push({
+          skill: log.current.skill,
+          domain: log.current.domain,
+          strat: log.current.strat,
+          trap: cause === 'trap' ? trap : null,
+          cause: cause
+        });
+        log.idx++;
+        log.current = {};
+        log.expanded = false;
+        if (log.idx >= log.count) return APP.logFinish();
+        render();
+      },
+      logSkip: function () {
+        log.idx++;
+        log.current = {};
+        log.expanded = false;
+        if (log.idx >= log.count) return APP.logFinish();
+        render();
+      },
+      logFinish: function () {
+        if (log.rows.length) {
+          window.Store.logMisses({ id: String(Date.now()), label: log.source, section: log.section }, log.rows);
+        }
+        log.step = 'done';
+        render();
+      },
+      logReset: function () { log.step = 'start'; log.rows = []; log.idx = 0; log.current = {}; render(); },
 
       /* ---------- writing new questions ---------- */
       fillGaps: function () {
