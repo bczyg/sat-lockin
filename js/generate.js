@@ -72,6 +72,7 @@
       },
 
       buildPrompt: function (opts) {
+        if (!Object.keys(SKILL_DOMAIN).length) indexSkills();
         var strat = global.STRATS[opts.strat];
         var traps = (opts.traps || []).filter(function (t) { return global.TRAPS[t]; });
         var sd = SKILL_DOMAIN[opts.skill] || {};
@@ -85,10 +86,21 @@
         lines.push('type: ' + (opts.type || 'mc'));
         lines.push('');
         if (strat) {
-          lines.push('The move being tested is "' + strat.name + '" (id: ' + opts.strat + ').');
+          lines.push('THE MOVE BEING TESTED: "' + strat.name + '" (id: ' + opts.strat + ')');
           lines.push('What it means: ' + strat.move);
           lines.push('Use exactly this id in the strat field.');
           lines.push('');
+          /* The per-strategy recipe. Generic instructions produce questions of
+             the right shape that do not reliably test the intended move, so
+             this says what the correct answer has to do and how this question
+             type specifically goes wrong. */
+          if (strat.gen) {
+            lines.push('HOW A QUESTION FOR THIS MOVE MUST BE BUILT');
+            lines.push('Shape: ' + strat.gen.shape);
+            lines.push('The correct answer: ' + strat.gen.key);
+            lines.push('Watch out: ' + strat.gen.avoid);
+            lines.push('');
+          }
         }
         if (traps.length) {
           lines.push('Build the wrong answers from these trap types. Use these exact ids in the');
@@ -231,6 +243,22 @@
       },
 
       /* ---------- what still needs covering ---------- */
+      /* The traps a strategy's recipe expects, so a strategy-targeted request
+         asks for the distractor types that move actually produces. */
+      trapsForStrat: function (stratId) {
+        var st = global.STRATS[stratId];
+        if (st && st.gen && st.gen.traps) {
+          return st.gen.traps.filter(function (t) { return global.TRAPS[t]; });
+        }
+        var out = {};
+        (global.RW_BANK || []).concat(global.MATH_BANK || []).forEach(function (q) {
+          if (global.tagsFor(q).strat !== stratId) return;
+          var t = global.tagsFor(q).traps;
+          Object.keys(t).forEach(function (k) { out[t[k]] = 1; });
+        });
+        return Object.keys(out);
+      },
+
       gapPlan: function () {
         var cov = global.Store.coverage();
         var plan = [];

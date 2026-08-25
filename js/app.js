@@ -1090,7 +1090,9 @@
 
     function cvRow(id, name, blurb, c, kind) {
       var act = kind === 'trap' ? 'APP.drillTrap' : 'APP.drillStrat';
-      return '<div class="cv-row"><div><strong>' + name + '</strong>' +
+      var recipe = (kind === 'strat' && window.STRATS[id] && window.STRATS[id].gen)
+        ? ' <button class="link-btn tiny" onclick="APP.showRecipe(\'' + id + '\')">recipe</button>' : '';
+      return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
       '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
       '<div>' + stateChip(c) + '</div>' +
       '<div style="text-align:right"><button class="btn ghost sm" onclick="' + act + '(\'' + id + '\')">' +
@@ -1841,10 +1843,7 @@
           }).slice(0, 2);
           opts.traps = [target.id].concat(others);
         } else {
-          var qs = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) { return window.tagsFor(q).strat === target.id; });
-          var tset = {};
-          qs.forEach(function (q) { var t = window.tagsFor(q); Object.keys(t.traps).forEach(function (k) { tset[t.traps[k]] = 1; }); });
-          opts.traps = Object.keys(tset).slice(0, 4);
+          opts.traps = window.Generate.trapsForStrat(target.id).slice(0, 5);
         }
         APP.runGenerate(opts, target);
       },
@@ -2280,6 +2279,26 @@
         applyPalette(id);
         APP.colors();
         render();
+      },
+      showRecipe: function (id) {
+        var st = window.STRATS[id];
+        if (!st || !st.gen) return;
+        var h = '<p class="note">This is the specification the app follows when it writes a new question for ' +
+          'this move. It is here so you can see what is being asked for, and change it if you disagree. ' +
+          'The recipes live in js/tags.js.</p>';
+        h += '<div class="help-card strategy"><h4>The move</h4><p>' + st.move + '</p>' +
+          '<p class="note">' + st.why + '</p></div>';
+        h += '<div class="help-card steps"><h4>Shape of the question</h4><p>' + st.gen.shape + '</p></div>';
+        h += '<div class="help-card"><h4>What the correct answer must do</h4><p>' + st.gen.key + '</p></div>';
+        h += '<div class="help-card traps"><h4>Traps the wrong answers use</h4>';
+        st.gen.traps.forEach(function (t) {
+          if (!window.TRAPS[t]) return;
+          h += '<div class="trap-row"><b></b><div><span class="trap-chip">' + window.TRAPS[t].name +
+            '</span> ' + window.TRAPS[t].tell + '</div></div>';
+        });
+        h += '</div>';
+        h += '<div class="help-card caught"><h4>How this question type goes wrong</h4><p>' + st.gen.avoid + '</p></div>';
+        openModal(st.name, h);
       },
       trapBook: function () {
         var agg = window.Store.agg();

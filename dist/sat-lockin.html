@@ -911,6 +911,10 @@ body{background:var(--shell-bg)}
   .deck-row .n{display:none}
 }
 
+.link-btn.tiny{font-size:11.5px;margin-left:8px;text-decoration:none;color:var(--brand);
+  border:1px solid var(--shell-line);border-radius:999px;padding:1px 8px}
+.link-btn.tiny:hover{background:var(--brand-soft);border-color:var(--brand)}
+
 </style>
 <div id="shell"></div>
 
@@ -5607,93 +5611,225 @@ window.STRATS = {
   'predict-first': { section:'rw', name:'Predict, then match',
     move:'Say the answer in your own words before you read a single choice, then look for the choice closest to what you said.',
     why:'Once you read four polished choices, all four start to sound reasonable. Your own prediction gives you something to measure them against.',
-    drill:'Cover the choices with your hand. Write your prediction in five words. Then uncover.' },
+    drill:'Cover the choices with your hand. Write your prediction in five words. Then uncover.',
+    gen: {
+      shape: "A 60 to 110 word text making one clear point, with a concession or a complication so the main idea is not just the first sentence.",
+      key: "The correct choice must paraphrase the whole text including its final turn, in different words from the text.",
+      traps: ["too-narrow", "extreme", "not-in-text", "contradicts"],
+      avoid: "Do not let the correct choice reuse distinctive wording from the text, because then it can be found by word-matching instead of by understanding. At least one distractor must be a true detail from the text."
+    } },
   'claim-fit': { section:'rw', name:'Make the evidence fit the exact claim',
     move:'Put the claim in your own words, list what it needs to be true, then ask whether the choice actually props that up or knocks it down.',
     why:'You win these by being precise about the claim, not by picking whichever option sounds the most scientific.',
-    drill:'Before you look at choices, write the claim down and underline the task word: support, or weaken.' },
+    drill:'Before you look at choices, write the claim down and underline the task word: support, or weaken.',
+    gen: {
+      shape: "A researcher states a hypothesis, and two plausible causes are tangled together. The question asks which finding would most directly support or weaken it.",
+      key: "The correct finding must separate the two causes: vary one while holding the other fixed.",
+      traps: ["opposite-task", "true-but-irrelevant", "half-right"],
+      avoid: "Exactly one distractor must support when the task is to weaken, or vice versa. Do not make the correct finding simply restate the hypothesis."
+    } },
   'data-discipline': { section:'rw', name:'Read the units, then do the math',
     move:'Read the axis labels first. A relationship needs two data points. A "most" or "steepest" needs you to actually compute every group.',
     why:'These look like reading questions but they are arithmetic. Eyeballing the chart is exactly how they catch you.',
-    drill:'Jot the numbers you need in the margin before you read any choice.' },
+    drill:'Jot the numbers you need in the margin before you read any choice.',
+    gen: {
+      shape: "A short setup plus a table or simple bar chart as HTML, then a claim to support with data. Use 3 or 4 rows and label units explicitly.",
+      key: "The correct choice must cite both variables for enough groups to establish the claimed relationship, usually two contrasting rows.",
+      traps: ["one-sided", "misread-data", "true-but-irrelevant"],
+      avoid: "Include one distractor that is a correct reading of a single cell but establishes no relationship, and one that reverses a more/less comparison. Every number in every choice must match the table exactly."
+    } },
   'smallest-step': { section:'rw', name:'Take the smallest step you can prove',
     move:'Pick the most modest thing the text fully supports. No outside knowledge, even if you know it is true.',
     why:'An inference is one small step past the text. The dramatic conclusion is nearly always the wrong one.',
-    drill:'For each choice ask: which words in the text prove this? If you cannot point at them, cross it off.' },
+    drill:'For each choice ask: which words in the text prove this? If you cannot point at them, cross it off.',
+    gen: {
+      shape: "A text presenting evidence that points to one modest conclusion, ending with a blank introduced by a phrase like 'This suggests that' or 'It can therefore be inferred that'.",
+      key: "The correct choice is the smallest claim the text fully supports.",
+      traps: ["extreme", "not-in-text", "reversed", "unstated-cause"],
+      avoid: "One distractor must be the same idea overstated with an absolute word. Never make the correct answer require outside knowledge."
+    } },
   'context-word': { section:'rw', name:'Let the sentence pick the word',
     move:'Put your own word in the blank first. Use the colon, the dash, or the contrast that the sentence hands you.',
     why:'The most common meaning of the word is sitting right there in the choices on purpose. The sentence decides, not the dictionary.',
-    drill:'Slot your choice back in and read the whole sentence out loud.' },
+    drill:'Slot your choice back in and read the whole sentence out loud.',
+    gen: {
+      shape: "A 40 to 80 word text where one word is used in a sense that is not its most common one, with a colon, dash or contrast in the sentence that pins the meaning.",
+      key: "The correct choice is a plain synonym for the intended sense.",
+      traps: ["dictionary-default", "close-but-off", "reversed"],
+      avoid: "One distractor must be the everyday meaning of the word. Keep all four choices the same part of speech and similar length."
+    } },
   'author-move': { section:'rw', name:'Name what the author is doing',
     move:'Answer with a verb: describing, correcting, conceding, redirecting. For an underlined sentence, read the sentence before and after it.',
     why:'These ask about how the text is built, not what it says. A choice can be true about the content and still name the wrong move.',
-    drill:'Sum up each sentence in three words, then count the moves you get.' },
+    drill:'Sum up each sentence in three words, then count the moves you get.',
+    gen: {
+      shape: "Either a text with one sentence in <u> tags and a question about its function, or a text with a clear sequence of moves and a question about overall structure.",
+      key: "The correct choice names what the author is doing, as a verb, and matches the number of moves in the text.",
+      traps: ["wrong-actor", "too-narrow", "wrong-order", "reversed"],
+      avoid: "One distractor should describe a different sentence than the underlined one. If the text has three moves, no distractor should describe only two and still be correct."
+    } },
   'concession-map': { section:'rw', name:'Split what they accept from what they reject',
     move:'Write down what the second author agrees with and what they push back on. Any choice attacking the part they agree with is gone.',
     why:'Real disagreement between two writers is usually narrow. Choices that blow it up into total rejection are the standard trap.',
-    drill:'Underline every "grants," "does not dispute," and "admits" in the second text.' },
+    drill:'Underline every "grants," "does not dispute," and "admits" in the second text.',
+    gen: {
+      shape: "Two short texts labeled Text 1 and Text 2. Text 2 explicitly concedes something to Text 1 and disputes something else. Ask how the second author would respond.",
+      key: "The correct choice keeps the concession intact and disputes only what Text 2 actually disputes.",
+      traps: ["extreme", "contradicts", "reversed"],
+      avoid: "One distractor must overstate the disagreement into total rejection. Text 2 must contain an explicit concession, using a word like grants, accepts or does not dispute."
+    } },
   'relationship-first': { section:'rw', name:'Name the relationship first',
     move:'Decide which of four things is happening between the sentences before you look at the choices: same direction, opposite, cause, or example.',
     why:'Transition words blur together when you shop through them. Name the logic first and the choice becomes obvious.',
-    drill:'Cover the choices and say out loud: these two sentences agree, clash, cause, or illustrate.' },
+    drill:'Cover the choices and say out loud: these two sentences agree, clash, cause, or illustrate.',
+    gen: {
+      shape: "Two sentences with a blank for the transition, where the logical relationship is unambiguous.",
+      key: "The correct transition matches the relationship exactly, and only one choice does.",
+      traps: ["wrong-relationship"],
+      avoid: "All three distractors are transitions of the wrong logical type, and each trap explanation must name which type it wrongly signals. Never offer two transitions that both work."
+    } },
   'goal-checklist': { section:'rw', name:'Treat the goal as a checklist',
     move:'Break the stated goal into parts and make the choice tick every one.',
     why:'All the notes are true, so being accurate cannot separate the choices. Only the goal can.',
-    drill:'Underline the goal and number its parts before you read anything else.' },
+    drill:'Underline the goal and number its parts before you read anything else.',
+    gen: {
+      shape: "A bulleted list of 4 to 6 research notes, then a stated goal for the student.",
+      key: "The correct choice satisfies every part of the stated goal using only the notes.",
+      traps: ["half-right", "restates", "true-but-irrelevant", "one-sided"],
+      avoid: "Every choice must be factually consistent with the notes, so only the goal separates them. If the goal says 'explain why', one distractor must restate the effect without a cause."
+    } },
   'boundary-test': { section:'rw', name:'Test each side for a full sentence',
     move:'Cover the punctuation and ask whether each side could stand alone, then pick the only mark that is allowed to join them.',
     why:'Punctuation is structural, not musical. Where you would pause while reading is not evidence.',
-    drill:'Say "complete" or "incomplete" out loud for each side before you choose.' },
+    drill:'Say "complete" or "incomplete" out loud for each side before you choose.',
+    gen: {
+      shape: "One or two sentences with a blank where punctuation is needed. State clearly in your own head whether each side is an independent clause.",
+      key: "Exactly one punctuation option is legal for that structure.",
+      traps: ["comma-splice", "wrong-mark", "unpaired", "fragment", "split-subject-verb"],
+      avoid: "Critically: check that no second option is also grammatically legal. A semicolon and a colon are often both acceptable between two independent clauses, so if the answer is a colon, the material after it must not be an independent clause."
+    } },
   'grammar-strip': { section:'rw', name:'Strip the sentence, then apply the rule',
     move:'Cross out the modifiers to find the bare subject and verb, then apply the one rule being tested: agreement, tense, apostrophe, modifier, parallelism, or comparison.',
     why:'Long sentences hide simple errors. Once you strip them down, the rule is usually easy to see.',
-    drill:'Physically cross out every "of" phrase and everything between commas.' },
+    drill:'Physically cross out every "of" phrase and everything between commas.',
+    gen: {
+      shape: "One sentence with a blank testing exactly one rule: agreement, tense, apostrophe, modifier placement, parallelism, comparison, or the subjunctive.",
+      key: "Only one option satisfies the rule.",
+      traps: ["agreement-by-ear", "wrong-tense", "possessive-count", "dangling", "unparallel", "illogical-comparison", "sounds-right"],
+      avoid: "Test one rule per question. Put enough distance between the subject and verb that the nearest noun is a tempting wrong match, and make sure the sentence gives an unambiguous time marker if you are testing tense."
+    } },
 
   /* Math */
   'translate': { section:'math', name:'Turn the words into equations',
     move:'Write "let x = ..." every time, then build one equation per condition. Convert units before you substitute anything.',
     why:'Most word problems go wrong in the setup, not the algebra.',
-    drill:'Label every number with its unit as you write it down.' },
+    drill:'Label every number with its unit as you write it down.',
+    gen: {
+      shape: "A word problem with two or three conditions that turn into equations, or a real-world model to interpret.",
+      key: "The correct choice reflects a correct setup.",
+      traps: ["setup-error", "reversed", "unit-miss", "wrong-target"],
+      avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean."
+    } },
   'solve-check': { section:'math', name:'Solve it, then check it',
     move:'Undo the operations in reverse order, then put your answer back into the original equation.',
     why:'Checking takes ten seconds and catches sign errors, extraneous roots, and stopping one step early.',
-    drill:'Never leave an equation without substituting your answer back in once.' },
+    drill:'Never leave an equation without substituting your answer back in once.',
+    gen: {
+      shape: "An equation to solve. For a radical or rational equation, design it so squaring or clearing produces exactly one extraneous root.",
+      key: "The value that satisfies the ORIGINAL equation.",
+      traps: ["extraneous-root", "sign-slip", "one-step-short", "arith-slip"],
+      avoid: "Verify both roots yourself before writing the choices. For a radical equation the extraneous root is the one making the other side negative. Never offer 'both roots' as the correct answer."
+    } },
   'systems-tactics': { section:'math', name:'Pick the cheaper way through a system',
     move:'Eliminate when a variable cancels for free. Substitute when a coefficient is already 1. Then re-read what was actually asked for.',
     why:'Systems questions love to ask for x + y, or for the variable you did not solve for first.',
-    drill:'Circle the quantity you need before you start solving.' },
+    drill:'Circle the quantity you need before you start solving.',
+    gen: {
+      shape: "Two linear equations, or a word problem that becomes two. Ask for a combination like x + y, or for the variable a careless solver would not report.",
+      key: "The quantity actually named in the question.",
+      traps: ["wrong-target", "operation-swap", "one-step-short", "arith-slip"],
+      avoid: "One distractor must be the other variable, and one the value one step before the end. Choose coefficients so the solution is an integer."
+    } },
   'expression-structure': { section:'math', name:'Look at the shape of the expression',
     move:'Spot the structure first: difference of squares, perfect square, common base. Then use the exponent or factoring rule that fits.',
     why:'These reward recognizing a shape more than grinding through steps.',
-    drill:'Ask "what shape is this?" before you touch it, then test your result with x = 2.' },
+    drill:'Ask "what shape is this?" before you touch it, then test your result with x = 2.',
+    gen: {
+      shape: "An expression to simplify, factor, rewrite in vertex form, or match coefficients on. Recognising the shape should be faster than grinding.",
+      key: "The equivalent expression.",
+      traps: ["algebra-rule", "sign-slip", "arith-slip"],
+      avoid: "Test every distractor at x = 2 and confirm none of them coincidentally equals the original there, otherwise plugging in a number cannot separate them."
+    } },
   'function-notation': { section:'math', name:'Substitute in parentheses, inside out',
     move:'Put the input in parentheses. For a composition, work out the inner value and write it on its own line before you use it.',
     why:'Nearly every miss here is a sign error or a reversed order, and one extra line prevents both.',
-    drill:'Write the middle value down. Do not do it in your head.' },
+    drill:'Write the middle value down. Do not do it in your head.',
+    gen: {
+      shape: "Evaluate a function at a value, or a composition of two functions.",
+      key: "The correct value, worked inside out.",
+      traps: ["wrong-order", "sign-slip", "one-step-short"],
+      avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling."
+    } },
   'function-behavior': { section:'math', name:'Use how the function behaves',
     move:'Vertex at x = -b/2a. Discriminant for how many solutions. Sum of roots is -b/a. Growth factor and period for exponentials.',
     why:'These shortcuts answer the question without solving it, as long as you then report the thing that was asked for.',
-    drill:'After you find the vertex x, stop and ask whether the question wants x or the value there.' },
+    drill:'After you find the vertex x, stop and ask whether the question wants x or the value there.',
+    gen: {
+      shape: "A quadratic or exponential where the vertex, discriminant, root sum, growth factor or period answers the question without fully solving it.",
+      key: "Exactly the quantity asked for, which is often the value at the vertex rather than the vertex x.",
+      traps: ["wrong-target", "arith-slip", "setup-error", "unit-miss"],
+      avoid: "If the question asks for a minimum or maximum VALUE, one distractor must be the x at which it occurs. For exponentials, define the time unit and make one distractor ignore the conversion."
+    } },
   'proportional-reasoning': { section:'math', name:'Think in rates, ratios, and percents',
     move:'Percent change is change over the original. Two percent changes multiply, they never add. Convert every unit before you divide.',
     why:'The traps here are structural: wrong denominator, added percents, a missed conversion.',
-    drill:'Write the units into the fraction and cancel them on the page.' },
+    drill:'Write the units into the fraction and cancel them on the page.',
+    gen: {
+      shape: "Percent change, successive percent changes, a rate with a unit conversion, a scale, or a mixture.",
+      key: "The correctly computed value.",
+      traps: ["wrong-denominator", "operation-swap", "unit-miss", "one-step-short"],
+      avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean."
+    } },
   'data-inference': { section:'math', name:'Know what a statistic is allowed to say',
     move:'Find the condition, because it sets the denominator. Ask which measure an outlier moves. Remember a margin of error gives you a range, not a fact.',
     why:'These test whether you can say what the number means, not whether you can compute it.',
-    drill:'Say the statistic back as a full sentence, including which group it describes.' },
+    drill:'Say the statistic back as a full sentence, including which group it describes.',
+    gen: {
+      shape: "A two-way table, a line of best fit to interpret, a comparison of mean and median, or a margin of error.",
+      key: "The statement the statistic actually licenses.",
+      traps: ["wrong-denominator", "extreme", "wrong-target", "misread-data"],
+      avoid: "For conditional probability, one distractor must use the grand total as the denominator. For a margin of error, one must treat the estimate as exact. If an axis is in thousands, one distractor must ignore that."
+    } },
   'geometry-toolkit': { section:'math', name:'Find the radius, open the formula sheet',
     move:'Route circle problems through the radius. Take trig ratios relative to the angle named. Scale with symbols, not numbers. Use the angle relationship the figure gives you.',
     why:'The formula sheet is provided. The actual skill is knowing which tool the figure is asking for.',
-    drill:'Label the figure with everything you know before you write an equation.' },
+    drill:'Label the figure with everything you know before you write an equation.',
+    gen: {
+      shape: "A circle, a right triangle, similar triangles, an angle relationship, a volume, or a scaling question. Include a simple figure only if it is genuinely needed.",
+      key: "The correct measure.",
+      traps: ["formula-mixup", "wrong-ratio", "flipped-ratio", "wrong-target", "setup-error"],
+      avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean."
+    } },
   'coordinate-geometry': { section:'math', name:'Work in the coordinate plane',
     move:'Slope is rise over run with both points in the same order. Parallel means equal slopes. Complete the square to read a circle out of its equation.',
     why:'Parallel versus perpendicular, and rise versus run, are the two places this reliably slips.',
-    drill:'Label your two points before you subtract, and sketch it when you can.' },
+    drill:'Label your two points before you subtract, and sketch it when you can.',
+    gen: {
+      shape: "Slope from two points, a parallel or perpendicular line, a distance, a midpoint, or a circle equation to complete the square on.",
+      key: "The correct line, value or radius.",
+      traps: ["formula-mixup", "flipped-ratio", "sign-slip", "arith-slip"],
+      avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope."
+    } },
   'choice-tactics': { section:'math', name:'Use the answer choices',
     move:'Back-solve by testing the choices, or plug in a number like x = 2 on "which expression is equivalent" questions.',
     why:'On some questions, testing four choices is genuinely faster and safer than doing the algebra.',
-    drill:'Before you solve, ask yourself whether you could just test the choices instead.' }
+    drill:'Before you solve, ask yourself whether you could just test the choices instead.',
+    gen: {
+      shape: "A question where testing the four choices is genuinely faster than solving: a system of inequalities to test points against, an equivalent expression to plug a number into, or a word problem to back-solve.",
+      key: "The only choice that survives testing.",
+      traps: ["half-right", "arith-slip", "wrong-target"],
+      avoid: "Each distractor must fail a specific, checkable test, and the trap explanation must say which test it fails and with what numbers. For a system of inequalities, make each distractor satisfy exactly one of the two."
+    } }
 };
 
 /* ---------------- trap catalog ---------------- */
@@ -7355,6 +7491,7 @@ window.STRATEGIES = {
       },
 
       buildPrompt: function (opts) {
+        if (!Object.keys(SKILL_DOMAIN).length) indexSkills();
         var strat = global.STRATS[opts.strat];
         var traps = (opts.traps || []).filter(function (t) { return global.TRAPS[t]; });
         var sd = SKILL_DOMAIN[opts.skill] || {};
@@ -7368,10 +7505,21 @@ window.STRATEGIES = {
         lines.push('type: ' + (opts.type || 'mc'));
         lines.push('');
         if (strat) {
-          lines.push('The move being tested is "' + strat.name + '" (id: ' + opts.strat + ').');
+          lines.push('THE MOVE BEING TESTED: "' + strat.name + '" (id: ' + opts.strat + ')');
           lines.push('What it means: ' + strat.move);
           lines.push('Use exactly this id in the strat field.');
           lines.push('');
+          /* The per-strategy recipe. Generic instructions produce questions of
+             the right shape that do not reliably test the intended move, so
+             this says what the correct answer has to do and how this question
+             type specifically goes wrong. */
+          if (strat.gen) {
+            lines.push('HOW A QUESTION FOR THIS MOVE MUST BE BUILT');
+            lines.push('Shape: ' + strat.gen.shape);
+            lines.push('The correct answer: ' + strat.gen.key);
+            lines.push('Watch out: ' + strat.gen.avoid);
+            lines.push('');
+          }
         }
         if (traps.length) {
           lines.push('Build the wrong answers from these trap types. Use these exact ids in the');
@@ -7514,6 +7662,22 @@ window.STRATEGIES = {
       },
 
       /* ---------- what still needs covering ---------- */
+      /* The traps a strategy's recipe expects, so a strategy-targeted request
+         asks for the distractor types that move actually produces. */
+      trapsForStrat: function (stratId) {
+        var st = global.STRATS[stratId];
+        if (st && st.gen && st.gen.traps) {
+          return st.gen.traps.filter(function (t) { return global.TRAPS[t]; });
+        }
+        var out = {};
+        (global.RW_BANK || []).concat(global.MATH_BANK || []).forEach(function (q) {
+          if (global.tagsFor(q).strat !== stratId) return;
+          var t = global.tagsFor(q).traps;
+          Object.keys(t).forEach(function (k) { out[t[k]] = 1; });
+        });
+        return Object.keys(out);
+      },
+
       gapPlan: function () {
         var cov = global.Store.coverage();
         var plan = [];
@@ -8653,7 +8817,9 @@ window.STRATEGIES = {
 
     function cvRow(id, name, blurb, c, kind) {
       var act = kind === 'trap' ? 'APP.drillTrap' : 'APP.drillStrat';
-      return '<div class="cv-row"><div><strong>' + name + '</strong>' +
+      var recipe = (kind === 'strat' && window.STRATS[id] && window.STRATS[id].gen)
+        ? ' <button class="link-btn tiny" onclick="APP.showRecipe(\'' + id + '\')">recipe</button>' : '';
+      return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
       '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
       '<div>' + stateChip(c) + '</div>' +
       '<div style="text-align:right"><button class="btn ghost sm" onclick="' + act + '(\'' + id + '\')">' +
@@ -9404,10 +9570,7 @@ window.STRATEGIES = {
           }).slice(0, 2);
           opts.traps = [target.id].concat(others);
         } else {
-          var qs = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) { return window.tagsFor(q).strat === target.id; });
-          var tset = {};
-          qs.forEach(function (q) { var t = window.tagsFor(q); Object.keys(t.traps).forEach(function (k) { tset[t.traps[k]] = 1; }); });
-          opts.traps = Object.keys(tset).slice(0, 4);
+          opts.traps = window.Generate.trapsForStrat(target.id).slice(0, 5);
         }
         APP.runGenerate(opts, target);
       },
@@ -9843,6 +10006,26 @@ window.STRATEGIES = {
         applyPalette(id);
         APP.colors();
         render();
+      },
+      showRecipe: function (id) {
+        var st = window.STRATS[id];
+        if (!st || !st.gen) return;
+        var h = '<p class="note">This is the specification the app follows when it writes a new question for ' +
+          'this move. It is here so you can see what is being asked for, and change it if you disagree. ' +
+          'The recipes live in js/tags.js.</p>';
+        h += '<div class="help-card strategy"><h4>The move</h4><p>' + st.move + '</p>' +
+          '<p class="note">' + st.why + '</p></div>';
+        h += '<div class="help-card steps"><h4>Shape of the question</h4><p>' + st.gen.shape + '</p></div>';
+        h += '<div class="help-card"><h4>What the correct answer must do</h4><p>' + st.gen.key + '</p></div>';
+        h += '<div class="help-card traps"><h4>Traps the wrong answers use</h4>';
+        st.gen.traps.forEach(function (t) {
+          if (!window.TRAPS[t]) return;
+          h += '<div class="trap-row"><b></b><div><span class="trap-chip">' + window.TRAPS[t].name +
+            '</span> ' + window.TRAPS[t].tell + '</div></div>';
+        });
+        h += '</div>';
+        h += '<div class="help-card caught"><h4>How this question type goes wrong</h4><p>' + st.gen.avoid + '</p></div>';
+        openModal(st.name, h);
       },
       trapBook: function () {
         var agg = window.Store.agg();
