@@ -566,7 +566,7 @@ window.TAGS = {
   rw030:{traps:{0:'wrong-order',1:'not-in-text',3:'not-in-text'}},
   rw031:{traps:{0:'reversed',1:'reversed',2:'close-but-off'}},
   rw032:{traps:{1:'close-but-off',2:'wrong-actor',3:'not-in-text'}},
-  rw033:{traps:{1:'not-in-text',2:'too-narrow',3:'reversed'}},
+  rw033:{traps:{1:'not-in-text',2:'wrong-order',3:'reversed'}},
   rw034:{traps:{0:'extreme',2:'opposite-task',3:'reversed'}},
   rw035:{traps:{0:'reversed',1:'extreme',2:'not-in-text'}},
   rw036:{traps:{1:'contradicts',2:'contradicts',3:'reversed'}},
@@ -688,16 +688,16 @@ window.TAGS = {
   m060:{strat:'geometry-toolkit', traps:{0:'formula-mixup',1:'flipped-ratio',2:'wrong-target'}},
   /* ---- added for trap coverage ---- */
   m061:{strat:'solve-check', traps:{0:'extraneous-root',1:'arith-slip',2:'extraneous-root'}},
-  m062:{strat:'solve-check', traps:{0:'extraneous-root',2:'extraneous-root',3:'sign-slip'}},
-  m063:{strat:'solve-check', traps:{0:'extraneous-root',2:'extraneous-root',3:'sign-slip'}},
+  m062:{strat:'solve-check', traps:{1:'extraneous-root',2:'algebra-rule',3:'setup-error'}},
+  m063:{strat:'solve-check', traps:{0:'half-right',1:'half-right',3:'extraneous-root'}},
   m064:{strat:'data-inference', traps:{0:'wrong-denominator',1:'wrong-target',3:'wrong-denominator'}},
   m065:{strat:'proportional-reasoning', traps:{0:'wrong-denominator',2:'wrong-target',3:'wrong-target'}},
   m066:{strat:'proportional-reasoning', traps:{1:'unit-miss',2:'operation-swap',3:'unit-miss'}},
-  m067:{strat:'function-notation', traps:{0:'wrong-order',1:'one-step-short',3:'algebra-rule'}},
+  m067:{strat:'function-notation', traps:{0:'misread-data',1:'one-step-short',2:'wrong-target'}},
   m068:{strat:'expression-structure', traps:{0:'algebra-rule',1:'sign-slip',2:'algebra-rule'}},
   m069:{strat:'choice-tactics', traps:{1:'half-right',2:'half-right',3:'half-right'}},
   m070:{strat:'systems-tactics', traps:{0:'arith-slip',1:'wrong-target',2:'arith-slip'}},
-  m071:{strat:'function-notation', traps:{0:'wrong-order',1:'one-step-short',3:'wrong-order'}},
+  m071:{strat:'function-notation', traps:{1:'reversed',2:'close-but-off',3:'setup-error'}},
 
   /* --- added after the strategy review: Desmos, solution counting,
          pronouns, verb time, apostrophes, modifiers --- */
@@ -720,7 +720,8 @@ window.TAGS = {
   rw096:{strat:'modifier-attach', traps:{1:'dangling',2:'comma-splice',3:'dangling'}},
   rw097:{strat:'modifier-attach', traps:{1:'dangling',2:'dangling',3:'comma-splice'}},
   rw098:{traps:{0:'one-sided',1:'misread-data',3:'misread-data'}},
-  rw099:{strat:'subject-verb', traps:{0:'agreement-by-ear',2:'agreement-by-ear',3:'wrong-tense'}}
+  rw099:{strat:'subject-verb', traps:{0:'agreement-by-ear',2:'agreement-by-ear',3:'wrong-tense'}},
+  rw100:{traps:{0:'too-narrow',1:'extreme',2:'contradicts'}}
 };
 
 /* resolve the tags for a question */

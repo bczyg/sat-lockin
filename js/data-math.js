@@ -1604,26 +1604,26 @@ window.MATH_BANK.push(
   skill: "Nonlinear equations in one variable",
   difficulty: "H",
   type: "mc",
-  prompt: "What is the solution to the equation \u221a(2x + 11) = x + 4?",
+  prompt: "How many solutions does the equation (x² − 9)/(x − 3) = 2x have?",
   choices: [
-    "x = -5",
-    "x = -1",
-    "x = -1 and x = -5",
-    "x = 5"
+    "No solution",
+    "One solution, x = 3",
+    "One solution, x = −3",
+    "Two solutions"
   ],
-  answer: 1,
-  strategy: "Square, solve, then substitute every candidate back into the original equation. Radical equations routinely produce a root that does not survive the check.",
-  hint: "One of the two roots makes the right-hand side negative. A square root never is.",
+  answer: 0,
+  strategy: "Solve it, then check your answer against the original equation rather than the tidied-up one. A value that makes any denominator zero is out, however clean the algebra looked.",
+  hint: "Which value of x is not allowed here? Write it down before you solve anything.",
   steps: [
-    "Square both sides: <div class=\'mathwork\'>2x + 11 = x\u00b2 + 8x + 16</div>",
-    "Collect: <div class=\'mathwork\'>x\u00b2 + 6x + 5 = 0\n(x + 1)(x + 5) = 0</div>",
-    "Candidates are x = -1 and x = -5.",
-    "Check: x = -1 gives \u221a9 = 3 and -1 + 4 = 3, so it works. x = -5 gives \u221a1 = 1 but -5 + 4 = -1, so it fails. The solution is x = -1."
+    "Start with the excluded value: x = 3 makes the denominator zero, so it can never be a solution.",
+    "Factor and cancel, carrying the restriction with you: <div class='mathwork'>(x − 3)(x + 3)/(x − 3) = x + 3, for x ≠ 3</div>",
+    "The equation becomes x + 3 = 2x, which gives x = 3.",
+    "That is the one value ruled out at the start, so nothing satisfies the original equation. Choice A. Cancelling a factor hides the restriction, which is exactly why you note it before you cancel."
   ],
   traps: {
-    0: "The extraneous root, which makes the right side -1 while a square root is always non-negative.",
-    2: "Both roots of the squared equation, reported without checking either one.",
-    3: "Comes from a sign error while collecting terms: x² − 6x + 5 = 0 instead of x² + 6x + 5 = 0, whose roots are 1 and 5. Move one term at a time."
+    1: "This is what the algebra hands you, and it is precisely the value the original equation forbids. Cancelling (x − 3) makes the restriction invisible.",
+    2: "Comes from setting the factor x + 3 to zero instead of solving the equation. That finds a zero of the numerator, which is a different question.",
+    3: "The numerator is a quadratic, so two solutions feels right. After cancelling, though, the equation is linear, and its single candidate is excluded."
   }
 },
 
@@ -1752,26 +1752,26 @@ window.MATH_BANK.push(
   skill: "Nonlinear equations in one variable",
   difficulty: "M",
   type: "mc",
-  prompt: "What is the solution to the equation \u221a(x + 7) = x \u2212 5?",
+  prompt: "What is the solution set of the equation |2x − 3| = x + 6?",
   choices: [
-    "x = 2 and x = 9",
-    "x = 9",
-    "x = 2",
-    "x = 11"
+    "x = 9 only",
+    "x = −1 only",
+    "x = −1 and x = 9",
+    "No solution"
   ],
-  answer: 1,
-  strategy: "Square, solve, then substitute every candidate into the equation you started with. Radical equations routinely hand you a root that does not survive that check.",
-  hint: "One candidate makes the right-hand side negative, and the left-hand side is a square root.",
+  answer: 2,
+  strategy: "Split the absolute value into its two cases, solve each, then test both in the original. Checking is not the same as discarding: sometimes both answers survive.",
+  hint: "Two cases means two candidates. Test each one instead of assuming one has to fail.",
   steps: [
-    "Square both sides: <div class=\'mathwork\'>x + 7 = (x \u2212 5)\u00b2\nx + 7 = x\u00b2 \u2212 10x + 25</div>",
-    "Collect: <div class=\'mathwork\'>x\u00b2 \u2212 11x + 18 = 0\n(x \u2212 2)(x \u2212 9) = 0</div>",
-    "Candidates: x = 2 and x = 9.",
-    "Check: x = 9 gives \u221a16 = 4 and 9 \u2212 5 = 4, so it works. x = 2 gives \u221a9 = 3 but 2 \u2212 5 = \u22123, so it is extraneous. The solution is x = 9."
+    "Case 1, the inside is already positive: <div class='mathwork'>2x − 3 = x + 6\nx = 9</div>",
+    "Case 2, the inside is negative: <div class='mathwork'>2x − 3 = −(x + 6)\n3x = −3\nx = −1</div>",
+    "Check x = 9: |18 − 3| = 15 and 9 + 6 = 15. ✓  Check x = −1: |−2 − 3| = 5 and −1 + 6 = 5. ✓",
+    "Both hold, so the solution set is both values. Choice C. Checking is what tells you that, and throwing one out by reflex is what loses it."
   ],
   traps: {
-    0: "Both roots of the squared equation, reported without testing either against the original.",
-    2: "The extraneous root, which makes the right side \u22123 while the left side is a positive square root.",
-    3: "11 is the coefficient in x² − 11x + 18 = 0, which is the sum of the two roots, not a root. Numbers that show up in your work are not answers."
+    0: "Only the first case. It is a genuine solution, but stopping after one case leaves the other on the table.",
+    1: "Only the second case, the same mistake facing the other way. An absolute value gives you two branches to test.",
+    3: "The habit you build on radical equations, applied where it does not belong. Squaring can invent roots that fail; splitting an absolute value does not, so here you have to test rather than assume."
   }
 },
 
@@ -1781,24 +1781,27 @@ window.MATH_BANK.push(
   skill: "Nonlinear functions",
   difficulty: "M",
   type: "mc",
-  prompt: "If f(x) = 2x \u2212 1 and g(x) = x\u00b2 + 3, what is the value of f(g(2))?",
+  passage: "<p>The table gives the value of the function g at five values of x.</p><table class='data'><tr><th>x</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr><tr><th>g(x)</th><td>4</td><td>5</td><td>2</td><td>1</td><td>3</td></tr></table>",
+  prompt: "What is the value of g(g(3))?",
   choices: [
-    "12",
-    "14",
-    "13",
-    "49"
+    "1",
+    "2",
+    "3",
+    "5"
   ],
-  answer: 2,
-  strategy: "Work a composition from the inside out, and write the inner value on its own line before you use it.",
-  hint: "Find g(2) first, then put that number into f.",
+  answer: 3,
+  strategy: "Work a composition from the inside out. Find the inner value first, then look that value up as the new input. With a table there is no algebra at all, just two lookups in the right order.",
+  hint: "Find g(3) in the table. Then feed that number back in as x.",
   steps: [
-    "Inner function first: <div class=\'mathwork\'>g(2) = 2\u00b2 + 3 = 7</div>",
-    "Now apply f to that result: <div class=\'mathwork\'>f(7) = 2(7) \u2212 1 = 13</div>"
+    "Inner first: the column for x = 3 gives g(3) = 2.",
+    "The outer function now takes that result as its input, so you want g(2).",
+    "The column for x = 2 gives g(2) = 5.",
+    "So g(g(3)) = 5, choice D."
   ],
   traps: {
-    0: "This is g(f(2)), the composition performed in the wrong order: f(2) = 3, then g(3) = 12. Order matters, and reversing it is the error this question targets.",
-    1: "This is 2 \u00d7 g(2), with the \u2212 1 forgotten. One step short of the answer.",
-    3: "Squares g(2) instead of substituting it into f."
+    0: "This is g(4), so an input from the wrong column was used. Point at the x row before you read the g(x) row.",
+    1: "This is g(3), the inner step on its own. A real number from the correct work, one lookup short of the answer.",
+    2: "This is the original input read straight back out. A composition sends you somewhere else and rarely returns you to where you started."
   }
 }
 
@@ -1898,24 +1901,26 @@ window.MATH_BANK.push(
   skill: "Nonlinear functions",
   difficulty: "M",
   type: "mc",
-  prompt: "If h(x) = 3x + 2 and k(x) = x<sup>2</sup> \u2212 1, what is the value of k(h(1))?",
+  prompt: "The function C is defined by C(m) = 0.18m + 45, where C(m) is the total monthly cost, in dollars, of a phone plan that includes m minutes of international calling. Which of the following is the best interpretation of C(200) = 81?",
   choices: [
-    "2",
-    "25",
-    "24",
-    "0"
+    "A plan that includes 200 minutes costs $81 per month.",
+    "A plan costing $81 per month includes 200 minutes at no extra charge.",
+    "The cost per minute is $81 when 200 minutes are used.",
+    "Adding 200 minutes to a plan raises the monthly cost by $81."
   ],
-  answer: 2,
-  strategy: "Work from the inside out and write the inner value on its own line. The outer function is applied to that number, not to the original input.",
-  hint: "Find h(1) first, then put that result into k.",
+  answer: 0,
+  strategy: "Read what goes in and what comes out. The number inside the parentheses is the input, and the value of the whole expression is the output. Name each one in the units the problem gives you.",
+  hint: "Which number is minutes and which is dollars? The definition says so directly.",
   steps: [
-    "Inner function: <div class=\'mathwork\'>h(1) = 3(1) + 2 = 5</div>",
-    "Now apply k to that: <div class=\'mathwork\'>k(5) = 5\u00b2 \u2212 1 = 24</div>"
+    "The definition says m is minutes, so the 200 inside the parentheses is 200 minutes. That is the input.",
+    "It says C(m) is the total monthly cost in dollars, so the 81 is $81. That is the output.",
+    "Put them together: 200 minutes gives a total cost of $81.",
+    "Choice A. Confirm it if you like: 0.18(200) + 45 = 36 + 45 = 81. ✓"
   ],
   traps: {
-    0: "This is h(k(1)), the composition in the wrong order: k(1) = 0, then h(0) = 2.",
-    1: "This is 5\u00b2 with the \u2212 1 forgotten. One step short.",
-    3: "This is k(1), which applies the outer function to the original input instead of to h(1)."
+    1: "Swaps the input and the output, reading 200 as dollars and 81 as minutes. Match each number to its unit before you read the choices.",
+    2: "Reads a total as a rate. The cost per minute is the 0.18 in the formula; the 81 is the whole bill.",
+    3: "Uses only the 0.18m part and forgets the $45 fixed fee. Adding 200 minutes raises the cost by 0.18(200) = $36."
   }
 }
 

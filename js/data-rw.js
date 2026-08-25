@@ -3012,5 +3012,37 @@ window.RW_BANK.push(
 }
 );
 
+window.RW_BANK.push(
+{
+  id: "rw100",
+  domain: "Information and Ideas",
+  skill: "Central Ideas and Details",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Museums have long displayed Roman glass as evidence of imperial luxury, and the finest pieces certainly were expensive. But most surviving Roman glass is plain, thin, and mass-produced, and it turns up in ordinary houses as often as in villas. Chemical analysis has traced much of it to a handful of coastal workshops that shipped raw glass in bulk to be reworked locally. What the material actually records is not a taste for luxury but an early industry: standardized production, long supply lines, and a product cheap enough that a household could replace a broken cup without much thought.</p>",
+  prompt: "Which choice best states the main idea of the text?",
+  choices: [
+    "Chemical analysis has shown that much Roman glass came from a small number of coastal workshops.",
+    "Museums have misrepresented every aspect of Roman material culture.",
+    "Roman households valued glass so highly that they rarely replaced broken pieces.",
+    "Roman glass is better understood as the product of an early industry than as a marker of luxury."
+  ],
+  answer: 3,
+  strategy: "Say the point in your own words before you read the choices, and make sure your sentence covers the last line. This text spends four sentences turning one idea into another, so the answer has to be about the turn.",
+  hint: "The text sets up one view and replaces it with another. Which choice names both halves of that swap?",
+  steps: [
+    "Sentence 1 gives the familiar view: glass as luxury.",
+    "The word “But” flips it, and the rest of the text builds the replacement: plain, mass-produced, widely distributed, cheap.",
+    "The final sentence states the swap outright, luxury out and industry in.",
+    "Choice D is the only one that carries both halves of that trade."
+  ],
+  traps: {
+    0: "True, and it is in the text, but it is one piece of evidence rather than the point. A real detail offered as the main idea is the most common wrong answer on this question type.",
+    1: "“Every aspect” is far more than the text claims. It corrects one reading of one material. Distrust choices that scale a specific argument up to everything.",
+    2: "The opposite of the last sentence, which says a household could replace a broken cup without much thought. Contradiction traps usually reuse the passage's own words."
+  }
+}
+);
+
 /* stamp the section onto every item */
 window.RW_BANK.forEach(function (q) { q.section = 'rw'; if (!q.type) q.type = 'mc'; });
