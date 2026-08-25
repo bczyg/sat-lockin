@@ -75,13 +75,23 @@
         if (!Object.keys(SKILL_DOMAIN).length) indexSkills();
         var strat = global.STRATS[opts.strat];
         var traps = (opts.traps || []).filter(function (t) { return global.TRAPS[t]; });
-        var sd = SKILL_DOMAIN[opts.skill] || {};
+        var skill = opts.skill;
+        /* A habit strategy owns no questions, so there is no skill to look up.
+           Fall back to any skill in the strategy's own section rather than
+           sending "undefined" to the model. */
+        if (!skill && strat) {
+          var pool = Object.keys(SKILL_DOMAIN).filter(function (k) {
+              return SKILL_DOMAIN[k].section === strat.section;
+          });
+          skill = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+        }
+        var sd = SKILL_DOMAIN[skill] || {};
         var lines = [];
         lines.push('Write ' + (opts.count || 3) + ' new SAT questions to the specification below.');
         lines.push('');
-        lines.push('section: ' + (sd.section || opts.section));
+        lines.push('section: ' + (sd.section || opts.section || (strat && strat.section)));
         lines.push('domain: ' + (sd.domain || opts.domain));
-        lines.push('skill: ' + opts.skill);
+        lines.push('skill: ' + skill);
         lines.push('difficulty: ' + (opts.difficulty || 'M') + '  (E easier, M medium, H harder)');
         lines.push('type: ' + (opts.type || 'mc'));
         lines.push('');

@@ -83,6 +83,7 @@ a{color:var(--blue)}
 .pill.amber{background:var(--amber-soft);color:var(--amber)}
 .pill.red{background:var(--red-soft);color:var(--red)}
 .pill.gray{background:var(--bg-soft);color:var(--ink-soft)}
+.pill.soft{background:var(--brand-soft);color:var(--brand-ink)}
 
 .section-title{font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);margin:34px 0 14px}
 

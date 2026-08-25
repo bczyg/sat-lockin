@@ -146,6 +146,50 @@ const thin = Object.entries(trapCount).filter(([, n]) => n > 0 && n < 4).map(([t
 notes.push(`trap coverage: ${Object.keys(trapCount).length} traps, ` +
            `${thin.length} with fewer than 4 questions` + (thin.length ? ` [${thin.join(' ')}]` : ''));
 
+/* ---------- 3d. every strategy needs questions, and every recipe must be sound ----------
+   A strategy the app teaches but cannot drill is a promise it does not keep.
+   Strategies flagged meta:true are habits that apply to every question in
+   their section rather than owning a set, so they are exempt from the count. */
+const stratCount = {};
+Object.keys(window.STRATS).forEach((k) => { stratCount[k] = 0; });
+bank.forEach((q) => {
+  const st = window.tagsFor(q).strat;
+  if (st !== null && !(st in stratCount)) fail(`question ${q.id} is tagged with unknown strategy ${st}`);
+  if (st in stratCount) stratCount[st]++;
+});
+const untagged = bank.filter((q) => !window.tagsFor(q).strat).map((q) => q.id);
+if (untagged.length) fail(`questions with no strategy: ${untagged.join(', ')}`);
+const thinStrat = Object.entries(stratCount)
+  .filter(([k, n]) => n < 4 && !window.STRATS[k].meta)
+  .map(([k, n]) => `${k}(${n})`);
+if (thinStrat.length) fail(`strategies with fewer than 4 questions to drill: ${thinStrat.join(', ')}`);
+const noRecipe = Object.entries(window.STRATS).filter(([, v]) => !v.gen).map(([k]) => k);
+if (noRecipe.length) fail(`strategies with no generation recipe: ${noRecipe.join(', ')}`);
+const badRef = [];
+Object.entries(window.STRATS).forEach(([k, v]) => {
+  (v.gen.traps || []).forEach((t) => { if (!window.TRAPS[t]) badRef.push(`${k} -> ${t}`); });
+});
+if (badRef.length) fail(`recipes referencing traps that do not exist: ${badRef.join(', ')}`);
+const meta = Object.keys(window.STRATS).filter((k) => window.STRATS[k].meta);
+notes.push(`${Object.keys(window.STRATS).length} strategies, all with recipes, ` +
+           `all drillable (${meta.length} habit${meta.length === 1 ? '' : 's'}: ${meta.join(', ')})`);
+
+/* ---------- 3e. the reference sheet must not claim to provide what it does not ----------
+   The digital SAT gives you geometry and volume formulas only. Listing slope
+   or the quadratic formula as "provided" is worse than listing nothing. */
+const providedLabels = window.STRATEGIES.reference.map((r) => r.label.toLowerCase()).join(' | ');
+['slope', 'quadratic', 'distance', 'midpoint', 'arc length', 'sector', 'discriminant', 'vertex']
+  .forEach((bad) => {
+    if (providedLabels.includes(bad)) {
+      fail(`the reference sheet lists "${bad}", which the real test does not provide`);
+    }
+  });
+if (!Array.isArray(window.STRATEGIES.memorize) || window.STRATEGIES.memorize.length < 6) {
+  fail('there is no "not on the sheet" list, so students are not told what to memorize');
+}
+notes.push(`reference sheet: ${window.STRATEGIES.reference.length} provided, ` +
+           `${window.STRATEGIES.memorize.length} to memorize`);
+
 /* ---------- 4. the blueprint can still build a full test ---------- */
 await load('js/engine.js');
 const need = { rw: { count: 27, dom: {} }, math: { count: 22, dom: {} } };

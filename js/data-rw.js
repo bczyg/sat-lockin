@@ -224,7 +224,7 @@ window.RW_BANK.push(
     "Assumption 1: females really do sing elaborately, observers just miss it because they listen near nests.",
     "Assumption 2: elaborate song is a byproduct of territory defense, which both sexes do.",
     "Choice A removes the observation gap (“continuously across entire territories”) and still finds female song rare and simple, so the underrecording explanation fails.",
-    "B also breaks assumption 2: females defend territory yet do not sing elaborately, so defense cannot be what produces elaborate song."
+    "Choice A breaks assumption 2 as well: it covers territories where both sexes defend, and female song is still rare and simple there, so territory defense cannot be what produces elaborate song."
   ],
   traps: {
     1: "This supports Lin by explaining how female song gets missed. On “weaken” questions, at least one choice always strengthens instead, underline the task word.",
@@ -252,8 +252,8 @@ window.RW_BANK.push(
   hint: "The claim needs two things at once: small mechanical details, and delay. Which quotation shows both in the same breath?",
   steps: [
     "Part 1 of the claim: “small mechanical details.” Part 2: “wish to postpone the decision.”",
-    "B, part 1: rivets, bolts, gangway, railing, mechanical minutiae, itemized.",
-    "B, part 2: “then the rivets again, while the agent waited with my ticket”, she is stalling while someone waits on her choice.",
+    "Choice D, part 1: rivets, bolts, gangway, railing. Small mechanical details, itemized.",
+    "Choice D, part 2: “then the rivets again, while the agent waited with my ticket”, she is stalling while someone waits on her choice.",
     "Only choice D satisfies both halves, so it is the strongest illustration."
   ],
   traps: {
@@ -299,7 +299,7 @@ window.RW_BANK.push(
   skill: "Command of Evidence (Quantitative)",
   difficulty: "E",
   type: "mc",
-  figure: "<table class=“data”><tr><th>Neighborhood</th><th>Tree canopy cover (%)</th><th>Mean afternoon temperature (°F)</th></tr><tr><td>Elmwood</td><td>8</td><td>97</td></tr><tr><td>Riverside</td><td>15</td><td>94</td></tr><tr><td>Park Heights</td><td>27</td><td>91</td></tr><tr><td>Northgate</td><td>41</td><td>88</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th>Neighborhood</th><th>Tree canopy cover (%)</th><th>Mean afternoon temperature (°F)</th></tr><tr><td>Elmwood</td><td>8</td><td>97</td></tr><tr><td>Riverside</td><td>15</td><td>94</td></tr><tr><td>Park Heights</td><td>27</td><td>91</td></tr><tr><td>Northgate</td><td>41</td><td>88</td></tr></table>",
   figcap: "Canopy cover and mean afternoon temperature in four neighborhoods of one city, July",
   passage: "<p>A researcher measured tree canopy cover and mean afternoon temperature in four neighborhoods of a single city during July. She concluded that greater canopy cover is associated with lower afternoon temperatures, noting that ______</p>",
   prompt: "Which choice most effectively uses data from the table to complete the statement?",
@@ -363,7 +363,7 @@ window.RW_BANK.push(
   skill: "Command of Evidence (Quantitative)",
   difficulty: "M",
   type: "mc",
-  figure: "<table class=“data”><tr><th>Soil temperature</th><th>Alpine species: seeds germinating (%)</th><th>Lowland species: seeds germinating (%)</th></tr><tr><td>10°C</td><td>62</td><td>12</td></tr><tr><td>15°C</td><td>71</td><td>40</td></tr><tr><td>20°C</td><td>48</td><td>77</td></tr><tr><td>25°C</td><td>19</td><td>81</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th>Soil temperature</th><th>Alpine species: seeds germinating (%)</th><th>Lowland species: seeds germinating (%)</th></tr><tr><td>10°C</td><td>62</td><td>12</td></tr><tr><td>15°C</td><td>71</td><td>40</td></tr><tr><td>20°C</td><td>48</td><td>77</td></tr><tr><td>25°C</td><td>19</td><td>81</td></tr></table>",
   figcap: "Germination rates for two related plant species at four soil temperatures",
   passage: "<p>A team planted seeds of two related species at four soil temperatures. The researchers concluded that the alpine species is adapted to germinate in cool soils whereas the lowland species is not, pointing out that ______</p>",
   prompt: "Which choice most effectively uses data from the table to complete the statement?",
@@ -641,10 +641,10 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
     "representative of",
-    "critical of",
+    "comparable to",
     "dependent on",
     "superior to"
-  ],
+    ],
   answer: 0,
   strategy: "Watch the preposition. The choice has to fit both the meaning and the grammar of the sentence.",
   hint: "A handful of unusual birds may not stand in for all ravens.",
@@ -655,7 +655,7 @@ window.RW_BANK.push(
     "“Representative of” matches, and the preposition “of” fits the sentence."
   ],
   traps: {
-    1: "Nonsense in context, performance cannot be critical of a species.",
+    1: "The right neighborhood and it fits the grammar, which is what makes it the best trap here. But comparable asks whether two things can be measured against each other, while the skeptics are asking whether these birds are typical. Typicality, not comparability.",
     2: "Sounds scientific but reverses the logic. The birds' performance depends on their training, not on the species.",
     3: "Superiority is not the issue. The question is whether these birds are typical, not whether they are better."
   }
@@ -670,11 +670,11 @@ window.RW_BANK.push(
   passage: "<p>Reviewers of the choreographer's new work returned again and again to its <u>economy</u>: nothing in the forty-minute piece seemed added for effect, and a single lifted hand could carry an entire passage.</p>",
   prompt: "As used in the text, what does the word “economy” most nearly mean?",
   choices: [
-    "low cost",
+    "abundance",
     "system of trade",
     "spareness",
     "practicality"
-  ],
+    ],
   answer: 2,
   strategy: "When the colon explains the word, read the explanation as the definition. The text is telling you the meaning; you only have to match it.",
   hint: "Everything after the colon describes doing a great deal with very little.",
@@ -685,7 +685,7 @@ window.RW_BANK.push(
     "Choice C is exactly that."
   ],
   traps: {
-    0: "The money sense. Nothing in the sentence concerns what the production cost.",
+    0: "The opposite of what the colon goes on to explain. \u201cNothing added for effect\u201d describes restraint, not plenty. When a colon follows the word, the rest of the sentence is your definition.",
     1: "The most common meaning of “economy” in everyday reading, which is why it is offered here. It has no bearing on choreography.",
     3: "Close but wrong flavor: practicality is about usefulness, while the text praises how little the piece uses."
   }
@@ -1302,21 +1302,21 @@ window.RW_BANK.push(
   choices: [
     "Accordingly,",
     "However,",
-    "By contrast,",
+    "For instance,",
     "Moreover,"
-  ],
+    ],
   answer: 1,
-  strategy: "Two contrast words are not interchangeable. “By contrast” compares two different subjects side by side; “however” reverses a claim about the same subject. Check what is being contrasted with what.",
-  hint: "Both sentences are about the very same measurement: car travel times on this corridor. Only the time period changes.",
+  strategy: "Name the relationship in your own words before you look at the four words offered. Here the second sentence undercuts what the first one set you up to expect, so you need a reversal.",
+  hint: "The critics predicted congestion would get worse. What does the second sentence do to that prediction?",
   steps: [
     "Sentence 1: car travel times rose in month one, the critics looked right.",
     "Sentence 2: within a year those same travel times dropped below the starting point.",
-    "The subject never changes; the result reverses over time. That is a simple reversal.",
-    "“However” marks a reversal about one subject. “By contrast” would require a second, different subject to compare against."
+    "The early numbers backed the critics; the later numbers cut against them. The relationship is reversal.",
+    "“However” is the reversal word, so choice B."
   ],
   traps: {
     0: "“Accordingly” means “as a result,” but times falling is not a consequence of times rising.",
-    2: "The best trap here. It <em>is</em> a contrast, but “by contrast” sets two different things against each other, cars versus buses, say. Here one measurement changes across time, so the reversal word is “however.”",
+    2: "Signals an example, and the second sentence is not an example of the first. It reports the opposite outcome, which is a reversal rather than an illustration.",
     3: "“Moreover” adds support in the same direction, and this sentence undercuts the critics rather than supporting them."
   }
 },
@@ -1753,8 +1753,8 @@ window.RW_BANK.push(
     "that reliably",
     "that, reliably",
     "that reliably,",
-    "which reliably"
-  ],
+    "that; reliably"
+    ],
   answer: 0,
   strategy: "An essential clause beginning with “that” takes no comma, and never separate a relative pronoun from its verb.",
   hint: "Does “that reliably reduce childhood poverty” narrow down <em>which</em> policies, or just add color?",
@@ -1767,7 +1767,7 @@ window.RW_BANK.push(
   traps: {
     1: "Splits the subject “that” from its verb.",
     2: "Splits the adverb from the verb it modifies and leaves an unpaired comma.",
-    3: "“Which” without a comma is wrong in American usage for essential clauses, and no comma is offered with it."
+    3: "A semicolon can only sit between two things that could each stand alone. “Economists have identified a small number of policies that” is not a sentence, so nothing here earns a semicolon."
   }
 },
 
@@ -1796,7 +1796,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "The comma before “but” is right; the one after it is not. Read the choices character by character on this question type.",
-    1: "“But” with no comma leaves two independent clauses fused.",
+    1: "The conjunction is there, so nothing is fused. But two independent clauses joined by “but” still need a comma in front of it. This one reads fine out loud, which is exactly why it gets picked.",
     2: "A semicolon already joins the clauses, so “but” is redundant, and the comma after it is wrong."
   }
 },
@@ -1932,9 +1932,9 @@ window.RW_BANK.push(
   choices: [
     "After taking them in 1937,",
     "Taking them in 1937,",
-    "When taking them in 1937,",
+    "They were taken in 1937,",
     "Taken in 1937,"
-  ],
+    ],
   answer: 3,
   strategy: "An opening modifier attaches to the subject that follows it. Name that subject before you choose, then ask whether it can perform the action in the modifier.",
   hint: "The subject after the blank is 'the expedition's photographs.' Can photographs take photographs?",
@@ -1947,7 +1947,7 @@ window.RW_BANK.push(
   traps: {
     0: "Same error again, and “them” has no antecedent yet when the reader meets it.",
     1: "Dangling modifier: it makes the photographs the ones doing the photographing.",
-    2: "Same dangling error, just with “when” in front of it."
+    2: "A different error from A and B: this is a complete sentence, so joining it to the rest with only a comma splices two sentences together. Check what kind of thing each choice is before you check the meaning."
   }
 },
 
@@ -2294,24 +2294,24 @@ window.RW_BANK.push(
   passage: "<p>A useful lab notebook records not only the result of an experiment but also ______, since a method nobody can repeat proves nothing.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "the exact steps that produced it",
     "how were the steps carried out",
     "carrying out each step exactly",
-    "exactly what steps produced it"
+    "the steps were carried out exactly",
+    "the exact steps that produced it"
   ],
   answer: 3,
   strategy: "\u201cNot only ... but also\u201d is a paired construction. Whatever form follows the first half has to follow the second. Put them side by side.",
-  hint: "The first half is \u201cthe result of an experiment.\u201d Look at how the second half has to open to match the \u201cwhat\u201d pattern the sentence sets up.",
+  hint: "The first half is \u201cthe result of an experiment,\u201d a noun phrase. The second half has to be a noun phrase too.",
   steps: [
-    "After \u201cnot only\u201d comes a noun phrase naming a thing recorded: the result of an experiment.",
-    "After \u201cbut also\u201d the phrase must fill the same slot as an object of \u201crecords.\u201d",
-    "\u201cexactly what steps produced it\u201d is a noun clause, which is a legal object of \u201crecords\u201d and balances the pair.",
-    "Choice D."
+    "After “not only” comes “the result of an experiment,” which is a noun phrase acting as the object of “records.”",
+    "So whatever follows “but also” has to be a noun phrase filling the same slot.",
+    "“the exact steps that produced it” is a noun phrase with its own relative clause. Same shape, same slot.",
+    "Choice D. Read the two halves back to back and they match: records not only the result of an experiment but also the exact steps that produced it."
   ],
   traps: {
-    0: "Grammatical in isolation, which is what makes it tempting, but it repeats \u201cthe\u201d structure without the parallel emphasis the sentence has set up around what is recorded.",
-    1: "Question word order. An interrogative cannot serve as the object of \u201crecords.\u201d",
-    2: "A participial phrase, which matches neither half of the pair."
+    0: "Question word order. An interrogative clause cannot serve as the object of “records,” and it does not match the noun phrase in the first half.",
+    1: "A participial phrase. It names an activity rather than a thing recorded, so it matches neither half of the pair.",
+    2: "A complete sentence dropped into a slot that needs a noun phrase. Say the first half and this half back to back and the sentence falls apart."
   }
 },
 
@@ -2655,6 +2655,361 @@ window.RW_BANK.push(
   }
 }
 
+);
+
+
+/* ---- Pronouns, verb time, apostrophes, modifiers ----------------------
+   Added after a review found the catalog had no pronoun trap at all and
+   that one overloaded strategy was covering six different rules. ------ */
+window.RW_BANK.push(
+{
+  id: "rw088",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "E",
+  type: "mc",
+  passage: "<p>Each of the three laboratories published ______ findings separately, which is why the same experiment appears under three different titles.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "its",
+    "it's",
+    "their",
+    "there"
+  ],
+  answer: 0,
+  strategy: "Send the pronoun back to the exact noun it replaces. Here that noun is “each,” not “laboratories,” and “each” is always singular.",
+  hint: "What is the subject of “published”? It is not the word closest to it.",
+  steps: [
+    "The subject is “Each,” and “of the three laboratories” is just a phrase describing it.",
+    "“Each” is singular, so the pronoun has to be singular too.",
+    "The singular possessive pronoun is “its,” with no apostrophe.",
+    "Choice A."
+  ],
+  traps: {
+    1: "“It's” is the contraction of “it is,” which would give you “published it is findings.” Expand any apostrophe you see and read it back.",
+    2: "Matches the nearest noun, “laboratories,” instead of the actual subject. This is the single most common pronoun error, and stripping the “of” phrase prevents it.",
+    3: "A different word entirely. “There” is a place, not a possessive."
+  }
+},
+{
+  id: "rw089",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Conservators examined the disputed panel alongside two later copies, and ______ turned out to contain a pigment that no workshop used before 1680.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "they",
+    "it",
+    "the panel",
+    "which"
+  ],
+  answer: 2,
+  strategy: "If a pronoun could point at two different nouns, it points at neither. When no pronoun is unambiguous, the answer is the noun itself.",
+  hint: "There are three things in the first half of the sentence. Which one does the pigment belong to?",
+  steps: [
+    "The first half names the panel and the two copies, so there are two candidate antecedents.",
+    "“They” could mean the copies, and “it” could mean the panel or the whole group. Neither is pinned down.",
+    "When every pronoun on offer is ambiguous, naming the noun is what fixes the sentence.",
+    "Choice C."
+  ],
+  traps: {
+    0: "Reads smoothly and points at the copies, or possibly at all three objects. Smooth is not the test; traceable is.",
+    1: "Singular, so it seems to pick out the panel, but the copies are just as close and just as available. Ask whether you can point at one noun with certainty.",
+    3: "“Which” turns the second half into a clause with nothing to attach to, leaving the sentence unfinished."
+  }
+},
+{
+  id: "rw090",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Neither of the two survey crews filed ______ report before the deadline, so the mapping project stalled for a season.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "their",
+    "its",
+    "they're",
+    "there"
+  ],
+  answer: 1,
+  strategy: "Find the real subject, then match the pronoun to it. Words like neither, either, each, and every are singular however many things follow them.",
+  hint: "Strip out “of the two survey crews” and read what is left.",
+  steps: [
+    "“Neither” is the subject; “of the two survey crews” only describes it.",
+    "“Neither” means not one, so it is singular.",
+    "A singular subject takes the singular possessive “its.”",
+    "Choice B."
+  ],
+  traps: {
+    0: "Agrees with “crews” rather than with “neither.” The plural noun sitting right before the verb is the bait in every one of these.",
+    2: "The contraction of “they are.” Expand it and the sentence reads “filed they are report.”",
+    3: "“There” is not a possessive at all. These three sound identical out loud, which is why the ear is no help here."
+  }
+},
+{
+  id: "rw091",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>The committee released ______ recommendations in April, though the individual members disagreed sharply about the last of them.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "their",
+    "its",
+    "it's",
+    "there"
+  ],
+  answer: 1,
+  strategy: "A collective noun is singular in American usage, even when the sentence goes on to talk about the individual people inside it.",
+  hint: "One committee, however many members it contains.",
+  steps: [
+    "The noun doing the releasing is “committee,” a single body.",
+    "Collective nouns like committee, team, jury, and staff take singular verbs and singular pronouns in American usage.",
+    "So the pronoun is “its.”",
+    "Choice B. The mention of individual members later in the sentence does not change what the pronoun refers back to."
+  ],
+  traps: {
+    0: "The best trap here, because the second half of the sentence really is about several people. But the pronoun refers to the committee, not to its members. Check what the pronoun replaces, not what the sentence is about.",
+    2: "The contraction of “it is.” No apostrophe belongs in a possessive pronoun, ever.",
+    3: "A place word standing in for a possessive."
+  }
+},
+{
+  id: "rw092",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>By the time the survey team reached the summit in 1953, three earlier expeditions ______ on the same exposed ridge.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "fail",
+    "failed",
+    "had failed",
+    "have failed"
+  ],
+  answer: 2,
+  strategy: "Find the words that fix the time, then pick the form that fits them. “By the time” plus a past event means anything earlier needs the past perfect.",
+  hint: "Two things happened in the past. Which one happened first, and how does English mark that?",
+  steps: [
+    "The sentence gives two past moments: the team reaching the summit in 1953, and the earlier failures.",
+    "“By the time” tells you the failures came first.",
+    "To mark one past event as earlier than another past event, English uses the past perfect: had failed.",
+    "Choice C."
+  ],
+  traps: {
+    0: "Present tense in a sentence anchored to 1953. The date is the evidence, and it rules this out immediately.",
+    1: "Simple past after a simple past reads perfectly smoothly, which is what makes it the real trap. It just loses the ordering that “by the time” sets up.",
+    3: "The present perfect connects a past event to now, but this sentence is entirely finished in 1953."
+  }
+},
+{
+  id: "rw093",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The safety board recommended that the operator ______ every valve on the line before restarting it.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "inspects",
+    "inspect",
+    "will inspect",
+    "is inspecting"
+  ],
+  answer: 1,
+  strategy: "After recommend, require, insist, demand, ask, or propose, the verb in the that-clause goes into its plain form, with no ending, whatever the subject is.",
+  hint: "Look at the verb in the first half of the sentence, not at the subject of the blank.",
+  steps: [
+    "The main verb is “recommended,” one of a small set of verbs that trigger the subjunctive.",
+    "After those verbs, the that-clause takes the plain form of the verb.",
+    "So it is “inspect,” even though “operator” is singular and would normally take “inspects.”",
+    "Choice B."
+  ],
+  traps: {
+    0: "The form that normally matches a singular subject, which is exactly why it gets picked. The subjunctive overrides ordinary agreement.",
+    2: "A recommendation is not a prediction. The future tense makes it a statement about what will happen rather than what is being asked for.",
+    3: "The progressive describes something in the middle of happening, which does not fit a recommendation about what to do."
+  }
+},
+{
+  id: "rw094",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "E",
+  type: "mc",
+  passage: "<p>Both ______ notebooks record the same set of measurements, taken about an hour apart.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "assistant's",
+    "assistants",
+    "assistants'",
+    "assistant"
+  ],
+  answer: 2,
+  strategy: "Count the owners first, then decide whether they own anything. Several owners take s-apostrophe.",
+  hint: "The word “Both” tells you the number for free.",
+  steps: [
+    "“Both” means two, so there are two owners.",
+    "The notebooks belong to them, so this is possessive.",
+    "A regular plural possessive puts the apostrophe after the s: assistants'.",
+    "Choice C."
+  ],
+  traps: {
+    0: "Singular possessive, which contradicts “Both.” One owner, not two.",
+    1: "Plural but not possessive, so the notebooks belong to nobody. It reads fine out loud, which is the whole problem.",
+    3: "Singular and not possessive, which gets both halves wrong at once."
+  }
+},
+{
+  id: "rw095",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The bridge has survived two floods since ______ completion in 1874, though the approach road has been rebuilt twice.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "its",
+    "it's",
+    "its'",
+    "their"
+  ],
+  answer: 0,
+  strategy: "Possessive pronouns never take an apostrophe. When you see one, expand it and read the sentence back.",
+  hint: "Expand each apostrophe into the two words it stands for and see which sentence still works.",
+  steps: [
+    "The thing that was completed is the bridge, which is singular.",
+    "The singular possessive pronoun is “its,” with no apostrophe anywhere.",
+    "Expanding the alternative gives “since it is completion in 1874,” which is not a sentence.",
+    "Choice A."
+  ],
+  traps: {
+    1: "The contraction of “it is.” This is the most frequently tested apostrophe on the whole exam, and expanding it catches it every time.",
+    2: "Not a word in English. There is no form “its'.”",
+    3: "Plural, but there is only one bridge. The pronoun has to match the noun it replaces, not the number of floods."
+  }
+},
+{
+  id: "rw096",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>______ the committee approved the design without asking for a single further change.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "Impressed by the revised drawings,",
+    "Impressing the revised drawings,",
+    "The revised drawings impressed them,",
+    "To impress the revised drawings,"
+  ],
+  answer: 0,
+  strategy: "Read the opening phrase and ask who is doing it. Whatever sits right after the comma has to be that thing. Do not cross the phrase out here, because the phrase is the evidence.",
+  hint: "Who was impressed? Check that the word after the comma names them.",
+  steps: [
+    "The word right after the comma is “committee,” so the opening phrase has to describe the committee.",
+    "The committee is the thing that was impressed, so the passive form “Impressed by the revised drawings” attaches correctly.",
+    "Read it straight through: impressed by the revised drawings, the committee approved the design.",
+    "Choice A."
+  ],
+  traps: {
+    1: "Makes the committee do the impressing, which reverses who affected whom. This is the standard dangling modifier.",
+    2: "A complete sentence, so joining it to the rest with only a comma splices two sentences together. Notice this choice is a different kind of thing from the others, which is a clue in itself.",
+    3: "Says the committee approved the design in order to impress the drawings, which is not a thing that can happen."
+  }
+},
+{
+  id: "rw097",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>______ the fresco's original colors became visible for the first time in four centuries.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "Once conservators removed the layer of soot,",
+    "Removing the layer of soot,",
+    "Having removed the layer of soot,",
+    "Conservators removed the layer of soot,"
+  ],
+  answer: 0,
+  strategy: "When the thing after the comma cannot possibly be doing the opening phrase, the fix is a clause that names the real actor.",
+  hint: "The colors did not remove anything. So who did, and which choice actually says so?",
+  steps: [
+    "The subject after the comma is “the fresco's original colors.”",
+    "Any opening phrase has to describe those colors, and the colors did not remove soot.",
+    "The repair is to make the opening a full clause with its own subject: once conservators removed the layer of soot.",
+    "Choice A. Naming the actor is what fixes a dangling modifier, not rearranging the phrase."
+  ],
+  traps: {
+    1: "Dangling: it makes the colors remove the soot.",
+    2: "Also dangling, and the perfect form makes it sound more careful without changing who is doing the removing. Sounding formal is not the same as attaching correctly.",
+    3: "A complete sentence attached with nothing but a comma, which splices two sentences together."
+  }
+},
+{
+  id: "rw098",
+  domain: "Expression of Ideas",
+  skill: "Command of Evidence (Quantitative)",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>An ecologist compared heron nest counts at four wetland sites before and after a restoration project. The two sites nearest the river were restored; the two upland sites were left alone.</p><table class='data'><tr><th>Site</th><th>Nests, 2019</th><th>Nests, 2023</th></tr><tr><td>Riverbend (restored)</td><td>14</td><td>31</td></tr><tr><td>Millrace (restored)</td><td>9</td><td>22</td></tr><tr><td>Hilltop (upland)</td><td>18</td><td>20</td></tr><tr><td>Ridge (upland)</td><td>12</td><td>13</td></tr></table><p>The ecologist concludes that the restoration, rather than a region-wide change, drove the increase in nesting. Which choice most effectively uses data from the table to support that conclusion?</p>",
+  prompt: "Which choice most effectively uses data from the table to support the conclusion?",
+  choices: [
+    "Riverbend recorded 31 nests in 2023, the highest count anywhere in the study.",
+    "Millrace recorded fewer nests than Hilltop in both years.",
+    "The restored sites rose from 14 to 31 and from 9 to 22, while the upland sites rose only from 18 to 20 and from 12 to 13.",
+    "Ridge declined from 13 nests to 12."
+  ],
+  answer: 2,
+  strategy: "The conclusion is a comparison between two groups, so the evidence has to cover both groups. One site cannot rule out a region-wide change.",
+  hint: "To show the restoration did it and not the weather, what do you need to say about the sites that were not restored?",
+  steps: [
+    "The claim is that restoration caused the rise, not something affecting the whole region.",
+    "To rule out a region-wide cause you have to show the untouched sites did not rise the same way.",
+    "So the evidence needs numbers from both the restored pair and the upland pair.",
+    "Choice C is the only one that cites both groups."
+  ],
+  traps: {
+    0: "One site, one year. A single maximum cannot separate the restoration from a change that affected everywhere, because it says nothing about the sites left alone.",
+    1: "Check it against the table: Millrace was below Hilltop in 2019, 9 to 18, but above it in 2023, 22 to 20. The claim is false for the second year.",
+    3: "The columns are reversed. Ridge went from 12 up to 13, so this reports a rise as a decline."
+  }
+},
+{
+  id: "rw099",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The list of species recorded by the two survey teams ______ three beetles never before seen in the county.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "include",
+    "includes",
+    "are including",
+    "have included"
+  ],
+  answer: 1,
+  strategy: "Read the choices down the column first: they all differ in verb number, so this is an agreement question. Then strip the sentence to its bare subject.",
+  hint: "Cross out “of species recorded by the two survey teams” and see what is left doing the verb.",
+  steps: [
+    "The four choices vary only in number and form of the verb, so the rule on trial is subject-verb agreement.",
+    "Strip the modifiers: the list ______ three beetles.",
+    "“List” is singular, so the verb is “includes.”",
+    "Choice B."
+  ],
+  traps: {
+    0: "Agrees with “teams,” the noun nearest the blank, rather than with “list.” The whole sentence is built to put a plural noun in that spot.",
+    2: "Plural, and it also puts an ongoing action where a plain statement of fact belongs.",
+    3: "Plural again, and the present perfect suggests the list has been changing over time rather than simply containing these species."
+  }
+}
 );
 
 /* stamp the section onto every item */

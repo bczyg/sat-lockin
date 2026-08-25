@@ -142,7 +142,7 @@ js/brand.js name and tagline, change these to rename the app
 js/config.js optional cloud + AI settings; empty = offline single-device
 js/data-rw.js 68 Reading and Writing questions, fully explained
 js/data-math.js 60 Math questions, fully explained
-js/tags.js 42 trap types, 22 strategies, and the tag for every question
+js/tags.js 43 trap types, 30 strategies, and the tag for every question
 js/strategies.js strategy library and math reference sheet
 js/engine.js test assembly, adaptive routing, scoring, event log, storage
 js/cloud.js accounts and offline-first sync (no dependencies)
@@ -227,7 +227,7 @@ The bank is audited rather than asserted. `npm run verify` enforces these on eve
 | Answer key spread | A 35, B 36, C 37, D 35 across 143 multiple-choice items |
 | Correct answer is the longest choice | 35% (chance is 25%, and the check fails above 40%) |
 | Trap coverage | all 42 trap types have at least 4 questions |
-| Strategy coverage | all 22 strategies have at least 4 questions |
+| Strategy coverage | every strategy has at least 4 questions, every recipe is valid |
 | Stem wording | all 87 Reading and Writing stems match an official College Board phrasing |
 | Reading passage length | 15 to 108 words, mean 52 |
 | Math fill-in share | 22%, against about 25% on the real test |

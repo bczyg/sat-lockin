@@ -86,6 +86,7 @@ a{color:var(--blue)}
 .pill.amber{background:var(--amber-soft);color:var(--amber)}
 .pill.red{background:var(--red-soft);color:var(--red)}
 .pill.gray{background:var(--bg-soft);color:var(--ink-soft)}
+.pill.soft{background:var(--brand-soft);color:var(--brand-ink)}
 
 .section-title{font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);margin:34px 0 14px}
 
@@ -1226,7 +1227,7 @@ window.RW_BANK.push(
     "Assumption 1: females really do sing elaborately, observers just miss it because they listen near nests.",
     "Assumption 2: elaborate song is a byproduct of territory defense, which both sexes do.",
     "Choice A removes the observation gap (\u201ccontinuously across entire territories\u201d) and still finds female song rare and simple, so the underrecording explanation fails.",
-    "B also breaks assumption 2: females defend territory yet do not sing elaborately, so defense cannot be what produces elaborate song."
+    "Choice A breaks assumption 2 as well: it covers territories where both sexes defend, and female song is still rare and simple there, so territory defense cannot be what produces elaborate song."
   ],
   traps: {
     1: "This supports Lin by explaining how female song gets missed. On \u201cweaken\u201d questions, at least one choice always strengthens instead, underline the task word.",
@@ -1254,8 +1255,8 @@ window.RW_BANK.push(
   hint: "The claim needs two things at once: small mechanical details, and delay. Which quotation shows both in the same breath?",
   steps: [
     "Part 1 of the claim: \u201csmall mechanical details.\u201d Part 2: \u201cwish to postpone the decision.\u201d",
-    "B, part 1: rivets, bolts, gangway, railing, mechanical minutiae, itemized.",
-    "B, part 2: \u201cthen the rivets again, while the agent waited with my ticket\u201d, she is stalling while someone waits on her choice.",
+    "Choice D, part 1: rivets, bolts, gangway, railing. Small mechanical details, itemized.",
+    "Choice D, part 2: \u201cthen the rivets again, while the agent waited with my ticket\u201d, she is stalling while someone waits on her choice.",
     "Only choice D satisfies both halves, so it is the strongest illustration."
   ],
   traps: {
@@ -1301,7 +1302,7 @@ window.RW_BANK.push(
   skill: "Command of Evidence (Quantitative)",
   difficulty: "E",
   type: "mc",
-  figure: "<table class=\u201cdata\u201d><tr><th>Neighborhood</th><th>Tree canopy cover (%)</th><th>Mean afternoon temperature (\u00b0F)</th></tr><tr><td>Elmwood</td><td>8</td><td>97</td></tr><tr><td>Riverside</td><td>15</td><td>94</td></tr><tr><td>Park Heights</td><td>27</td><td>91</td></tr><tr><td>Northgate</td><td>41</td><td>88</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th>Neighborhood</th><th>Tree canopy cover (%)</th><th>Mean afternoon temperature (\u00b0F)</th></tr><tr><td>Elmwood</td><td>8</td><td>97</td></tr><tr><td>Riverside</td><td>15</td><td>94</td></tr><tr><td>Park Heights</td><td>27</td><td>91</td></tr><tr><td>Northgate</td><td>41</td><td>88</td></tr></table>",
   figcap: "Canopy cover and mean afternoon temperature in four neighborhoods of one city, July",
   passage: "<p>A researcher measured tree canopy cover and mean afternoon temperature in four neighborhoods of a single city during July. She concluded that greater canopy cover is associated with lower afternoon temperatures, noting that ______</p>",
   prompt: "Which choice most effectively uses data from the table to complete the statement?",
@@ -1365,7 +1366,7 @@ window.RW_BANK.push(
   skill: "Command of Evidence (Quantitative)",
   difficulty: "M",
   type: "mc",
-  figure: "<table class=\u201cdata\u201d><tr><th>Soil temperature</th><th>Alpine species: seeds germinating (%)</th><th>Lowland species: seeds germinating (%)</th></tr><tr><td>10\u00b0C</td><td>62</td><td>12</td></tr><tr><td>15\u00b0C</td><td>71</td><td>40</td></tr><tr><td>20\u00b0C</td><td>48</td><td>77</td></tr><tr><td>25\u00b0C</td><td>19</td><td>81</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th>Soil temperature</th><th>Alpine species: seeds germinating (%)</th><th>Lowland species: seeds germinating (%)</th></tr><tr><td>10\u00b0C</td><td>62</td><td>12</td></tr><tr><td>15\u00b0C</td><td>71</td><td>40</td></tr><tr><td>20\u00b0C</td><td>48</td><td>77</td></tr><tr><td>25\u00b0C</td><td>19</td><td>81</td></tr></table>",
   figcap: "Germination rates for two related plant species at four soil temperatures",
   passage: "<p>A team planted seeds of two related species at four soil temperatures. The researchers concluded that the alpine species is adapted to germinate in cool soils whereas the lowland species is not, pointing out that ______</p>",
   prompt: "Which choice most effectively uses data from the table to complete the statement?",
@@ -1643,10 +1644,10 @@ window.RW_BANK.push(
   prompt: "Which choice completes the text with the most logical and precise word or phrase?",
   choices: [
     "representative of",
-    "critical of",
+    "comparable to",
     "dependent on",
     "superior to"
-  ],
+    ],
   answer: 0,
   strategy: "Watch the preposition. The choice has to fit both the meaning and the grammar of the sentence.",
   hint: "A handful of unusual birds may not stand in for all ravens.",
@@ -1657,7 +1658,7 @@ window.RW_BANK.push(
     "\u201cRepresentative of\u201d matches, and the preposition \u201cof\u201d fits the sentence."
   ],
   traps: {
-    1: "Nonsense in context, performance cannot be critical of a species.",
+    1: "The right neighborhood and it fits the grammar, which is what makes it the best trap here. But comparable asks whether two things can be measured against each other, while the skeptics are asking whether these birds are typical. Typicality, not comparability.",
     2: "Sounds scientific but reverses the logic. The birds' performance depends on their training, not on the species.",
     3: "Superiority is not the issue. The question is whether these birds are typical, not whether they are better."
   }
@@ -1672,11 +1673,11 @@ window.RW_BANK.push(
   passage: "<p>Reviewers of the choreographer's new work returned again and again to its <u>economy</u>: nothing in the forty-minute piece seemed added for effect, and a single lifted hand could carry an entire passage.</p>",
   prompt: "As used in the text, what does the word \u201ceconomy\u201d most nearly mean?",
   choices: [
-    "low cost",
+    "abundance",
     "system of trade",
     "spareness",
     "practicality"
-  ],
+    ],
   answer: 2,
   strategy: "When the colon explains the word, read the explanation as the definition. The text is telling you the meaning; you only have to match it.",
   hint: "Everything after the colon describes doing a great deal with very little.",
@@ -1687,7 +1688,7 @@ window.RW_BANK.push(
     "Choice C is exactly that."
   ],
   traps: {
-    0: "The money sense. Nothing in the sentence concerns what the production cost.",
+    0: "The opposite of what the colon goes on to explain. \u201cNothing added for effect\u201d describes restraint, not plenty. When a colon follows the word, the rest of the sentence is your definition.",
     1: "The most common meaning of \u201ceconomy\u201d in everyday reading, which is why it is offered here. It has no bearing on choreography.",
     3: "Close but wrong flavor: practicality is about usefulness, while the text praises how little the piece uses."
   }
@@ -2304,21 +2305,21 @@ window.RW_BANK.push(
   choices: [
     "Accordingly,",
     "However,",
-    "By contrast,",
+    "For instance,",
     "Moreover,"
-  ],
+    ],
   answer: 1,
-  strategy: "Two contrast words are not interchangeable. \u201cBy contrast\u201d compares two different subjects side by side; \u201chowever\u201d reverses a claim about the same subject. Check what is being contrasted with what.",
-  hint: "Both sentences are about the very same measurement: car travel times on this corridor. Only the time period changes.",
+  strategy: "Name the relationship in your own words before you look at the four words offered. Here the second sentence undercuts what the first one set you up to expect, so you need a reversal.",
+  hint: "The critics predicted congestion would get worse. What does the second sentence do to that prediction?",
   steps: [
     "Sentence 1: car travel times rose in month one, the critics looked right.",
     "Sentence 2: within a year those same travel times dropped below the starting point.",
-    "The subject never changes; the result reverses over time. That is a simple reversal.",
-    "\u201cHowever\u201d marks a reversal about one subject. \u201cBy contrast\u201d would require a second, different subject to compare against."
+    "The early numbers backed the critics; the later numbers cut against them. The relationship is reversal.",
+    "\u201cHowever\u201d is the reversal word, so choice B."
   ],
   traps: {
     0: "\u201cAccordingly\u201d means \u201cas a result,\u201d but times falling is not a consequence of times rising.",
-    2: "The best trap here. It <em>is</em> a contrast, but \u201cby contrast\u201d sets two different things against each other, cars versus buses, say. Here one measurement changes across time, so the reversal word is \u201chowever.\u201d",
+    2: "Signals an example, and the second sentence is not an example of the first. It reports the opposite outcome, which is a reversal rather than an illustration.",
     3: "\u201cMoreover\u201d adds support in the same direction, and this sentence undercuts the critics rather than supporting them."
   }
 },
@@ -2755,8 +2756,8 @@ window.RW_BANK.push(
     "that reliably",
     "that, reliably",
     "that reliably,",
-    "which reliably"
-  ],
+    "that; reliably"
+    ],
   answer: 0,
   strategy: "An essential clause beginning with \u201cthat\u201d takes no comma, and never separate a relative pronoun from its verb.",
   hint: "Does \u201cthat reliably reduce childhood poverty\u201d narrow down <em>which</em> policies, or just add color?",
@@ -2769,7 +2770,7 @@ window.RW_BANK.push(
   traps: {
     1: "Splits the subject \u201cthat\u201d from its verb.",
     2: "Splits the adverb from the verb it modifies and leaves an unpaired comma.",
-    3: "\u201cWhich\u201d without a comma is wrong in American usage for essential clauses, and no comma is offered with it."
+    3: "A semicolon can only sit between two things that could each stand alone. \u201cEconomists have identified a small number of policies that\u201d is not a sentence, so nothing here earns a semicolon."
   }
 },
 
@@ -2798,7 +2799,7 @@ window.RW_BANK.push(
   ],
   traps: {
     0: "The comma before \u201cbut\u201d is right; the one after it is not. Read the choices character by character on this question type.",
-    1: "\u201cBut\u201d with no comma leaves two independent clauses fused.",
+    1: "The conjunction is there, so nothing is fused. But two independent clauses joined by \u201cbut\u201d still need a comma in front of it. This one reads fine out loud, which is exactly why it gets picked.",
     2: "A semicolon already joins the clauses, so \u201cbut\u201d is redundant, and the comma after it is wrong."
   }
 },
@@ -2934,9 +2935,9 @@ window.RW_BANK.push(
   choices: [
     "After taking them in 1937,",
     "Taking them in 1937,",
-    "When taking them in 1937,",
+    "They were taken in 1937,",
     "Taken in 1937,"
-  ],
+    ],
   answer: 3,
   strategy: "An opening modifier attaches to the subject that follows it. Name that subject before you choose, then ask whether it can perform the action in the modifier.",
   hint: "The subject after the blank is 'the expedition's photographs.' Can photographs take photographs?",
@@ -2949,7 +2950,7 @@ window.RW_BANK.push(
   traps: {
     0: "Same error again, and \u201cthem\u201d has no antecedent yet when the reader meets it.",
     1: "Dangling modifier: it makes the photographs the ones doing the photographing.",
-    2: "Same dangling error, just with \u201cwhen\u201d in front of it."
+    2: "A different error from A and B: this is a complete sentence, so joining it to the rest with only a comma splices two sentences together. Check what kind of thing each choice is before you check the meaning."
   }
 },
 
@@ -3296,24 +3297,24 @@ window.RW_BANK.push(
   passage: "<p>A useful lab notebook records not only the result of an experiment but also ______, since a method nobody can repeat proves nothing.</p>",
   prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
   choices: [
-    "the exact steps that produced it",
     "how were the steps carried out",
     "carrying out each step exactly",
-    "exactly what steps produced it"
+    "the steps were carried out exactly",
+    "the exact steps that produced it"
   ],
   answer: 3,
   strategy: "\u201cNot only ... but also\u201d is a paired construction. Whatever form follows the first half has to follow the second. Put them side by side.",
-  hint: "The first half is \u201cthe result of an experiment.\u201d Look at how the second half has to open to match the \u201cwhat\u201d pattern the sentence sets up.",
+  hint: "The first half is \u201cthe result of an experiment,\u201d a noun phrase. The second half has to be a noun phrase too.",
   steps: [
-    "After \u201cnot only\u201d comes a noun phrase naming a thing recorded: the result of an experiment.",
-    "After \u201cbut also\u201d the phrase must fill the same slot as an object of \u201crecords.\u201d",
-    "\u201cexactly what steps produced it\u201d is a noun clause, which is a legal object of \u201crecords\u201d and balances the pair.",
-    "Choice D."
+    "After \u201cnot only\u201d comes \u201cthe result of an experiment,\u201d which is a noun phrase acting as the object of \u201crecords.\u201d",
+    "So whatever follows \u201cbut also\u201d has to be a noun phrase filling the same slot.",
+    "\u201cthe exact steps that produced it\u201d is a noun phrase with its own relative clause. Same shape, same slot.",
+    "Choice D. Read the two halves back to back and they match: records not only the result of an experiment but also the exact steps that produced it."
   ],
   traps: {
-    0: "Grammatical in isolation, which is what makes it tempting, but it repeats \u201cthe\u201d structure without the parallel emphasis the sentence has set up around what is recorded.",
-    1: "Question word order. An interrogative cannot serve as the object of \u201crecords.\u201d",
-    2: "A participial phrase, which matches neither half of the pair."
+    0: "Question word order. An interrogative clause cannot serve as the object of \u201crecords,\u201d and it does not match the noun phrase in the first half.",
+    1: "A participial phrase. It names an activity rather than a thing recorded, so it matches neither half of the pair.",
+    2: "A complete sentence dropped into a slot that needs a noun phrase. Say the first half and this half back to back and the sentence falls apart."
   }
 },
 
@@ -3659,6 +3660,361 @@ window.RW_BANK.push(
 
 );
 
+
+/* ---- Pronouns, verb time, apostrophes, modifiers ----------------------
+   Added after a review found the catalog had no pronoun trap at all and
+   that one overloaded strategy was covering six different rules. ------ */
+window.RW_BANK.push(
+{
+  id: "rw088",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "E",
+  type: "mc",
+  passage: "<p>Each of the three laboratories published ______ findings separately, which is why the same experiment appears under three different titles.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "its",
+    "it's",
+    "their",
+    "there"
+  ],
+  answer: 0,
+  strategy: "Send the pronoun back to the exact noun it replaces. Here that noun is \u201ceach,\u201d not \u201claboratories,\u201d and \u201ceach\u201d is always singular.",
+  hint: "What is the subject of \u201cpublished\u201d? It is not the word closest to it.",
+  steps: [
+    "The subject is \u201cEach,\u201d and \u201cof the three laboratories\u201d is just a phrase describing it.",
+    "\u201cEach\u201d is singular, so the pronoun has to be singular too.",
+    "The singular possessive pronoun is \u201cits,\u201d with no apostrophe.",
+    "Choice A."
+  ],
+  traps: {
+    1: "\u201cIt's\u201d is the contraction of \u201cit is,\u201d which would give you \u201cpublished it is findings.\u201d Expand any apostrophe you see and read it back.",
+    2: "Matches the nearest noun, \u201claboratories,\u201d instead of the actual subject. This is the single most common pronoun error, and stripping the \u201cof\u201d phrase prevents it.",
+    3: "A different word entirely. \u201cThere\u201d is a place, not a possessive."
+  }
+},
+{
+  id: "rw089",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Conservators examined the disputed panel alongside two later copies, and ______ turned out to contain a pigment that no workshop used before 1680.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "they",
+    "it",
+    "the panel",
+    "which"
+  ],
+  answer: 2,
+  strategy: "If a pronoun could point at two different nouns, it points at neither. When no pronoun is unambiguous, the answer is the noun itself.",
+  hint: "There are three things in the first half of the sentence. Which one does the pigment belong to?",
+  steps: [
+    "The first half names the panel and the two copies, so there are two candidate antecedents.",
+    "\u201cThey\u201d could mean the copies, and \u201cit\u201d could mean the panel or the whole group. Neither is pinned down.",
+    "When every pronoun on offer is ambiguous, naming the noun is what fixes the sentence.",
+    "Choice C."
+  ],
+  traps: {
+    0: "Reads smoothly and points at the copies, or possibly at all three objects. Smooth is not the test; traceable is.",
+    1: "Singular, so it seems to pick out the panel, but the copies are just as close and just as available. Ask whether you can point at one noun with certainty.",
+    3: "\u201cWhich\u201d turns the second half into a clause with nothing to attach to, leaving the sentence unfinished."
+  }
+},
+{
+  id: "rw090",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>Neither of the two survey crews filed ______ report before the deadline, so the mapping project stalled for a season.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "their",
+    "its",
+    "they're",
+    "there"
+  ],
+  answer: 1,
+  strategy: "Find the real subject, then match the pronoun to it. Words like neither, either, each, and every are singular however many things follow them.",
+  hint: "Strip out \u201cof the two survey crews\u201d and read what is left.",
+  steps: [
+    "\u201cNeither\u201d is the subject; \u201cof the two survey crews\u201d only describes it.",
+    "\u201cNeither\u201d means not one, so it is singular.",
+    "A singular subject takes the singular possessive \u201cits.\u201d",
+    "Choice B."
+  ],
+  traps: {
+    0: "Agrees with \u201ccrews\u201d rather than with \u201cneither.\u201d The plural noun sitting right before the verb is the bait in every one of these.",
+    2: "The contraction of \u201cthey are.\u201d Expand it and the sentence reads \u201cfiled they are report.\u201d",
+    3: "\u201cThere\u201d is not a possessive at all. These three sound identical out loud, which is why the ear is no help here."
+  }
+},
+{
+  id: "rw091",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>The committee released ______ recommendations in April, though the individual members disagreed sharply about the last of them.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "their",
+    "its",
+    "it's",
+    "there"
+  ],
+  answer: 1,
+  strategy: "A collective noun is singular in American usage, even when the sentence goes on to talk about the individual people inside it.",
+  hint: "One committee, however many members it contains.",
+  steps: [
+    "The noun doing the releasing is \u201ccommittee,\u201d a single body.",
+    "Collective nouns like committee, team, jury, and staff take singular verbs and singular pronouns in American usage.",
+    "So the pronoun is \u201cits.\u201d",
+    "Choice B. The mention of individual members later in the sentence does not change what the pronoun refers back to."
+  ],
+  traps: {
+    0: "The best trap here, because the second half of the sentence really is about several people. But the pronoun refers to the committee, not to its members. Check what the pronoun replaces, not what the sentence is about.",
+    2: "The contraction of \u201cit is.\u201d No apostrophe belongs in a possessive pronoun, ever.",
+    3: "A place word standing in for a possessive."
+  }
+},
+{
+  id: "rw092",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>By the time the survey team reached the summit in 1953, three earlier expeditions ______ on the same exposed ridge.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "fail",
+    "failed",
+    "had failed",
+    "have failed"
+  ],
+  answer: 2,
+  strategy: "Find the words that fix the time, then pick the form that fits them. \u201cBy the time\u201d plus a past event means anything earlier needs the past perfect.",
+  hint: "Two things happened in the past. Which one happened first, and how does English mark that?",
+  steps: [
+    "The sentence gives two past moments: the team reaching the summit in 1953, and the earlier failures.",
+    "\u201cBy the time\u201d tells you the failures came first.",
+    "To mark one past event as earlier than another past event, English uses the past perfect: had failed.",
+    "Choice C."
+  ],
+  traps: {
+    0: "Present tense in a sentence anchored to 1953. The date is the evidence, and it rules this out immediately.",
+    1: "Simple past after a simple past reads perfectly smoothly, which is what makes it the real trap. It just loses the ordering that \u201cby the time\u201d sets up.",
+    3: "The present perfect connects a past event to now, but this sentence is entirely finished in 1953."
+  }
+},
+{
+  id: "rw093",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The safety board recommended that the operator ______ every valve on the line before restarting it.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "inspects",
+    "inspect",
+    "will inspect",
+    "is inspecting"
+  ],
+  answer: 1,
+  strategy: "After recommend, require, insist, demand, ask, or propose, the verb in the that-clause goes into its plain form, with no ending, whatever the subject is.",
+  hint: "Look at the verb in the first half of the sentence, not at the subject of the blank.",
+  steps: [
+    "The main verb is \u201crecommended,\u201d one of a small set of verbs that trigger the subjunctive.",
+    "After those verbs, the that-clause takes the plain form of the verb.",
+    "So it is \u201cinspect,\u201d even though \u201coperator\u201d is singular and would normally take \u201cinspects.\u201d",
+    "Choice B."
+  ],
+  traps: {
+    0: "The form that normally matches a singular subject, which is exactly why it gets picked. The subjunctive overrides ordinary agreement.",
+    2: "A recommendation is not a prediction. The future tense makes it a statement about what will happen rather than what is being asked for.",
+    3: "The progressive describes something in the middle of happening, which does not fit a recommendation about what to do."
+  }
+},
+{
+  id: "rw094",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "E",
+  type: "mc",
+  passage: "<p>Both ______ notebooks record the same set of measurements, taken about an hour apart.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "assistant's",
+    "assistants",
+    "assistants'",
+    "assistant"
+  ],
+  answer: 2,
+  strategy: "Count the owners first, then decide whether they own anything. Several owners take s-apostrophe.",
+  hint: "The word \u201cBoth\u201d tells you the number for free.",
+  steps: [
+    "\u201cBoth\u201d means two, so there are two owners.",
+    "The notebooks belong to them, so this is possessive.",
+    "A regular plural possessive puts the apostrophe after the s: assistants'.",
+    "Choice C."
+  ],
+  traps: {
+    0: "Singular possessive, which contradicts \u201cBoth.\u201d One owner, not two.",
+    1: "Plural but not possessive, so the notebooks belong to nobody. It reads fine out loud, which is the whole problem.",
+    3: "Singular and not possessive, which gets both halves wrong at once."
+  }
+},
+{
+  id: "rw095",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The bridge has survived two floods since ______ completion in 1874, though the approach road has been rebuilt twice.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "its",
+    "it's",
+    "its'",
+    "their"
+  ],
+  answer: 0,
+  strategy: "Possessive pronouns never take an apostrophe. When you see one, expand it and read the sentence back.",
+  hint: "Expand each apostrophe into the two words it stands for and see which sentence still works.",
+  steps: [
+    "The thing that was completed is the bridge, which is singular.",
+    "The singular possessive pronoun is \u201cits,\u201d with no apostrophe anywhere.",
+    "Expanding the alternative gives \u201csince it is completion in 1874,\u201d which is not a sentence.",
+    "Choice A."
+  ],
+  traps: {
+    1: "The contraction of \u201cit is.\u201d This is the most frequently tested apostrophe on the whole exam, and expanding it catches it every time.",
+    2: "Not a word in English. There is no form \u201cits'.\u201d",
+    3: "Plural, but there is only one bridge. The pronoun has to match the noun it replaces, not the number of floods."
+  }
+},
+{
+  id: "rw096",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>______ the committee approved the design without asking for a single further change.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "Impressed by the revised drawings,",
+    "Impressing the revised drawings,",
+    "The revised drawings impressed them,",
+    "To impress the revised drawings,"
+  ],
+  answer: 0,
+  strategy: "Read the opening phrase and ask who is doing it. Whatever sits right after the comma has to be that thing. Do not cross the phrase out here, because the phrase is the evidence.",
+  hint: "Who was impressed? Check that the word after the comma names them.",
+  steps: [
+    "The word right after the comma is \u201ccommittee,\u201d so the opening phrase has to describe the committee.",
+    "The committee is the thing that was impressed, so the passive form \u201cImpressed by the revised drawings\u201d attaches correctly.",
+    "Read it straight through: impressed by the revised drawings, the committee approved the design.",
+    "Choice A."
+  ],
+  traps: {
+    1: "Makes the committee do the impressing, which reverses who affected whom. This is the standard dangling modifier.",
+    2: "A complete sentence, so joining it to the rest with only a comma splices two sentences together. Notice this choice is a different kind of thing from the others, which is a clue in itself.",
+    3: "Says the committee approved the design in order to impress the drawings, which is not a thing that can happen."
+  }
+},
+{
+  id: "rw097",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "H",
+  type: "mc",
+  passage: "<p>______ the fresco's original colors became visible for the first time in four centuries.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "Once conservators removed the layer of soot,",
+    "Removing the layer of soot,",
+    "Having removed the layer of soot,",
+    "Conservators removed the layer of soot,"
+  ],
+  answer: 0,
+  strategy: "When the thing after the comma cannot possibly be doing the opening phrase, the fix is a clause that names the real actor.",
+  hint: "The colors did not remove anything. So who did, and which choice actually says so?",
+  steps: [
+    "The subject after the comma is \u201cthe fresco's original colors.\u201d",
+    "Any opening phrase has to describe those colors, and the colors did not remove soot.",
+    "The repair is to make the opening a full clause with its own subject: once conservators removed the layer of soot.",
+    "Choice A. Naming the actor is what fixes a dangling modifier, not rearranging the phrase."
+  ],
+  traps: {
+    1: "Dangling: it makes the colors remove the soot.",
+    2: "Also dangling, and the perfect form makes it sound more careful without changing who is doing the removing. Sounding formal is not the same as attaching correctly.",
+    3: "A complete sentence attached with nothing but a comma, which splices two sentences together."
+  }
+},
+{
+  id: "rw098",
+  domain: "Expression of Ideas",
+  skill: "Command of Evidence (Quantitative)",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>An ecologist compared heron nest counts at four wetland sites before and after a restoration project. The two sites nearest the river were restored; the two upland sites were left alone.</p><table class='data'><tr><th>Site</th><th>Nests, 2019</th><th>Nests, 2023</th></tr><tr><td>Riverbend (restored)</td><td>14</td><td>31</td></tr><tr><td>Millrace (restored)</td><td>9</td><td>22</td></tr><tr><td>Hilltop (upland)</td><td>18</td><td>20</td></tr><tr><td>Ridge (upland)</td><td>12</td><td>13</td></tr></table><p>The ecologist concludes that the restoration, rather than a region-wide change, drove the increase in nesting. Which choice most effectively uses data from the table to support that conclusion?</p>",
+  prompt: "Which choice most effectively uses data from the table to support the conclusion?",
+  choices: [
+    "Riverbend recorded 31 nests in 2023, the highest count anywhere in the study.",
+    "Millrace recorded fewer nests than Hilltop in both years.",
+    "The restored sites rose from 14 to 31 and from 9 to 22, while the upland sites rose only from 18 to 20 and from 12 to 13.",
+    "Ridge declined from 13 nests to 12."
+  ],
+  answer: 2,
+  strategy: "The conclusion is a comparison between two groups, so the evidence has to cover both groups. One site cannot rule out a region-wide change.",
+  hint: "To show the restoration did it and not the weather, what do you need to say about the sites that were not restored?",
+  steps: [
+    "The claim is that restoration caused the rise, not something affecting the whole region.",
+    "To rule out a region-wide cause you have to show the untouched sites did not rise the same way.",
+    "So the evidence needs numbers from both the restored pair and the upland pair.",
+    "Choice C is the only one that cites both groups."
+  ],
+  traps: {
+    0: "One site, one year. A single maximum cannot separate the restoration from a change that affected everywhere, because it says nothing about the sites left alone.",
+    1: "Check it against the table: Millrace was below Hilltop in 2019, 9 to 18, but above it in 2023, 22 to 20. The claim is false for the second year.",
+    3: "The columns are reversed. Ridge went from 12 up to 13, so this reports a rise as a decline."
+  }
+},
+{
+  id: "rw099",
+  domain: "Standard English Conventions",
+  skill: "Form, Structure, and Sense",
+  difficulty: "M",
+  type: "mc",
+  passage: "<p>The list of species recorded by the two survey teams ______ three beetles never before seen in the county.</p>",
+  prompt: "Which choice completes the text so that it conforms to the conventions of Standard English?",
+  choices: [
+    "include",
+    "includes",
+    "are including",
+    "have included"
+  ],
+  answer: 1,
+  strategy: "Read the choices down the column first: they all differ in verb number, so this is an agreement question. Then strip the sentence to its bare subject.",
+  hint: "Cross out \u201cof species recorded by the two survey teams\u201d and see what is left doing the verb.",
+  steps: [
+    "The four choices vary only in number and form of the verb, so the rule on trial is subject-verb agreement.",
+    "Strip the modifiers: the list ______ three beetles.",
+    "\u201cList\u201d is singular, so the verb is \u201cincludes.\u201d",
+    "Choice B."
+  ],
+  traps: {
+    0: "Agrees with \u201cteams,\u201d the noun nearest the blank, rather than with \u201clist.\u201d The whole sentence is built to put a plural noun in that spot.",
+    2: "Plural, and it also puts an ongoing action where a plain statement of fact belongs.",
+    3: "Plural again, and the present perfect suggests the list has been changing over time rather than simply containing these species."
+  }
+}
+);
+
 /* stamp the section onto every item */
 window.RW_BANK.forEach(function (q) { q.section = 'rw'; if (!q.type) q.type = 'mc'; });
 
@@ -3694,8 +4050,8 @@ window.MATH_BANK.push(
   strategy: "Undo the operations in reverse order. Whatever is done last to the variable is what you undo first.",
   hint: "Divide both sides by 5 before you touch the parentheses.",
   steps: [
-    "Divide both sides by 5: <div class=\u201cmathwork\u201d>5(x \u2212 3) = 40\nx \u2212 3 = 8</div>",
-    "Add 3 to both sides: <div class=\u201cmathwork\u201d>x = 11</div>",
+    "Divide both sides by 5: <div class=\'mathwork\'>5(x \u2212 3) = 40\nx \u2212 3 = 8</div>",
+    "Add 3 to both sides: <div class=\'mathwork\'>x = 11</div>",
     "Check by substituting: 5(11 \u2212 3) = 5(8) = 40. \u2713"
   ],
   traps: {
@@ -3722,7 +4078,7 @@ window.MATH_BANK.push(
   strategy: "In y = mx + b, the slope is the per-unit rate and the intercept is the starting value. To interpret b, set the input to zero.",
   hint: "Let m = 0 and see what the equation says the cost is.",
   steps: [
-    "Substitute m = 0: <div class=\u201cmathwork\u201d>C = 0.04(0) + 12 = 12</div>",
+    "Substitute m = 0: <div class=\'mathwork\'>C = 0.04(0) + 12 = 12</div>",
     "So $12 is the cost when zero international minutes are used, the fixed fee.",
     "The 0.04 is the per-minute rate, since it is multiplied by m.",
     "Choice A describes the value at zero minutes."
@@ -3745,8 +4101,8 @@ window.MATH_BANK.push(
   strategy: "Get every variable term on one side and every constant on the other, then divide.",
   hint: "Subtract 2x from both sides first.",
   steps: [
-    "Subtract 2x from both sides: <div class=\u201cmathwork\u201d>3x + 7 = 2x + 19\nx + 7 = 19</div>",
-    "Subtract 7 from both sides: <div class=\u201cmathwork\u201d>x = 12</div>",
+    "Subtract 2x from both sides: <div class=\'mathwork\'>3x + 7 = 2x + 19\nx + 7 = 19</div>",
+    "Subtract 7 from both sides: <div class=\'mathwork\'>x = 12</div>",
     "Check: 3(12) + 7 = 43 and 2(12) + 19 = 43. \u2713"
   ],
   traps: {}
@@ -3771,12 +4127,12 @@ window.MATH_BANK.push(
   steps: [
     "Compute the change in y: 17 \u2212 5 = 12.",
     "Compute the change in x: 6 \u2212 2 = 4.",
-    "Divide: <div class=\u201cmathwork\u201d>slope = 12 / 4 = 3</div>"
+    "Divide: <div class=\'mathwork\'>slope = 12 / 4 = 3</div>"
   ],
   traps: {
     1: "This is run over rise, 4/12. The most common slope error is flipping the fraction.",
     2: "This is the change in x alone.",
-    3: "This is (17 \u2212 6)/(5 \u2212 2), the coordinates got mixed between the two points. Label your points before subtracting."
+    3: "This is (17 \u2212 6)/(6 \u2212 2). The 6 on top is the x-coordinate of the second point, not a y-value, so a y and an x got subtracted from each other. Label both points before you subtract anything."
   }
 },
 
@@ -3786,7 +4142,7 @@ window.MATH_BANK.push(
   skill: "Systems of two linear equations",
   difficulty: "M",
   type: "mc",
-  prompt: "<div class=\u201cmathwork\u201d>2x + 3y = 19\nx \u2212 y = 2</div>If (x, y) is the solution to the system of equations above, what is the value of x + y?",
+  prompt: "<div class=\'mathwork\'>2x + 3y = 19\nx \u2212 y = 2</div>If (x, y) is the solution to the system of equations above, what is the value of x + y?",
   choices: [
     "6",
     "7",
@@ -3797,10 +4153,10 @@ window.MATH_BANK.push(
   strategy: "Substitution is fastest when one equation already has a coefficient of 1. Solve that one for a variable and substitute.",
   hint: "The second equation gives x = y + 2.",
   steps: [
-    "From x \u2212 y = 2, solve for x: <div class=\u201cmathwork\u201d>x = y + 2</div>",
-    "Substitute into the first equation: <div class=\u201cmathwork\u201d>2(y + 2) + 3y = 19\n2y + 4 + 3y = 19\n5y = 15\ny = 3</div>",
+    "From x \u2212 y = 2, solve for x: <div class=\'mathwork\'>x = y + 2</div>",
+    "Substitute into the first equation: <div class=\'mathwork\'>2(y + 2) + 3y = 19\n2y + 4 + 3y = 19\n5y = 15\ny = 3</div>",
     "Back-substitute: x = 3 + 2 = 5.",
-    "The question asks for x + y: <div class=\u201cmathwork\u201d>5 + 3 = 8</div>"
+    "The question asks for x + y: <div class=\'mathwork\'>5 + 3 = 8</div>"
   ],
   traps: {
     0: "This is 2y, or x + 1. Re-read what the question asks for, systems questions often ask for a combination, not for x alone.",
@@ -3826,10 +4182,10 @@ window.MATH_BANK.push(
   strategy: "Translate one phrase at a time, then let \u201cat most\u201d become \u2264 and \u201cat least\u201d become \u2265. Compute any number you can before comparing choices.",
   hint: "First find the total weight of the 12 crates.",
   steps: [
-    "Weight of the crates: <div class=\u201cmathwork\u201d>12 \u00d7 85 = 1,020 pounds</div>",
+    "Weight of the crates: <div class=\'mathwork\'>12 \u00d7 85 = 1,020 pounds</div>",
     "Weight of the boxes: 40 pounds each, b boxes, so 40b.",
     "Total load: 40b + 1,020.",
-    "\u201cA maximum load of 1,800\u201d means the total cannot exceed 1,800: <div class=\u201cmathwork\u201d>40b + 1,020 \u2264 1,800</div>"
+    "\u201cA maximum load of 1,800\u201d means the total cannot exceed 1,800: <div class=\'mathwork\'>40b + 1,020 \u2264 1,800</div>"
   ],
   traps: {
     1: "Reverses the inequality. \u201cMaximum\u201d caps the total from above, so the symbol must be \u2264.",
@@ -3844,23 +4200,23 @@ window.MATH_BANK.push(
   skill: "Systems of two linear equations",
   difficulty: "M",
   type: "mc",
-  prompt: "<div class=\u201cmathwork\u201d>3x + 2y = 26\n3x \u2212 2y = 4</div>What is the value of x in the solution to the system of equations above?",
+  prompt: "<div class=\'mathwork\'>3x + 2y = 26\n3x \u2212 2y = 4</div>What is the value of x in the solution to the system of equations above?",
   choices: [
-    "2",
+    "6",
     "5",
     "5.5",
     "15"
-  ],
+    ],
   answer: 1,
   strategy: "When the same coefficient appears with opposite signs, add the equations. Elimination beats substitution whenever a variable cancels for free.",
   hint: "What happens to the y terms if you add the two equations?",
   steps: [
-    "Add the equations; +2y and \u22122y cancel: <div class=\u201cmathwork\u201d>(3x + 3x) + (2y \u2212 2y) = 26 + 4\n6x = 30</div>",
-    "Divide by 6: <div class=\u201cmathwork\u201d>x = 5</div>",
+    "Add the equations; +2y and \u22122y cancel: <div class=\'mathwork\'>(3x + 3x) + (2y \u2212 2y) = 26 + 4\n6x = 30</div>",
+    "Divide by 6: <div class=\'mathwork\'>x = 5</div>",
     "Check by finding y: 3(5) + 2y = 26 \u2192 2y = 11 \u2192 y = 5.5, and 15 \u2212 11 = 4. \u2713"
   ],
   traps: {
-    0: "Comes from subtracting the equations instead of adding, which eliminates x rather than y and leaves 4y = 22.",
+    0: "6 is the coefficient in 6x = 30, not the solution. It is a number from your own work rather than an answer to the question. Finish the division, then substitute back to confirm.",
     2: "This is y, not x. The question names the variable it wants, circle it.",
     3: "This is 3x, one step short of the answer."
   }
@@ -3872,7 +4228,7 @@ window.MATH_BANK.push(
   skill: "Linear functions",
   difficulty: "E",
   type: "mc",
-  figure: "<table class=\u201cdata\u201d><tr><th>x</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>f(x)</th><td>7</td><td>11</td><td>15</td><td>19</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th>x</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>f(x)</th><td>7</td><td>11</td><td>15</td><td>19</td></tr></table>",
   prompt: "The table above gives values of the linear function f. Which equation defines f?",
   choices: [
     "f(x) = 4x + 3",
@@ -3914,7 +4270,7 @@ window.MATH_BANK.push(
   hint: "Keep 3x + 4y and just find the new constant by plugging in the point.",
   steps: [
     "Parallel means the same slope, so line k has the form 3x + 4y = C.",
-    "Substitute the point (0, \u22125): <div class=\u201cmathwork\u201d>3(0) + 4(\u22125) = C\n\u221220 = C</div>",
+    "Substitute the point (0, \u22125): <div class=\'mathwork\'>3(0) + 4(\u22125) = C\n\u221220 = C</div>",
     "So line k is 3x + 4y = \u221220.",
     "Sanity check the slope: 4y = \u22123x + 12 gives slope \u22123/4 for \u2113, and the same for k. \u2713"
   ],
@@ -3942,9 +4298,9 @@ window.MATH_BANK.push(
   strategy: "Two unknowns need two equations: one counting items, one counting money. Define your variables in writing before you set anything up.",
   hint: "Let m be muffins and s be scones. Write the count equation and the cost equation.",
   steps: [
-    "Let m = muffins and s = scones. Count: <div class=\u201cmathwork\u201d>m + s = 14</div>",
-    "Cost: <div class=\u201cmathwork\u201d>2m + 3s = 34</div>",
-    "Substitute m = 14 \u2212 s: <div class=\u201cmathwork\u201d>2(14 \u2212 s) + 3s = 34\n28 \u2212 2s + 3s = 34\ns = 6</div>",
+    "Let m = muffins and s = scones. Count: <div class=\'mathwork\'>m + s = 14</div>",
+    "Cost: <div class=\'mathwork\'>2m + 3s = 34</div>",
+    "Substitute m = 14 \u2212 s: <div class=\'mathwork\'>2(14 \u2212 s) + 3s = 34\n28 \u2212 2s + 3s = 34\ns = 6</div>",
     "Check: 8 muffins ($16) + 6 scones ($18) = $34, and 8 + 6 = 14 items. \u2713"
   ],
   traps: {
@@ -3965,10 +4321,10 @@ window.MATH_BANK.push(
   strategy: "Infinitely many solutions means the two sides are the <em>same</em> expression. Expand and match coefficients term by term.",
   hint: "Distribute the left side, then compare the x terms with the x terms and the constants with the constants.",
   steps: [
-    "Expand the left side: <div class=\u201cmathwork\u201d>4(3x \u2212 5) = 12x \u2212 20</div>",
+    "Expand the left side: <div class=\'mathwork\'>4(3x \u2212 5) = 12x \u2212 20</div>",
     "For the equation 12x \u2212 20 = ax + b to hold for every x, the two sides must be identical.",
     "Match coefficients of x: a = 12. Match constants: b = \u221220.",
-    "Add: <div class=\u201cmathwork\u201d>a + b = 12 + (\u221220) = \u22128</div>"
+    "Add: <div class=\'mathwork\'>a + b = 12 + (\u221220) = \u22128</div>"
   ],
   traps: {}
 },
@@ -3979,13 +4335,13 @@ window.MATH_BANK.push(
   skill: "Linear inequalities",
   difficulty: "H",
   type: "mc",
-  prompt: "<div class=\u201cmathwork\u201d>y > 2x \u2212 1\ny \u2264 \u2212x + 5</div>Which of the following ordered pairs (x, y) is a solution to the system of inequalities above?",
+  prompt: "<div class=\'mathwork\'>y > 2x \u2212 1\ny \u2264 \u2212x + 5</div>Which of the following ordered pairs (x, y) is a solution to the system of inequalities above?",
   choices: [
     "(0, \u22122)",
-    "(4, 2)",
+    "(2, 3)",
     "(2, 4)",
     "(1, 3)"
-  ],
+    ],
   answer: 3,
   strategy: "Do not graph. Test each point in both inequalities and stop as soon as one fails. That is far faster than sketching two regions.",
   hint: "A solution has to satisfy both inequalities, not just one.",
@@ -3997,7 +4353,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Satisfies the second inequality but not the first.",
-    1: "Satisfies the second inequality only.",
+    1: "Lands exactly on both boundary lines. The second inequality uses \u2264, so its line counts as part of the region; the first uses >, so its line does not. A strict inequality never includes its own boundary.",
     2: "Satisfies the first but misses the second by 1. Points that pass one test and fail the other are the whole point of this question type."
   }
 },
@@ -4013,9 +4369,9 @@ window.MATH_BANK.push(
   strategy: "Constant rate means a linear model. Find the rate from the two given points, write the equation, then solve for the input you want.",
   hint: "How many feet does the balloon drop per minute?",
   steps: [
-    "Rate of change: <div class=\u201cmathwork\u201d>(1,500 \u2212 2,400) / (9 \u2212 3) = \u2212900 / 6 = \u2212150 ft per minute</div>",
-    "Write the model using the point (3, 2400): <div class=\u201cmathwork\u201d>A = 2,400 \u2212 150(t \u2212 3)\nA = 2,850 \u2212 150t</div>",
-    "Set A = 300 and solve: <div class=\u201cmathwork\u201d>300 = 2,850 \u2212 150t\n150t = 2,550\nt = 17</div>",
+    "Rate of change: <div class=\'mathwork\'>(1,500 \u2212 2,400) / (9 \u2212 3) = \u2212900 / 6 = \u2212150 ft per minute</div>",
+    "Write the model using the point (3, 2400): <div class=\'mathwork\'>A = 2,400 \u2212 150(t \u2212 3)\nA = 2,850 \u2212 150t</div>",
+    "Set A = 300 and solve: <div class=\'mathwork\'>300 = 2,850 \u2212 150t\n150t = 2,550\nt = 17</div>",
     "Check: at t = 17, A = 2,850 \u2212 2,550 = 300. \u2713 (Note the question asks for time since the descent <em>began</em>, not since t = 3.)"
   ],
   traps: {}
@@ -4038,9 +4394,9 @@ window.MATH_BANK.push(
   strategy: "Rearranging a formula uses the same moves as solving an equation, treat every letter except your target as a number.",
   hint: "Divide by 2 first, then subtract l.",
   steps: [
-    "Divide both sides by 2: <div class=\u201cmathwork\u201d>P / 2 = l + w</div>",
-    "Subtract l: <div class=\u201cmathwork\u201d>w = P/2 \u2212 l</div>",
-    "Write with a common denominator: <div class=\u201cmathwork\u201d>w = (P \u2212 2l) / 2</div>",
+    "Divide both sides by 2: <div class=\'mathwork\'>P / 2 = l + w</div>",
+    "Subtract l: <div class=\'mathwork\'>w = P/2 \u2212 l</div>",
+    "Write with a common denominator: <div class=\'mathwork\'>w = (P \u2212 2l) / 2</div>",
     "Test with numbers: l = 3, w = 4 gives P = 14, and (14 \u2212 6)/2 = 4. \u2713"
   ],
   traps: {
@@ -4067,9 +4423,9 @@ window.MATH_BANK.push(
   strategy: "f(c) = 19 just means \u201csubstitute c and set the result equal to 19.\u201d Function notation is instruction, not difficulty.",
   hint: "Write 3c \u2212 8 = 19.",
   steps: [
-    "Substitute: <div class=\u201cmathwork\u201d>3c \u2212 8 = 19</div>",
-    "Add 8: <div class=\u201cmathwork\u201d>3c = 27</div>",
-    "Divide by 3: <div class=\u201cmathwork\u201d>c = 9</div>",
+    "Substitute: <div class=\'mathwork\'>3c \u2212 8 = 19</div>",
+    "Add 8: <div class=\'mathwork\'>3c = 27</div>",
+    "Divide by 3: <div class=\'mathwork\'>c = 9</div>",
     "Check: 3(9) \u2212 8 = 19. \u2713"
   ],
   traps: {
@@ -4085,12 +4441,12 @@ window.MATH_BANK.push(
   skill: "Systems of two linear equations",
   difficulty: "H",
   type: "spr",
-  prompt: "<div class=\u201cmathwork\u201d>kx + 6y = 12\n4x + 3y = 9</div>In the system above, k is a constant. If the system has no solution, what is the value of k?",
+  prompt: "<div class=\'mathwork\'>kx + 6y = 12\n4x + 3y = 9</div>In the system above, k is a constant. If the system has no solution, what is the value of k?",
   answers: ["8"],
   strategy: "No solution means parallel lines: the coefficients are proportional but the constants are not. Set up the coefficient ratio and solve.",
   hint: "Compare the y-coefficients first: 6 and 3. What factor takes one equation's coefficients to the other's?",
   steps: [
-    "For no solution, the x and y coefficients must be proportional: <div class=\u201cmathwork\u201d>k / 4 = 6 / 3 = 2</div>",
+    "For no solution, the x and y coefficients must be proportional: <div class=\'mathwork\'>k / 4 = 6 / 3 = 2</div>",
     "So k = 8.",
     "Confirm the lines are parallel and not identical: with k = 8 the first equation is 8x + 6y = 12, which is 2(4x + 3y) = 12, i.e. 4x + 3y = 6.",
     "The second equation says 4x + 3y = 9. Since 6 \u2260 9, the lines never meet, no solution. \u2713"
@@ -4115,8 +4471,8 @@ window.MATH_BANK.push(
   strategy: "\u201cDrains completely\u201d translates to V = 0. Turn the words into an equation about the variable before computing.",
   hint: "Set V equal to 0.",
   steps: [
-    "Set V = 0: <div class=\u201cmathwork\u201d>0 = 480 \u2212 24t</div>",
-    "Solve: <div class=\u201cmathwork\u201d>24t = 480\nt = 20</div>",
+    "Set V = 0: <div class=\'mathwork\'>0 = 480 \u2212 24t</div>",
+    "Solve: <div class=\'mathwork\'>24t = 480\nt = 20</div>",
     "Interpret: after 20 minutes no water remains. \u2713"
   ],
   traps: {
@@ -4144,7 +4500,7 @@ window.MATH_BANK.push(
   hint: "If 100 adult tickets were sold, how many student tickets, and what is the total revenue?",
   steps: [
     "Set up: a + s = 240 and 18a + 11s = 3,340.",
-    "Substitute s = 240 \u2212 a: <div class=\u201cmathwork\u201d>18a + 11(240 \u2212 a) = 3,340\n18a + 2,640 \u2212 11a = 3,340\n7a = 700\na = 100</div>",
+    "Substitute s = 240 \u2212 a: <div class=\'mathwork\'>18a + 11(240 \u2212 a) = 3,340\n18a + 2,640 \u2212 11a = 3,340\n7a = 700\na = 100</div>",
     "So 100 adult and 140 student tickets.",
     "Check: 100(18) + 140(11) = 1,800 + 1,540 = 3,340. \u2713"
   ],
@@ -4166,9 +4522,9 @@ window.MATH_BANK.push(
   strategy: "Convert an average condition into a total: an average of at least 90 across 5 tests means a sum of at least 450. Averages are easier to handle as sums.",
   hint: "What must the five scores add up to?",
   steps: [
-    "Required total: <div class=\u201cmathwork\u201d>90 \u00d7 5 = 450</div>",
-    "Current total: <div class=\u201cmathwork\u201d>88 + 92 + 85 + 94 = 359</div>",
-    "Needed on the fifth test: <div class=\u201cmathwork\u201d>450 \u2212 359 = 91</div>",
+    "Required total: <div class=\'mathwork\'>90 \u00d7 5 = 450</div>",
+    "Current total: <div class=\'mathwork\'>88 + 92 + 85 + 94 = 359</div>",
+    "Needed on the fifth test: <div class=\'mathwork\'>450 \u2212 359 = 91</div>",
     "Check: (359 + 91)/5 = 450/5 = 90. \u2713 Since the requirement is \u201cat least,\u201d 91 is the minimum."
   ],
   traps: {}
@@ -4192,7 +4548,7 @@ window.MATH_BANK.push(
   hint: "Which two numbers multiply to 12 and add to 7?",
   steps: [
     "Look for two numbers with product 12 and sum 7: 3 and 4.",
-    "Since the middle term is \u22127x, both factors are negative: <div class=\u201cmathwork\u201d>x\u00b2 \u2212 7x + 12 = (x \u2212 3)(x \u2212 4) = 0</div>",
+    "Since the middle term is \u22127x, both factors are negative: <div class=\'mathwork\'>x\u00b2 \u2212 7x + 12 = (x \u2212 3)(x \u2212 4) = 0</div>",
     "Set each factor to zero: x = 3 or x = 4.",
     "Check: 9 \u2212 21 + 12 = 0 \u2713 and 16 \u2212 28 + 12 = 0 \u2713"
   ],
@@ -4220,10 +4576,10 @@ window.MATH_BANK.push(
   strategy: "Substitute in parentheses. Writing 2(\u22122)\u00b2 instead of 2\u00b7\u22122\u00b2 is what prevents almost every sign error on this question type.",
   hint: "Square before you multiply, and remember \u22125 times \u22122 is positive.",
   steps: [
-    "Substitute with parentheses: <div class=\u201cmathwork\u201d>f(\u22122) = 2(\u22122)\u00b2 \u2212 5(\u22122) + 1</div>",
+    "Substitute with parentheses: <div class=\'mathwork\'>f(\u22122) = 2(\u22122)\u00b2 \u2212 5(\u22122) + 1</div>",
     "Square first: (\u22122)\u00b2 = 4, so the first term is 2(4) = 8.",
     "Second term: \u22125(\u22122) = +10.",
-    "Add: <div class=\u201cmathwork\u201d>8 + 10 + 1 = 19</div>"
+    "Add: <div class=\'mathwork\'>8 + 10 + 1 = 19</div>"
   ],
   traps: {
     0: "Comes from making the middle term \u221210: 8 \u2212 10 + 1 = \u22121. A negative times a negative is positive.",
@@ -4278,15 +4634,15 @@ window.MATH_BANK.push(
   strategy: "Handle the outer power first: raise every factor inside to that power. Then divide by subtracting exponents.",
   hint: "(3x\u00b2y\u00b3)\u00b3 means 3\u00b3 \u00b7 x\u2076 \u00b7 y\u2079.",
   steps: [
-    "Expand the numerator, applying the exponent 3 to each factor: <div class=\u201cmathwork\u201d>(3x\u00b2y\u00b3)\u00b3 = 3\u00b3 \u00b7 x\u2076 \u00b7 y\u2079 = 27x\u2076y\u2079</div>",
+    "Expand the numerator, applying the exponent 3 to each factor: <div class=\'mathwork\'>(3x\u00b2y\u00b3)\u00b3 = 3\u00b3 \u00b7 x\u2076 \u00b7 y\u2079 = 27x\u2076y\u2079</div>",
     "Divide the coefficients: 27 / 9 = 3.",
-    "Subtract exponents for like bases: <div class=\u201cmathwork\u201d>x\u2076 \u00f7 x\u00b3 = x\u00b3\ny\u2079 \u00f7 y\u00b2 = y\u2077</div>",
+    "Subtract exponents for like bases: <div class=\'mathwork\'>x\u2076 \u00f7 x\u00b3 = x\u00b3\ny\u2079 \u00f7 y\u00b2 = y\u2077</div>",
     "Result: 3x\u00b3y\u2077"
   ],
   traps: {
     0: "Subtracted the y exponents as 9 \u2212 4 instead of 9 \u2212 2.",
-    1: "Multiplied the x exponents when dividing instead of subtracting, or applied the outer 3 twice.",
-    2: "Divided 27 by 9 incorrectly, or forgot to cube the 3 and left the 9 in the numerator."
+    1: "Added the x exponents when dividing instead of subtracting: 6 + 3 = 9. Division subtracts them, so 6 \u2212 3 = 3.",
+    2: "Cubed the 3 to get 27 but then divided by 3 instead of by 9."
   }
 },
 
@@ -4307,9 +4663,9 @@ window.MATH_BANK.push(
   strategy: "A parabola's minimum occurs at x = \u2212b/(2a). Find that x, then substitute back. The question usually wants the y-value, not the x-value.",
   hint: "First find where the minimum occurs, then find what the minimum <em>is</em>.",
   steps: [
-    "Find the axis of symmetry: <div class=\u201cmathwork\u201d>x = \u2212b/(2a) = 8/2 = 4</div>",
-    "Substitute x = 4 to get the minimum value: <div class=\u201cmathwork\u201d>f(4) = 16 \u2212 32 + 11 = \u22125</div>",
-    "Confirm with completing the square: <div class=\u201cmathwork\u201d>x\u00b2 \u2212 8x + 11 = (x \u2212 4)\u00b2 \u2212 5</div>",
+    "Find the axis of symmetry: <div class=\'mathwork\'>x = \u2212b/(2a) = 8/2 = 4</div>",
+    "Substitute x = 4 to get the minimum value: <div class=\'mathwork\'>f(4) = 16 \u2212 32 + 11 = \u22125</div>",
+    "Confirm with completing the square: <div class=\'mathwork\'>x\u00b2 \u2212 8x + 11 = (x \u2212 4)\u00b2 \u2212 5</div>",
     "Since (x \u2212 4)\u00b2 is never negative, the smallest value of f is \u22125. \u2713"
   ],
   traps: {
@@ -4336,8 +4692,8 @@ window.MATH_BANK.push(
   strategy: "Squaring both sides of a radical equation can create extraneous roots. You must substitute every candidate back into the <em>original</em> equation.",
   hint: "Squaring gives a quadratic with two roots, but only one of them can actually be a solution. Why?",
   steps: [
-    "Square both sides: <div class=\u201cmathwork\u201d>2x + 5 = (x \u2212 5)\u00b2\n2x + 5 = x\u00b2 \u2212 10x + 25</div>",
-    "Collect terms: <div class=\u201cmathwork\u201d>x\u00b2 \u2212 12x + 20 = 0\n(x \u2212 10)(x \u2212 2) = 0</div>",
+    "Square both sides: <div class=\'mathwork\'>2x + 5 = (x \u2212 5)\u00b2\n2x + 5 = x\u00b2 \u2212 10x + 25</div>",
+    "Collect terms: <div class=\'mathwork\'>x\u00b2 \u2212 12x + 20 = 0\n(x \u2212 10)(x \u2212 2) = 0</div>",
     "Candidates: x = 10 and x = 2.",
     "Check both in the original: x = 10 gives \u221a25 = 5 and 10 \u2212 5 = 5 \u2713. x = 2 gives \u221a9 = 3 but 2 \u2212 5 = \u22123 \u2717, a square root cannot be negative, so x = 2 is extraneous."
   ],
@@ -4360,8 +4716,8 @@ window.MATH_BANK.push(
   hint: "Set the discriminant equal to zero.",
   steps: [
     "Here a = 1, b = 6, and the constant is c.",
-    "Exactly one real solution means the discriminant is zero: <div class=\u201cmathwork\u201d>b\u00b2 \u2212 4ac = 0\n36 \u2212 4c = 0</div>",
-    "Solve: <div class=\u201cmathwork\u201d>4c = 36\nc = 9</div>",
+    "Exactly one real solution means the discriminant is zero: <div class=\'mathwork\'>b\u00b2 \u2212 4ac = 0\n36 \u2212 4c = 0</div>",
+    "Solve: <div class=\'mathwork\'>4c = 36\nc = 9</div>",
     "Check: x\u00b2 + 6x + 9 = (x + 3)\u00b2, whose only solution is x = \u22123. \u2713"
   ],
   traps: {}
@@ -4384,8 +4740,8 @@ window.MATH_BANK.push(
   strategy: "Work composed functions from the inside out. Compute the inner value first and write it down before applying the outer function.",
   hint: "Find f(2) first, then put that number into g.",
   steps: [
-    "Inner function: <div class=\u201cmathwork\u201d>f(2) = 2 + 3 = 5</div>",
-    "Now apply g to that result: <div class=\u201cmathwork\u201d>g(5) = 5\u00b2 \u2212 1 = 25 \u2212 1 = 24</div>"
+    "Inner function: <div class=\'mathwork\'>f(2) = 2 + 3 = 5</div>",
+    "Now apply g to that result: <div class=\'mathwork\'>g(5) = 5\u00b2 \u2212 1 = 25 \u2212 1 = 24</div>"
   ],
   traps: {
     0: "This is f(g(2)), the composition performed in the wrong order: g(2) = 3, then f(3) = 6. Order matters.",
@@ -4411,9 +4767,9 @@ window.MATH_BANK.push(
   strategy: "Factor the numerator and denominator completely, then cancel common factors. Never cancel individual terms, only whole factors.",
   hint: "x\u00b2 \u2212 9 is a difference of squares.",
   steps: [
-    "Factor the numerator as a difference of squares: <div class=\u201cmathwork\u201d>x\u00b2 \u2212 9 = (x \u2212 3)(x + 3)</div>",
-    "Factor the denominator: two numbers multiplying to 6 and adding to 5 are 2 and 3: <div class=\u201cmathwork\u201d>x\u00b2 + 5x + 6 = (x + 2)(x + 3)</div>",
-    "Cancel the shared factor (x + 3): <div class=\u201cmathwork\u201d>(x \u2212 3)(x + 3) / [(x + 2)(x + 3)] = (x \u2212 3)/(x + 2)</div>",
+    "Factor the numerator as a difference of squares: <div class=\'mathwork\'>x\u00b2 \u2212 9 = (x \u2212 3)(x + 3)</div>",
+    "Factor the denominator: two numbers multiplying to 6 and adding to 5 are 2 and 3: <div class=\'mathwork\'>x\u00b2 + 5x + 6 = (x + 2)(x + 3)</div>",
+    "Cancel the shared factor (x + 3): <div class=\'mathwork\'>(x \u2212 3)(x + 3) / [(x + 2)(x + 3)] = (x \u2212 3)/(x + 2)</div>",
     "Test with x = 1: original = (1 \u2212 9)/(1 + 5 + 6) = \u22128/12 = \u22122/3; answer = (1 \u2212 3)/(1 + 2) = \u22122/3. \u2713"
   ],
   traps: {
@@ -4441,13 +4797,13 @@ window.MATH_BANK.push(
   hint: "The vertex tells you k. Then substitute the point (0, 7).",
   steps: [
     "The vertex is (2, \u22121), so k = \u22121 and f(x) = a(x \u2212 2)\u00b2 \u2212 1.",
-    "Substitute the point (0, 7): <div class=\u201cmathwork\u201d>7 = a(0 \u2212 2)\u00b2 \u2212 1\n7 = 4a \u2212 1</div>",
-    "Solve: <div class=\u201cmathwork\u201d>4a = 8\na = 2</div>",
+    "Substitute the point (0, 7): <div class=\'mathwork\'>7 = a(0 \u2212 2)\u00b2 \u2212 1\n7 = 4a \u2212 1</div>",
+    "Solve: <div class=\'mathwork\'>4a = 8\na = 2</div>",
     "Check: f(0) = 2(4) \u2212 1 = 7 \u2713"
   ],
   traps: {
     0: "Comes from 4a = 2 or from inverting the final division.",
-    1: "Comes from forgetting to subtract 1: 7 = 4a would give a = 1.75, but using 8/2 gives 4. Track the constant.",
+    1: "Comes from 4a = 8 divided by 2 instead of 4. The number to divide by is (0 \u2212 2)\u00b2 = 4, not the 2 you see inside the parentheses.",
     3: "This is 4a, not a."
   }
 },
@@ -4458,14 +4814,14 @@ window.MATH_BANK.push(
   skill: "Systems with one nonlinear equation",
   difficulty: "H",
   type: "spr",
-  prompt: "<div class=\u201cmathwork\u201d>y = x\u00b2 \u2212 4x + 7\ny = 2x + 2</div>The system above has two solutions. What is the sum of the x-coordinates of those solutions?",
+  prompt: "<div class=\'mathwork\'>y = x\u00b2 \u2212 4x + 7\ny = 2x + 2</div>The system above has two solutions. What is the sum of the x-coordinates of those solutions?",
   answers: ["6"],
   strategy: "Set the two expressions for y equal, collect into a quadratic, and remember that the sum of the roots equals \u2212b/a. You often do not need the roots themselves.",
   hint: "You can answer this without ever finding the individual solutions.",
   steps: [
-    "Set the expressions equal: <div class=\u201cmathwork\u201d>x\u00b2 \u2212 4x + 7 = 2x + 2</div>",
-    "Collect on one side: <div class=\u201cmathwork\u201d>x\u00b2 \u2212 6x + 5 = 0</div>",
-    "The sum of the roots of ax\u00b2 + bx + c = 0 is \u2212b/a: <div class=\u201cmathwork\u201d>\u2212(\u22126)/1 = 6</div>",
+    "Set the expressions equal: <div class=\'mathwork\'>x\u00b2 \u2212 4x + 7 = 2x + 2</div>",
+    "Collect on one side: <div class=\'mathwork\'>x\u00b2 \u2212 6x + 5 = 0</div>",
+    "The sum of the roots of ax\u00b2 + bx + c = 0 is \u2212b/a: <div class=\'mathwork\'>\u2212(\u22126)/1 = 6</div>",
     "Confirm by factoring: (x \u2212 1)(x \u2212 5) = 0 gives x = 1 and x = 5, and 1 + 5 = 6. \u2713"
   ],
   traps: {}
@@ -4488,8 +4844,8 @@ window.MATH_BANK.push(
   strategy: "Check the units of the exponent's variable before substituting. If t is in years and the question gives months, convert first.",
   hint: "t is measured in years. How many years is 18 months?",
   steps: [
-    "The model defines t in years, so convert: <div class=\u201cmathwork\u201d>18 months = 18/12 = 1.5 years = 3/2 years</div>",
-    "Substitute t = 3/2: <div class=\u201cmathwork\u201d>V = 40,000(0.85)^(3/2)</div>",
+    "The model defines t in years, so convert: <div class=\'mathwork\'>18 months = 18/12 = 1.5 years = 3/2 years</div>",
+    "Substitute t = 3/2: <div class=\'mathwork\'>V = 40,000(0.85)^(3/2)</div>",
     "The base stays 0.85 because that is the fraction of value retained each year."
   ],
   traps: {
@@ -4511,9 +4867,9 @@ window.MATH_BANK.push(
   hint: "Half of 10 is 5, and (x + 5)\u00b2 = x\u00b2 + 10x + 25.",
   steps: [
     "Take half the x-coefficient: 10/2 = 5, so a = 5.",
-    "Expand to see what that square produces: <div class=\u201cmathwork\u201d>(x + 5)\u00b2 = x\u00b2 + 10x + 25</div>",
-    "The original has 18 where the square has 25, so subtract 7: <div class=\u201cmathwork\u201d>x\u00b2 + 10x + 18 = (x + 5)\u00b2 \u2212 7</div>",
-    "So a = 5, b = \u22127, and <div class=\u201cmathwork\u201d>a + b = 5 + (\u22127) = \u22122</div>"
+    "Expand to see what that square produces: <div class=\'mathwork\'>(x + 5)\u00b2 = x\u00b2 + 10x + 25</div>",
+    "The original has 18 where the square has 25, so subtract 7: <div class=\'mathwork\'>x\u00b2 + 10x + 18 = (x + 5)\u00b2 \u2212 7</div>",
+    "So a = 5, b = \u22127, and <div class=\'mathwork\'>a + b = 5 + (\u22127) = \u22122</div>"
   ],
   traps: {}
 },
@@ -4535,15 +4891,15 @@ window.MATH_BANK.push(
   strategy: "Zeros come from setting each factor to zero. Factor anything that can still be factored before you start listing.",
   hint: "x\u00b2 \u2212 9 is not yet fully factored.",
   steps: [
-    "Factor completely: <div class=\u201cmathwork\u201d>p(x) = (x \u2212 4)(x \u2212 3)(x + 3)</div>",
+    "Factor completely: <div class=\'mathwork\'>p(x) = (x \u2212 4)(x \u2212 3)(x + 3)</div>",
     "Set each factor equal to zero: x \u2212 4 = 0, x \u2212 3 = 0, x + 3 = 0.",
     "Zeros: x = 4, x = 3, x = \u22123.",
     "Check one: p(\u22123) = (\u22127)(9 \u2212 9) = 0. \u2713"
   ],
   traps: {
     0: "Read 9 straight out of x\u00b2 \u2212 9 without solving. x\u00b2 = 9 gives x = \u00b13, not 9.",
-    2: "Sign errors on every factor: (x \u2212 4) gives +4, not \u22124.",
-    3: "Squared instead of taking a square root."
+    2: "Flips the sign of the 4. Setting x \u2212 4 = 0 gives x = +4. The \u22123 and the 3 are both genuine zeros, so this choice is a single sign away from correct.",
+    3: "Reads \u00b19 straight out of x\u00b2 \u2212 9 instead of solving x\u00b2 = 9. Taking the square root of 9 gives 3."
   }
 },
 
@@ -4564,9 +4920,9 @@ window.MATH_BANK.push(
   strategy: "\u201cHits the ground\u201d means height = 0. Divide out the common factor before factoring, the arithmetic gets much easier.",
   hint: "Set h(t) = 0, then divide the whole equation by \u221216.",
   steps: [
-    "Set the height to zero: <div class=\u201cmathwork\u201d>\u221216t\u00b2 + 64t + 80 = 0</div>",
-    "Divide every term by \u221216: <div class=\u201cmathwork\u201d>t\u00b2 \u2212 4t \u2212 5 = 0</div>",
-    "Factor: <div class=\u201cmathwork\u201d>(t \u2212 5)(t + 1) = 0</div>",
+    "Set the height to zero: <div class=\'mathwork\'>\u221216t\u00b2 + 64t + 80 = 0</div>",
+    "Divide every term by \u221216: <div class=\'mathwork\'>t\u00b2 \u2212 4t \u2212 5 = 0</div>",
+    "Factor: <div class=\'mathwork\'>(t \u2212 5)(t + 1) = 0</div>",
     "So t = 5 or t = \u22121. Time cannot be negative, so the ball lands at t = 5 seconds. \u2713"
   ],
   traps: {
@@ -4587,10 +4943,10 @@ window.MATH_BANK.push(
   strategy: "Rewrite both sides with the same base. Once the bases match, the exponents must be equal.",
   hint: "32 is a power of 2.",
   steps: [
-    "Write 32 as a power of 2: <div class=\u201cmathwork\u201d>32 = 2\u2075</div>",
-    "Rewrite the right side, multiplying exponents: <div class=\u201cmathwork\u201d>32^(x\u22121) = (2\u2075)^(x\u22121) = 2^(5x\u22125)</div>",
-    "With equal bases, set the exponents equal: <div class=\u201cmathwork\u201d>3x = 5x \u2212 5</div>",
-    "Solve: <div class=\u201cmathwork\u201d>2x = 5\nx = 5/2 = 2.5</div>"
+    "Write 32 as a power of 2: <div class=\'mathwork\'>32 = 2\u2075</div>",
+    "Rewrite the right side, multiplying exponents: <div class=\'mathwork\'>32^(x\u22121) = (2\u2075)^(x\u22121) = 2^(5x\u22125)</div>",
+    "With equal bases, set the exponents equal: <div class=\'mathwork\'>3x = 5x \u2212 5</div>",
+    "Solve: <div class=\'mathwork\'>2x = 5\nx = 5/2 = 2.5</div>"
   ],
   traps: {}
 },
@@ -4613,7 +4969,7 @@ window.MATH_BANK.push(
   hint: "Identify a = \u221220 and b = 800, then compute \u2212b/(2a).",
   steps: [
     "Identify the coefficients: a = \u221220, b = 800.",
-    "Vertex: <div class=\u201cmathwork\u201d>p = \u2212b/(2a) = \u2212800 / (2 \u00d7 \u221220) = \u2212800 / \u221240 = 20</div>",
+    "Vertex: <div class=\'mathwork\'>p = \u2212b/(2a) = \u2212800 / (2 \u00d7 \u221220) = \u2212800 / \u221240 = 20</div>",
     "So a price of $20 maximizes revenue.",
     "Check the value: R(20) = \u221220(400) + 16,000 = $8,000, and R(19) = $7,980 and R(21) = $7,980, both lower. \u2713"
   ],
@@ -4635,21 +4991,21 @@ window.MATH_BANK.push(
     "4",
     "0",
     "8",
-    "12"
-  ],
+    "\u22124/3"
+    ],
   answer: 0,
   strategy: "Cross-multiply proportions, then solve the resulting linear equation. Check that your answer does not make a denominator zero.",
   hint: "Cross-multiply to get 3(x + 4) = 12(x \u2212 2).",
   steps: [
-    "Cross-multiply: <div class=\u201cmathwork\u201d>3(x + 4) = 12(x \u2212 2)</div>",
-    "Distribute: <div class=\u201cmathwork\u201d>3x + 12 = 12x \u2212 24</div>",
-    "Collect: <div class=\u201cmathwork\u201d>36 = 9x\nx = 4</div>",
+    "Cross-multiply: <div class=\'mathwork\'>3(x + 4) = 12(x \u2212 2)</div>",
+    "Distribute: <div class=\'mathwork\'>3x + 12 = 12x \u2212 24</div>",
+    "Collect: <div class=\'mathwork\'>36 = 9x\nx = 4</div>",
     "Check: 3/(4 \u2212 2) = 1.5 and 12/(4 + 4) = 1.5 \u2713, and no denominator is zero."
   ],
   traps: {
     1: "Gives 3/(\u22122) = \u22121.5 and 12/4 = 3. Not equal.",
     2: "Gives 3/6 = 0.5 and 12/12 = 1. Not equal.",
-    3: "Comes from a sign error when distributing 12(x \u2212 2)."
+    3: "Comes from distributing 12(x \u2212 2) as 12x + 24: then 3x + 12 = 12x + 24 gives 9x = \u221212, so x = \u22124/3. The minus sign has to reach both terms."
   }
 },
 
@@ -4670,15 +5026,15 @@ window.MATH_BANK.push(
   strategy: "Convert every radical to a fractional exponent, add exponents when multiplying, then convert back if the choices are in radical form.",
   hint: "\u2074\u221a(x\u00b3) is x^(3/4) and \u221ax is x^(1/2).",
   steps: [
-    "Rewrite both factors with fractional exponents: <div class=\u201cmathwork\u201d>\u2074\u221a(x\u00b3) = x^(3/4)\n\u221ax = x^(1/2)</div>",
-    "Multiplying powers of the same base means adding exponents: <div class=\u201cmathwork\u201d>3/4 + 1/2 = 3/4 + 2/4 = 5/4</div>",
+    "Rewrite both factors with fractional exponents: <div class=\'mathwork\'>\u2074\u221a(x\u00b3) = x^(3/4)\n\u221ax = x^(1/2)</div>",
+    "Multiplying powers of the same base means adding exponents: <div class=\'mathwork\'>3/4 + 1/2 = 3/4 + 2/4 = 5/4</div>",
     "So the product is x^(5/4).",
-    "Convert back to a radical: the denominator is the index and the numerator is the power: <div class=\u201cmathwork\u201d>x^(5/4) = \u2074\u221a(x\u2075)</div>"
+    "Convert back to a radical: the denominator is the index and the numerator is the power: <div class=\'mathwork\'>x^(5/4) = \u2074\u221a(x\u2075)</div>"
   ],
   traps: {
     1: "Multiplied the denominators of the exponents (4 \u00d7 2 = 8) instead of finding a common denominator and adding.",
     2: "Multiplied the exponents, 3/4 \u00d7 1/2 = 3/8. Exponents multiply for a power of a power, not for a product.",
-    3: "This is x^(3/2), which comes from adding the numerators and ignoring the denominators."
+    3: "This is x^(3/2), built by taking the 3 from the first exponent and the 2 from the second. Multiplying powers means adding the exponents over a common denominator: 3/4 + 2/4 = 5/4."
   }
 },
 
@@ -4699,8 +5055,8 @@ window.MATH_BANK.push(
   strategy: "Percent change = (change \u00f7 original) \u00d7 100. The original amount always goes in the denominator.",
   hint: "The discount is $12. Twelve is what percent of eighty?",
   steps: [
-    "Find the change: <div class=\u201cmathwork\u201d>80 \u2212 68 = 12</div>",
-    "Divide by the original price: <div class=\u201cmathwork\u201d>12 / 80 = 0.15</div>",
+    "Find the change: <div class=\'mathwork\'>80 \u2212 68 = 12</div>",
+    "Divide by the original price: <div class=\'mathwork\'>12 / 80 = 0.15</div>",
     "Convert to a percent: 15%.",
     "Check: 15% of 80 is 12, and 80 \u2212 12 = 68. \u2713"
   ],
@@ -4723,7 +5079,7 @@ window.MATH_BANK.push(
   hint: "Divide the total pages by the pages per minute.",
   steps: [
     "Rate: 18 pages per 1 minute.",
-    "Divide the total by the rate: <div class=\u201cmathwork\u201d>621 \u00f7 18 = 34.5</div>",
+    "Divide the total by the rate: <div class=\'mathwork\'>621 \u00f7 18 = 34.5</div>",
     "Check the units: pages \u00f7 (pages/minute) = minutes. \u2713",
     "Verify: 18 \u00d7 34.5 = 621. \u2713 (You may enter 34.5 or 69/2.)"
   ],
@@ -4736,26 +5092,27 @@ window.MATH_BANK.push(
   skill: "One-variable data",
   difficulty: "M",
   type: "mc",
-  prompt: "A data set of 20 home sale prices has a mean of $410,000 and a median of $310,000. The single most expensive home, which sold for $3.2 million, is then removed from the data set. Which statement about the remaining 19 prices must be true?",
+  passage: "<p>The list shows the sale price, in thousands of dollars, of each of the 5 homes sold on one street last year.</p><div class=\'mathwork\'>250, 280, 310, 340, 2820</div>",
+  prompt: "If the highest price is removed from the list, which of the following describes the effect on the mean and the median?",
   choices: [
-    "The mean decreases by more than the median does.",
-    "The median decreases by more than the mean does.",
-    "Neither the mean nor the median changes.",
-    "The mean increases."
+    "The mean decreases by $505,000 and the median decreases by $15,000.",
+    "The mean decreases by $15,000 and the median decreases by $505,000.",
+    "The mean and the median each decrease by about the same amount.",
+    "The mean decreases and the median stays at $310,000."
   ],
   answer: 0,
-  strategy: "The mean responds to the size of every value; the median responds only to position. Outliers move the mean and barely touch the median.",
-  hint: "Which measure actually uses the number 3,200,000 in its computation?",
+  strategy: "The mean is built from the size of every value, so one huge value drags it. The median only cares about position. Compute both before and after rather than reasoning about which one \u201cshould\u201d move.",
+  hint: "The list is short enough to just do it. Find the mean and median of all 5, then of the 4 that are left.",
   steps: [
-    "The mean is computed from the total of all values, so removing a $3.2 million value removes a large chunk of that total.",
-    "Notice the mean ($410,000) sits well above the median ($310,000), which is the signature of a high outlier.",
-    "The median only depends on which value sits in the middle position; dropping the largest value shifts that position by half a slot, changing the median slightly at most.",
-    "So the mean falls substantially while the median barely moves. Choice A."
+    "All 5 values: the total is 4,000, so the mean is 4,000 \u00f7 5 = 800, and the median is the middle value, 310.",
+    "Remove 2,820. The remaining 4 total 1,180, so the mean is 1,180 \u00f7 4 = 295.",
+    "With 4 values the median is the average of the middle two: <div class=\'mathwork\'>(280 + 310) \u00f7 2 = 295</div>",
+    "The mean fell 800 \u2212 295 = 505 and the median fell 310 \u2212 295 = 15. In thousands of dollars that is $505,000 and $15,000, so choice A."
   ],
   traps: {
-    1: "Reverses the sensitivity. The median is the resistant measure. That is why it is reported for home prices.",
-    2: "The mean is certain to change, since the sum of the values changes.",
-    3: "Removing an above-average value must pull the mean down, not up."
+    1: "Reverses the sensitivity. The mean uses the number 2,820 in its arithmetic, so it moves a long way; the median only shifts by one position. The median is the resistant measure, which is exactly why it is the one reported for home prices.",
+    2: "The whole reason an outlier matters is that it moves the two measures by very different amounts. Compute both instead of assuming they travel together.",
+    3: "Half right, which is what makes it tempting: the mean does decrease. But the median moves too, because with 4 values left it becomes the average of the middle two rather than a single middle value."
   }
 },
 
@@ -4765,7 +5122,7 @@ window.MATH_BANK.push(
   skill: "Probability",
   difficulty: "M",
   type: "mc",
-  figure: "<table class=\u201cdata\u201d><tr><th></th><th>Print</th><th>Digital</th><th>Total</th></tr><tr><th>Grade 9</th><td>40</td><td>60</td><td>100</td></tr><tr><th>Grade 10</th><td>55</td><td>45</td><td>100</td></tr><tr><th>Total</th><td>95</td><td>105</td><td>200</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th></th><th>Print</th><th>Digital</th><th>Total</th></tr><tr><th>Grade 9</th><td>40</td><td>60</td><td>100</td></tr><tr><th>Grade 10</th><td>55</td><td>45</td><td>100</td></tr><tr><th>Total</th><td>95</td><td>105</td><td>200</td></tr></table>",
   figcap: "Preferred reading format of 200 students",
   prompt: "The table above shows the preferred reading format of 200 students. If a student who prefers print is selected at random, what is the probability that the student is in Grade 10?",
   choices: [
@@ -4780,7 +5137,7 @@ window.MATH_BANK.push(
   steps: [
     "The condition is \u201ca student who prefers print,\u201d so the sample space is the Print column: 95 students.",
     "Among those 95, the Grade 10 students number 55.",
-    "So the probability is <div class=\u201cmathwork\u201d>55 / 95</div>",
+    "So the probability is <div class=\'mathwork\'>55 / 95</div>",
     "(That reduces to 11/19 \u2248 0.579, but 55/95 is the form given.)"
   ],
   traps: {
@@ -4807,8 +5164,8 @@ window.MATH_BANK.push(
   strategy: "Apply percent changes one at a time, multiplying by (1 + rate). Percent changes never simply add, because the second change acts on the new amount.",
   hint: "Find the 2015 population before you take 10% off.",
   steps: [
-    "2015 population: <div class=\u201cmathwork\u201d>25,000 \u00d7 1.20 = 30,000</div>",
-    "2020 population, after a 10% decrease: <div class=\u201cmathwork\u201d>30,000 \u00d7 0.90 = 27,000</div>",
+    "2015 population: <div class=\'mathwork\'>25,000 \u00d7 1.20 = 30,000</div>",
+    "2020 population, after a 10% decrease: <div class=\'mathwork\'>30,000 \u00d7 0.90 = 27,000</div>",
     "Note the net effect: 1.20 \u00d7 0.90 = 1.08, an 8% increase overall, not 10%."
   ],
   traps: {
@@ -4835,8 +5192,8 @@ window.MATH_BANK.push(
   strategy: "Write the scale as a fraction with units, then multiply so the unwanted unit cancels.",
   hint: "3.75 inches \u00d7 24 miles per inch.",
   steps: [
-    "Set up the conversion: <div class=\u201cmathwork\u201d>3.75 in \u00d7 (24 mi / 1 in)</div>",
-    "The inches cancel, leaving miles: <div class=\u201cmathwork\u201d>3.75 \u00d7 24 = 90</div>",
+    "Set up the conversion: <div class=\'mathwork\'>3.75 in \u00d7 (24 mi / 1 in)</div>",
+    "The inches cancel, leaving miles: <div class=\'mathwork\'>3.75 \u00d7 24 = 90</div>",
     "So the cities are 90 miles apart. Sanity check: 4 inches would be 96 miles, so 90 is reasonable. \u2713"
   ],
   traps: {
@@ -4864,7 +5221,7 @@ window.MATH_BANK.push(
   hint: "Build the interval: 62% minus 4 points, and 62% plus 4 points.",
   steps: [
     "The sample estimate is 62% and the margin of error is 4 percentage points.",
-    "Form the interval: <div class=\u201cmathwork\u201d>62 \u2212 4 = 58\n62 + 4 = 66</div>",
+    "Form the interval: <div class=\'mathwork\'>62 \u2212 4 = 58\n62 + 4 = 66</div>",
     "So plausible values for the population percentage run from 58% to 66%.",
     "Choice B states exactly that, with the appropriate hedge (\u201cit is plausible\u201d)."
   ],
@@ -4917,9 +5274,9 @@ window.MATH_BANK.push(
   strategy: "Convert everything to one unit of time first. Multi-step rate problems go wrong at the conversion, not at the arithmetic.",
   hint: "How many seconds are in 1 hour and 20 minutes?",
   steps: [
-    "Convert the time: <div class=\u201cmathwork\u201d>1 hr 20 min = 80 min = 80 \u00d7 60 = 4,800 seconds</div>",
-    "Find how many 15-second intervals that is: <div class=\u201cmathwork\u201d>4,800 \u00f7 15 = 320</div>",
-    "Each interval moves 4 gallons: <div class=\u201cmathwork\u201d>320 \u00d7 4 = 1,280 gallons</div>",
+    "Convert the time: <div class=\'mathwork\'>1 hr 20 min = 80 min = 80 \u00d7 60 = 4,800 seconds</div>",
+    "Find how many 15-second intervals that is: <div class=\'mathwork\'>4,800 \u00f7 15 = 320</div>",
+    "Each interval moves 4 gallons: <div class=\'mathwork\'>320 \u00d7 4 = 1,280 gallons</div>",
     "Cross-check with a unit rate: 4/15 gal per second \u00d7 4,800 s = 1,280. \u2713"
   ],
   traps: {}
@@ -4936,10 +5293,10 @@ window.MATH_BANK.push(
   strategy: "In a dilution, the amount of solute never changes, only the total volume does. Track the unchanging quantity and set up one equation.",
   hint: "How many milliliters of salt are in the solution? That number stays the same.",
   steps: [
-    "Find the salt: <div class=\u201cmathwork\u201d>8% of 500 = 0.08 \u00d7 500 = 40 mL</div>",
-    "Adding water does not change the salt, so the final solution still has 40 mL of salt, and that must be 5% of the new total V: <div class=\u201cmathwork\u201d>40 = 0.05V</div>",
-    "Solve for the new total: <div class=\u201cmathwork\u201d>V = 40 / 0.05 = 800 mL</div>",
-    "The water added is the change in total volume: <div class=\u201cmathwork\u201d>800 \u2212 500 = 300 mL</div>"
+    "Find the salt: <div class=\'mathwork\'>8% of 500 = 0.08 \u00d7 500 = 40 mL</div>",
+    "Adding water does not change the salt, so the final solution still has 40 mL of salt, and that must be 5% of the new total V: <div class=\'mathwork\'>40 = 0.05V</div>",
+    "Solve for the new total: <div class=\'mathwork\'>V = 40 / 0.05 = 800 mL</div>",
+    "The water added is the change in total volume: <div class=\'mathwork\'>800 \u2212 500 = 300 mL</div>"
   ],
   traps: {}
 },
@@ -4961,8 +5318,8 @@ window.MATH_BANK.push(
   strategy: "The interior angles of any triangle sum to 180\u00b0. Subtract the known angles from 180.",
   hint: "Add the two known angles first.",
   steps: [
-    "Add the known angles: <div class=\u201cmathwork\u201d>43 + 68 = 111</div>",
-    "Subtract from 180: <div class=\u201cmathwork\u201d>180 \u2212 111 = 69</div>",
+    "Add the known angles: <div class=\'mathwork\'>43 + 68 = 111</div>",
+    "Subtract from 180: <div class=\'mathwork\'>180 \u2212 111 = 69</div>",
     "Check: 43 + 68 + 69 = 180. \u2713"
   ],
   traps: {
@@ -4989,8 +5346,8 @@ window.MATH_BANK.push(
   strategy: "Circle problems almost always route through the radius. Whatever you are given, find r first.",
   hint: "C = 2\u03c0r. What is r?",
   steps: [
-    "Use the circumference formula: <div class=\u201cmathwork\u201d>2\u03c0r = 18\u03c0\nr = 9</div>",
-    "Apply the area formula: <div class=\u201cmathwork\u201d>A = \u03c0r\u00b2 = \u03c0(9)\u00b2 = 81\u03c0</div>"
+    "Use the circumference formula: <div class=\'mathwork\'>2\u03c0r = 18\u03c0\nr = 9</div>",
+    "Apply the area formula: <div class=\'mathwork\'>A = \u03c0r\u00b2 = \u03c0(9)\u00b2 = 81\u03c0</div>"
   ],
   traps: {
     0: "That is the radius times \u03c0, or the area of a circle with radius 3.",
@@ -5016,14 +5373,14 @@ window.MATH_BANK.push(
   strategy: "SOH-CAH-TOA, but identify the angle first. \u201cOpposite\u201d and \u201cadjacent\u201d are relative to the angle named in the question.",
   hint: "Find the hypotenuse with the Pythagorean theorem, then ask which side is opposite angle A.",
   steps: [
-    "Find the hypotenuse AB: <div class=\u201cmathwork\u201d>9\u00b2 + 12\u00b2 = 81 + 144 = 225\nAB = 15</div>",
+    "Find the hypotenuse AB: <div class=\'mathwork\'>9\u00b2 + 12\u00b2 = 81 + 144 = 225\nAB = 15</div>",
     "The side opposite angle A is BC = 12 (angle A and side BC are at opposite corners).",
     "The hypotenuse is AB = 15, since it is across from the right angle at C.",
-    "sin A = opposite / hypotenuse = <div class=\u201cmathwork\u201d>12 / 15 = 0.8</div>"
+    "sin A = opposite / hypotenuse = <div class=\'mathwork\'>12 / 15 = 0.8</div>"
   ],
   traps: {
     0: "That is cos A (9/15), the adjacent side over the hypotenuse. Mixing up opposite and adjacent is the error this question targets.",
-    2: "That is tan A (12/9 is 1.33; 9/12 = 0.75), using the two legs rather than a leg and the hypotenuse.",
+    2: "That is 9/12, the two legs divided into each other instead of a leg over the hypotenuse. It is the tangent of the other acute angle, not a sine at all. Every sine uses the hypotenuse.",
     3: "That is 15/12, the reciprocal of the right ratio. A sine can never exceed 1, use that as a check."
   }
 },
@@ -5045,14 +5402,14 @@ window.MATH_BANK.push(
   strategy: "Volume of a cylinder is V = \u03c0r\u00b2h. It is on the reference sheet, open the sheet rather than guessing which quantity gets squared.",
   hint: "Square the radius, not the height.",
   steps: [
-    "Write the formula: <div class=\u201cmathwork\u201d>V = \u03c0r\u00b2h</div>",
-    "Substitute: <div class=\u201cmathwork\u201d>V = \u03c0(3)\u00b2(10) = \u03c0(9)(10)</div>",
+    "Write the formula: <div class=\'mathwork\'>V = \u03c0r\u00b2h</div>",
+    "Substitute: <div class=\'mathwork\'>V = \u03c0(3)\u00b2(10) = \u03c0(9)(10)</div>",
     "So V = 90\u03c0."
   ],
   traps: {
     0: "That is \u03c0rh: the radius was not squared.",
     1: "That is the lateral surface area, 2\u03c0rh.",
-    3: "Squared the height instead of the radius: \u03c0(3)(100)."
+    3: "Squared the height as well as the radius: \u03c0(9)(100). In \u03c0r\u00b2h only the radius is squared."
   }
 },
 
@@ -5073,8 +5430,8 @@ window.MATH_BANK.push(
   strategy: "Similar triangles have proportional corresponding sides. Write the proportion with matching letters in matching positions before you compute.",
   hint: "AB corresponds to DE, and BC corresponds to EF. The scale factor is 9/6.",
   steps: [
-    "Find the scale factor from the corresponding pair you know: <div class=\u201cmathwork\u201d>DE / AB = 9 / 6 = 1.5</div>",
-    "Corresponding sides all use that same factor: <div class=\u201cmathwork\u201d>EF = BC \u00d7 1.5 = 8 \u00d7 1.5</div>",
+    "Find the scale factor from the corresponding pair you know: <div class=\'mathwork\'>DE / AB = 9 / 6 = 1.5</div>",
+    "Corresponding sides all use that same factor: <div class=\'mathwork\'>EF = BC \u00d7 1.5 = 8 \u00d7 1.5</div>",
     "So EF = 12.",
     "Check with a proportion: 6/8 = 9/12, and cross-multiplying gives 72 = 72. \u2713"
   ],
@@ -5096,9 +5453,9 @@ window.MATH_BANK.push(
   strategy: "Convert to standard form (x \u2212 h)\u00b2 + (y \u2212 k)\u00b2 = r\u00b2 by completing the square in x and in y separately.",
   hint: "Half of \u22126 is \u22123, and half of 8 is 4. Add the squares of both to each side.",
   steps: [
-    "Group the variables: <div class=\u201cmathwork\u201d>(x\u00b2 \u2212 6x) + (y\u00b2 + 8y) = 0</div>",
-    "Complete the square in x by adding 9, and in y by adding 16, to both sides: <div class=\u201cmathwork\u201d>(x\u00b2 \u2212 6x + 9) + (y\u00b2 + 8y + 16) = 0 + 9 + 16</div>",
-    "Write as squares: <div class=\u201cmathwork\u201d>(x \u2212 3)\u00b2 + (y + 4)\u00b2 = 25</div>",
+    "Group the variables: <div class=\'mathwork\'>(x\u00b2 \u2212 6x) + (y\u00b2 + 8y) = 0</div>",
+    "Complete the square in x by adding 9, and in y by adding 16, to both sides: <div class=\'mathwork\'>(x\u00b2 \u2212 6x + 9) + (y\u00b2 + 8y + 16) = 0 + 9 + 16</div>",
+    "Write as squares: <div class=\'mathwork\'>(x \u2212 3)\u00b2 + (y + 4)\u00b2 = 25</div>",
     "Since r\u00b2 = 25, the radius is 5. (The center is (3, \u22124).)"
   ],
   traps: {}
@@ -5121,9 +5478,9 @@ window.MATH_BANK.push(
   strategy: "An arc is a fraction of the full circumference, and that fraction is (central angle)/360.",
   hint: "The circumference is 20\u03c0. What fraction of the circle is 54\u00b0?",
   steps: [
-    "Full circumference: <div class=\u201cmathwork\u201d>C = 2\u03c0(10) = 20\u03c0</div>",
-    "Fraction of the circle: <div class=\u201cmathwork\u201d>54 / 360 = 0.15</div>",
-    "Multiply: <div class=\u201cmathwork\u201d>0.15 \u00d7 20\u03c0 = 3\u03c0</div>"
+    "Full circumference: <div class=\'mathwork\'>C = 2\u03c0(10) = 20\u03c0</div>",
+    "Fraction of the circle: <div class=\'mathwork\'>54 / 360 = 0.15</div>",
+    "Multiply: <div class=\'mathwork\'>0.15 \u00d7 20\u03c0 = 3\u03c0</div>"
   ],
   traps: {
     0: "Multiplied 54 by 0.1, treating degrees as though they were a length.",
@@ -5150,8 +5507,8 @@ window.MATH_BANK.push(
   hint: "Sketch a right triangle with legs 3 and 4. What is the hypotenuse?",
   steps: [
     "tan A = opposite/adjacent = 3/4, so label the opposite leg 3 and the adjacent leg 4.",
-    "Find the hypotenuse: <div class=\u201cmathwork\u201d>3\u00b2 + 4\u00b2 = 9 + 16 = 25\nhypotenuse = 5</div>",
-    "sin A = opposite/hypotenuse = <div class=\u201cmathwork\u201d>3 / 5 = 0.6</div>"
+    "Find the hypotenuse: <div class=\'mathwork\'>3\u00b2 + 4\u00b2 = 9 + 16 = 25\nhypotenuse = 5</div>",
+    "sin A = opposite/hypotenuse = <div class=\'mathwork\'>3 / 5 = 0.6</div>"
   ],
   traps: {
     0: "That is cos A (4/5), adjacent over hypotenuse.",
@@ -5171,8 +5528,8 @@ window.MATH_BANK.push(
   strategy: "Either find the diameter's length and halve it, or find the center with the midpoint formula and measure to one endpoint. Both work, pick one and stay with it.",
   hint: "Use the distance formula on the two endpoints, then remember what a diameter is.",
   steps: [
-    "Find the length of the diameter: <div class=\u201cmathwork\u201d>d = \u221a[(6 \u2212 (\u22122))\u00b2 + (9 \u2212 3)\u00b2]\n= \u221a[8\u00b2 + 6\u00b2] = \u221a100 = 10</div>",
-    "The radius is half the diameter: <div class=\u201cmathwork\u201d>10 / 2 = 5</div>",
+    "Find the length of the diameter: <div class=\'mathwork\'>d = \u221a[(6 \u2212 (\u22122))\u00b2 + (9 \u2212 3)\u00b2]\n= \u221a[8\u00b2 + 6\u00b2] = \u221a100 = 10</div>",
+    "The radius is half the diameter: <div class=\'mathwork\'>10 / 2 = 5</div>",
     "Cross-check with the midpoint: center = ((\u22122 + 6)/2, (3 + 9)/2) = (2, 6).",
     "Distance from (2, 6) to (6, 9): \u221a(4\u00b2 + 3\u00b2) = \u221a25 = 5. \u2713"
   ],
@@ -5190,9 +5547,9 @@ window.MATH_BANK.push(
   strategy: "Substitute the changes into the formula symbolically. Scaling questions are about which dimension is squared, so never plug in numbers before you see the structure.",
   hint: "In V = (1/3)\u03c0r\u00b2h, what happens to r\u00b2 when r doubles?",
   steps: [
-    "Original volume: <div class=\u201cmathwork\u201d>V = (1/3)\u03c0r\u00b2h</div>",
-    "New dimensions: radius 2r, height h/2. Substitute: <div class=\u201cmathwork\u201d>V' = (1/3)\u03c0(2r)\u00b2(h/2)</div>",
-    "Simplify (2r)\u00b2 = 4r\u00b2: <div class=\u201cmathwork\u201d>V' = (1/3)\u03c0 \u00b7 4r\u00b2 \u00b7 h/2 = 2 \u00b7 (1/3)\u03c0r\u00b2h</div>",
+    "Original volume: <div class=\'mathwork\'>V = (1/3)\u03c0r\u00b2h</div>",
+    "New dimensions: radius 2r, height h/2. Substitute: <div class=\'mathwork\'>V' = (1/3)\u03c0(2r)\u00b2(h/2)</div>",
+    "Simplify (2r)\u00b2 = 4r\u00b2: <div class=\'mathwork\'>V' = (1/3)\u03c0 \u00b7 4r\u00b2 \u00b7 h/2 = 2 \u00b7 (1/3)\u03c0r\u00b2h</div>",
     "So V' = 2V, the new cone has twice the volume. Doubling the radius multiplies volume by 4, and halving the height divides by 2. \u2713"
   ],
   traps: {}
@@ -5218,13 +5575,13 @@ window.MATH_BANK.push(
   hint: "Both labeled angles sit on the same side of the transversal, in matching positions at each parallel line, so they are corresponding angles.",
   steps: [
     "The two labeled angles are in matching positions at the two parallel lines, so they are corresponding angles and therefore equal.",
-    "Set them equal: <div class=\u201cmathwork\u201d>2x + 30 = 5x \u2212 15</div>",
-    "Solve: <div class=\u201cmathwork\u201d>45 = 3x\nx = 15</div>",
+    "Set them equal: <div class=\'mathwork\'>2x + 30 = 5x \u2212 15</div>",
+    "Solve: <div class=\'mathwork\'>45 = 3x\nx = 15</div>",
     "Check: 2(15) + 30 = 60 and 5(15) \u2212 15 = 60. Equal. \u2713"
   ],
   traps: {
     0: "Comes from a sign error such as 2x + 30 = 5x + 15.",
-    1: "This is the angle measure divided by something, or 3x. The question asks for x, not for the angle, 60\u00b0 is the angle.",
+    1: "45 is the value of 3x, the line just before the final division. Your own work says 45 = 3x, so the answer is one step further on. Circle the variable the question names.",
     2: "Comes from setting the angles' sum to 180: 7x + 15 = 180 gives x \u2248 23.6, and rounding lands near 25. That relationship applies to co-interior angles, not corresponding ones."
   }
 },
@@ -5248,12 +5605,12 @@ window.MATH_BANK.push(
   steps: [
     "Angles are 90\u00b0 at B, 60\u00b0 at A, so angle C = 30\u00b0.",
     "AB is opposite angle C (30\u00b0), so AB = 5 is the short leg.",
-    "In a 30-60-90 triangle the long leg is \u221a3 times the short leg, and BC is opposite the 60\u00b0 angle: <div class=\u201cmathwork\u201d>BC = 5\u221a3</div>",
+    "In a 30-60-90 triangle the long leg is \u221a3 times the short leg, and BC is opposite the 60\u00b0 angle: <div class=\'mathwork\'>BC = 5\u221a3</div>",
     "Check with trigonometry: tan A = BC/AB, so BC = 5 \u00b7 tan 60\u00b0 = 5\u221a3 \u2248 8.66. \u2713"
   ],
   traps: {
     0: "That is the 45-45-90 ratio. Check the angles before choosing a ratio.",
-    1: "That is 5 \u00f7 tan 60\u00b0, which divides where it should multiply. BC is opposite the larger angle, so it must be longer than 5.",
+    1: "That is 5 \u00f7 sin 60\u00b0, the hypotenuse you get by treating AB = 5 as the side opposite the 60\u00b0 angle. AB is a leg beside that angle, and the question asks for the other leg. The check that works here is the ratio, not the size: BC sits opposite 60\u00b0 and AB opposite 30\u00b0, so BC = AB \u00d7 \u221a3.",
     2: "That is the hypotenuse AC = 2 \u00d7 5 = 10, not the leg BC."
   }
 }
@@ -5288,7 +5645,7 @@ window.MATH_BANK.push(
   traps: {
     0: "The extraneous root, which makes the right side -1 while a square root is always non-negative.",
     2: "Both roots of the squared equation, reported without checking either one.",
-    3: "Comes from a sign error while expanding (x + 4)\u00b2."
+    3: "Comes from a sign error while collecting terms: x\u00b2 \u2212 6x + 5 = 0 instead of x\u00b2 + 6x + 5 = 0, whose roots are 1 and 5. Move one term at a time."
   }
 },
 
@@ -5363,9 +5720,9 @@ window.MATH_BANK.push(
   choices: [
     "2,250",
     "3,375",
-    "56",
+    "50",
     "4,500"
-  ],
+    ],
   answer: 0,
   strategy: "Convert every quantity to one unit of time before dividing. Multi-step rate problems fail at the conversion far more often than at the arithmetic.",
   hint: "How many seconds are in 1 hour and 15 minutes? And how many 90-second intervals is that?",
@@ -5377,7 +5734,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     1: "Treats the time as 75 intervals rather than converting to seconds first: 75 \u00d7 45. The units were never reconciled.",
-    2: "Divides where it should multiply, giving intervals rather than bottles.",
+    2: "50 is the number of 90-second intervals in the period, not the number of bottles. Each interval fills 45, so multiply. After you compute a number, ask what it counts.",
     3: "The number of seconds in the period, reported as bottles."
   }
 },
@@ -5436,7 +5793,7 @@ window.MATH_BANK.push(
   traps: {
     0: "Both roots of the squared equation, reported without testing either against the original.",
     2: "The extraneous root, which makes the right side \u22123 while the left side is a positive square root.",
-    3: "Comes from a sign slip while expanding (x \u2212 5)\u00b2."
+    3: "11 is the coefficient in x\u00b2 \u2212 11x + 18 = 0, which is the sum of the two roots, not a root. Numbers that show up in your work are not answers."
   }
 },
 
@@ -5494,7 +5851,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Cancels the wrong factor, keeping (x + 2) instead of (x \u2212 2). Testing x = 0 rules it out in seconds.",
-    1: "Sign error factoring the denominator. x\u00b2 \u2212 x \u2212 6 factors as (x \u2212 3)(x + 2), not (x + 3)(x \u2212 2).",
+    1: "Two errors stacked: the denominator is factored with the wrong middle sign, then a factor on top is canceled against a different factor underneath. Expand any factoring before canceling, since (x + 3)(x \u2212 2) = x\u00b2 + x \u2212 6, not x\u00b2 \u2212 x \u2212 6.",
     2: "Cancels the (x \u2212 3) rather than the shared (x + 2)."
   }
 },
@@ -5508,10 +5865,10 @@ window.MATH_BANK.push(
   prompt: "<div class=\'mathwork\'>y \u2265 2x \u2212 3\ny < \u2212x + 6</div>Which ordered pair (x, y) is a solution to the system of inequalities above?",
   choices: [
     "(0, 0)",
-    "(4, 4)",
+    "(4, 6)",
     "(1, 5)",
     "(5, 0)"
-  ],
+    ],
   answer: 0,
   strategy: "Do not graph. Test each pair in both inequalities and stop the moment one fails. Testing four points is far quicker than sketching two regions.",
   hint: "A solution has to satisfy both lines, not just one.",
@@ -5522,7 +5879,7 @@ window.MATH_BANK.push(
     "Test (5, 0): is 0 \u2265 2(5) \u2212 3 = 7? No. Eliminated."
   ],
   traps: {
-    1: "Fails both inequalities, but it sits close enough to the boundary lines to look plausible on a rough sketch.",
+    1: "Satisfies the first inequality but not the second: 6 < \u22124 + 6 = 2 is false. A point has to clear every inequality in the system, not just the one you happen to test first.",
     2: "Satisfies the first inequality and misses the second by exactly nothing: y must be strictly less than 5. Watch whether the sign is < or \u2264.",
     3: "Satisfies the second inequality only."
   }
@@ -5584,6 +5941,237 @@ window.MATH_BANK.push(
   }
 }
 
+);
+
+
+/* ---- Graph it before you solve it, and count the solutions ------------
+   Added after a review found the bank taught no Desmos habit at all and
+   split "how many solutions" across three unrelated strategies. ------- */
+window.MATH_BANK.push(
+{
+  id: "m072",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "What is the solution to the equation \u221a(4x + 9) = x + 1?",
+  choices: [
+    "x = \u22122",
+    "x = 4",
+    "x = \u22122 and x = 4",
+    "x = 2"
+  ],
+  answer: 1,
+  strategy: "Graph both sides as separate functions and read where they cross. A radical equation can only be solved where the curve actually meets the line, so a false root has nowhere to hide.",
+  hint: "Enter y = \u221a(4x + 9) and y = x + 1. How many times do they cross?",
+  steps: [
+    "In the graphing calculator, enter the left side and the right side as two functions.",
+    "They cross exactly once, at x = 4. That single crossing is the whole answer.",
+    "By hand you would square both sides: <div class='mathwork'>4x + 9 = x\u00b2 + 2x + 1\nx\u00b2 \u2212 2x \u2212 8 = 0\n(x \u2212 4)(x + 2) = 0</div>",
+    "That gives x = 4 and x = \u22122, and only x = 4 survives the check: \u221a25 = 5 and 4 + 1 = 5. \u2713 At x = \u22122 the right side is \u22121, and a square root is never negative."
+  ],
+  traps: {
+    0: "The extraneous root. Squaring both sides invents it, because squaring turns \u22121 into 1. On the graph it is not a crossing at all.",
+    2: "Both roots of the squared equation, handed in without testing either one. Squaring is not a reversible step, so every root it produces has to go back into the original.",
+    3: "Comes from a sign error while collecting: x\u00b2 + 2x \u2212 8 = 0 gives roots 2 and \u22124. Move one term at a time."
+  }
+},
+{
+  id: "m073",
+  domain: "Algebra",
+  skill: "Systems of two linear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "<div class='mathwork'>3x + 7y = 27\n5x \u2212 2y = 4</div>For the solution (x, y) to the system of equations above, what is the value of x + y?",
+  choices: [
+    "2",
+    "3",
+    "5",
+    "6"
+  ],
+  answer: 2,
+  strategy: "Two lines, one crossing point. Graph them and read the point off the screen, then do whatever the question asks with it.",
+  hint: "The graph hands you x and y. Read the question again before you pick.",
+  steps: [
+    "Enter both equations in the graphing calculator. They cross at (2, 3).",
+    "By hand: multiply the first by 2 and the second by 7 so the y terms cancel. <div class='mathwork'>6x + 14y = 54\n35x \u2212 14y = 28\n41x = 82, so x = 2</div>",
+    "Substitute back: 3(2) + 7y = 27, so 7y = 21 and y = 3.",
+    "The question asks for x + y, which is 2 + 3 = 5. Choice C."
+  ],
+  traps: {
+    0: "This is x on its own. Finding the point is the work; reporting the right thing about it is the question.",
+    1: "This is y on its own. Circle the expression the question asks for before you start.",
+    3: "This is xy rather than x + y. Read the operation, not just the letters."
+  }
+},
+{
+  id: "m074",
+  domain: "Advanced Math",
+  skill: "Quadratic functions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "The function f is defined by f(x) = 2x\u00b2 \u2212 12x + 7. What is the minimum value of f?",
+  choices: [
+    "\u221211",
+    "3",
+    "7",
+    "\u221220"
+  ],
+  answer: 0,
+  strategy: "Graph the parabola and read the lowest point, or find the vertex x with \u2212b/2a and then substitute. Either way the minimum value is a y, not an x.",
+  hint: "The lowest point on the graph has two coordinates. Which one is the value of the function?",
+  steps: [
+    "Graph y = 2x\u00b2 \u2212 12x + 7 and the lowest point sits at (3, \u221211).",
+    "By hand the vertex is at <div class='mathwork'>x = \u2212b/2a = 12/4 = 3</div>",
+    "Substitute to get the value there: <div class='mathwork'>f(3) = 2(9) \u2212 12(3) + 7 = 18 \u2212 36 + 7 = \u221211</div>",
+    "The minimum value is \u221211, choice A."
+  ],
+  traps: {
+    1: "This is where the minimum happens, not the minimum itself. The question asks for the value of f, so you need the y.",
+    2: "This is f(0), the y-intercept. It is the value where the graph crosses the axis, not the lowest point.",
+    3: "Comes from dropping the leading 2: 9 \u2212 36 + 7 = \u221220. The coefficient applies to x\u00b2 before anything else."
+  }
+},
+{
+  id: "m075",
+  domain: "Advanced Math",
+  skill: "Equivalent expressions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "Which expression is equivalent to (2x\u00b2 + 5x \u2212 3)/(x + 3), where x \u2260 \u22123?",
+  choices: [
+    "2x + 1",
+    "x \u2212 1",
+    "2x \u2212 1",
+    "2x \u2212 3"
+  ],
+  answer: 2,
+  strategy: "Graph the original expression, then graph a candidate on top of it. If they lie on the same line everywhere, they are equivalent. Or factor the numerator and cancel.",
+  hint: "The numerator factors with (x + 3) as one of its factors. What is the other one?",
+  steps: [
+    "Factor the numerator: <div class='mathwork'>2x\u00b2 + 5x \u2212 3 = (2x \u2212 1)(x + 3)</div>",
+    "The (x + 3) cancels against the denominator, leaving 2x \u2212 1.",
+    "Check by graphing both, or substitute a number. At x = 5 the original is (50 + 25 \u2212 3)/8 = 9, and 2(5) \u2212 1 = 9. \u2713",
+    "Choice C."
+  ],
+  traps: {
+    0: "Sign error in the factoring. Expand to check: (2x + 1)(x + 3) = 2x\u00b2 + 7x + 3, which is not the numerator.",
+    1: "Drops the leading coefficient. The x\u00b2 term has a 2 in front, so a factor has to carry it.",
+    3: "Uses the \u22123 from the numerator as the constant in the answer. Numbers you can see are not automatically numbers in the answer."
+  }
+},
+{
+  id: "m076",
+  domain: "Algebra",
+  skill: "Linear equations in one variable",
+  difficulty: "M",
+  type: "mc",
+  prompt: "In the equation 6(2x \u2212 5) = ax + b, a and b are constants. If the equation has infinitely many solutions, what is the value of a + b?",
+  choices: [
+    "\u221218",
+    "12",
+    "\u221230",
+    "18"
+  ],
+  answer: 0,
+  strategy: "Infinitely many solutions means the two sides are the same expression. Expand one side and match it term by term against the other. Do not try to solve for x.",
+  hint: "If every x works, the left side and the right side have to be identical. Expand the left and compare.",
+  steps: [
+    "Expand the left side: <div class='mathwork'>6(2x \u2212 5) = 12x \u2212 30</div>",
+    "For every value of x to work, 12x \u2212 30 and ax + b must be the same expression.",
+    "Matching term by term: a = 12 and b = \u221230.",
+    "So a + b = 12 + (\u221230) = \u221218. Choice A."
+  ],
+  traps: {
+    1: "This is a on its own. The question asks for the sum.",
+    2: "This is b on its own. Both constants matter here.",
+    3: "Right size, wrong sign. The constant is \u221230, so the sum is negative. Carry the minus through the addition."
+  }
+},
+{
+  id: "m077",
+  domain: "Algebra",
+  skill: "Systems of two linear equations",
+  difficulty: "H",
+  type: "mc",
+  prompt: "<div class='mathwork'>2x + 3y = 8\n6x + ky = 5</div>In the system of equations above, k is a constant. For which value of k does the system have no solution?",
+  choices: [
+    "3",
+    "9",
+    "24",
+    "\u22129"
+  ],
+  answer: 1,
+  strategy: "No solution means the two lines are parallel: the x and y coefficients are in the same ratio, but the constants are not. Compare the coefficients rather than solving.",
+  hint: "What do you multiply 2x by to get 6x? Do the same thing to the y coefficient.",
+  steps: [
+    "The x coefficients go from 2 to 6, a factor of 3.",
+    "For parallel lines the y coefficients need the same factor: <div class='mathwork'>k = 3 \u00d7 3 = 9</div>",
+    "Check that the constants do not match the same factor: 3 \u00d7 8 = 24, and the second equation has 5, not 24. Different constants means parallel and never touching, so no solution. \u2713",
+    "Choice B. Had the constant been 24, the two equations would be the same line and there would be infinitely many solutions instead."
+  ],
+  traps: {
+    0: "This is the ratio between the equations, not k itself. It is a real number from the correct work, one step early.",
+    2: "This is the constant that would give infinitely many solutions, which is the opposite of what was asked. With 6x + 9y = 24 the second equation is just the first one tripled.",
+    3: "Right size, wrong sign. Multiplying 3y by a positive 3 gives +9y; nothing in the setup flips the sign."
+  }
+},
+{
+  id: "m078",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "What is the solution to the equation (x + 2)/(x \u2212 1) = 3?",
+  choices: [
+    "1",
+    "2.5",
+    "\u22122",
+    "5"
+  ],
+  answer: 1,
+  strategy: "Four choices and one equation means you can just test them. Substitute each choice into the original and keep the one that makes it true.",
+  hint: "One of these choices makes the denominator zero. Rule it out before you test anything.",
+  steps: [
+    "x = 1 makes the denominator zero, so it cannot be a solution no matter what else happens. Cross it out first.",
+    "Test 2.5: <div class='mathwork'>(2.5 + 2)/(2.5 \u2212 1) = 4.5/1.5 = 3</div> \u2713",
+    "By hand: multiply both sides by (x \u2212 1) to get x + 2 = 3x \u2212 3, so 5 = 2x and x = 2.5.",
+    "Choice B."
+  ],
+  traps: {
+    0: "The excluded value. It makes the denominator zero, so it is the one choice you can eliminate without any arithmetic at all.",
+    2: "Comes from setting the numerator to zero instead of solving the equation. A fraction equals 3 here, not 0.",
+    3: "Comes from 3x \u2212 3 = x + 2 solved as 2x = 10. Check the constant: moving 2 across gives 5, not 10."
+  }
+},
+{
+  id: "m079",
+  domain: "Advanced Math",
+  skill: "Equivalent expressions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "Which expression is equivalent to (x + 3)\u00b2 \u2212 (x \u2212 3)\u00b2?",
+  choices: [
+    "6x",
+    "12x",
+    "18",
+    "2x\u00b2 + 18"
+  ],
+  answer: 1,
+  strategy: "Plug in a number and test the choices. Avoid 0, 1, and 2, because small numbers make different expressions collide. If two choices survive, test a second number.",
+  hint: "Try x = 3, then notice that two choices both work and you have to try again.",
+  steps: [
+    "Test x = 3. The original is 6\u00b2 \u2212 0\u00b2 = 36. Choice B gives 12(3) = 36 \u2713 and choice D gives 2(9) + 18 = 36 \u2713 as well. Two survivors, so that number did not settle it.",
+    "Test a second number, x = 5. The original is 8\u00b2 \u2212 2\u00b2 = 64 \u2212 4 = 60. Choice B gives 60 \u2713 but choice D gives 68 \u2717.",
+    "By hand: <div class='mathwork'>(x\u00b2 + 6x + 9) \u2212 (x\u00b2 \u2212 6x + 9) = 12x</div>",
+    "Choice B. This is exactly why the rule is to avoid convenient numbers and to test twice when two choices survive."
+  ],
+  traps: {
+    0: "Half the answer. Subtracting the two expansions gives 6x \u2212 (\u22126x) = 12x, and the double negative is the step that gets dropped.",
+    2: "Comes from subtracting only the constants, 9 \u2212 (\u22129), and ignoring the x terms.",
+    3: "Adds the two squares instead of subtracting them. It is also the choice that survives a test at x = 3, which is what makes the second test worth doing."
+  }
+}
 );
 
 /* stamp the section onto every item */
@@ -5668,10 +6256,10 @@ window.STRATS = {
       traps: ["wrong-actor", "too-narrow", "wrong-order", "reversed"],
       avoid: "One distractor should describe a different sentence than the underlined one. If the text has three moves, no distractor should describe only two and still be correct."
     } },
-  'concession-map': { section:'rw', name:'Split what they accept from what they reject',
-    move:'Write down what the second author agrees with and what they push back on. Any choice attacking the part they agree with is gone.',
-    why:'Real disagreement between two writers is usually narrow. Choices that blow it up into total rejection are the standard trap.',
-    drill:'Underline every "grants," "does not dispute," and "admits" in the second text.',
+  'concession-map': { section:'rw', name:'State each claim, then name the relationship',
+    move:'Put each author\'s point in one sentence, then name how they relate: agree, disagree, qualify, or answer different questions. If it is a disagreement, go on to split what the second author accepts from what they reject.',
+    why:'Not every pair of texts argues. Going in hunting for an objection makes you invent one, and on an agreement pair that costs you the question.',
+    drill:'Write both claims in one sentence each before reading any choice. Then pick the relationship word out loud.',
     gen: {
       shape: "Two short texts labeled Text 1 and Text 2. Text 2 explicitly concedes something to Text 1 and disputes something else. Ask how the second author would respond.",
       key: "The correct choice keeps the concession intact and disputes only what Text 2 actually disputes.",
@@ -5679,9 +6267,9 @@ window.STRATS = {
       avoid: "One distractor must overstate the disagreement into total rejection. Text 2 must contain an explicit concession, using a word like grants, accepts or does not dispute."
     } },
   'relationship-first': { section:'rw', name:'Name the relationship first',
-    move:'Decide which of four things is happening between the sentences before you look at the choices: same direction, opposite, cause, or example.',
+    move:'Name what is happening between the sentences before you look at the choices. There are six options, not four: same direction, opposite, cause, example, restatement, and sequence in time. Concession words such as granted and admittedly are a flavor of opposite.',
     why:'Transition words blur together when you shop through them. Name the logic first and the choice becomes obvious.',
-    drill:'Cover the choices and say out loud: these two sentences agree, clash, cause, or illustrate.',
+    drill:'Cover the choices and say out loud what the second sentence does to the first: agrees, clashes, causes, illustrates, restates, or comes later.',
     gen: {
       shape: "Two sentences with a blank for the transition, where the logical relationship is unambiguous.",
       key: "The correct transition matches the relationship exactly, and only one choice does.",
@@ -5699,26 +6287,85 @@ window.STRATS = {
       avoid: "Every choice must be factually consistent with the notes, so only the goal separates them. If the goal says 'explain why', one distractor must restate the effect without a cause."
     } },
   'boundary-test': { section:'rw', name:'Test each side for a full sentence',
-    move:'Cover the punctuation and ask whether each side could stand alone, then pick the only mark that is allowed to join them.',
+    move:'Decide what sits on each side: a full sentence, a fragment, a list, or an interrupter. Then pick the mark that relationship requires, and remember that no mark at all is one of the options.',
     why:'Punctuation is structural, not musical. Where you would pause while reading is not evidence.',
-    drill:'Say "complete" or "incomplete" out loud for each side before you choose.',
+    drill:'Say "complete" or "incomplete" out loud for each side, then ask whether this relationship needs any mark at all. Students over-punctuate far more often than they under-punctuate.',
     gen: {
       shape: "One or two sentences with a blank where punctuation is needed. State clearly in your own head whether each side is an independent clause.",
       key: "Exactly one punctuation option is legal for that structure.",
       traps: ["comma-splice", "wrong-mark", "unpaired", "fragment", "split-subject-verb"],
       avoid: "Critically: check that no second option is also grammatically legal. A semicolon and a colon are often both acceptable between two independent clauses, so if the answer is a colon, the material after it must not be an independent clause."
     } },
-  'grammar-strip': { section:'rw', name:'Strip the sentence, then apply the rule',
-    move:'Cross out the modifiers to find the bare subject and verb, then apply the one rule being tested: agreement, tense, apostrophe, modifier, parallelism, or comparison.',
-    why:'Long sentences hide simple errors. Once you strip them down, the rule is usually easy to see.',
-    drill:'Physically cross out every "of" phrase and everything between commas.',
+  'choice-split': { section:'rw', meta:true, name:'Read the choices down the column',
+    move:'Before you read the sentence again, read the four choices vertically and find the one thing they change. That names the rule on trial.',
+    why:'Every Standard English question tests exactly one rule, and the choices tell you which one for free. Guessing the rule is the slow way.',
+    drill:'Say the dimension out loud: "these differ in verb number," or "these differ in apostrophes." Then go back to the sentence.',
     gen: {
-      shape: "One sentence with a blank testing exactly one rule: agreement, tense, apostrophe, modifier placement, parallelism, comparison, or the subjunctive.",
-      key: "Only one option satisfies the rule.",
-      traps: ["agreement-by-ear", "wrong-tense", "possessive-count", "dangling", "unparallel", "illogical-comparison", "sounds-right"],
-      avoid: "Test one rule per question. Put enough distance between the subject and verb that the nearest noun is a tempting wrong match, and make sure the sentence gives an unambiguous time marker if you are testing tense."
+      shape: "One sentence with a blank. The four choices must vary along exactly one visible dimension, so that reading them down the column identifies the rule.",
+      key: "The one option that satisfies the rule that dimension points to.",
+      traps: ["agreement-by-ear", "sounds-right", "wrong-mark", "possessive-count"],
+      avoid: "Never let two dimensions vary at once, because then reading the column no longer names one rule. Do not mix a punctuation change and a verb change in the same choice set."
     } },
-
+  'subject-verb': { section:'rw', name:'Strip to the bare subject, then match',
+    move:'Cross out the prepositional phrases and anything between commas, find the one word that is really the subject, and match the verb to it.',
+    why:'These questions bury the subject behind three or four nouns so that the nearest one is the tempting match. Stripping is what makes the real subject visible.',
+    drill:'Cross out every "of" phrase, then point at the single word doing the verb and say singular or plural.',
+    gen: {
+      shape: "One sentence where the true subject is separated from its verb by at least one prepositional phrase or a comma-set clause, and the nearest noun disagrees in number with the subject.",
+      key: "The verb form that agrees with the actual head noun of the subject.",
+      traps: ["agreement-by-ear", "sounds-right", "wrong-tense"],
+      avoid: "Only use this shape when number is the dimension the choices vary. Collective nouns like team and committee are singular in American usage, so do not build a question whose answer depends on the British reading. Inverted subjects (\"there are\", \"among the finds were\") are fair and good."
+    } },
+  'verb-time': { section:'rw', name:'Let the time markers pick the verb',
+    move:'Find the words that fix the time (in 1953, since then, by next spring, currently) and choose the verb form that fits them. After recommend, require, insist, or demand, use the plain form.',
+    why:'Tense questions are decided by evidence elsewhere in the sentence, not by what sounds smooth. Once you find the time marker there is only one answer.',
+    drill:'Underline the date or time phrase first. If there is none, look at the tense of the other verb in the sentence.',
+    gen: {
+      shape: "One sentence with an unambiguous time marker (a year, \"since\", \"by the time\", \"currently\") and a blank for the verb. Or a sentence with recommend/require/insist/demand plus a that-clause, testing the subjunctive.",
+      key: "The one verb form consistent with the time marker, or the plain form after a verb of demand.",
+      traps: ["wrong-tense", "sounds-right", "agreement-by-ear"],
+      avoid: "The time evidence must be in the sentence, otherwise more than one tense is defensible. Do not offer two forms that both fit the marker, and never make a future perfect the distractor unless the sentence really has a future reference point."
+    } },
+  'apostrophe-count': { section:'rw', name:'Count the owners, then place the apostrophe',
+    move:'Ask how many owners there are, then whether they own anything at all. One owner takes apostrophe-s, several owners take s-apostrophe, and a plain plural takes no apostrophe. For its, their, and whose, no apostrophe ever.',
+    why:'Every one of these four choices sounds identical out loud, so your ear gives you nothing. Counting is the only method.',
+    drill:'Turn the phrase around: "the notes of the three geologists" tells you there are three owners.',
+    gen: {
+      shape: "One sentence with a blank where the choices are the same noun in singular possessive, plural possessive, plain plural, and one more form. The sentence must state the number of owners somewhere (\"the three\", \"each\", \"both\").",
+      key: "The form matching the owner count the sentence establishes.",
+      traps: ["possessive-count", "sounds-right"],
+      avoid: "The sentence must make the owner count unambiguous, or two forms become defensible. Avoid the double form geologists's, which nobody actually writes; a stronger fourth choice is the plain plural or an its/it's contrast."
+    } },
+  'modifier-attach': { section:'rw', name:'Name who is doing the opening phrase',
+    move:'Read the opening phrase, then ask who or what is performing it. Whatever comes right after the comma has to be that thing.',
+    why:'This is the one conventions question where you must not strip the modifier, because the modifier is the evidence. The error is a mismatch between two parts of the sentence, so you need both.',
+    drill:'Point at the opening phrase and say "who did this?" Then point at the word after the comma and check it is the same.',
+    gen: {
+      shape: "A sentence opening with a participial or infinitive phrase, then a comma, then a blank or a subject. The phrase must name an action that only one candidate subject could perform.",
+      key: "The version where the word right after the comma is the thing performing the opening phrase. A passive participle (\"Taken in 1937,\") is a legitimate key.",
+      traps: ["dangling", "comma-splice", "sounds-right"],
+      avoid: "Do not make all three distractors the same dangling participle, or the item collapses to two real choices. Vary them: one dangler, one complete sentence spliced on with a comma, one that changes the subject."
+    } },
+  'parallel-pairs': { section:'rw', name:'Make both halves the same shape',
+    move:'Find the pair (not only with but also, either with or, a list, or a comparison) and make the second half the same grammatical shape as the first.',
+    why:'Parallelism and illogical comparison are the same move. Both are decided by matching the form of one half against the other, not by meaning.',
+    drill:'Read the first half and the second half back to back with nothing in between. If they do not sound like siblings, it is wrong.',
+    gen: {
+      shape: "A sentence with an explicit pair or comparison, where the first half is a fixed grammatical shape (noun phrase, gerund, clause) and the blank is the second half.",
+      key: "The choice matching the first half's shape exactly. Check what the first half actually is before writing the key.",
+      traps: ["unparallel", "illogical-comparison", "sounds-right"],
+      avoid: "Decide what the first half is and write it down, because keying a noun clause against a noun-phrase first half is the standard way this question type gets written wrong. On comparisons, the two things compared must be the same kind of thing, so never compare summers with ledgers unless that is the error you are testing."
+    } },
+  'pronoun-check': { section:'rw', name:'Send every pronoun back to its noun',
+    move:'For each pronoun, find the exact noun it replaces and check they match in number. If you cannot point at one specific noun, the pronoun is the problem.',
+    why:'A pronoun with a plausible but absent antecedent reads perfectly smoothly, which is why this one slips past almost everybody.',
+    drill:'Put your finger on the pronoun, then move it back to the noun. If your finger keeps moving, that is the answer.',
+    gen: {
+      shape: "A sentence or short pair of sentences containing a pronoun whose antecedent is either a mismatched number or genuinely absent. Keep the antecedent inside the sentence when number is the test.",
+      key: "The version whose pronoun matches one specific noun in number, or that replaces the vague pronoun with the noun itself.",
+      traps: ["pronoun-ref", "agreement-by-ear", "sounds-right"],
+      avoid: "Do not put the antecedent so far away that a reader cannot find it at all. Every noun a student might pick as the antecedent must be visible in the text you give them."
+    } },
   /* Math */
   'translate': { section:'math', name:'Turn the words into equations',
     move:'Write "let x = ..." every time, then build one equation per condition. Convert units before you substitute anything.',
@@ -5729,6 +6376,26 @@ window.STRATS = {
       key: "The correct choice reflects a correct setup.",
       traps: ["setup-error", "reversed", "unit-miss", "wrong-target"],
       avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean."
+    } },
+  'desmos-first': { section:'math', name:'Graph it before you solve it',
+    move:'Every math question on the real test comes with a Desmos graphing calculator. Type each side of an equation as its own function and read the intersection. Enter a system and read the crossing point. Shade inequalities and click a candidate point.',
+    why:'This is the single highest-leverage habit on the current test, and it sidesteps whole categories of error. A graph cannot produce an extraneous root, because a false solution simply is not an intersection.',
+    drill:'On every equation, ask "could I just graph both sides?" before you start doing algebra by hand.',
+    gen: {
+      shape: "An equation, system, or inequality that is tedious by hand but immediate on a graph: a radical or rational equation, a system with ugly coefficients, or a quadratic whose vertex or zeros are wanted.",
+      key: "The intersection, crossing point, vertex, or zero the graph shows.",
+      traps: ["extraneous-root", "wrong-target", "arith-slip", "sign-slip"],
+      avoid: "The question still has to ask for something specific, so make at least one distractor the other coordinate of the point. Graphing finds the point; reading the question tells you which half of it to report."
+    } },
+  'count-solutions': { section:'math', name:'Count the solutions by comparing sides',
+    move:'To count solutions, compare the two sides rather than solving. For a linear equation, match coefficients: identical both sides means infinitely many, same slope with a different constant means none. For a system, compare the coefficient ratios. For a quadratic, use the discriminant.',
+    why:'How many solutions is one idea, but it shows up in three disguises. Students who learn it three separate times never notice it is the same question.',
+    drill:'When a question asks how many, stop yourself from solving. Line the two sides up and compare them term by term.',
+    gen: {
+      shape: "An equation or system containing an unknown constant, asking for the value that produces no solution or infinitely many, or a quadratic asking how many real solutions it has.",
+      key: "The constant value making the two sides proportional (infinitely many), or proportional in the variables but not the constant (none), or the discriminant's sign.",
+      traps: ["setup-error", "algebra-rule", "sign-slip", "wrong-target"],
+      avoid: "Be explicit about which case you are asking for, since no solution and infinitely many differ only in the constant term and it is easy to key the wrong one. Verify by substituting your constant back and checking the count is what you claimed."
     } },
   'solve-check': { section:'math', name:'Solve it, then check it',
     move:'Undo the operations in reverse order, then put your answer back into the original equation.',
@@ -5753,7 +6420,7 @@ window.STRATS = {
   'expression-structure': { section:'math', name:'Look at the shape of the expression',
     move:'Spot the structure first: difference of squares, perfect square, common base. Then use the exponent or factoring rule that fits.',
     why:'These reward recognizing a shape more than grinding through steps.',
-    drill:'Ask "what shape is this?" before you touch it, then test your result with x = 2.',
+    drill:'Ask "what shape is this?" before you touch it, then test your result with x = 3.',
     gen: {
       shape: "An expression to simplify, factor, rewrite in vertex form, or match coefficients on. Recognising the shape should be faster than grinding.",
       key: "The equivalent expression.",
@@ -5771,7 +6438,7 @@ window.STRATS = {
       avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling."
     } },
   'function-behavior': { section:'math', name:'Use how the function behaves',
-    move:'Vertex at x = -b/2a. Discriminant for how many solutions. Sum of roots is -b/a. Growth factor and period for exponentials.',
+    move:'Vertex at x = -b/2a. Discriminant for how many solutions. Sum of roots is -b/a, product is c/a. For exponentials, read the growth factor and the doubling or halving time out of the exponent.',
     why:'These shortcuts answer the question without solving it, as long as you then report the thing that was asked for.',
     drill:'After you find the vertex x, stop and ask whether the question wants x or the value there.',
     gen: {
@@ -5791,9 +6458,9 @@ window.STRATS = {
       avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean."
     } },
   'data-inference': { section:'math', name:'Know what a statistic is allowed to say',
-    move:'Find the condition, because it sets the denominator. Ask which measure an outlier moves. Remember a margin of error gives you a range, not a fact.',
+    move:'Find the condition, because it sets the denominator. Ask which measure an outlier moves. A margin of error gives a range, not a fact. You may generalize only to the population that was randomly sampled, and only a randomized experiment supports a causal claim.',
     why:'These test whether you can say what the number means, not whether you can compute it.',
-    drill:'Say the statistic back as a full sentence, including which group it describes.',
+    drill:'Say the statistic back as a full sentence, naming which group it describes and whether the study was an experiment or an observation.',
     gen: {
       shape: "A two-way table, a line of best fit to interpret, a comparison of mean and median, or a margin of error.",
       key: "The statement the statistic actually licenses.",
@@ -5802,7 +6469,7 @@ window.STRATS = {
     } },
   'geometry-toolkit': { section:'math', name:'Find the radius, open the formula sheet',
     move:'Route circle problems through the radius. Take trig ratios relative to the angle named. Scale with symbols, not numbers. Use the angle relationship the figure gives you.',
-    why:'The formula sheet is provided. The actual skill is knowing which tool the figure is asking for.',
+    why:'The provided sheet covers areas, volumes, the Pythagorean theorem, and the special right triangles. It does not give you arc length, sector area, surface area, or the radian conversion, so those you carry in.',
     drill:'Label the figure with everything you know before you write an equation.',
     gen: {
       shape: "A circle, a right triangle, similar triangles, an angle relationship, a volume, or a scaling question. Include a simple figure only if it is genuinely needed.",
@@ -5811,7 +6478,7 @@ window.STRATS = {
       avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean."
     } },
   'coordinate-geometry': { section:'math', name:'Work in the coordinate plane',
-    move:'Slope is rise over run with both points in the same order. Parallel means equal slopes. Complete the square to read a circle out of its equation.',
+    move:'Slope is rise over run with both points in the same order. Parallel lines have equal slopes; perpendicular lines have slopes that are negative reciprocals, so their product is -1. Complete the square to read a circle out of its equation.',
     why:'Parallel versus perpendicular, and rise versus run, are the two places this reliably slips.',
     drill:'Label your two points before you subtract, and sketch it when you can.',
     gen: {
@@ -5821,8 +6488,8 @@ window.STRATS = {
       avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope."
     } },
   'choice-tactics': { section:'math', name:'Use the answer choices',
-    move:'Back-solve by testing the choices, or plug in a number like x = 2 on "which expression is equivalent" questions.',
-    why:'On some questions, testing four choices is genuinely faster and safer than doing the algebra.',
+    move:'Back-solve by testing the choices, or plug in a number on "which expression is equivalent" questions. Use 3 or 5, never 0, 1, or 2, and if two choices survive, test a second number.',
+    why:'On some questions, testing four choices is genuinely faster and safer than doing the algebra. The catch is the number you pick: at x = 2, x squared and 2x are both 4, so genuinely different expressions collide and a wrong choice can look right.',
     drill:'Before you solve, ask yourself whether you could just test the choices instead.',
     gen: {
       shape: "A question where testing the four choices is genuinely faster than solving: a system of inequalities to test points against, an equivalent expression to plug a number into, or a word problem to back-solve.",
@@ -5960,6 +6627,11 @@ window.TRAPS = {
     tell:'The verb matches the nearest noun, or the head count of a collective noun, instead of the real subject.',
     fix:'Cross out every "of" phrase, then match the verb to whatever is left.',
     felt:'I matched the verb to the nearest noun instead of the real subject' },
+  'pronoun-ref': { fam:'mechanics',
+    name:'Pronoun with no owner',
+    tell:'A pronoun that does not match its noun in number, or one you cannot trace back to any single noun at all.',
+    fix:'Put your finger on the pronoun and move it back to the exact noun it replaces. If your finger keeps moving, the pronoun is the error.',
+    felt:'The sentence read fine, so I never checked what the pronoun pointed at' },
   'wrong-tense':    { fam:'mechanics', name:'Tense or mood mismatch',
     tell:'A verb form fighting the time markers in the sentence, or an ordinary verb where the subjunctive belongs.',
     fix:'Let the time markers decide. After recommend, require, or insist that, use the base form.',
@@ -6036,7 +6708,7 @@ window.SKILL_STRAT = {
   'Transitions':'relationship-first',
   'Rhetorical Synthesis':'goal-checklist',
   'Boundaries':'boundary-test',
-  'Form, Structure, and Sense':'grammar-strip'
+  'Form, Structure, and Sense':'choice-split'
 };
 
 /* ---------------- per-question annotations ----------------
@@ -6064,7 +6736,7 @@ window.TAGS = {
   rw019:{traps:{0:'reversed',1:'not-in-text',3:'not-in-text'}},
   rw020:{traps:{1:'close-but-off',2:'dictionary-default',3:'close-but-off'}},
   rw021:{traps:{1:'close-but-off',2:'reversed',3:'close-but-off'}},
-  rw022:{traps:{0:'dictionary-default',1:'dictionary-default',3:'close-but-off'}},
+  rw022:{traps:{0:'reversed',1:'dictionary-default',3:'close-but-off'}},
   rw023:{traps:{0:'contradicts',2:'reversed',3:'not-in-text'}},
   rw024:{traps:{0:'reversed',1:'dictionary-default',2:'extreme'}},
   rw025:{traps:{0:'close-but-off',1:'close-but-off',2:'reversed'}},
@@ -6092,7 +6764,7 @@ window.TAGS = {
   rw047:{traps:{0:'true-but-irrelevant',1:'half-right',2:'half-right'}},
   rw048:{traps:{0:'one-sided',1:'true-but-irrelevant',3:'one-sided'}},
   rw049:{traps:{0:'half-right',1:'restates',2:'close-but-off'}},
-  rw050:{traps:{0:'close-but-off',1:'extreme',2:'unstated-cause'}},
+  rw050:{traps:{0:'one-sided',1:'extreme',2:'unstated-cause'}},
   rw051:{traps:{0:'true-but-irrelevant',2:'half-right',3:'half-right'}},
   rw052:{traps:{1:'comma-splice',2:'fragment',3:'sounds-right'}},
   rw053:{traps:{0:'wrong-mark',2:'wrong-mark',3:'wrong-mark'}},
@@ -6101,34 +6773,34 @@ window.TAGS = {
   rw056:{traps:{0:'split-subject-verb',1:'wrong-mark',3:'split-subject-verb'}},
   rw057:{traps:{0:'wrong-mark',1:'wrong-mark',2:'wrong-mark'}},
   rw058:{traps:{1:'split-subject-verb',2:'split-subject-verb',3:'wrong-mark'}},
-  rw059:{traps:{0:'sounds-right',1:'fragment',2:'wrong-mark'}},
-  rw060:{traps:{0:'agreement-by-ear',2:'agreement-by-ear',3:'wrong-tense'}},
-  rw061:{traps:{0:'agreement-by-ear',2:'close-but-off',3:'fragment'}},
-  rw062:{traps:{1:'wrong-tense',2:'wrong-tense',3:'wrong-tense'}},
-  rw063:{traps:{0:'possessive-count',1:'possessive-count',2:'possessive-count'}},
-  rw064:{traps:{0:'dangling',1:'dangling',2:'dangling'}},
-  rw065:{traps:{0:'unparallel',2:'unparallel',3:'unparallel'}},
-  rw066:{traps:{0:'agreement-by-ear',1:'wrong-tense',3:'wrong-tense'}},
-  rw067:{traps:{0:'illogical-comparison',1:'illogical-comparison',3:'illogical-comparison'}},
-  rw068:{traps:{0:'wrong-tense',1:'sounds-right',3:'fragment'}},
+  rw059:{traps:{0:'sounds-right',1:'sounds-right',2:'wrong-mark'}},
+  rw060:{strat:'subject-verb', traps:{0:'agreement-by-ear',2:'agreement-by-ear',3:'wrong-tense'}},
+  rw061:{strat:'pronoun-check', traps:{0:'pronoun-ref',2:'close-but-off',3:'fragment'}},
+  rw062:{strat:'verb-time', traps:{1:'wrong-tense',2:'wrong-tense',3:'wrong-tense'}},
+  rw063:{strat:'apostrophe-count', traps:{0:'possessive-count',1:'possessive-count',2:'possessive-count'}},
+  rw064:{strat:'modifier-attach', traps:{0:'dangling',1:'dangling',2:'comma-splice'}},
+  rw065:{strat:'parallel-pairs', traps:{0:'unparallel',2:'unparallel',3:'unparallel'}},
+  rw066:{strat:'subject-verb', traps:{0:'agreement-by-ear',1:'wrong-tense',3:'wrong-tense'}},
+  rw067:{strat:'parallel-pairs', traps:{0:'illogical-comparison',1:'illogical-comparison',3:'illogical-comparison'}},
+  rw068:{strat:'verb-time', traps:{0:'wrong-tense',1:'sounds-right',3:'fragment'}},
 
   /* ---- added for trap coverage ---- */
   rw069:{traps:{0:'comma-splice',1:'fragment',2:'sounds-right'}},
   rw070:{traps:{0:'unpaired',2:'wrong-mark',3:'unpaired'}},
   rw071:{traps:{1:'wrong-mark',2:'wrong-mark',3:'wrong-mark'}},
   rw072:{traps:{0:'comma-splice',1:'fragment',3:'wrong-mark'}},
-  rw073:{traps:{0:'agreement-by-ear',1:'split-subject-verb',3:'wrong-mark'}},
-  rw074:{traps:{0:'possessive-count',2:'possessive-count',3:'sounds-right'}},
-  rw075:{traps:{1:'dangling',2:'dangling',3:'dangling'}},
-  rw076:{traps:{0:'unparallel',1:'unparallel',2:'unparallel'}},
-  rw077:{traps:{0:'illogical-comparison',2:'illogical-comparison',3:'illogical-comparison'}},
+  rw073:{strat:'subject-verb', traps:{0:'agreement-by-ear',1:'split-subject-verb',3:'wrong-mark'}},
+  rw074:{strat:'apostrophe-count', traps:{0:'possessive-count',2:'possessive-count',3:'possessive-count'}},
+  rw075:{strat:'modifier-attach', traps:{1:'dangling',2:'dangling',3:'dangling'}},
+  rw076:{strat:'parallel-pairs', traps:{0:'unparallel',1:'unparallel',2:'unparallel'}},
+  rw077:{strat:'parallel-pairs', traps:{0:'illogical-comparison',2:'illogical-comparison',3:'illogical-comparison'}},
   rw078:{traps:{0:'true-but-irrelevant',1:'too-narrow',3:'extreme'}},
   rw079:{traps:{0:'not-in-text',1:'reversed',3:'wrong-order'}},
   rw080:{traps:{1:'wrong-actor',2:'close-but-off',3:'reversed'}},
   rw081:{traps:{0:'contradicts',1:'unstated-cause',3:'reversed'}},
   rw082:{traps:{0:'restates',2:'restates',3:'true-but-irrelevant'}},
   rw083:{traps:{0:'restates',1:'true-but-irrelevant',2:'half-right'}},
-  rw084:{traps:{0:'one-sided',1:'misread-data',3:'one-sided'}},
+  rw084:{traps:{0:'one-sided',1:'opposite-task',3:'one-sided'}},
 
   rw085:{traps:{1:'comma-splice',2:'fragment',3:'sounds-right'}},
   rw086:{traps:{0:'wrong-actor',2:'wrong-actor',3:'unstated-cause'}},
@@ -6145,25 +6817,25 @@ window.TAGS = {
   m008:{strat:'translate', traps:{1:'setup-error',2:'sign-slip',3:'setup-error'}},
   m009:{strat:'coordinate-geometry', traps:{0:'setup-error',1:'formula-mixup',2:'sign-slip'}},
   m010:{strat:'systems-tactics', traps:{1:'arith-slip',2:'wrong-target',3:'arith-slip'}},
-  m011:{strat:'expression-structure'},
-  m012:{strat:'choice-tactics', traps:{0:'half-right',1:'half-right',2:'half-right'}},
+  m011:{strat:'count-solutions'},
+  m012:{strat:'choice-tactics', traps:{0:'half-right',1:'setup-error',2:'half-right'}},
   m013:{strat:'translate'},
   m014:{strat:'solve-check', traps:{0:'algebra-rule',1:'algebra-rule',3:'operation-swap'}},
   m015:{strat:'solve-check', traps:{0:'sign-slip',1:'wrong-target',2:'one-step-short'}},
-  m016:{strat:'systems-tactics'},
+  m016:{strat:'count-solutions'},
   m017:{strat:'translate', traps:{0:'arith-slip',1:'wrong-target',3:'wrong-target'}},
   m018:{strat:'systems-tactics', traps:{0:'arith-slip',1:'arith-slip',3:'wrong-target'}},
-  m019:{strat:'data-inference'},
+  m019:{strat:'translate'},
   m020:{strat:'solve-check', traps:{0:'sign-slip',2:'arith-slip',3:'arith-slip'}},
   m021:{strat:'function-notation', traps:{0:'sign-slip',1:'sign-slip',3:'algebra-rule'}},
   m022:{strat:'function-behavior', traps:{0:'setup-error',2:'setup-error',3:'setup-error'}},
   m023:{strat:'expression-structure', traps:{0:'algebra-rule',1:'algebra-rule',2:'arith-slip'}},
   m024:{strat:'function-behavior', traps:{0:'wrong-target',2:'wrong-target',3:'arith-slip'}},
   m025:{strat:'solve-check', traps:{0:'extraneous-root',2:'arith-slip',3:'arith-slip'}},
-  m026:{strat:'function-behavior'},
+  m026:{strat:'count-solutions'},
   m027:{strat:'function-notation', traps:{0:'wrong-order',1:'setup-error',2:'sign-slip'}},
   m028:{strat:'expression-structure', traps:{0:'algebra-rule',1:'algebra-rule',2:'sign-slip'}},
-  m029:{strat:'function-behavior', traps:{0:'arith-slip',1:'one-step-short',3:'wrong-target'}},
+  m029:{strat:'function-behavior', traps:{0:'arith-slip',1:'arith-slip',3:'wrong-target'}},
   m030:{strat:'function-behavior'},
   m031:{strat:'function-behavior', traps:{1:'unit-miss',2:'setup-error',3:'setup-error'}},
   m032:{strat:'expression-structure'},
@@ -6175,7 +6847,7 @@ window.TAGS = {
   m038:{strat:'expression-structure', traps:{1:'algebra-rule',2:'algebra-rule',3:'algebra-rule'}},
   m039:{strat:'proportional-reasoning', traps:{0:'wrong-target',1:'wrong-denominator',3:'wrong-target'}},
   m040:{strat:'proportional-reasoning'},
-  m041:{strat:'data-inference', traps:{1:'reversed',2:'close-but-off',3:'reversed'}},
+  m041:{strat:'data-inference', traps:{1:'reversed',2:'close-but-off',3:'half-right'}},
   m042:{strat:'data-inference', traps:{0:'wrong-denominator',1:'wrong-target',3:'misread-data'}},
   m043:{strat:'proportional-reasoning', traps:{0:'setup-error',1:'one-step-short',2:'setup-error'}},
   m044:{strat:'proportional-reasoning', traps:{0:'operation-swap',1:'wrong-target',2:'arith-slip'}},
@@ -6193,7 +6865,7 @@ window.TAGS = {
   m056:{strat:'geometry-toolkit', traps:{0:'wrong-ratio',1:'wrong-ratio',3:'flipped-ratio'}},
   m057:{strat:'coordinate-geometry'},
   m058:{strat:'geometry-toolkit'},
-  m059:{strat:'geometry-toolkit', traps:{0:'sign-slip',1:'wrong-target',2:'formula-mixup'}},
+  m059:{strat:'geometry-toolkit', traps:{0:'sign-slip',1:'one-step-short',2:'formula-mixup'}},
   m060:{strat:'geometry-toolkit', traps:{0:'formula-mixup',1:'flipped-ratio',2:'wrong-target'}},
   /* ---- added for trap coverage ---- */
   m061:{strat:'solve-check', traps:{0:'extraneous-root',1:'arith-slip',2:'extraneous-root'}},
@@ -6203,10 +6875,33 @@ window.TAGS = {
   m065:{strat:'proportional-reasoning', traps:{0:'wrong-denominator',2:'wrong-target',3:'wrong-target'}},
   m066:{strat:'proportional-reasoning', traps:{1:'unit-miss',2:'operation-swap',3:'unit-miss'}},
   m067:{strat:'function-notation', traps:{0:'wrong-order',1:'one-step-short',3:'algebra-rule'}},
-  m068:{strat:'choice-tactics', traps:{0:'algebra-rule',1:'sign-slip',2:'algebra-rule'}},
+  m068:{strat:'expression-structure', traps:{0:'algebra-rule',1:'sign-slip',2:'algebra-rule'}},
   m069:{strat:'choice-tactics', traps:{1:'half-right',2:'half-right',3:'half-right'}},
-  m070:{strat:'choice-tactics', traps:{0:'arith-slip',1:'wrong-target',2:'arith-slip'}},
-  m071:{strat:'function-notation', traps:{0:'wrong-order',1:'one-step-short',3:'wrong-order'}}
+  m070:{strat:'systems-tactics', traps:{0:'arith-slip',1:'wrong-target',2:'arith-slip'}},
+  m071:{strat:'function-notation', traps:{0:'wrong-order',1:'one-step-short',3:'wrong-order'}},
+
+  /* --- added after the strategy review: Desmos, solution counting,
+         pronouns, verb time, apostrophes, modifiers --- */
+  m072:{strat:'desmos-first', traps:{0:'extraneous-root',2:'extraneous-root',3:'sign-slip'}},
+  m073:{strat:'desmos-first', traps:{0:'wrong-target',1:'wrong-target',3:'operation-swap'}},
+  m074:{strat:'desmos-first', traps:{1:'wrong-target',2:'wrong-target',3:'arith-slip'}},
+  m075:{strat:'desmos-first', traps:{0:'sign-slip',1:'algebra-rule',3:'algebra-rule'}},
+  m076:{strat:'count-solutions', traps:{1:'wrong-target',2:'wrong-target',3:'sign-slip'}},
+  m077:{strat:'count-solutions', traps:{0:'one-step-short',2:'wrong-target',3:'sign-slip'}},
+  m078:{strat:'choice-tactics', traps:{0:'algebra-rule',2:'setup-error',3:'arith-slip'}},
+  m079:{strat:'choice-tactics', traps:{0:'arith-slip',2:'algebra-rule',3:'algebra-rule'}},
+  rw088:{strat:'pronoun-check', traps:{1:'possessive-count',2:'pronoun-ref',3:'sounds-right'}},
+  rw089:{strat:'pronoun-check', traps:{0:'pronoun-ref',1:'pronoun-ref',3:'fragment'}},
+  rw090:{strat:'pronoun-check', traps:{0:'pronoun-ref',2:'possessive-count',3:'sounds-right'}},
+  rw091:{strat:'pronoun-check', traps:{0:'pronoun-ref',2:'possessive-count',3:'sounds-right'}},
+  rw092:{strat:'verb-time', traps:{0:'wrong-tense',1:'sounds-right',3:'wrong-tense'}},
+  rw093:{strat:'verb-time', traps:{0:'sounds-right',2:'wrong-tense',3:'wrong-tense'}},
+  rw094:{strat:'apostrophe-count', traps:{0:'possessive-count',1:'possessive-count',3:'possessive-count'}},
+  rw095:{strat:'apostrophe-count', traps:{1:'possessive-count',2:'possessive-count',3:'pronoun-ref'}},
+  rw096:{strat:'modifier-attach', traps:{1:'dangling',2:'comma-splice',3:'dangling'}},
+  rw097:{strat:'modifier-attach', traps:{1:'dangling',2:'dangling',3:'comma-splice'}},
+  rw098:{traps:{0:'one-sided',1:'misread-data',3:'misread-data'}},
+  rw099:{strat:'subject-verb', traps:{0:'agreement-by-ear',2:'agreement-by-ear',3:'wrong-tense'}}
 };
 
 /* resolve the tags for a question */
@@ -6243,7 +6938,7 @@ window.STRATEGIES = {
         { name:'Command of Evidence: match the exact claim',
           body:'<p>Copy the claim into your head in its own words first. Then require the choice to support <em>that</em> claim.</p><ol><li>Underline the task word: <strong>support</strong> or <strong>weaken</strong>. At least one choice always does the opposite.</li><li>List the assumptions the claim needs. Support props one up; weakening knocks one out.</li><li>When two causes are tangled together, the right evidence separates them by varying one and holding the other fixed.</li></ol>' },
         { name:'Quantitative evidence: compute, do not eyeball',
-          body:'<ol><li>Read the axis labels and units first, "in thousands" and "percent of" change everything.</li><li>Claims about a <em>relationship</em> need two data points that move in opposite directions. A single number can never establish a trend.</li><li>Claims with <strong>most, largest, steepest</strong> require arithmetic on every group before you can choose. Ties are a common trap.</li><li>Check that the choice states data <em>and</em> connects it to the claim. Accurate but irrelevant is the most common wrong answer.</li></ol>' },
+          body:'<ol><li>Read the axis labels and units first, "in thousands" and "percent of" change everything.</li><li>Claims about a <em>relationship</em> need two data points, and you have to check they move the way the claim says. A relationship can be positive or negative; a single number can never establish either.</li><li>Claims with <strong>most, largest, steepest</strong> require arithmetic on every group before you can choose. Ties are a common trap.</li><li>Check that the choice states data <em>and</em> connects it to the claim. Accurate but irrelevant is the most common wrong answer.</li></ol>' },
         { name:'Inference: one small step, never a leap',
           body:'<ol><li>The answer must follow from the text alone, no outside knowledge, however true.</li><li>Prefer the modest claim. "Suggests X plays a role" beats "proves X is the only cause."</li><li>Ask what each sentence is doing there. In these texts, almost every detail exists to rule out one of the choices.</li><li>Blanks preceded by "therefore" or "suggests that" want the conclusion, not a restatement.</li></ol>' }
       ]
@@ -6263,7 +6958,7 @@ window.STRATEGIES = {
       title:'Reading and Writing: Expression of Ideas',
       items:[
         { name:'Transitions: name the relationship before you read the choices',
-          body:'<p>Cover the choices and decide which of four relationships holds: same direction, opposite direction, cause and effect, or example.</p><ol><li>Same direction: also, moreover, indeed, in addition, similarly.</li><li>Opposite: however, nevertheless, still. That said, on the other hand.</li><li>Cause/result: therefore, consequently, as a result, for this reason.</li><li>Example/restatement: for instance, in other words. That is.</li></ol><p><strong>Two hard distinctions:</strong> "however" reverses a claim about the <em>same</em> subject, while "by contrast" sets <em>two different</em> subjects against each other. And "in other words" requires genuine restatement, if the second sentence adds a limitation, you need "that said" instead.</p>' },
+          body:'<p>Cover the choices and decide which of six relationships holds.</p><ol><li><strong>Same direction:</strong> also, moreover, indeed, in addition, similarly.</li><li><strong>Opposite:</strong> however, nevertheless, still, on the other hand, by contrast.</li><li><strong>Concession:</strong> granted, admittedly, to be sure, that said. You give ground, then push back.</li><li><strong>Cause or result:</strong> therefore, consequently, as a result, for this reason.</li><li><strong>Example:</strong> for instance, for example, in particular.</li><li><strong>Restatement:</strong> in other words, that is, put differently.</li></ol><p><strong>The hard distinction</strong> is example against restatement. An example is one case of the claim; a restatement is the same claim in new words. If the second sentence adds a limitation rather than repeating, you want a concession word instead.</p><p><strong>Sequence words</strong> (meanwhile, subsequently, previously, eventually) are a seventh case worth knowing, but check the logic first: a sequence word placed where the logic is a reversal is a standard trap.</p>' },
         { name:'Rhetorical synthesis: the goal is the whole question',
           body:'<p>All the notes are true, so accuracy cannot separate the choices. Only the stated goal can.</p><ol><li>Underline the goal and split it into requirements. "Emphasize a difference" needs both sides plus a contrast word. "Explain why" needs a cause, not a restatement.</li><li>Count the parts. If the goal has two parts joined by "and," a choice satisfying one is wrong.</li><li>"Generalize about all X" requires a claim true of <em>every</em> case. Missing evidence for one case is not evidence.</li><li>Suspect any choice that adds a motive, a cause, or a judgment the notes never state.</li></ol>' }
       ]
@@ -6272,9 +6967,9 @@ window.STRATEGIES = {
       title:'Reading and Writing: Standard English Conventions',
       items:[
         { name:'Boundaries: test each side for a complete sentence',
-          body:'<p>Cover the blank and ask whether each side could stand alone.</p><ol><li>Complete + complete: period, semicolon, or comma + and/but/or/so/for/nor/yet. <em>A comma alone is a comma splice.</em></li><li>Complete + list or explanation: colon. Everything before the colon must be a full sentence.</li><li>Punctuation is paired. A dash opens. A dash closes; a comma opens. A comma closes. Never mix a comma with a dash.</li><li>Never split a subject from its verb with a single comma, however long the subject is.</li><li>If list items already contain commas, separate the items with semicolons.</li></ol>' },
+          body:'<p>Cover the blank and ask whether each side could stand alone.</p><ol><li>Complete + complete: period, semicolon, or comma + and/but/or/so/for/nor/yet. <em>A comma alone is a comma splice.</em></li><li>Complete + list or explanation: colon. Everything before the colon must be a full sentence.</li><li>Punctuation is paired: a dash has to be closed by a dash, and a comma by a comma. Never open with one and close with the other.</li><li>Never split a subject from its verb with a single comma, however long the subject is.</li><li>If list items already contain commas, separate the items with semicolons.</li></ol>' },
         { name:'Form, structure, and sense: the checklist',
-          body:'<ol><li><strong>Agreement:</strong> cross out every "of" phrase and modifier, then match the verb to the bare subject. Collective nouns (colony, team, committee) are singular.</li><li><strong>Inverted sentences:</strong> when the sentence starts with a prepositional phrase, flip it around to find the real subject.</li><li><strong>Tense:</strong> let the time markers decide. The earlier of two past events takes "had" + participle.</li><li><strong>Apostrophes:</strong> ask how many owners, then whether they own anything. Plural owners take the apostrophe after the -s.</li><li><strong>Modifiers:</strong> an opening phrase describes the subject right after the comma. Name that subject and check that it can perform the action.</li><li><strong>Parallelism:</strong> "not only \u2026 but also," "either \u2026 or," and lists require matching grammatical forms.</li><li><strong>Comparisons:</strong> compare like with like, winters with winters, not winters with records.</li><li><strong>Subjunctive:</strong> recommend/require/insist/demand + that \u2192 use the base form ("that the bridge <em>be</em> closed").</li></ol>' }
+          body:'<ol><li><strong>First move, always:</strong> read the four choices down the column and find the one thing they change. That names the rule being tested, so you never have to guess it.</li><li><strong>Agreement:</strong> cross out every "of" phrase and modifier, then match the verb to the bare subject. Collective nouns (colony, team, committee) are singular. Do not strip anything on a modifier question, though, because there the opening phrase is the evidence.</li><li><strong>Inverted sentences:</strong> when the sentence starts with a prepositional phrase, flip it around to find the real subject.</li><li><strong>Tense:</strong> let the time markers decide. The earlier of two past events takes "had" + participle.</li><li><strong>Apostrophes:</strong> ask how many owners, then whether they own anything. Plural owners take the apostrophe after the -s.</li><li><strong>Modifiers:</strong> an opening phrase describes the subject right after the comma. Name that subject and check that it can perform the action.</li><li><strong>Parallelism:</strong> "not only \u2026 but also," "either \u2026 or," and lists require matching grammatical forms.</li><li><strong>Comparisons:</strong> compare like with like, winters with winters, not winters with records.</li><li><strong>Pronouns:</strong> send every pronoun back to the one noun it replaces and check the number matches. If two nouns could be the antecedent, the pronoun is the error. Its, their, and whose never take an apostrophe.</li><li><strong>Subjunctive:</strong> recommend/require/insist/demand + that \u2192 use the base form ("that the bridge <em>be</em> closed").</li></ol>' }
       ]
     },
     {
@@ -6287,11 +6982,15 @@ window.STRATEGIES = {
         { name:'Quadratics and functions',
           body:'<ol><li>Vertex is at x = \u2212b/(2a); substitute back if the question wants the maximum or minimum <em>value</em>.</li><li>Discriminant b\u00b2 \u2212 4ac: positive \u2192 two real solutions, zero \u2192 exactly one, negative \u2192 none.</li><li>Sum of roots = \u2212b/a, product = c/a. Often you never need the roots themselves.</li><li>Always check radical and rational equations in the original, squaring creates extraneous roots.</li><li>Factor out common coefficients (like \u221216 in projectile problems) before factoring.</li></ol>' },
         { name:'Data, rates, and percentages',
-          body:'<ol><li>Percent change = change \u00f7 <em>original</em>. Successive percent changes multiply: +20% then \u221210% is \u00d71.20\u00d70.90 = \u00d71.08.</li><li>In a conditional probability, the phrase after "if" sets the denominator.</li><li>Mean uses every value and moves with outliers; median only cares about position.</li><li>Margin of error makes an interval: estimate \u00b1 margin. It never makes a value exact.</li><li>In dilutions and mixtures. The solute stays constant while the total changes.</li></ol>' },
+          body:'<ol><li>Percent change = change \u00f7 <em>original</em>. Successive percent changes multiply: +20% then \u221210% is \u00d71.20\u00d70.90 = \u00d71.08.</li><li>In a conditional probability, the phrase after "if" sets the denominator.</li><li>Mean uses every value and moves with outliers; median only cares about position.</li><li>Margin of error makes an interval: estimate \u00b1 margin. It never makes a value exact.</li><li>In dilutions and mixtures, the amount of solute stays constant while the total volume changes.</li></ol>' },
+        { name:'Graph it before you solve it',
+          body:'<p>Every math question on the real test has a Desmos graphing calculator built in. This is the highest-leverage habit on the current exam.</p><ol><li><strong>Equations:</strong> enter the left side and the right side as two functions and read the intersection. A radical or rational equation cannot hand you an extraneous root this way, because a false solution is simply not a crossing point.</li><li><strong>Systems:</strong> enter both equations and read the crossing point.</li><li><strong>Inequalities:</strong> type them with the inequality signs and the region shades itself. Then click each candidate point.</li><li><strong>Quadratics:</strong> read the vertex, the zeros, and the minimum straight off the curve instead of computing \u2212b/(2a).</li><li><strong>Equivalence:</strong> graph the original expression and a candidate on top of each other. If they overlap everywhere, they match.</li></ol><p><strong>When not to graph:</strong> if a question is one line of arithmetic, typing it in is slower. And the graph gives you a point, not an answer, so read the question again before you pick: it may want x, or y, or x + y.</p>' },
+        { name:'How many solutions',
+          body:'<p>Counting solutions is one idea in three disguises. In all three you compare the two sides instead of solving.</p><ol><li><strong>Linear:</strong> expand both sides. Identical means infinitely many solutions. Same variable terms with a different constant means none.</li><li><strong>Systems:</strong> compare the coefficient ratios. Proportional throughout means the same line and infinitely many; proportional in the variables but not the constants means parallel and none.</li><li><strong>Quadratic:</strong> the discriminant b\u00b2 \u2212 4ac. Positive gives two, zero gives one, negative gives none.</li></ol><p>The two cases differ only in the constant term, so once you find your value, substitute it back and confirm the count is the one you were asked for.</p>' },
         { name:'Geometry and trigonometry',
-          body:'<ol><li>Find the radius first, nearly every circle question routes through it.</li><li>Open the reference sheet. It is provided during the test; using it is free.</li><li>SOH-CAH-TOA is relative to the named angle. Sine and cosine are never greater than 1, use that to check.</li><li>Turn a given ratio into a labeled triangle, then use the Pythagorean theorem.</li><li>Scaling: doubling a length multiplies area by 4 and volume by 8. Substitute symbolically instead of guessing.</li><li>"Figure not drawn to scale" means do not trust the picture; trust the given measurements.</li></ol>' },
+          body:'<ol><li>Find the radius first, nearly every circle question routes through it.</li><li>Open the reference sheet for areas, volumes, the Pythagorean theorem, and the special right triangles. It does not give you arc length, sector area, surface area, or the radian conversion, so carry those in yourself.</li><li>SOH-CAH-TOA is relative to the named angle. Sine and cosine are never greater than 1, use that to check.</li><li>Turn a given ratio into a labeled triangle, then use the Pythagorean theorem.</li><li>Scaling: doubling a length multiplies area by 4 and volume by 8. Substitute symbolically instead of guessing.</li><li>"Figure not drawn to scale" means do not trust the picture; trust the given measurements.</li></ol>' },
         { name:'Student-produced response (fill-in) rules',
-          body:'<ol><li>Answers may be positive or negative, integers, decimals, or fractions. Mixed numbers are not allowed, enter 5/2, not 2 1/2.</li><li>If the answer does not fit the box, give at least three digits, truncated or rounded: 2/3 may be entered as 2/3.666, or .667.</li><li>Do not enter symbols: no percent signs, no dollar signs, no commas in large numbers.</li><li>If a question has more than one correct answer, enter only one.</li></ol>' }
+          body:'<ol><li>Answers may be positive or negative, integers, decimals, or fractions. Mixed numbers are not allowed, enter 5/2, not 2 1/2.</li><li>The box holds 5 characters (6 if the answer is negative). If a decimal does not fit, fill the whole box, truncating or rounding at the last digit that fits. For 2/3 you may enter 2/3, .6666, or .6667; two digits such as .66 is scored wrong. When a fraction fits, entering the fraction is the safest option.</li><li>Do not enter symbols: no percent signs, no dollar signs, no commas in large numbers.</li><li>If a question has more than one correct answer, enter only one.</li></ol>' }
       ]
     }
   ],
@@ -6309,10 +7008,22 @@ window.STRATEGIES = {
     { label:'Cone', formula:'V = (1/3)\u03c0r\u00b2h' },
     { label:'Pyramid', formula:'V = (1/3)\u2113wh' },
     { label:'Arc / degrees', formula:'360\u00b0 in a circle<br>2\u03c0 radians in a circle' },
-    { label:'Triangle angles', formula:'Interior angles sum to 180\u00b0' },
+    { label:'Triangle angles', formula:'Interior angles sum to 180\u00b0' }
+  ],
+  /* NOT on the provided sheet. These you carry in yourself. */
+  memorize: [
     { label:'Slope', formula:'m = (y\u2082 \u2212 y\u2081)/(x\u2082 \u2212 x\u2081)' },
     { label:'Quadratic formula', formula:'x = [\u2212b \u00b1 \u221a(b\u00b2 \u2212 4ac)] / 2a' },
-    { label:'Distance', formula:'d = \u221a[(x\u2082\u2212x\u2081)\u00b2 + (y\u2082\u2212y\u2081)\u00b2]' }
+    { label:'Discriminant', formula:'b\u00b2 \u2212 4ac<br>+ two roots, 0 one, \u2212 none' },
+    { label:'Vertex', formula:'x = \u2212b/(2a)' },
+    { label:'Distance', formula:'d = \u221a[(x\u2082\u2212x\u2081)\u00b2 + (y\u2082\u2212y\u2081)\u00b2]' },
+    { label:'Midpoint', formula:'((x\u2081+x\u2082)/2, (y\u2081+y\u2082)/2)' },
+    { label:'Arc length', formula:'(\u03b8/360) \u00d7 2\u03c0r' },
+    { label:'Sector area', formula:'(\u03b8/360) \u00d7 \u03c0r\u00b2' },
+    { label:'Radians', formula:'degrees \u00d7 \u03c0/180' },
+    { label:'Perpendicular slopes', formula:'m\u2081 \u00d7 m\u2082 = \u22121' },
+    { label:'Percent change', formula:'change \u00f7 original' },
+    { label:'Exponential growth', formula:'y = a(1 + r)^t' }
   ]
 };
 
@@ -7494,13 +8205,23 @@ window.STRATEGIES = {
         if (!Object.keys(SKILL_DOMAIN).length) indexSkills();
         var strat = global.STRATS[opts.strat];
         var traps = (opts.traps || []).filter(function (t) { return global.TRAPS[t]; });
-        var sd = SKILL_DOMAIN[opts.skill] || {};
+        var skill = opts.skill;
+        /* A habit strategy owns no questions, so there is no skill to look up.
+           Fall back to any skill in the strategy's own section rather than
+           sending "undefined" to the model. */
+        if (!skill && strat) {
+          var pool = Object.keys(SKILL_DOMAIN).filter(function (k) {
+              return SKILL_DOMAIN[k].section === strat.section;
+          });
+          skill = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+        }
+        var sd = SKILL_DOMAIN[skill] || {};
         var lines = [];
         lines.push('Write ' + (opts.count || 3) + ' new SAT questions to the specification below.');
         lines.push('');
-        lines.push('section: ' + (sd.section || opts.section));
+        lines.push('section: ' + (sd.section || opts.section || (strat && strat.section)));
         lines.push('domain: ' + (sd.domain || opts.domain));
-        lines.push('skill: ' + opts.skill);
+        lines.push('skill: ' + skill);
         lines.push('difficulty: ' + (opts.difficulty || 'M') + '  (E easier, M medium, H harder)');
         lines.push('type: ' + (opts.type || 'mc'));
         lines.push('');
@@ -8058,7 +8779,7 @@ window.STRATEGIES = {
       var lockedNow = lockedCount();
       h += '<div class="card mode-card cards"><div class="icon">' + ic('bolt') + '</div>' +
         '<h3>Strategy cards</h3>' +
-        '<p>Quick recall on the 22 moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
+        '<p>Quick recall on all ' + Object.keys(window.STRATS).length + ' moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
         '<div class="spacer"></div><div class="meta">' + lockedNow + ' of ' +
         Object.keys(window.STRATS).length + ' locked in' + (dueNow ? ' \u00b7 ' + dueNow + ' due now' : ' \u00b7 none due') + '</div>' +
         '<div class="card-actions"><button class="btn" onclick="APP.go(\'cards\')">' +
@@ -8123,7 +8844,7 @@ window.STRATEGIES = {
       '<div class="card"><h3>Trap catalog</h3><p>All ' + Object.keys(window.TRAPS).length +
       ' tricks the test uses to build wrong answers, with how to spot each one.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.trapBook()">Open</button></div></div>' +
-      '<div class="card"><h3>Math reference sheet</h3><p>The formula sheet the real test gives you. Knowing when to open it is the skill.</p>' +
+      '<div class="card"><h3>Math formulas</h3><p>What the test hands you, and the dozen it does not. The second list is the one worth knowing.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.reference()">Open</button></div></div>' +
       '<div class="card"><h3>Why strategies matter</h3><p>The argument, with a real question: every wrong ' +
       'answer on the SAT was built for a specific mistake, and there are only so many of them.</p>' +
@@ -8134,7 +8855,7 @@ window.STRATEGIES = {
       'only scoring worth trusting. Come back here to work out why you missed what you missed.</p>' +
       '<div class="spacer"></div><div class="card-actions">' +
       '<button class="btn ghost sm" onclick="APP.testFormat()">How the real test is built</button></div></div>' +
-      '<div class="card"><h3>Everything to lock in</h3><p>The full checklist: 22 strategies and 42 traps, with everything you have already locked in ticked off.</p>' +
+      '<div class="card"><h3>Everything to lock in</h3><p>The full checklist: ' + Object.keys(window.STRATS).length + ' strategies and ' + Object.keys(window.TRAPS).length + ' traps, with everything you have already locked in ticked off.</p>' +
         '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.go(\'coverage\')">Open checklist</button></div></div>' +
         '<div class="card"><h3>Colors</h3><p>Five palettes. Pick the one you like opening.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.colors()">Change colors</button></div></div>' +
@@ -8659,10 +9380,10 @@ window.STRATEGIES = {
 
       h += '<div class="section-title">What you learn here</div>';
       h += '<div class="card"><div class="two-col">' +
-        '<div><h3>22 strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
+        '<div><h3>' + Object.keys(window.STRATS).length + ' strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
         'Circle the quantity before you solve. Name the relationship before you pick the transition. Each one is ' +
         'a habit, not a fact.</p></div>' +
-        '<div><h3>42 traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
+        '<div><h3>' + Object.keys(window.TRAPS).length + ' traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
         'allows, it does half the job, it points the right idea the wrong way, it describes the wrong thing, it ' +
         'breaks a grammar rule, or it slips a step.</p></div>' +
         '</div><p class="note" style="margin-top:16px">The app tracks which of those still work on you, and ' +
@@ -8817,8 +9538,15 @@ window.STRATEGIES = {
 
     function cvRow(id, name, blurb, c, kind) {
       var act = kind === 'trap' ? 'APP.drillTrap' : 'APP.drillStrat';
-      var recipe = (kind === 'strat' && window.STRATS[id] && window.STRATS[id].gen)
+      var st = kind === 'strat' ? window.STRATS[id] : null;
+      var recipe = (st && st.gen)
         ? ' <button class="link-btn tiny" onclick="APP.showRecipe(\'' + id + '\')">recipe</button>' : '';
+      if (st && st.meta) {
+        return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
+        '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
+        '<div><span class="pill soft">every question</span></div>' +
+        '<div style="text-align:right"><span class="n">habit, not a topic</span></div></div>';
+      }
       return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
       '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
       '<div>' + stateChip(c) + '</div>' +
@@ -8862,7 +9590,7 @@ window.STRATEGIES = {
         'unlearned, so you never run out and every strategy gets covered. Setup is in SETUP-CLOUD.md.</p></div>';
       }
 
-      h += '<div class="section-title">The 22 moves</div>';
+      h += '<div class="section-title">The ' + Object.keys(window.STRATS).length + ' moves</div>';
       ['rw', 'math'].forEach(function (sec) {
           h += '<div class="card" style="margin-bottom:12px"><h3>' +
           (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</h3>';
@@ -8873,7 +9601,7 @@ window.STRATEGIES = {
           h += '</div>';
       });
 
-      h += '<div class="section-title">The 42 traps</div>';
+      h += '<div class="section-title">The ' + Object.keys(window.TRAPS).length + ' traps</div>';
       Object.keys(window.TRAP_FAMILIES).forEach(function (fam) {
           h += '<div class="card" style="margin-bottom:12px"><h3>' + window.TRAP_FAMILIES[fam].name + '</h3>' +
           '<p style="margin-bottom:8px">' + window.TRAP_FAMILIES[fam].blurb + '</p>';
@@ -9966,12 +10694,19 @@ window.STRATEGIES = {
         s.textContent = cur + k;
       },
       reference: function () {
-        var h = '<div class="refsheet">';
-        window.STRATEGIES.reference.forEach(function (r) {
+        function grid(rows) {
+          var h = '<div class="refsheet">';
+          rows.forEach(function (r) {
             h += '<div class="item"><b>' + r.label + '</b><div class="f">' + r.formula + '</div></div>';
-        });
-        h += '</div><p class="note" style="margin-top:14px">This is the reference sheet the real test gives you with every math module. You do not need to memorize it, but you do need to know when to open it.</p>';
-        openModal('Math reference sheet', h);
+          });
+          return h + '</div>';
+        }
+        var h = '<p class="note" style="margin:0 0 12px">Bluebook shows you this with every math module, so you do not need to memorize it. Knowing when to open it is the skill.</p>';
+        h += grid(window.STRATEGIES.reference);
+        h += '<h4 style="margin:22px 0 6px">Not on the sheet</h4>';
+        h += '<p class="note" style="margin:0 0 12px">These are not provided. If you need one of them mid-question and do not have it, you lose the question, so these are the ones to actually know.</p>';
+        h += grid(window.STRATEGIES.memorize);
+        openModal('Math formulas', h);
       },
       highlight: function () {
         var sel = window.getSelection();

@@ -28,8 +28,8 @@ window.MATH_BANK.push(
   strategy: "Undo the operations in reverse order. Whatever is done last to the variable is what you undo first.",
   hint: "Divide both sides by 5 before you touch the parentheses.",
   steps: [
-    "Divide both sides by 5: <div class=“mathwork”>5(x − 3) = 40\nx − 3 = 8</div>",
-    "Add 3 to both sides: <div class=“mathwork”>x = 11</div>",
+    "Divide both sides by 5: <div class=\'mathwork\'>5(x − 3) = 40\nx − 3 = 8</div>",
+    "Add 3 to both sides: <div class=\'mathwork\'>x = 11</div>",
     "Check by substituting: 5(11 − 3) = 5(8) = 40. ✓"
   ],
   traps: {
@@ -56,7 +56,7 @@ window.MATH_BANK.push(
   strategy: "In y = mx + b, the slope is the per-unit rate and the intercept is the starting value. To interpret b, set the input to zero.",
   hint: "Let m = 0 and see what the equation says the cost is.",
   steps: [
-    "Substitute m = 0: <div class=“mathwork”>C = 0.04(0) + 12 = 12</div>",
+    "Substitute m = 0: <div class=\'mathwork\'>C = 0.04(0) + 12 = 12</div>",
     "So $12 is the cost when zero international minutes are used, the fixed fee.",
     "The 0.04 is the per-minute rate, since it is multiplied by m.",
     "Choice A describes the value at zero minutes."
@@ -79,8 +79,8 @@ window.MATH_BANK.push(
   strategy: "Get every variable term on one side and every constant on the other, then divide.",
   hint: "Subtract 2x from both sides first.",
   steps: [
-    "Subtract 2x from both sides: <div class=“mathwork”>3x + 7 = 2x + 19\nx + 7 = 19</div>",
-    "Subtract 7 from both sides: <div class=“mathwork”>x = 12</div>",
+    "Subtract 2x from both sides: <div class=\'mathwork\'>3x + 7 = 2x + 19\nx + 7 = 19</div>",
+    "Subtract 7 from both sides: <div class=\'mathwork\'>x = 12</div>",
     "Check: 3(12) + 7 = 43 and 2(12) + 19 = 43. ✓"
   ],
   traps: {}
@@ -105,12 +105,12 @@ window.MATH_BANK.push(
   steps: [
     "Compute the change in y: 17 − 5 = 12.",
     "Compute the change in x: 6 − 2 = 4.",
-    "Divide: <div class=“mathwork”>slope = 12 / 4 = 3</div>"
+    "Divide: <div class=\'mathwork\'>slope = 12 / 4 = 3</div>"
   ],
   traps: {
     1: "This is run over rise, 4/12. The most common slope error is flipping the fraction.",
     2: "This is the change in x alone.",
-    3: "This is (17 − 6)/(5 − 2), the coordinates got mixed between the two points. Label your points before subtracting."
+    3: "This is (17 − 6)/(6 − 2). The 6 on top is the x-coordinate of the second point, not a y-value, so a y and an x got subtracted from each other. Label both points before you subtract anything."
   }
 },
 
@@ -120,7 +120,7 @@ window.MATH_BANK.push(
   skill: "Systems of two linear equations",
   difficulty: "M",
   type: "mc",
-  prompt: "<div class=“mathwork”>2x + 3y = 19\nx − y = 2</div>If (x, y) is the solution to the system of equations above, what is the value of x + y?",
+  prompt: "<div class=\'mathwork\'>2x + 3y = 19\nx − y = 2</div>If (x, y) is the solution to the system of equations above, what is the value of x + y?",
   choices: [
     "6",
     "7",
@@ -131,10 +131,10 @@ window.MATH_BANK.push(
   strategy: "Substitution is fastest when one equation already has a coefficient of 1. Solve that one for a variable and substitute.",
   hint: "The second equation gives x = y + 2.",
   steps: [
-    "From x − y = 2, solve for x: <div class=“mathwork”>x = y + 2</div>",
-    "Substitute into the first equation: <div class=“mathwork”>2(y + 2) + 3y = 19\n2y + 4 + 3y = 19\n5y = 15\ny = 3</div>",
+    "From x − y = 2, solve for x: <div class=\'mathwork\'>x = y + 2</div>",
+    "Substitute into the first equation: <div class=\'mathwork\'>2(y + 2) + 3y = 19\n2y + 4 + 3y = 19\n5y = 15\ny = 3</div>",
     "Back-substitute: x = 3 + 2 = 5.",
-    "The question asks for x + y: <div class=“mathwork”>5 + 3 = 8</div>"
+    "The question asks for x + y: <div class=\'mathwork\'>5 + 3 = 8</div>"
   ],
   traps: {
     0: "This is 2y, or x + 1. Re-read what the question asks for, systems questions often ask for a combination, not for x alone.",
@@ -160,10 +160,10 @@ window.MATH_BANK.push(
   strategy: "Translate one phrase at a time, then let “at most” become ≤ and “at least” become ≥. Compute any number you can before comparing choices.",
   hint: "First find the total weight of the 12 crates.",
   steps: [
-    "Weight of the crates: <div class=“mathwork”>12 × 85 = 1,020 pounds</div>",
+    "Weight of the crates: <div class=\'mathwork\'>12 × 85 = 1,020 pounds</div>",
     "Weight of the boxes: 40 pounds each, b boxes, so 40b.",
     "Total load: 40b + 1,020.",
-    "“A maximum load of 1,800” means the total cannot exceed 1,800: <div class=“mathwork”>40b + 1,020 ≤ 1,800</div>"
+    "“A maximum load of 1,800” means the total cannot exceed 1,800: <div class=\'mathwork\'>40b + 1,020 ≤ 1,800</div>"
   ],
   traps: {
     1: "Reverses the inequality. “Maximum” caps the total from above, so the symbol must be ≤.",
@@ -178,23 +178,23 @@ window.MATH_BANK.push(
   skill: "Systems of two linear equations",
   difficulty: "M",
   type: "mc",
-  prompt: "<div class=“mathwork”>3x + 2y = 26\n3x − 2y = 4</div>What is the value of x in the solution to the system of equations above?",
+  prompt: "<div class=\'mathwork\'>3x + 2y = 26\n3x − 2y = 4</div>What is the value of x in the solution to the system of equations above?",
   choices: [
-    "2",
+    "6",
     "5",
     "5.5",
     "15"
-  ],
+    ],
   answer: 1,
   strategy: "When the same coefficient appears with opposite signs, add the equations. Elimination beats substitution whenever a variable cancels for free.",
   hint: "What happens to the y terms if you add the two equations?",
   steps: [
-    "Add the equations; +2y and −2y cancel: <div class=“mathwork”>(3x + 3x) + (2y − 2y) = 26 + 4\n6x = 30</div>",
-    "Divide by 6: <div class=“mathwork”>x = 5</div>",
+    "Add the equations; +2y and −2y cancel: <div class=\'mathwork\'>(3x + 3x) + (2y − 2y) = 26 + 4\n6x = 30</div>",
+    "Divide by 6: <div class=\'mathwork\'>x = 5</div>",
     "Check by finding y: 3(5) + 2y = 26 → 2y = 11 → y = 5.5, and 15 − 11 = 4. ✓"
   ],
   traps: {
-    0: "Comes from subtracting the equations instead of adding, which eliminates x rather than y and leaves 4y = 22.",
+    0: "6 is the coefficient in 6x = 30, not the solution. It is a number from your own work rather than an answer to the question. Finish the division, then substitute back to confirm.",
     2: "This is y, not x. The question names the variable it wants, circle it.",
     3: "This is 3x, one step short of the answer."
   }
@@ -206,7 +206,7 @@ window.MATH_BANK.push(
   skill: "Linear functions",
   difficulty: "E",
   type: "mc",
-  figure: "<table class=“data”><tr><th>x</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>f(x)</th><td>7</td><td>11</td><td>15</td><td>19</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th>x</th><th>1</th><th>2</th><th>3</th><th>4</th></tr><tr><th>f(x)</th><td>7</td><td>11</td><td>15</td><td>19</td></tr></table>",
   prompt: "The table above gives values of the linear function f. Which equation defines f?",
   choices: [
     "f(x) = 4x + 3",
@@ -248,7 +248,7 @@ window.MATH_BANK.push(
   hint: "Keep 3x + 4y and just find the new constant by plugging in the point.",
   steps: [
     "Parallel means the same slope, so line k has the form 3x + 4y = C.",
-    "Substitute the point (0, −5): <div class=“mathwork”>3(0) + 4(−5) = C\n−20 = C</div>",
+    "Substitute the point (0, −5): <div class=\'mathwork\'>3(0) + 4(−5) = C\n−20 = C</div>",
     "So line k is 3x + 4y = −20.",
     "Sanity check the slope: 4y = −3x + 12 gives slope −3/4 for ℓ, and the same for k. ✓"
   ],
@@ -276,9 +276,9 @@ window.MATH_BANK.push(
   strategy: "Two unknowns need two equations: one counting items, one counting money. Define your variables in writing before you set anything up.",
   hint: "Let m be muffins and s be scones. Write the count equation and the cost equation.",
   steps: [
-    "Let m = muffins and s = scones. Count: <div class=“mathwork”>m + s = 14</div>",
-    "Cost: <div class=“mathwork”>2m + 3s = 34</div>",
-    "Substitute m = 14 − s: <div class=“mathwork”>2(14 − s) + 3s = 34\n28 − 2s + 3s = 34\ns = 6</div>",
+    "Let m = muffins and s = scones. Count: <div class=\'mathwork\'>m + s = 14</div>",
+    "Cost: <div class=\'mathwork\'>2m + 3s = 34</div>",
+    "Substitute m = 14 − s: <div class=\'mathwork\'>2(14 − s) + 3s = 34\n28 − 2s + 3s = 34\ns = 6</div>",
     "Check: 8 muffins ($16) + 6 scones ($18) = $34, and 8 + 6 = 14 items. ✓"
   ],
   traps: {
@@ -299,10 +299,10 @@ window.MATH_BANK.push(
   strategy: "Infinitely many solutions means the two sides are the <em>same</em> expression. Expand and match coefficients term by term.",
   hint: "Distribute the left side, then compare the x terms with the x terms and the constants with the constants.",
   steps: [
-    "Expand the left side: <div class=“mathwork”>4(3x − 5) = 12x − 20</div>",
+    "Expand the left side: <div class=\'mathwork\'>4(3x − 5) = 12x − 20</div>",
     "For the equation 12x − 20 = ax + b to hold for every x, the two sides must be identical.",
     "Match coefficients of x: a = 12. Match constants: b = −20.",
-    "Add: <div class=“mathwork”>a + b = 12 + (−20) = −8</div>"
+    "Add: <div class=\'mathwork\'>a + b = 12 + (−20) = −8</div>"
   ],
   traps: {}
 },
@@ -313,13 +313,13 @@ window.MATH_BANK.push(
   skill: "Linear inequalities",
   difficulty: "H",
   type: "mc",
-  prompt: "<div class=“mathwork”>y > 2x − 1\ny ≤ −x + 5</div>Which of the following ordered pairs (x, y) is a solution to the system of inequalities above?",
+  prompt: "<div class=\'mathwork\'>y > 2x − 1\ny ≤ −x + 5</div>Which of the following ordered pairs (x, y) is a solution to the system of inequalities above?",
   choices: [
     "(0, −2)",
-    "(4, 2)",
+    "(2, 3)",
     "(2, 4)",
     "(1, 3)"
-  ],
+    ],
   answer: 3,
   strategy: "Do not graph. Test each point in both inequalities and stop as soon as one fails. That is far faster than sketching two regions.",
   hint: "A solution has to satisfy both inequalities, not just one.",
@@ -331,7 +331,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Satisfies the second inequality but not the first.",
-    1: "Satisfies the second inequality only.",
+    1: "Lands exactly on both boundary lines. The second inequality uses ≤, so its line counts as part of the region; the first uses >, so its line does not. A strict inequality never includes its own boundary.",
     2: "Satisfies the first but misses the second by 1. Points that pass one test and fail the other are the whole point of this question type."
   }
 },
@@ -347,9 +347,9 @@ window.MATH_BANK.push(
   strategy: "Constant rate means a linear model. Find the rate from the two given points, write the equation, then solve for the input you want.",
   hint: "How many feet does the balloon drop per minute?",
   steps: [
-    "Rate of change: <div class=“mathwork”>(1,500 − 2,400) / (9 − 3) = −900 / 6 = −150 ft per minute</div>",
-    "Write the model using the point (3, 2400): <div class=“mathwork”>A = 2,400 − 150(t − 3)\nA = 2,850 − 150t</div>",
-    "Set A = 300 and solve: <div class=“mathwork”>300 = 2,850 − 150t\n150t = 2,550\nt = 17</div>",
+    "Rate of change: <div class=\'mathwork\'>(1,500 − 2,400) / (9 − 3) = −900 / 6 = −150 ft per minute</div>",
+    "Write the model using the point (3, 2400): <div class=\'mathwork\'>A = 2,400 − 150(t − 3)\nA = 2,850 − 150t</div>",
+    "Set A = 300 and solve: <div class=\'mathwork\'>300 = 2,850 − 150t\n150t = 2,550\nt = 17</div>",
     "Check: at t = 17, A = 2,850 − 2,550 = 300. ✓ (Note the question asks for time since the descent <em>began</em>, not since t = 3.)"
   ],
   traps: {}
@@ -372,9 +372,9 @@ window.MATH_BANK.push(
   strategy: "Rearranging a formula uses the same moves as solving an equation, treat every letter except your target as a number.",
   hint: "Divide by 2 first, then subtract l.",
   steps: [
-    "Divide both sides by 2: <div class=“mathwork”>P / 2 = l + w</div>",
-    "Subtract l: <div class=“mathwork”>w = P/2 − l</div>",
-    "Write with a common denominator: <div class=“mathwork”>w = (P − 2l) / 2</div>",
+    "Divide both sides by 2: <div class=\'mathwork\'>P / 2 = l + w</div>",
+    "Subtract l: <div class=\'mathwork\'>w = P/2 − l</div>",
+    "Write with a common denominator: <div class=\'mathwork\'>w = (P − 2l) / 2</div>",
     "Test with numbers: l = 3, w = 4 gives P = 14, and (14 − 6)/2 = 4. ✓"
   ],
   traps: {
@@ -401,9 +401,9 @@ window.MATH_BANK.push(
   strategy: "f(c) = 19 just means “substitute c and set the result equal to 19.” Function notation is instruction, not difficulty.",
   hint: "Write 3c − 8 = 19.",
   steps: [
-    "Substitute: <div class=“mathwork”>3c − 8 = 19</div>",
-    "Add 8: <div class=“mathwork”>3c = 27</div>",
-    "Divide by 3: <div class=“mathwork”>c = 9</div>",
+    "Substitute: <div class=\'mathwork\'>3c − 8 = 19</div>",
+    "Add 8: <div class=\'mathwork\'>3c = 27</div>",
+    "Divide by 3: <div class=\'mathwork\'>c = 9</div>",
     "Check: 3(9) − 8 = 19. ✓"
   ],
   traps: {
@@ -419,12 +419,12 @@ window.MATH_BANK.push(
   skill: "Systems of two linear equations",
   difficulty: "H",
   type: "spr",
-  prompt: "<div class=“mathwork”>kx + 6y = 12\n4x + 3y = 9</div>In the system above, k is a constant. If the system has no solution, what is the value of k?",
+  prompt: "<div class=\'mathwork\'>kx + 6y = 12\n4x + 3y = 9</div>In the system above, k is a constant. If the system has no solution, what is the value of k?",
   answers: ["8"],
   strategy: "No solution means parallel lines: the coefficients are proportional but the constants are not. Set up the coefficient ratio and solve.",
   hint: "Compare the y-coefficients first: 6 and 3. What factor takes one equation's coefficients to the other's?",
   steps: [
-    "For no solution, the x and y coefficients must be proportional: <div class=“mathwork”>k / 4 = 6 / 3 = 2</div>",
+    "For no solution, the x and y coefficients must be proportional: <div class=\'mathwork\'>k / 4 = 6 / 3 = 2</div>",
     "So k = 8.",
     "Confirm the lines are parallel and not identical: with k = 8 the first equation is 8x + 6y = 12, which is 2(4x + 3y) = 12, i.e. 4x + 3y = 6.",
     "The second equation says 4x + 3y = 9. Since 6 ≠ 9, the lines never meet, no solution. ✓"
@@ -449,8 +449,8 @@ window.MATH_BANK.push(
   strategy: "“Drains completely” translates to V = 0. Turn the words into an equation about the variable before computing.",
   hint: "Set V equal to 0.",
   steps: [
-    "Set V = 0: <div class=“mathwork”>0 = 480 − 24t</div>",
-    "Solve: <div class=“mathwork”>24t = 480\nt = 20</div>",
+    "Set V = 0: <div class=\'mathwork\'>0 = 480 − 24t</div>",
+    "Solve: <div class=\'mathwork\'>24t = 480\nt = 20</div>",
     "Interpret: after 20 minutes no water remains. ✓"
   ],
   traps: {
@@ -478,7 +478,7 @@ window.MATH_BANK.push(
   hint: "If 100 adult tickets were sold, how many student tickets, and what is the total revenue?",
   steps: [
     "Set up: a + s = 240 and 18a + 11s = 3,340.",
-    "Substitute s = 240 − a: <div class=“mathwork”>18a + 11(240 − a) = 3,340\n18a + 2,640 − 11a = 3,340\n7a = 700\na = 100</div>",
+    "Substitute s = 240 − a: <div class=\'mathwork\'>18a + 11(240 − a) = 3,340\n18a + 2,640 − 11a = 3,340\n7a = 700\na = 100</div>",
     "So 100 adult and 140 student tickets.",
     "Check: 100(18) + 140(11) = 1,800 + 1,540 = 3,340. ✓"
   ],
@@ -500,9 +500,9 @@ window.MATH_BANK.push(
   strategy: "Convert an average condition into a total: an average of at least 90 across 5 tests means a sum of at least 450. Averages are easier to handle as sums.",
   hint: "What must the five scores add up to?",
   steps: [
-    "Required total: <div class=“mathwork”>90 × 5 = 450</div>",
-    "Current total: <div class=“mathwork”>88 + 92 + 85 + 94 = 359</div>",
-    "Needed on the fifth test: <div class=“mathwork”>450 − 359 = 91</div>",
+    "Required total: <div class=\'mathwork\'>90 × 5 = 450</div>",
+    "Current total: <div class=\'mathwork\'>88 + 92 + 85 + 94 = 359</div>",
+    "Needed on the fifth test: <div class=\'mathwork\'>450 − 359 = 91</div>",
     "Check: (359 + 91)/5 = 450/5 = 90. ✓ Since the requirement is “at least,” 91 is the minimum."
   ],
   traps: {}
@@ -526,7 +526,7 @@ window.MATH_BANK.push(
   hint: "Which two numbers multiply to 12 and add to 7?",
   steps: [
     "Look for two numbers with product 12 and sum 7: 3 and 4.",
-    "Since the middle term is −7x, both factors are negative: <div class=“mathwork”>x² − 7x + 12 = (x − 3)(x − 4) = 0</div>",
+    "Since the middle term is −7x, both factors are negative: <div class=\'mathwork\'>x² − 7x + 12 = (x − 3)(x − 4) = 0</div>",
     "Set each factor to zero: x = 3 or x = 4.",
     "Check: 9 − 21 + 12 = 0 ✓ and 16 − 28 + 12 = 0 ✓"
   ],
@@ -554,10 +554,10 @@ window.MATH_BANK.push(
   strategy: "Substitute in parentheses. Writing 2(−2)² instead of 2·−2² is what prevents almost every sign error on this question type.",
   hint: "Square before you multiply, and remember −5 times −2 is positive.",
   steps: [
-    "Substitute with parentheses: <div class=“mathwork”>f(−2) = 2(−2)² − 5(−2) + 1</div>",
+    "Substitute with parentheses: <div class=\'mathwork\'>f(−2) = 2(−2)² − 5(−2) + 1</div>",
     "Square first: (−2)² = 4, so the first term is 2(4) = 8.",
     "Second term: −5(−2) = +10.",
-    "Add: <div class=“mathwork”>8 + 10 + 1 = 19</div>"
+    "Add: <div class=\'mathwork\'>8 + 10 + 1 = 19</div>"
   ],
   traps: {
     0: "Comes from making the middle term −10: 8 − 10 + 1 = −1. A negative times a negative is positive.",
@@ -612,15 +612,15 @@ window.MATH_BANK.push(
   strategy: "Handle the outer power first: raise every factor inside to that power. Then divide by subtracting exponents.",
   hint: "(3x²y³)³ means 3³ · x⁶ · y⁹.",
   steps: [
-    "Expand the numerator, applying the exponent 3 to each factor: <div class=“mathwork”>(3x²y³)³ = 3³ · x⁶ · y⁹ = 27x⁶y⁹</div>",
+    "Expand the numerator, applying the exponent 3 to each factor: <div class=\'mathwork\'>(3x²y³)³ = 3³ · x⁶ · y⁹ = 27x⁶y⁹</div>",
     "Divide the coefficients: 27 / 9 = 3.",
-    "Subtract exponents for like bases: <div class=“mathwork”>x⁶ ÷ x³ = x³\ny⁹ ÷ y² = y⁷</div>",
+    "Subtract exponents for like bases: <div class=\'mathwork\'>x⁶ ÷ x³ = x³\ny⁹ ÷ y² = y⁷</div>",
     "Result: 3x³y⁷"
   ],
   traps: {
     0: "Subtracted the y exponents as 9 − 4 instead of 9 − 2.",
-    1: "Multiplied the x exponents when dividing instead of subtracting, or applied the outer 3 twice.",
-    2: "Divided 27 by 9 incorrectly, or forgot to cube the 3 and left the 9 in the numerator."
+    1: "Added the x exponents when dividing instead of subtracting: 6 + 3 = 9. Division subtracts them, so 6 − 3 = 3.",
+    2: "Cubed the 3 to get 27 but then divided by 3 instead of by 9."
   }
 },
 
@@ -641,9 +641,9 @@ window.MATH_BANK.push(
   strategy: "A parabola's minimum occurs at x = −b/(2a). Find that x, then substitute back. The question usually wants the y-value, not the x-value.",
   hint: "First find where the minimum occurs, then find what the minimum <em>is</em>.",
   steps: [
-    "Find the axis of symmetry: <div class=“mathwork”>x = −b/(2a) = 8/2 = 4</div>",
-    "Substitute x = 4 to get the minimum value: <div class=“mathwork”>f(4) = 16 − 32 + 11 = −5</div>",
-    "Confirm with completing the square: <div class=“mathwork”>x² − 8x + 11 = (x − 4)² − 5</div>",
+    "Find the axis of symmetry: <div class=\'mathwork\'>x = −b/(2a) = 8/2 = 4</div>",
+    "Substitute x = 4 to get the minimum value: <div class=\'mathwork\'>f(4) = 16 − 32 + 11 = −5</div>",
+    "Confirm with completing the square: <div class=\'mathwork\'>x² − 8x + 11 = (x − 4)² − 5</div>",
     "Since (x − 4)² is never negative, the smallest value of f is −5. ✓"
   ],
   traps: {
@@ -670,8 +670,8 @@ window.MATH_BANK.push(
   strategy: "Squaring both sides of a radical equation can create extraneous roots. You must substitute every candidate back into the <em>original</em> equation.",
   hint: "Squaring gives a quadratic with two roots, but only one of them can actually be a solution. Why?",
   steps: [
-    "Square both sides: <div class=“mathwork”>2x + 5 = (x − 5)²\n2x + 5 = x² − 10x + 25</div>",
-    "Collect terms: <div class=“mathwork”>x² − 12x + 20 = 0\n(x − 10)(x − 2) = 0</div>",
+    "Square both sides: <div class=\'mathwork\'>2x + 5 = (x − 5)²\n2x + 5 = x² − 10x + 25</div>",
+    "Collect terms: <div class=\'mathwork\'>x² − 12x + 20 = 0\n(x − 10)(x − 2) = 0</div>",
     "Candidates: x = 10 and x = 2.",
     "Check both in the original: x = 10 gives √25 = 5 and 10 − 5 = 5 ✓. x = 2 gives √9 = 3 but 2 − 5 = −3 ✗, a square root cannot be negative, so x = 2 is extraneous."
   ],
@@ -694,8 +694,8 @@ window.MATH_BANK.push(
   hint: "Set the discriminant equal to zero.",
   steps: [
     "Here a = 1, b = 6, and the constant is c.",
-    "Exactly one real solution means the discriminant is zero: <div class=“mathwork”>b² − 4ac = 0\n36 − 4c = 0</div>",
-    "Solve: <div class=“mathwork”>4c = 36\nc = 9</div>",
+    "Exactly one real solution means the discriminant is zero: <div class=\'mathwork\'>b² − 4ac = 0\n36 − 4c = 0</div>",
+    "Solve: <div class=\'mathwork\'>4c = 36\nc = 9</div>",
     "Check: x² + 6x + 9 = (x + 3)², whose only solution is x = −3. ✓"
   ],
   traps: {}
@@ -718,8 +718,8 @@ window.MATH_BANK.push(
   strategy: "Work composed functions from the inside out. Compute the inner value first and write it down before applying the outer function.",
   hint: "Find f(2) first, then put that number into g.",
   steps: [
-    "Inner function: <div class=“mathwork”>f(2) = 2 + 3 = 5</div>",
-    "Now apply g to that result: <div class=“mathwork”>g(5) = 5² − 1 = 25 − 1 = 24</div>"
+    "Inner function: <div class=\'mathwork\'>f(2) = 2 + 3 = 5</div>",
+    "Now apply g to that result: <div class=\'mathwork\'>g(5) = 5² − 1 = 25 − 1 = 24</div>"
   ],
   traps: {
     0: "This is f(g(2)), the composition performed in the wrong order: g(2) = 3, then f(3) = 6. Order matters.",
@@ -745,9 +745,9 @@ window.MATH_BANK.push(
   strategy: "Factor the numerator and denominator completely, then cancel common factors. Never cancel individual terms, only whole factors.",
   hint: "x² − 9 is a difference of squares.",
   steps: [
-    "Factor the numerator as a difference of squares: <div class=“mathwork”>x² − 9 = (x − 3)(x + 3)</div>",
-    "Factor the denominator: two numbers multiplying to 6 and adding to 5 are 2 and 3: <div class=“mathwork”>x² + 5x + 6 = (x + 2)(x + 3)</div>",
-    "Cancel the shared factor (x + 3): <div class=“mathwork”>(x − 3)(x + 3) / [(x + 2)(x + 3)] = (x − 3)/(x + 2)</div>",
+    "Factor the numerator as a difference of squares: <div class=\'mathwork\'>x² − 9 = (x − 3)(x + 3)</div>",
+    "Factor the denominator: two numbers multiplying to 6 and adding to 5 are 2 and 3: <div class=\'mathwork\'>x² + 5x + 6 = (x + 2)(x + 3)</div>",
+    "Cancel the shared factor (x + 3): <div class=\'mathwork\'>(x − 3)(x + 3) / [(x + 2)(x + 3)] = (x − 3)/(x + 2)</div>",
     "Test with x = 1: original = (1 − 9)/(1 + 5 + 6) = −8/12 = −2/3; answer = (1 − 3)/(1 + 2) = −2/3. ✓"
   ],
   traps: {
@@ -775,13 +775,13 @@ window.MATH_BANK.push(
   hint: "The vertex tells you k. Then substitute the point (0, 7).",
   steps: [
     "The vertex is (2, −1), so k = −1 and f(x) = a(x − 2)² − 1.",
-    "Substitute the point (0, 7): <div class=“mathwork”>7 = a(0 − 2)² − 1\n7 = 4a − 1</div>",
-    "Solve: <div class=“mathwork”>4a = 8\na = 2</div>",
+    "Substitute the point (0, 7): <div class=\'mathwork\'>7 = a(0 − 2)² − 1\n7 = 4a − 1</div>",
+    "Solve: <div class=\'mathwork\'>4a = 8\na = 2</div>",
     "Check: f(0) = 2(4) − 1 = 7 ✓"
   ],
   traps: {
     0: "Comes from 4a = 2 or from inverting the final division.",
-    1: "Comes from forgetting to subtract 1: 7 = 4a would give a = 1.75, but using 8/2 gives 4. Track the constant.",
+    1: "Comes from 4a = 8 divided by 2 instead of 4. The number to divide by is (0 − 2)² = 4, not the 2 you see inside the parentheses.",
     3: "This is 4a, not a."
   }
 },
@@ -792,14 +792,14 @@ window.MATH_BANK.push(
   skill: "Systems with one nonlinear equation",
   difficulty: "H",
   type: "spr",
-  prompt: "<div class=“mathwork”>y = x² − 4x + 7\ny = 2x + 2</div>The system above has two solutions. What is the sum of the x-coordinates of those solutions?",
+  prompt: "<div class=\'mathwork\'>y = x² − 4x + 7\ny = 2x + 2</div>The system above has two solutions. What is the sum of the x-coordinates of those solutions?",
   answers: ["6"],
   strategy: "Set the two expressions for y equal, collect into a quadratic, and remember that the sum of the roots equals −b/a. You often do not need the roots themselves.",
   hint: "You can answer this without ever finding the individual solutions.",
   steps: [
-    "Set the expressions equal: <div class=“mathwork”>x² − 4x + 7 = 2x + 2</div>",
-    "Collect on one side: <div class=“mathwork”>x² − 6x + 5 = 0</div>",
-    "The sum of the roots of ax² + bx + c = 0 is −b/a: <div class=“mathwork”>−(−6)/1 = 6</div>",
+    "Set the expressions equal: <div class=\'mathwork\'>x² − 4x + 7 = 2x + 2</div>",
+    "Collect on one side: <div class=\'mathwork\'>x² − 6x + 5 = 0</div>",
+    "The sum of the roots of ax² + bx + c = 0 is −b/a: <div class=\'mathwork\'>−(−6)/1 = 6</div>",
     "Confirm by factoring: (x − 1)(x − 5) = 0 gives x = 1 and x = 5, and 1 + 5 = 6. ✓"
   ],
   traps: {}
@@ -822,8 +822,8 @@ window.MATH_BANK.push(
   strategy: "Check the units of the exponent's variable before substituting. If t is in years and the question gives months, convert first.",
   hint: "t is measured in years. How many years is 18 months?",
   steps: [
-    "The model defines t in years, so convert: <div class=“mathwork”>18 months = 18/12 = 1.5 years = 3/2 years</div>",
-    "Substitute t = 3/2: <div class=“mathwork”>V = 40,000(0.85)^(3/2)</div>",
+    "The model defines t in years, so convert: <div class=\'mathwork\'>18 months = 18/12 = 1.5 years = 3/2 years</div>",
+    "Substitute t = 3/2: <div class=\'mathwork\'>V = 40,000(0.85)^(3/2)</div>",
     "The base stays 0.85 because that is the fraction of value retained each year."
   ],
   traps: {
@@ -845,9 +845,9 @@ window.MATH_BANK.push(
   hint: "Half of 10 is 5, and (x + 5)² = x² + 10x + 25.",
   steps: [
     "Take half the x-coefficient: 10/2 = 5, so a = 5.",
-    "Expand to see what that square produces: <div class=“mathwork”>(x + 5)² = x² + 10x + 25</div>",
-    "The original has 18 where the square has 25, so subtract 7: <div class=“mathwork”>x² + 10x + 18 = (x + 5)² − 7</div>",
-    "So a = 5, b = −7, and <div class=“mathwork”>a + b = 5 + (−7) = −2</div>"
+    "Expand to see what that square produces: <div class=\'mathwork\'>(x + 5)² = x² + 10x + 25</div>",
+    "The original has 18 where the square has 25, so subtract 7: <div class=\'mathwork\'>x² + 10x + 18 = (x + 5)² − 7</div>",
+    "So a = 5, b = −7, and <div class=\'mathwork\'>a + b = 5 + (−7) = −2</div>"
   ],
   traps: {}
 },
@@ -869,15 +869,15 @@ window.MATH_BANK.push(
   strategy: "Zeros come from setting each factor to zero. Factor anything that can still be factored before you start listing.",
   hint: "x² − 9 is not yet fully factored.",
   steps: [
-    "Factor completely: <div class=“mathwork”>p(x) = (x − 4)(x − 3)(x + 3)</div>",
+    "Factor completely: <div class=\'mathwork\'>p(x) = (x − 4)(x − 3)(x + 3)</div>",
     "Set each factor equal to zero: x − 4 = 0, x − 3 = 0, x + 3 = 0.",
     "Zeros: x = 4, x = 3, x = −3.",
     "Check one: p(−3) = (−7)(9 − 9) = 0. ✓"
   ],
   traps: {
     0: "Read 9 straight out of x² − 9 without solving. x² = 9 gives x = ±3, not 9.",
-    2: "Sign errors on every factor: (x − 4) gives +4, not −4.",
-    3: "Squared instead of taking a square root."
+    2: "Flips the sign of the 4. Setting x − 4 = 0 gives x = +4. The −3 and the 3 are both genuine zeros, so this choice is a single sign away from correct.",
+    3: "Reads ±9 straight out of x² − 9 instead of solving x² = 9. Taking the square root of 9 gives 3."
   }
 },
 
@@ -898,9 +898,9 @@ window.MATH_BANK.push(
   strategy: "“Hits the ground” means height = 0. Divide out the common factor before factoring, the arithmetic gets much easier.",
   hint: "Set h(t) = 0, then divide the whole equation by −16.",
   steps: [
-    "Set the height to zero: <div class=“mathwork”>−16t² + 64t + 80 = 0</div>",
-    "Divide every term by −16: <div class=“mathwork”>t² − 4t − 5 = 0</div>",
-    "Factor: <div class=“mathwork”>(t − 5)(t + 1) = 0</div>",
+    "Set the height to zero: <div class=\'mathwork\'>−16t² + 64t + 80 = 0</div>",
+    "Divide every term by −16: <div class=\'mathwork\'>t² − 4t − 5 = 0</div>",
+    "Factor: <div class=\'mathwork\'>(t − 5)(t + 1) = 0</div>",
     "So t = 5 or t = −1. Time cannot be negative, so the ball lands at t = 5 seconds. ✓"
   ],
   traps: {
@@ -921,10 +921,10 @@ window.MATH_BANK.push(
   strategy: "Rewrite both sides with the same base. Once the bases match, the exponents must be equal.",
   hint: "32 is a power of 2.",
   steps: [
-    "Write 32 as a power of 2: <div class=“mathwork”>32 = 2⁵</div>",
-    "Rewrite the right side, multiplying exponents: <div class=“mathwork”>32^(x−1) = (2⁵)^(x−1) = 2^(5x−5)</div>",
-    "With equal bases, set the exponents equal: <div class=“mathwork”>3x = 5x − 5</div>",
-    "Solve: <div class=“mathwork”>2x = 5\nx = 5/2 = 2.5</div>"
+    "Write 32 as a power of 2: <div class=\'mathwork\'>32 = 2⁵</div>",
+    "Rewrite the right side, multiplying exponents: <div class=\'mathwork\'>32^(x−1) = (2⁵)^(x−1) = 2^(5x−5)</div>",
+    "With equal bases, set the exponents equal: <div class=\'mathwork\'>3x = 5x − 5</div>",
+    "Solve: <div class=\'mathwork\'>2x = 5\nx = 5/2 = 2.5</div>"
   ],
   traps: {}
 },
@@ -947,7 +947,7 @@ window.MATH_BANK.push(
   hint: "Identify a = −20 and b = 800, then compute −b/(2a).",
   steps: [
     "Identify the coefficients: a = −20, b = 800.",
-    "Vertex: <div class=“mathwork”>p = −b/(2a) = −800 / (2 × −20) = −800 / −40 = 20</div>",
+    "Vertex: <div class=\'mathwork\'>p = −b/(2a) = −800 / (2 × −20) = −800 / −40 = 20</div>",
     "So a price of $20 maximizes revenue.",
     "Check the value: R(20) = −20(400) + 16,000 = $8,000, and R(19) = $7,980 and R(21) = $7,980, both lower. ✓"
   ],
@@ -969,21 +969,21 @@ window.MATH_BANK.push(
     "4",
     "0",
     "8",
-    "12"
-  ],
+    "−4/3"
+    ],
   answer: 0,
   strategy: "Cross-multiply proportions, then solve the resulting linear equation. Check that your answer does not make a denominator zero.",
   hint: "Cross-multiply to get 3(x + 4) = 12(x − 2).",
   steps: [
-    "Cross-multiply: <div class=“mathwork”>3(x + 4) = 12(x − 2)</div>",
-    "Distribute: <div class=“mathwork”>3x + 12 = 12x − 24</div>",
-    "Collect: <div class=“mathwork”>36 = 9x\nx = 4</div>",
+    "Cross-multiply: <div class=\'mathwork\'>3(x + 4) = 12(x − 2)</div>",
+    "Distribute: <div class=\'mathwork\'>3x + 12 = 12x − 24</div>",
+    "Collect: <div class=\'mathwork\'>36 = 9x\nx = 4</div>",
     "Check: 3/(4 − 2) = 1.5 and 12/(4 + 4) = 1.5 ✓, and no denominator is zero."
   ],
   traps: {
     1: "Gives 3/(−2) = −1.5 and 12/4 = 3. Not equal.",
     2: "Gives 3/6 = 0.5 and 12/12 = 1. Not equal.",
-    3: "Comes from a sign error when distributing 12(x − 2)."
+    3: "Comes from distributing 12(x − 2) as 12x + 24: then 3x + 12 = 12x + 24 gives 9x = −12, so x = −4/3. The minus sign has to reach both terms."
   }
 },
 
@@ -1004,15 +1004,15 @@ window.MATH_BANK.push(
   strategy: "Convert every radical to a fractional exponent, add exponents when multiplying, then convert back if the choices are in radical form.",
   hint: "⁴√(x³) is x^(3/4) and √x is x^(1/2).",
   steps: [
-    "Rewrite both factors with fractional exponents: <div class=“mathwork”>⁴√(x³) = x^(3/4)\n√x = x^(1/2)</div>",
-    "Multiplying powers of the same base means adding exponents: <div class=“mathwork”>3/4 + 1/2 = 3/4 + 2/4 = 5/4</div>",
+    "Rewrite both factors with fractional exponents: <div class=\'mathwork\'>⁴√(x³) = x^(3/4)\n√x = x^(1/2)</div>",
+    "Multiplying powers of the same base means adding exponents: <div class=\'mathwork\'>3/4 + 1/2 = 3/4 + 2/4 = 5/4</div>",
     "So the product is x^(5/4).",
-    "Convert back to a radical: the denominator is the index and the numerator is the power: <div class=“mathwork”>x^(5/4) = ⁴√(x⁵)</div>"
+    "Convert back to a radical: the denominator is the index and the numerator is the power: <div class=\'mathwork\'>x^(5/4) = ⁴√(x⁵)</div>"
   ],
   traps: {
     1: "Multiplied the denominators of the exponents (4 × 2 = 8) instead of finding a common denominator and adding.",
     2: "Multiplied the exponents, 3/4 × 1/2 = 3/8. Exponents multiply for a power of a power, not for a product.",
-    3: "This is x^(3/2), which comes from adding the numerators and ignoring the denominators."
+    3: "This is x^(3/2), built by taking the 3 from the first exponent and the 2 from the second. Multiplying powers means adding the exponents over a common denominator: 3/4 + 2/4 = 5/4."
   }
 },
 
@@ -1033,8 +1033,8 @@ window.MATH_BANK.push(
   strategy: "Percent change = (change ÷ original) × 100. The original amount always goes in the denominator.",
   hint: "The discount is $12. Twelve is what percent of eighty?",
   steps: [
-    "Find the change: <div class=“mathwork”>80 − 68 = 12</div>",
-    "Divide by the original price: <div class=“mathwork”>12 / 80 = 0.15</div>",
+    "Find the change: <div class=\'mathwork\'>80 − 68 = 12</div>",
+    "Divide by the original price: <div class=\'mathwork\'>12 / 80 = 0.15</div>",
     "Convert to a percent: 15%.",
     "Check: 15% of 80 is 12, and 80 − 12 = 68. ✓"
   ],
@@ -1057,7 +1057,7 @@ window.MATH_BANK.push(
   hint: "Divide the total pages by the pages per minute.",
   steps: [
     "Rate: 18 pages per 1 minute.",
-    "Divide the total by the rate: <div class=“mathwork”>621 ÷ 18 = 34.5</div>",
+    "Divide the total by the rate: <div class=\'mathwork\'>621 ÷ 18 = 34.5</div>",
     "Check the units: pages ÷ (pages/minute) = minutes. ✓",
     "Verify: 18 × 34.5 = 621. ✓ (You may enter 34.5 or 69/2.)"
   ],
@@ -1070,26 +1070,27 @@ window.MATH_BANK.push(
   skill: "One-variable data",
   difficulty: "M",
   type: "mc",
-  prompt: "A data set of 20 home sale prices has a mean of $410,000 and a median of $310,000. The single most expensive home, which sold for $3.2 million, is then removed from the data set. Which statement about the remaining 19 prices must be true?",
+  passage: "<p>The list shows the sale price, in thousands of dollars, of each of the 5 homes sold on one street last year.</p><div class=\'mathwork\'>250, 280, 310, 340, 2820</div>",
+  prompt: "If the highest price is removed from the list, which of the following describes the effect on the mean and the median?",
   choices: [
-    "The mean decreases by more than the median does.",
-    "The median decreases by more than the mean does.",
-    "Neither the mean nor the median changes.",
-    "The mean increases."
+    "The mean decreases by $505,000 and the median decreases by $15,000.",
+    "The mean decreases by $15,000 and the median decreases by $505,000.",
+    "The mean and the median each decrease by about the same amount.",
+    "The mean decreases and the median stays at $310,000."
   ],
   answer: 0,
-  strategy: "The mean responds to the size of every value; the median responds only to position. Outliers move the mean and barely touch the median.",
-  hint: "Which measure actually uses the number 3,200,000 in its computation?",
+  strategy: "The mean is built from the size of every value, so one huge value drags it. The median only cares about position. Compute both before and after rather than reasoning about which one \u201cshould\u201d move.",
+  hint: "The list is short enough to just do it. Find the mean and median of all 5, then of the 4 that are left.",
   steps: [
-    "The mean is computed from the total of all values, so removing a $3.2 million value removes a large chunk of that total.",
-    "Notice the mean ($410,000) sits well above the median ($310,000), which is the signature of a high outlier.",
-    "The median only depends on which value sits in the middle position; dropping the largest value shifts that position by half a slot, changing the median slightly at most.",
-    "So the mean falls substantially while the median barely moves. Choice A."
+    "All 5 values: the total is 4,000, so the mean is 4,000 \u00f7 5 = 800, and the median is the middle value, 310.",
+    "Remove 2,820. The remaining 4 total 1,180, so the mean is 1,180 \u00f7 4 = 295.",
+    "With 4 values the median is the average of the middle two: <div class=\'mathwork\'>(280 + 310) \u00f7 2 = 295</div>",
+    "The mean fell 800 \u2212 295 = 505 and the median fell 310 \u2212 295 = 15. In thousands of dollars that is $505,000 and $15,000, so choice A."
   ],
   traps: {
-    1: "Reverses the sensitivity. The median is the resistant measure. That is why it is reported for home prices.",
-    2: "The mean is certain to change, since the sum of the values changes.",
-    3: "Removing an above-average value must pull the mean down, not up."
+    1: "Reverses the sensitivity. The mean uses the number 2,820 in its arithmetic, so it moves a long way; the median only shifts by one position. The median is the resistant measure, which is exactly why it is the one reported for home prices.",
+    2: "The whole reason an outlier matters is that it moves the two measures by very different amounts. Compute both instead of assuming they travel together.",
+    3: "Half right, which is what makes it tempting: the mean does decrease. But the median moves too, because with 4 values left it becomes the average of the middle two rather than a single middle value."
   }
 },
 
@@ -1099,7 +1100,7 @@ window.MATH_BANK.push(
   skill: "Probability",
   difficulty: "M",
   type: "mc",
-  figure: "<table class=“data”><tr><th></th><th>Print</th><th>Digital</th><th>Total</th></tr><tr><th>Grade 9</th><td>40</td><td>60</td><td>100</td></tr><tr><th>Grade 10</th><td>55</td><td>45</td><td>100</td></tr><tr><th>Total</th><td>95</td><td>105</td><td>200</td></tr></table>",
+  figure: "<table class=\'data\'><tr><th></th><th>Print</th><th>Digital</th><th>Total</th></tr><tr><th>Grade 9</th><td>40</td><td>60</td><td>100</td></tr><tr><th>Grade 10</th><td>55</td><td>45</td><td>100</td></tr><tr><th>Total</th><td>95</td><td>105</td><td>200</td></tr></table>",
   figcap: "Preferred reading format of 200 students",
   prompt: "The table above shows the preferred reading format of 200 students. If a student who prefers print is selected at random, what is the probability that the student is in Grade 10?",
   choices: [
@@ -1114,7 +1115,7 @@ window.MATH_BANK.push(
   steps: [
     "The condition is “a student who prefers print,” so the sample space is the Print column: 95 students.",
     "Among those 95, the Grade 10 students number 55.",
-    "So the probability is <div class=“mathwork”>55 / 95</div>",
+    "So the probability is <div class=\'mathwork\'>55 / 95</div>",
     "(That reduces to 11/19 ≈ 0.579, but 55/95 is the form given.)"
   ],
   traps: {
@@ -1141,8 +1142,8 @@ window.MATH_BANK.push(
   strategy: "Apply percent changes one at a time, multiplying by (1 + rate). Percent changes never simply add, because the second change acts on the new amount.",
   hint: "Find the 2015 population before you take 10% off.",
   steps: [
-    "2015 population: <div class=“mathwork”>25,000 × 1.20 = 30,000</div>",
-    "2020 population, after a 10% decrease: <div class=“mathwork”>30,000 × 0.90 = 27,000</div>",
+    "2015 population: <div class=\'mathwork\'>25,000 × 1.20 = 30,000</div>",
+    "2020 population, after a 10% decrease: <div class=\'mathwork\'>30,000 × 0.90 = 27,000</div>",
     "Note the net effect: 1.20 × 0.90 = 1.08, an 8% increase overall, not 10%."
   ],
   traps: {
@@ -1169,8 +1170,8 @@ window.MATH_BANK.push(
   strategy: "Write the scale as a fraction with units, then multiply so the unwanted unit cancels.",
   hint: "3.75 inches × 24 miles per inch.",
   steps: [
-    "Set up the conversion: <div class=“mathwork”>3.75 in × (24 mi / 1 in)</div>",
-    "The inches cancel, leaving miles: <div class=“mathwork”>3.75 × 24 = 90</div>",
+    "Set up the conversion: <div class=\'mathwork\'>3.75 in × (24 mi / 1 in)</div>",
+    "The inches cancel, leaving miles: <div class=\'mathwork\'>3.75 × 24 = 90</div>",
     "So the cities are 90 miles apart. Sanity check: 4 inches would be 96 miles, so 90 is reasonable. ✓"
   ],
   traps: {
@@ -1198,7 +1199,7 @@ window.MATH_BANK.push(
   hint: "Build the interval: 62% minus 4 points, and 62% plus 4 points.",
   steps: [
     "The sample estimate is 62% and the margin of error is 4 percentage points.",
-    "Form the interval: <div class=“mathwork”>62 − 4 = 58\n62 + 4 = 66</div>",
+    "Form the interval: <div class=\'mathwork\'>62 − 4 = 58\n62 + 4 = 66</div>",
     "So plausible values for the population percentage run from 58% to 66%.",
     "Choice B states exactly that, with the appropriate hedge (“it is plausible”)."
   ],
@@ -1251,9 +1252,9 @@ window.MATH_BANK.push(
   strategy: "Convert everything to one unit of time first. Multi-step rate problems go wrong at the conversion, not at the arithmetic.",
   hint: "How many seconds are in 1 hour and 20 minutes?",
   steps: [
-    "Convert the time: <div class=“mathwork”>1 hr 20 min = 80 min = 80 × 60 = 4,800 seconds</div>",
-    "Find how many 15-second intervals that is: <div class=“mathwork”>4,800 ÷ 15 = 320</div>",
-    "Each interval moves 4 gallons: <div class=“mathwork”>320 × 4 = 1,280 gallons</div>",
+    "Convert the time: <div class=\'mathwork\'>1 hr 20 min = 80 min = 80 × 60 = 4,800 seconds</div>",
+    "Find how many 15-second intervals that is: <div class=\'mathwork\'>4,800 ÷ 15 = 320</div>",
+    "Each interval moves 4 gallons: <div class=\'mathwork\'>320 × 4 = 1,280 gallons</div>",
     "Cross-check with a unit rate: 4/15 gal per second × 4,800 s = 1,280. ✓"
   ],
   traps: {}
@@ -1270,10 +1271,10 @@ window.MATH_BANK.push(
   strategy: "In a dilution, the amount of solute never changes, only the total volume does. Track the unchanging quantity and set up one equation.",
   hint: "How many milliliters of salt are in the solution? That number stays the same.",
   steps: [
-    "Find the salt: <div class=“mathwork”>8% of 500 = 0.08 × 500 = 40 mL</div>",
-    "Adding water does not change the salt, so the final solution still has 40 mL of salt, and that must be 5% of the new total V: <div class=“mathwork”>40 = 0.05V</div>",
-    "Solve for the new total: <div class=“mathwork”>V = 40 / 0.05 = 800 mL</div>",
-    "The water added is the change in total volume: <div class=“mathwork”>800 − 500 = 300 mL</div>"
+    "Find the salt: <div class=\'mathwork\'>8% of 500 = 0.08 × 500 = 40 mL</div>",
+    "Adding water does not change the salt, so the final solution still has 40 mL of salt, and that must be 5% of the new total V: <div class=\'mathwork\'>40 = 0.05V</div>",
+    "Solve for the new total: <div class=\'mathwork\'>V = 40 / 0.05 = 800 mL</div>",
+    "The water added is the change in total volume: <div class=\'mathwork\'>800 − 500 = 300 mL</div>"
   ],
   traps: {}
 },
@@ -1295,8 +1296,8 @@ window.MATH_BANK.push(
   strategy: "The interior angles of any triangle sum to 180°. Subtract the known angles from 180.",
   hint: "Add the two known angles first.",
   steps: [
-    "Add the known angles: <div class=“mathwork”>43 + 68 = 111</div>",
-    "Subtract from 180: <div class=“mathwork”>180 − 111 = 69</div>",
+    "Add the known angles: <div class=\'mathwork\'>43 + 68 = 111</div>",
+    "Subtract from 180: <div class=\'mathwork\'>180 − 111 = 69</div>",
     "Check: 43 + 68 + 69 = 180. ✓"
   ],
   traps: {
@@ -1323,8 +1324,8 @@ window.MATH_BANK.push(
   strategy: "Circle problems almost always route through the radius. Whatever you are given, find r first.",
   hint: "C = 2πr. What is r?",
   steps: [
-    "Use the circumference formula: <div class=“mathwork”>2πr = 18π\nr = 9</div>",
-    "Apply the area formula: <div class=“mathwork”>A = πr² = π(9)² = 81π</div>"
+    "Use the circumference formula: <div class=\'mathwork\'>2πr = 18π\nr = 9</div>",
+    "Apply the area formula: <div class=\'mathwork\'>A = πr² = π(9)² = 81π</div>"
   ],
   traps: {
     0: "That is the radius times π, or the area of a circle with radius 3.",
@@ -1350,14 +1351,14 @@ window.MATH_BANK.push(
   strategy: "SOH-CAH-TOA, but identify the angle first. “Opposite” and “adjacent” are relative to the angle named in the question.",
   hint: "Find the hypotenuse with the Pythagorean theorem, then ask which side is opposite angle A.",
   steps: [
-    "Find the hypotenuse AB: <div class=“mathwork”>9² + 12² = 81 + 144 = 225\nAB = 15</div>",
+    "Find the hypotenuse AB: <div class=\'mathwork\'>9² + 12² = 81 + 144 = 225\nAB = 15</div>",
     "The side opposite angle A is BC = 12 (angle A and side BC are at opposite corners).",
     "The hypotenuse is AB = 15, since it is across from the right angle at C.",
-    "sin A = opposite / hypotenuse = <div class=“mathwork”>12 / 15 = 0.8</div>"
+    "sin A = opposite / hypotenuse = <div class=\'mathwork\'>12 / 15 = 0.8</div>"
   ],
   traps: {
     0: "That is cos A (9/15), the adjacent side over the hypotenuse. Mixing up opposite and adjacent is the error this question targets.",
-    2: "That is tan A (12/9 is 1.33; 9/12 = 0.75), using the two legs rather than a leg and the hypotenuse.",
+    2: "That is 9/12, the two legs divided into each other instead of a leg over the hypotenuse. It is the tangent of the other acute angle, not a sine at all. Every sine uses the hypotenuse.",
     3: "That is 15/12, the reciprocal of the right ratio. A sine can never exceed 1, use that as a check."
   }
 },
@@ -1379,14 +1380,14 @@ window.MATH_BANK.push(
   strategy: "Volume of a cylinder is V = πr²h. It is on the reference sheet, open the sheet rather than guessing which quantity gets squared.",
   hint: "Square the radius, not the height.",
   steps: [
-    "Write the formula: <div class=“mathwork”>V = πr²h</div>",
-    "Substitute: <div class=“mathwork”>V = π(3)²(10) = π(9)(10)</div>",
+    "Write the formula: <div class=\'mathwork\'>V = πr²h</div>",
+    "Substitute: <div class=\'mathwork\'>V = π(3)²(10) = π(9)(10)</div>",
     "So V = 90π."
   ],
   traps: {
     0: "That is πrh: the radius was not squared.",
     1: "That is the lateral surface area, 2πrh.",
-    3: "Squared the height instead of the radius: π(3)(100)."
+    3: "Squared the height as well as the radius: π(9)(100). In πr²h only the radius is squared."
   }
 },
 
@@ -1407,8 +1408,8 @@ window.MATH_BANK.push(
   strategy: "Similar triangles have proportional corresponding sides. Write the proportion with matching letters in matching positions before you compute.",
   hint: "AB corresponds to DE, and BC corresponds to EF. The scale factor is 9/6.",
   steps: [
-    "Find the scale factor from the corresponding pair you know: <div class=“mathwork”>DE / AB = 9 / 6 = 1.5</div>",
-    "Corresponding sides all use that same factor: <div class=“mathwork”>EF = BC × 1.5 = 8 × 1.5</div>",
+    "Find the scale factor from the corresponding pair you know: <div class=\'mathwork\'>DE / AB = 9 / 6 = 1.5</div>",
+    "Corresponding sides all use that same factor: <div class=\'mathwork\'>EF = BC × 1.5 = 8 × 1.5</div>",
     "So EF = 12.",
     "Check with a proportion: 6/8 = 9/12, and cross-multiplying gives 72 = 72. ✓"
   ],
@@ -1430,9 +1431,9 @@ window.MATH_BANK.push(
   strategy: "Convert to standard form (x − h)² + (y − k)² = r² by completing the square in x and in y separately.",
   hint: "Half of −6 is −3, and half of 8 is 4. Add the squares of both to each side.",
   steps: [
-    "Group the variables: <div class=“mathwork”>(x² − 6x) + (y² + 8y) = 0</div>",
-    "Complete the square in x by adding 9, and in y by adding 16, to both sides: <div class=“mathwork”>(x² − 6x + 9) + (y² + 8y + 16) = 0 + 9 + 16</div>",
-    "Write as squares: <div class=“mathwork”>(x − 3)² + (y + 4)² = 25</div>",
+    "Group the variables: <div class=\'mathwork\'>(x² − 6x) + (y² + 8y) = 0</div>",
+    "Complete the square in x by adding 9, and in y by adding 16, to both sides: <div class=\'mathwork\'>(x² − 6x + 9) + (y² + 8y + 16) = 0 + 9 + 16</div>",
+    "Write as squares: <div class=\'mathwork\'>(x − 3)² + (y + 4)² = 25</div>",
     "Since r² = 25, the radius is 5. (The center is (3, −4).)"
   ],
   traps: {}
@@ -1455,9 +1456,9 @@ window.MATH_BANK.push(
   strategy: "An arc is a fraction of the full circumference, and that fraction is (central angle)/360.",
   hint: "The circumference is 20π. What fraction of the circle is 54°?",
   steps: [
-    "Full circumference: <div class=“mathwork”>C = 2π(10) = 20π</div>",
-    "Fraction of the circle: <div class=“mathwork”>54 / 360 = 0.15</div>",
-    "Multiply: <div class=“mathwork”>0.15 × 20π = 3π</div>"
+    "Full circumference: <div class=\'mathwork\'>C = 2π(10) = 20π</div>",
+    "Fraction of the circle: <div class=\'mathwork\'>54 / 360 = 0.15</div>",
+    "Multiply: <div class=\'mathwork\'>0.15 × 20π = 3π</div>"
   ],
   traps: {
     0: "Multiplied 54 by 0.1, treating degrees as though they were a length.",
@@ -1484,8 +1485,8 @@ window.MATH_BANK.push(
   hint: "Sketch a right triangle with legs 3 and 4. What is the hypotenuse?",
   steps: [
     "tan A = opposite/adjacent = 3/4, so label the opposite leg 3 and the adjacent leg 4.",
-    "Find the hypotenuse: <div class=“mathwork”>3² + 4² = 9 + 16 = 25\nhypotenuse = 5</div>",
-    "sin A = opposite/hypotenuse = <div class=“mathwork”>3 / 5 = 0.6</div>"
+    "Find the hypotenuse: <div class=\'mathwork\'>3² + 4² = 9 + 16 = 25\nhypotenuse = 5</div>",
+    "sin A = opposite/hypotenuse = <div class=\'mathwork\'>3 / 5 = 0.6</div>"
   ],
   traps: {
     0: "That is cos A (4/5), adjacent over hypotenuse.",
@@ -1505,8 +1506,8 @@ window.MATH_BANK.push(
   strategy: "Either find the diameter's length and halve it, or find the center with the midpoint formula and measure to one endpoint. Both work, pick one and stay with it.",
   hint: "Use the distance formula on the two endpoints, then remember what a diameter is.",
   steps: [
-    "Find the length of the diameter: <div class=“mathwork”>d = √[(6 − (−2))² + (9 − 3)²]\n= √[8² + 6²] = √100 = 10</div>",
-    "The radius is half the diameter: <div class=“mathwork”>10 / 2 = 5</div>",
+    "Find the length of the diameter: <div class=\'mathwork\'>d = √[(6 − (−2))² + (9 − 3)²]\n= √[8² + 6²] = √100 = 10</div>",
+    "The radius is half the diameter: <div class=\'mathwork\'>10 / 2 = 5</div>",
     "Cross-check with the midpoint: center = ((−2 + 6)/2, (3 + 9)/2) = (2, 6).",
     "Distance from (2, 6) to (6, 9): √(4² + 3²) = √25 = 5. ✓"
   ],
@@ -1524,9 +1525,9 @@ window.MATH_BANK.push(
   strategy: "Substitute the changes into the formula symbolically. Scaling questions are about which dimension is squared, so never plug in numbers before you see the structure.",
   hint: "In V = (1/3)πr²h, what happens to r² when r doubles?",
   steps: [
-    "Original volume: <div class=“mathwork”>V = (1/3)πr²h</div>",
-    "New dimensions: radius 2r, height h/2. Substitute: <div class=“mathwork”>V' = (1/3)π(2r)²(h/2)</div>",
-    "Simplify (2r)² = 4r²: <div class=“mathwork”>V' = (1/3)π · 4r² · h/2 = 2 · (1/3)πr²h</div>",
+    "Original volume: <div class=\'mathwork\'>V = (1/3)πr²h</div>",
+    "New dimensions: radius 2r, height h/2. Substitute: <div class=\'mathwork\'>V' = (1/3)π(2r)²(h/2)</div>",
+    "Simplify (2r)² = 4r²: <div class=\'mathwork\'>V' = (1/3)π · 4r² · h/2 = 2 · (1/3)πr²h</div>",
     "So V' = 2V, the new cone has twice the volume. Doubling the radius multiplies volume by 4, and halving the height divides by 2. ✓"
   ],
   traps: {}
@@ -1552,13 +1553,13 @@ window.MATH_BANK.push(
   hint: "Both labeled angles sit on the same side of the transversal, in matching positions at each parallel line, so they are corresponding angles.",
   steps: [
     "The two labeled angles are in matching positions at the two parallel lines, so they are corresponding angles and therefore equal.",
-    "Set them equal: <div class=“mathwork”>2x + 30 = 5x − 15</div>",
-    "Solve: <div class=“mathwork”>45 = 3x\nx = 15</div>",
+    "Set them equal: <div class=\'mathwork\'>2x + 30 = 5x − 15</div>",
+    "Solve: <div class=\'mathwork\'>45 = 3x\nx = 15</div>",
     "Check: 2(15) + 30 = 60 and 5(15) − 15 = 60. Equal. ✓"
   ],
   traps: {
     0: "Comes from a sign error such as 2x + 30 = 5x + 15.",
-    1: "This is the angle measure divided by something, or 3x. The question asks for x, not for the angle, 60° is the angle.",
+    1: "45 is the value of 3x, the line just before the final division. Your own work says 45 = 3x, so the answer is one step further on. Circle the variable the question names.",
     2: "Comes from setting the angles' sum to 180: 7x + 15 = 180 gives x ≈ 23.6, and rounding lands near 25. That relationship applies to co-interior angles, not corresponding ones."
   }
 },
@@ -1582,12 +1583,12 @@ window.MATH_BANK.push(
   steps: [
     "Angles are 90° at B, 60° at A, so angle C = 30°.",
     "AB is opposite angle C (30°), so AB = 5 is the short leg.",
-    "In a 30-60-90 triangle the long leg is √3 times the short leg, and BC is opposite the 60° angle: <div class=“mathwork”>BC = 5√3</div>",
+    "In a 30-60-90 triangle the long leg is √3 times the short leg, and BC is opposite the 60° angle: <div class=\'mathwork\'>BC = 5√3</div>",
     "Check with trigonometry: tan A = BC/AB, so BC = 5 · tan 60° = 5√3 ≈ 8.66. ✓"
   ],
   traps: {
     0: "That is the 45-45-90 ratio. Check the angles before choosing a ratio.",
-    1: "That is 5 ÷ tan 60°, which divides where it should multiply. BC is opposite the larger angle, so it must be longer than 5.",
+    1: "That is 5 ÷ sin 60°, the hypotenuse you get by treating AB = 5 as the side opposite the 60° angle. AB is a leg beside that angle, and the question asks for the other leg. The check that works here is the ratio, not the size: BC sits opposite 60° and AB opposite 30°, so BC = AB × √3.",
     2: "That is the hypotenuse AC = 2 × 5 = 10, not the leg BC."
   }
 }
@@ -1622,7 +1623,7 @@ window.MATH_BANK.push(
   traps: {
     0: "The extraneous root, which makes the right side -1 while a square root is always non-negative.",
     2: "Both roots of the squared equation, reported without checking either one.",
-    3: "Comes from a sign error while expanding (x + 4)\u00b2."
+    3: "Comes from a sign error while collecting terms: x² − 6x + 5 = 0 instead of x² + 6x + 5 = 0, whose roots are 1 and 5. Move one term at a time."
   }
 },
 
@@ -1697,9 +1698,9 @@ window.MATH_BANK.push(
   choices: [
     "2,250",
     "3,375",
-    "56",
+    "50",
     "4,500"
-  ],
+    ],
   answer: 0,
   strategy: "Convert every quantity to one unit of time before dividing. Multi-step rate problems fail at the conversion far more often than at the arithmetic.",
   hint: "How many seconds are in 1 hour and 15 minutes? And how many 90-second intervals is that?",
@@ -1711,7 +1712,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     1: "Treats the time as 75 intervals rather than converting to seconds first: 75 \u00d7 45. The units were never reconciled.",
-    2: "Divides where it should multiply, giving intervals rather than bottles.",
+    2: "50 is the number of 90-second intervals in the period, not the number of bottles. Each interval fills 45, so multiply. After you compute a number, ask what it counts.",
     3: "The number of seconds in the period, reported as bottles."
   }
 },
@@ -1770,7 +1771,7 @@ window.MATH_BANK.push(
   traps: {
     0: "Both roots of the squared equation, reported without testing either against the original.",
     2: "The extraneous root, which makes the right side \u22123 while the left side is a positive square root.",
-    3: "Comes from a sign slip while expanding (x \u2212 5)\u00b2."
+    3: "11 is the coefficient in x² − 11x + 18 = 0, which is the sum of the two roots, not a root. Numbers that show up in your work are not answers."
   }
 },
 
@@ -1828,7 +1829,7 @@ window.MATH_BANK.push(
   ],
   traps: {
     0: "Cancels the wrong factor, keeping (x + 2) instead of (x \u2212 2). Testing x = 0 rules it out in seconds.",
-    1: "Sign error factoring the denominator. x\u00b2 \u2212 x \u2212 6 factors as (x \u2212 3)(x + 2), not (x + 3)(x \u2212 2).",
+    1: "Two errors stacked: the denominator is factored with the wrong middle sign, then a factor on top is canceled against a different factor underneath. Expand any factoring before canceling, since (x + 3)(x − 2) = x² + x − 6, not x² − x − 6.",
     2: "Cancels the (x \u2212 3) rather than the shared (x + 2)."
   }
 },
@@ -1842,10 +1843,10 @@ window.MATH_BANK.push(
   prompt: "<div class=\'mathwork\'>y \u2265 2x \u2212 3\ny < \u2212x + 6</div>Which ordered pair (x, y) is a solution to the system of inequalities above?",
   choices: [
     "(0, 0)",
-    "(4, 4)",
+    "(4, 6)",
     "(1, 5)",
     "(5, 0)"
-  ],
+    ],
   answer: 0,
   strategy: "Do not graph. Test each pair in both inequalities and stop the moment one fails. Testing four points is far quicker than sketching two regions.",
   hint: "A solution has to satisfy both lines, not just one.",
@@ -1856,7 +1857,7 @@ window.MATH_BANK.push(
     "Test (5, 0): is 0 \u2265 2(5) \u2212 3 = 7? No. Eliminated."
   ],
   traps: {
-    1: "Fails both inequalities, but it sits close enough to the boundary lines to look plausible on a rough sketch.",
+    1: "Satisfies the first inequality but not the second: 6 < −4 + 6 = 2 is false. A point has to clear every inequality in the system, not just the one you happen to test first.",
     2: "Satisfies the first inequality and misses the second by exactly nothing: y must be strictly less than 5. Watch whether the sign is < or \u2264.",
     3: "Satisfies the second inequality only."
   }
@@ -1918,6 +1919,237 @@ window.MATH_BANK.push(
   }
 }
 
+);
+
+
+/* ---- Graph it before you solve it, and count the solutions ------------
+   Added after a review found the bank taught no Desmos habit at all and
+   split "how many solutions" across three unrelated strategies. ------- */
+window.MATH_BANK.push(
+{
+  id: "m072",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "What is the solution to the equation √(4x + 9) = x + 1?",
+  choices: [
+    "x = −2",
+    "x = 4",
+    "x = −2 and x = 4",
+    "x = 2"
+  ],
+  answer: 1,
+  strategy: "Graph both sides as separate functions and read where they cross. A radical equation can only be solved where the curve actually meets the line, so a false root has nowhere to hide.",
+  hint: "Enter y = √(4x + 9) and y = x + 1. How many times do they cross?",
+  steps: [
+    "In the graphing calculator, enter the left side and the right side as two functions.",
+    "They cross exactly once, at x = 4. That single crossing is the whole answer.",
+    "By hand you would square both sides: <div class='mathwork'>4x + 9 = x² + 2x + 1\nx² − 2x − 8 = 0\n(x − 4)(x + 2) = 0</div>",
+    "That gives x = 4 and x = −2, and only x = 4 survives the check: √25 = 5 and 4 + 1 = 5. ✓ At x = −2 the right side is −1, and a square root is never negative."
+  ],
+  traps: {
+    0: "The extraneous root. Squaring both sides invents it, because squaring turns −1 into 1. On the graph it is not a crossing at all.",
+    2: "Both roots of the squared equation, handed in without testing either one. Squaring is not a reversible step, so every root it produces has to go back into the original.",
+    3: "Comes from a sign error while collecting: x² + 2x − 8 = 0 gives roots 2 and −4. Move one term at a time."
+  }
+},
+{
+  id: "m073",
+  domain: "Algebra",
+  skill: "Systems of two linear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "<div class='mathwork'>3x + 7y = 27\n5x − 2y = 4</div>For the solution (x, y) to the system of equations above, what is the value of x + y?",
+  choices: [
+    "2",
+    "3",
+    "5",
+    "6"
+  ],
+  answer: 2,
+  strategy: "Two lines, one crossing point. Graph them and read the point off the screen, then do whatever the question asks with it.",
+  hint: "The graph hands you x and y. Read the question again before you pick.",
+  steps: [
+    "Enter both equations in the graphing calculator. They cross at (2, 3).",
+    "By hand: multiply the first by 2 and the second by 7 so the y terms cancel. <div class='mathwork'>6x + 14y = 54\n35x − 14y = 28\n41x = 82, so x = 2</div>",
+    "Substitute back: 3(2) + 7y = 27, so 7y = 21 and y = 3.",
+    "The question asks for x + y, which is 2 + 3 = 5. Choice C."
+  ],
+  traps: {
+    0: "This is x on its own. Finding the point is the work; reporting the right thing about it is the question.",
+    1: "This is y on its own. Circle the expression the question asks for before you start.",
+    3: "This is xy rather than x + y. Read the operation, not just the letters."
+  }
+},
+{
+  id: "m074",
+  domain: "Advanced Math",
+  skill: "Quadratic functions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "The function f is defined by f(x) = 2x² − 12x + 7. What is the minimum value of f?",
+  choices: [
+    "−11",
+    "3",
+    "7",
+    "−20"
+  ],
+  answer: 0,
+  strategy: "Graph the parabola and read the lowest point, or find the vertex x with −b/2a and then substitute. Either way the minimum value is a y, not an x.",
+  hint: "The lowest point on the graph has two coordinates. Which one is the value of the function?",
+  steps: [
+    "Graph y = 2x² − 12x + 7 and the lowest point sits at (3, −11).",
+    "By hand the vertex is at <div class='mathwork'>x = −b/2a = 12/4 = 3</div>",
+    "Substitute to get the value there: <div class='mathwork'>f(3) = 2(9) − 12(3) + 7 = 18 − 36 + 7 = −11</div>",
+    "The minimum value is −11, choice A."
+  ],
+  traps: {
+    1: "This is where the minimum happens, not the minimum itself. The question asks for the value of f, so you need the y.",
+    2: "This is f(0), the y-intercept. It is the value where the graph crosses the axis, not the lowest point.",
+    3: "Comes from dropping the leading 2: 9 − 36 + 7 = −20. The coefficient applies to x² before anything else."
+  }
+},
+{
+  id: "m075",
+  domain: "Advanced Math",
+  skill: "Equivalent expressions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "Which expression is equivalent to (2x² + 5x − 3)/(x + 3), where x ≠ −3?",
+  choices: [
+    "2x + 1",
+    "x − 1",
+    "2x − 1",
+    "2x − 3"
+  ],
+  answer: 2,
+  strategy: "Graph the original expression, then graph a candidate on top of it. If they lie on the same line everywhere, they are equivalent. Or factor the numerator and cancel.",
+  hint: "The numerator factors with (x + 3) as one of its factors. What is the other one?",
+  steps: [
+    "Factor the numerator: <div class='mathwork'>2x² + 5x − 3 = (2x − 1)(x + 3)</div>",
+    "The (x + 3) cancels against the denominator, leaving 2x − 1.",
+    "Check by graphing both, or substitute a number. At x = 5 the original is (50 + 25 − 3)/8 = 9, and 2(5) − 1 = 9. ✓",
+    "Choice C."
+  ],
+  traps: {
+    0: "Sign error in the factoring. Expand to check: (2x + 1)(x + 3) = 2x² + 7x + 3, which is not the numerator.",
+    1: "Drops the leading coefficient. The x² term has a 2 in front, so a factor has to carry it.",
+    3: "Uses the −3 from the numerator as the constant in the answer. Numbers you can see are not automatically numbers in the answer."
+  }
+},
+{
+  id: "m076",
+  domain: "Algebra",
+  skill: "Linear equations in one variable",
+  difficulty: "M",
+  type: "mc",
+  prompt: "In the equation 6(2x − 5) = ax + b, a and b are constants. If the equation has infinitely many solutions, what is the value of a + b?",
+  choices: [
+    "−18",
+    "12",
+    "−30",
+    "18"
+  ],
+  answer: 0,
+  strategy: "Infinitely many solutions means the two sides are the same expression. Expand one side and match it term by term against the other. Do not try to solve for x.",
+  hint: "If every x works, the left side and the right side have to be identical. Expand the left and compare.",
+  steps: [
+    "Expand the left side: <div class='mathwork'>6(2x − 5) = 12x − 30</div>",
+    "For every value of x to work, 12x − 30 and ax + b must be the same expression.",
+    "Matching term by term: a = 12 and b = −30.",
+    "So a + b = 12 + (−30) = −18. Choice A."
+  ],
+  traps: {
+    1: "This is a on its own. The question asks for the sum.",
+    2: "This is b on its own. Both constants matter here.",
+    3: "Right size, wrong sign. The constant is −30, so the sum is negative. Carry the minus through the addition."
+  }
+},
+{
+  id: "m077",
+  domain: "Algebra",
+  skill: "Systems of two linear equations",
+  difficulty: "H",
+  type: "mc",
+  prompt: "<div class='mathwork'>2x + 3y = 8\n6x + ky = 5</div>In the system of equations above, k is a constant. For which value of k does the system have no solution?",
+  choices: [
+    "3",
+    "9",
+    "24",
+    "−9"
+  ],
+  answer: 1,
+  strategy: "No solution means the two lines are parallel: the x and y coefficients are in the same ratio, but the constants are not. Compare the coefficients rather than solving.",
+  hint: "What do you multiply 2x by to get 6x? Do the same thing to the y coefficient.",
+  steps: [
+    "The x coefficients go from 2 to 6, a factor of 3.",
+    "For parallel lines the y coefficients need the same factor: <div class='mathwork'>k = 3 × 3 = 9</div>",
+    "Check that the constants do not match the same factor: 3 × 8 = 24, and the second equation has 5, not 24. Different constants means parallel and never touching, so no solution. ✓",
+    "Choice B. Had the constant been 24, the two equations would be the same line and there would be infinitely many solutions instead."
+  ],
+  traps: {
+    0: "This is the ratio between the equations, not k itself. It is a real number from the correct work, one step early.",
+    2: "This is the constant that would give infinitely many solutions, which is the opposite of what was asked. With 6x + 9y = 24 the second equation is just the first one tripled.",
+    3: "Right size, wrong sign. Multiplying 3y by a positive 3 gives +9y; nothing in the setup flips the sign."
+  }
+},
+{
+  id: "m078",
+  domain: "Advanced Math",
+  skill: "Nonlinear equations",
+  difficulty: "M",
+  type: "mc",
+  prompt: "What is the solution to the equation (x + 2)/(x − 1) = 3?",
+  choices: [
+    "1",
+    "2.5",
+    "−2",
+    "5"
+  ],
+  answer: 1,
+  strategy: "Four choices and one equation means you can just test them. Substitute each choice into the original and keep the one that makes it true.",
+  hint: "One of these choices makes the denominator zero. Rule it out before you test anything.",
+  steps: [
+    "x = 1 makes the denominator zero, so it cannot be a solution no matter what else happens. Cross it out first.",
+    "Test 2.5: <div class='mathwork'>(2.5 + 2)/(2.5 − 1) = 4.5/1.5 = 3</div> ✓",
+    "By hand: multiply both sides by (x − 1) to get x + 2 = 3x − 3, so 5 = 2x and x = 2.5.",
+    "Choice B."
+  ],
+  traps: {
+    0: "The excluded value. It makes the denominator zero, so it is the one choice you can eliminate without any arithmetic at all.",
+    2: "Comes from setting the numerator to zero instead of solving the equation. A fraction equals 3 here, not 0.",
+    3: "Comes from 3x − 3 = x + 2 solved as 2x = 10. Check the constant: moving 2 across gives 5, not 10."
+  }
+},
+{
+  id: "m079",
+  domain: "Advanced Math",
+  skill: "Equivalent expressions",
+  difficulty: "M",
+  type: "mc",
+  prompt: "Which expression is equivalent to (x + 3)² − (x − 3)²?",
+  choices: [
+    "6x",
+    "12x",
+    "18",
+    "2x² + 18"
+  ],
+  answer: 1,
+  strategy: "Plug in a number and test the choices. Avoid 0, 1, and 2, because small numbers make different expressions collide. If two choices survive, test a second number.",
+  hint: "Try x = 3, then notice that two choices both work and you have to try again.",
+  steps: [
+    "Test x = 3. The original is 6² − 0² = 36. Choice B gives 12(3) = 36 ✓ and choice D gives 2(9) + 18 = 36 ✓ as well. Two survivors, so that number did not settle it.",
+    "Test a second number, x = 5. The original is 8² − 2² = 64 − 4 = 60. Choice B gives 60 ✓ but choice D gives 68 ✗.",
+    "By hand: <div class='mathwork'>(x² + 6x + 9) − (x² − 6x + 9) = 12x</div>",
+    "Choice B. This is exactly why the rule is to avoid convenient numbers and to test twice when two choices survive."
+  ],
+  traps: {
+    0: "Half the answer. Subtracting the two expansions gives 6x − (−6x) = 12x, and the double negative is the step that gets dropped.",
+    2: "Comes from subtracting only the constants, 9 − (−9), and ignoring the x terms.",
+    3: "Adds the two squares instead of subtracting them. It is also the choice that survives a test at x = 3, which is what makes the second test worth doing."
+  }
+}
 );
 
 /* stamp the section onto every item */

@@ -331,7 +331,7 @@
       var lockedNow = lockedCount();
       h += '<div class="card mode-card cards"><div class="icon">' + ic('bolt') + '</div>' +
         '<h3>Strategy cards</h3>' +
-        '<p>Quick recall on the 22 moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
+        '<p>Quick recall on all ' + Object.keys(window.STRATS).length + ' moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
         '<div class="spacer"></div><div class="meta">' + lockedNow + ' of ' +
         Object.keys(window.STRATS).length + ' locked in' + (dueNow ? ' \u00b7 ' + dueNow + ' due now' : ' \u00b7 none due') + '</div>' +
         '<div class="card-actions"><button class="btn" onclick="APP.go(\'cards\')">' +
@@ -396,7 +396,7 @@
       '<div class="card"><h3>Trap catalog</h3><p>All ' + Object.keys(window.TRAPS).length +
       ' tricks the test uses to build wrong answers, with how to spot each one.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.trapBook()">Open</button></div></div>' +
-      '<div class="card"><h3>Math reference sheet</h3><p>The formula sheet the real test gives you. Knowing when to open it is the skill.</p>' +
+      '<div class="card"><h3>Math formulas</h3><p>What the test hands you, and the dozen it does not. The second list is the one worth knowing.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.reference()">Open</button></div></div>' +
       '<div class="card"><h3>Why strategies matter</h3><p>The argument, with a real question: every wrong ' +
       'answer on the SAT was built for a specific mistake, and there are only so many of them.</p>' +
@@ -407,7 +407,7 @@
       'only scoring worth trusting. Come back here to work out why you missed what you missed.</p>' +
       '<div class="spacer"></div><div class="card-actions">' +
       '<button class="btn ghost sm" onclick="APP.testFormat()">How the real test is built</button></div></div>' +
-      '<div class="card"><h3>Everything to lock in</h3><p>The full checklist: 22 strategies and 42 traps, with everything you have already locked in ticked off.</p>' +
+      '<div class="card"><h3>Everything to lock in</h3><p>The full checklist: ' + Object.keys(window.STRATS).length + ' strategies and ' + Object.keys(window.TRAPS).length + ' traps, with everything you have already locked in ticked off.</p>' +
         '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.go(\'coverage\')">Open checklist</button></div></div>' +
         '<div class="card"><h3>Colors</h3><p>Five palettes. Pick the one you like opening.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.colors()">Change colors</button></div></div>' +
@@ -932,10 +932,10 @@
 
       h += '<div class="section-title">What you learn here</div>';
       h += '<div class="card"><div class="two-col">' +
-        '<div><h3>22 strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
+        '<div><h3>' + Object.keys(window.STRATS).length + ' strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
         'Circle the quantity before you solve. Name the relationship before you pick the transition. Each one is ' +
         'a habit, not a fact.</p></div>' +
-        '<div><h3>42 traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
+        '<div><h3>' + Object.keys(window.TRAPS).length + ' traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
         'allows, it does half the job, it points the right idea the wrong way, it describes the wrong thing, it ' +
         'breaks a grammar rule, or it slips a step.</p></div>' +
         '</div><p class="note" style="margin-top:16px">The app tracks which of those still work on you, and ' +
@@ -1090,8 +1090,15 @@
 
     function cvRow(id, name, blurb, c, kind) {
       var act = kind === 'trap' ? 'APP.drillTrap' : 'APP.drillStrat';
-      var recipe = (kind === 'strat' && window.STRATS[id] && window.STRATS[id].gen)
+      var st = kind === 'strat' ? window.STRATS[id] : null;
+      var recipe = (st && st.gen)
         ? ' <button class="link-btn tiny" onclick="APP.showRecipe(\'' + id + '\')">recipe</button>' : '';
+      if (st && st.meta) {
+        return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
+        '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
+        '<div><span class="pill soft">every question</span></div>' +
+        '<div style="text-align:right"><span class="n">habit, not a topic</span></div></div>';
+      }
       return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
       '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
       '<div>' + stateChip(c) + '</div>' +
@@ -1135,7 +1142,7 @@
         'unlearned, so you never run out and every strategy gets covered. Setup is in SETUP-CLOUD.md.</p></div>';
       }
 
-      h += '<div class="section-title">The 22 moves</div>';
+      h += '<div class="section-title">The ' + Object.keys(window.STRATS).length + ' moves</div>';
       ['rw', 'math'].forEach(function (sec) {
           h += '<div class="card" style="margin-bottom:12px"><h3>' +
           (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</h3>';
@@ -1146,7 +1153,7 @@
           h += '</div>';
       });
 
-      h += '<div class="section-title">The 42 traps</div>';
+      h += '<div class="section-title">The ' + Object.keys(window.TRAPS).length + ' traps</div>';
       Object.keys(window.TRAP_FAMILIES).forEach(function (fam) {
           h += '<div class="card" style="margin-bottom:12px"><h3>' + window.TRAP_FAMILIES[fam].name + '</h3>' +
           '<p style="margin-bottom:8px">' + window.TRAP_FAMILIES[fam].blurb + '</p>';
@@ -2239,12 +2246,19 @@
         s.textContent = cur + k;
       },
       reference: function () {
-        var h = '<div class="refsheet">';
-        window.STRATEGIES.reference.forEach(function (r) {
+        function grid(rows) {
+          var h = '<div class="refsheet">';
+          rows.forEach(function (r) {
             h += '<div class="item"><b>' + r.label + '</b><div class="f">' + r.formula + '</div></div>';
-        });
-        h += '</div><p class="note" style="margin-top:14px">This is the reference sheet the real test gives you with every math module. You do not need to memorize it, but you do need to know when to open it.</p>';
-        openModal('Math reference sheet', h);
+          });
+          return h + '</div>';
+        }
+        var h = '<p class="note" style="margin:0 0 12px">Bluebook shows you this with every math module, so you do not need to memorize it. Knowing when to open it is the skill.</p>';
+        h += grid(window.STRATEGIES.reference);
+        h += '<h4 style="margin:22px 0 6px">Not on the sheet</h4>';
+        h += '<p class="note" style="margin:0 0 12px">These are not provided. If you need one of them mid-question and do not have it, you lose the question, so these are the ones to actually know.</p>';
+        h += grid(window.STRATEGIES.memorize);
+        openModal('Math formulas', h);
       },
       highlight: function () {
         var sel = window.getSelection();
