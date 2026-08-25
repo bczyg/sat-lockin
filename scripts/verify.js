@@ -190,31 +190,41 @@ if (!Array.isArray(window.STRATEGIES.memorize) || window.STRATEGIES.memorize.len
 notes.push(`reference sheet: ${window.STRATEGIES.reference.length} provided, ` +
            `${window.STRATEGIES.memorize.length} to memorize`);
 
-/* ---------- 4. the blueprint can still build a full test ---------- */
+/* ---------- 4. every strategy and every trap can actually be drilled ----------
+   The app is two catalogs and a daily loop through them. If picking an entry
+   from either list cannot assemble a set, that entry is a dead end. */
 await load('js/engine.js');
-const need = { rw: { count: 27, dom: {} }, math: { count: 22, dom: {} } };
-for (const [sec, bp] of Object.entries(window.SATP.BLUEPRINT)) {
-  for (const [dom, n] of Object.entries(bp.domains)) {
-    const have = bank.filter((q) => q.section === sec && q.domain === dom).length;
-    if (have < n * 2) {
-      fail(`blueprint: ${sec} needs ${n * 2} questions in "${dom}" for two modules, bank has ${have}`);
-    }
-  }
+
+function drillFor(kind, id) {
+  const match = kind === 'strat'
+  ? (q) => window.tagsFor(q).strat === id
+  : (q) => Object.values(window.tagsFor(q).traps || {}).includes(id);
+  const pool = bank.filter(match);
+  if (!pool.length) return { n: 0 };
+  const s = new window.SATP.Session({
+    kind: 'drill', section: 'both', count: Math.min(pool.length, 10),
+    label: 'check', filter: match, seed: 99
+  });
+  s.stopTimer();
+  const qs = s.mod().questions;
+  return { n: qs.length, offTarget: qs.filter((q) => !match(q)).length };
 }
-const s = new window.SATP.Session({ kind: 'full', seed: 4242 });
-s.stopTimer();
-const sizes = [];
-let guard = 0;
-while (!s.finished && guard++ < 12) {
-  const m = s.mod();
-  if (m.kind !== 'break') sizes.push(`${m.section}${m.num}:${m.questions.length}`);
-  s.stopTimer(); s.advanceModule(); s.stopTimer();
+
+let drillable = 0;
+for (const id of Object.keys(window.STRATS)) {
+  if (window.STRATS[id].meta) continue;
+  const r = drillFor('strat', id);
+  if (!r.n) { fail(`strategy "${id}" is on the list but no set can be built for it`); continue; }
+  if (r.offTarget) fail(`strategy "${id}" drill included ${r.offTarget} questions tagged with another move`);
+  drillable++;
 }
-if (sizes.join(' ') !== 'rw1:27 rw2:27 math1:22 math2:22') {
-  fail(`a full test did not assemble correctly, got: ${sizes.join(' ')}`);
-} else {
-  notes.push('a full adaptive test assembles: 27/27 RW, 22/22 Math');
+for (const id of Object.keys(window.TRAPS)) {
+  const r = drillFor('trap', id);
+  if (!r.n) { fail(`trap "${id}" is on the list but no set can be built for it`); continue; }
+  if (r.offTarget) fail(`trap "${id}" drill included ${r.offTarget} questions without that trap`);
+  drillable++;
 }
+notes.push(`${drillable} catalog entries all assemble a practice set`);
 
 /* ---------- 5. house style ---------- */
 /* Em dashes are allowed only inside passages, prompts and answer choices,

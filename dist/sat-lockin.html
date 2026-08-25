@@ -920,6 +920,109 @@ body{background:var(--shell-bg)}
   border:1px solid var(--shell-line);border-radius:999px;padding:1px 8px}
 .link-btn.tiny:hover{background:var(--brand-soft);border-color:var(--brand)}
 
+/* ============================================================
+   TODAY, THE TWO CATALOGS, AND THE PASTE BRIDGE
+   The app is two lists and a daily loop through them, so home is
+   built from exactly three blocks and nothing competes with them.
+   ============================================================ */
+.today{
+  background:var(--brand-soft);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px;margin:18px 0;
+}
+.today .t-kicker{
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--brand-ink);font-weight:700;margin-bottom:6px;
+}
+.today h2{font-size:21px;margin:0 0 16px;text-wrap:balance}
+.today-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.today-card{
+  background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;
+}
+.today-card .tc-lbl{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:700;
+}
+.today-card h3{font-size:16px;margin:0;text-wrap:balance}
+.today-card p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;flex:1}
+.today-card .btn{margin-top:4px}
+
+.two-up{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.big-entry{
+  display:block;text-align:left;cursor:pointer;font:inherit;color:inherit;
+  background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+  transition:border-color .12s,transform .12s;
+}
+.big-entry:hover{border-color:var(--brand);transform:translateY(-1px)}
+.big-entry:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.big-entry .be-num{
+  font-size:34px;font-weight:800;line-height:1;color:var(--brand-ink);
+  font-variant-numeric:tabular-nums;
+}
+.big-entry .be-num span{font-size:16px;font-weight:600;color:var(--ink-soft)}
+.big-entry.spot .be-num{color:var(--red)}
+.big-entry .be-name{font-size:17px;font-weight:700;margin:8px 0 3px}
+.big-entry .be-sub{font-size:13px;color:var(--ink-soft);line-height:1.45}
+
+.paste-entry{
+  display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;
+  cursor:pointer;font:inherit;color:inherit;
+  background:var(--bg);border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;
+  transition:border-color .12s,background .12s;
+}
+.paste-entry:hover{border-color:var(--brand);background:var(--bg-soft)}
+.paste-entry:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.paste-entry .pe-icon{color:var(--brand-ink);flex:0 0 auto;margin-top:1px}
+.paste-entry .pe-name{font-size:15.5px;font-weight:700;margin-bottom:3px}
+.paste-entry .pe-sub{font-size:13px;color:var(--ink-soft);line-height:1.45}
+
+.home-foot{margin-top:22px;text-align:center}
+.cv-note{padding:10px 2px 2px;font-size:13.5px}
+
+/* ---- pasted question ---- */
+.az-text{
+  width:100%;font:inherit;font-size:14.5px;line-height:1.55;padding:12px 13px;
+  border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);
+  resize:vertical;min-height:150px;
+}
+.az-text:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:var(--brand)}
+.az-manual{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 14px}
+.az-select{
+  font:inherit;font-size:14px;padding:10px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--bg);color:var(--ink);width:100%;
+}
+.az-card{border:1px solid var(--line);border-left-width:4px;border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.az-card.strat{border-left-color:var(--brand);background:var(--brand-soft)}
+.az-card.trap{border-left-color:var(--red);background:var(--red-soft)}
+.az-card h3{font-size:17px;margin:2px 0 8px}
+.az-card p{margin:0 0 8px;font-size:14px;line-height:1.55}
+.az-card .az-lbl{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);
+}
+.az-card .az-move{font-weight:600}
+.az-steps{padding-left:22px;margin:0}
+.az-steps li{margin-bottom:8px;line-height:1.55}
+.az-row{
+  display:grid;grid-template-columns:34px 1fr 110px;gap:12px;align-items:center;
+  padding:11px 0;border-top:1px solid var(--line);
+}
+.az-row:first-of-type{border-top:0}
+.az-ch{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line-strong);font-size:13px;font-weight:700;
+}
+.az-warn{
+  background:var(--amber-soft);color:var(--amber);border-radius:8px;
+  padding:11px 13px;margin:0 0 14px;font-size:13.5px;line-height:1.5;
+}
+.az-wait{color:var(--ink-soft);font-size:14px;padding:10px 0}
+
+@media (max-width:720px){
+  .today-pair,.two-up,.az-manual{grid-template-columns:1fr}
+  .az-row{grid-template-columns:30px 1fr;row-gap:6px}
+  .az-row>div:last-child{grid-column:1 / -1;text-align:left !important}
+}
+
 </style>
 <div id="shell"></div>
 
@@ -975,18 +1078,6 @@ window.CONFIG = {
   /* Shown on the sign-in screen so students know they are in the right place. */
   className: '',
 
-  /* The 98-question full test is hidden by default, on purpose.
-
-     Bluebook is the real test software with real retired items and real
-     scoring, so a homemade imitation is strictly worse at the one job it
-     would have. This app is for learning the strategies and finding the
-     traps; take the practice tests in Bluebook.
-
-     The mode still works and nothing was deleted. Set this to true to bring
-     the card back, which is worth doing only once the bank is large enough
-     for several full tests without repeating questions. */
-  showFullTest: false,
-
   /* Which model handles which job. Haiku is fast and cheap for conversation;
      Sonnet does the work that needs real reasoning. Question writing always
      runs on Sonnet or better, whatever is set here, because a weak wrong
@@ -995,7 +1086,8 @@ window.CONFIG = {
     chat:     'claude-haiku-4-5',   // follow-up questions on a problem
     explain:  'claude-haiku-4-5',   // re-explain a step a different way
     coach:    'claude-sonnet-5',    // a coaching note from her own data
-    generate: 'claude-sonnet-5'     // writing brand new practice questions
+    generate: 'claude-sonnet-5',    // writing brand new practice questions
+    analyze:  'claude-sonnet-5'     // naming the strategy and trap in a pasted question
   },
 
   /* Only for running the tutor on your own machine with no database, which
@@ -8496,7 +8588,7 @@ window.STRATEGIES = {
 
     var shell = document.getElementById('shell');
     var S = null;            // active Session
-    var view = 'home';       // home | skills | progress | directions | break | exam | review
+    var view = 'home';       // landing | home | strategies | traps | analyze | cards | auth | class | exam | review
     var reviewData = null;   // attempt being reviewed
     var reviewFilter = 'all';
     var ALLQ = {};
@@ -8523,47 +8615,31 @@ window.STRATEGIES = {
     var authState = { email: '', stage: 'email', busy: false, msg: '', err: '' };
     var classState = { roster: null, traps: null, loading: false };
 
-    /* State for logging misses from an official practice test. */
-    var log = {
-      step: 'start',        // start | question | done
-      source: '',
-      section: 'rw',
-      count: 0,
-      idx: 0,
-      current: {},
-      rows: [],
-      expanded: false
+    /* State for a question pasted in from a real practice test. */
+    var az = {
+      text: '',
+      picked: '',
+      busy: false,
+      res: null,
+      err: '',
+      saved: false,
+      mStrat: '',
+      mTrap: ''
     };
 
     /* Which traps actually occur on questions of a given skill, most common
        first. The picker is built from the bank rather than a fixed list, so the
        options a student sees are always the ones that skill can produce. */
-    function trapsForSkill(skill) {
-      var counts = {};
-      window.RW_BANK.concat(window.MATH_BANK).forEach(function (q) {
-        if (q.skill !== skill) return;
-        var t = window.tagsFor(q).traps;
-        Object.keys(t).forEach(function (k) { counts[t[k]] = (counts[t[k]] || 0) + 1; });
-      });
-      return Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
-    }
-
-    function skillsForSection(sec) {
-      var out = {};
-      window.SATP.bankFor(sec).forEach(function (q) {
-        (out[q.domain] = out[q.domain] || []);
-        if (out[q.domain].indexOf(q.skill) < 0) out[q.domain].push(q.skill);
-      });
-      return out;
-    }
-
-    function stratForSkill(skill) {
-      var q = window.RW_BANK.concat(window.MATH_BANK).filter(function (x) { return x.skill === skill; })[0];
-      return q ? window.tagsFor(q).strat : null;
-    }
-
     function boot() {
       applyPalette(currentPalette());
+      /* Someone who has never answered a question here has no reason yet to
+         care about either list, so they get the argument first. */
+      try {
+        if (!localStorage.getItem('lockin.seenlanding') && !window.Store.agg().total.seen) {
+          view = 'landing';
+          localStorage.setItem('lockin.seenlanding', '1');
+        }
+      } catch (e) {}
       (window.RW_BANK || []).concat(window.MATH_BANK || []).forEach(function (q) { ALLQ[q.id] = q; });
       if (window.Cloud) {
         /* The server is asked what it supports after the first paint, so this
@@ -8576,7 +8652,7 @@ window.STRATEGIES = {
           if (C.enabled && !C.signedIn() && !skipped && view === 'home') {
             view = 'auth';
           }
-          if (view === 'auth' || view === 'home' || view === 'class' || view === 'coverage') render();
+          if (view === 'auth' || view === 'home' || view === 'class' || view === 'strategies' || view === 'traps' || view === 'analyze') render();
         });
       }
       document.addEventListener('keydown', onKey);
@@ -8645,20 +8721,16 @@ window.STRATEGIES = {
 
     /* ---------------- render dispatch ---------------- */
     function render() {
-      if (view === 'exam' || view === 'break' || view === 'directions') rememberScroll();
+      if (view === 'exam') rememberScroll();
       var html =
       view === 'home' ? homeHTML() :
-      view === 'skills' ? skillsHTML() :
-      view === 'progress' ? progressHTML() :
-      view === 'diagnosis' ? diagnosisHTML() :
+      view === 'landing' ? landingHTML() :
+      view === 'strategies' ? strategiesHTML() :
+      view === 'traps' ? trapsHTML() :
+      view === 'analyze' ? analyzeHTML() :
+      view === 'cards' ? cardsHTML() :
       view === 'auth' ? authHTML() :
       view === 'class' ? classHTML() :
-      view === 'coverage' ? coverageHTML() :
-      view === 'logger' ? loggerHTML() :
-      view === 'cards' ? cardsHTML() :
-      view === 'about' ? aboutHTML() :
-      view === 'directions' ? directionsHTML() :
-      view === 'break' ? breakHTML() :
       view === 'exam' ? examHTML() :
       view === 'review' ? reviewHTML() : '';
       shell.innerHTML = html;
@@ -8690,431 +8762,92 @@ window.STRATEGIES = {
     }
 
     /* what to do next, chosen from her own data */
-    function mission() {
-      var agg = window.Store.agg();
-      var missed = window.Store.missedQueue(60);
-      var trap = window.Store.topTraps(1)[0];
-      var weak = window.Store.weakestStrats(1)[0];
-
-      if (!agg.total.seen) {
-        return { kicker: 'Start here', title: 'Warm up with ten questions',
-          body: 'Answer ten questions and this screen turns into a map of exactly which tricks the SAT plays on you.',
-          cta: 'Start a 10-question set', act: 'APP.quickMix()' };
-      }
-      if (missed.length >= 5) {
-        return { kicker: 'Do this first', title: 'Fix the ' + Math.min(missed.length, 10) + ' you got wrong',
-          body: 'You have ' + missed.length + ' questions waiting where your last answer was wrong. Coming back to those a few days later is honestly the most useful thing you can do with 15 minutes.',
-          cta: 'Retry them', act: 'APP.drillMissed()', alt: 'See the full diagnosis', altAct: "APP.go('diagnosis')" };
-      }
-      if (trap && window.TRAPS[trap.id] && trap.n >= 2) {
-        var tp = window.TRAPS[trap.id];
-        return { kicker: 'The trap that keeps getting you', title: tp.name,
-          body: 'This one has caught you ' + trap.n + ' times. ' + tp.fix + ' Here are ten questions with that exact trap sitting in the choices, so you can practice spotting it.',
-          cta: 'Practice against it', act: "APP.drillTrap('" + trap.id + "')", alt: 'See the full diagnosis', altAct: "APP.go('diagnosis')" };
-      }
-      if (weak && window.STRATS[weak.id]) {
-        var st = window.STRATS[weak.id];
-        return { kicker: 'The move to practice', title: st.name,
-          body: st.move + ' Right now you are getting ' + weak.right + ' of ' + weak.seen + ' when this move is what is being tested.',
-          cta: 'Practice this move', act: "APP.drillStrat('" + weak.id + "')", alt: 'See the full diagnosis', altAct: "APP.go('diagnosis')" };
-      }
-      if (window.CONFIG && window.CONFIG.showFullTest) {
-        return { kicker: 'Nothing needs fixing', title: 'Time for a full test',
-          body: 'Nothing is flagged for you right now, so the best use of a free couple of hours is a full test under real timing.',
-          cta: 'Start full test', act: 'APP.startFull()' };
-      }
-      return { kicker: 'Nothing needs fixing', title: 'Run a module against the clock',
-        body: 'Nothing is flagged for you right now. Take a single module under real timing to work on pace, ' +
-              'then sit a full practice test in Bluebook when you want a score.',
-        cta: 'Reading and Writing module', act: "APP.startSection('rw')",
-        alt: 'Math module', altAct: "APP.startSection('math')" };
-    }
-
+    /* The whole app is two catalogs and a daily loop through them, so home
+       is: how you are doing, one move to work, one trap to work, the two
+       lists, and the way back in from a real practice test. Nothing else. */
     function homeHTML() {
       var d = window.Store.data();
-      var agg = window.Store.agg();
-      var last = d.attempts[0];
+      var sum = window.Store.coverageSummary();
       var streak = window.Store.streak();
       var today = window.Store.answeredToday();
       var C = window.Cloud;
-      var m = mission();
-      var firstName = String(d.name || 'there').split(' ')[0];
+      var firstName = String(d.name || '').split(' ')[0];
+      var weakStrat = (window.Store.weakestStrats(1) || [])[0];
+      var weakTrap = (window.Store.topTraps(1) || [])[0];
+      var nextStrat = weakStrat ? weakStrat.id : firstUnmet('strat');
+      var nextTrap = weakTrap ? weakTrap.id : firstUnmet('trap');
 
       var h = '<div class="home">';
 
-      /* ---- greeting row ---- */
       h += '<div class="greet"><div>' +
-      '<div class="hi">' + (agg.total.seen ? 'Hi ' + esc(firstName) : wordmark()) + '</div>' +
-      '<div class="tagline">' + (agg.total.seen ? window.BRAND.tagline : esc(window.BRAND.tagline)) + '</div>' +
+      '<div class="hi">' + (firstName ? 'Hi ' + esc(firstName) : wordmark()) + '</div>' +
+      '<div class="tagline">' + esc(window.BRAND.tagline) + '</div>' +
       '</div><div class="chips">';
       if (streak > 0) h += '<span class="chip streak">' + ic('bolt') + streak + '-day streak</span>';
-      if (today > 0) h += '<span class="chip up">' + today + ' today</span>';
+      h += '<span class="chip' + (today > 0 ? ' up' : '') + '">' + today + ' today</span>';
       if (C && C.enabled) {
-        h += C.signedIn()
-        ? '<span class="chip live">' + ic('cloud') + 'Saved to your account</span>'
-        : '<span class="chip">This device only</span>';
-        h += '<button class="chip acct">' + ic('user') + '<span onclick="APP.account()">' +
-        (C.signedIn() && C.profile ? esc(C.profile.display_name || 'Account') : 'Sign in') + '</span></button>';
+        h += '<button class="chip acct" onclick="APP.account()">' + ic('user') +
+        esc(C.signedIn() && C.profile ? (C.profile.display_name || 'Account') : 'Sign in') + '</button>';
       } else {
-        h += '<button class="chip acct" onclick="APP.rename()">' + ic('user') + esc(d.name) + '</button>';
+        h += '<button class="chip acct" onclick="APP.rename()">' + ic('user') + esc(d.name || 'You') + '</button>';
       }
       if (C && C.signedIn() && C.profile && C.profile.role === 'teacher') {
         h += '<button class="chip acct" onclick="APP.openClass()">' + ic('people') + 'Class</button>';
       }
       h += '</div></div>';
 
-      /* ---- mission ---- */
-      h += '<div class="mission"><div class="m-body">' +
-      '<div class="m-kicker">' + m.kicker + '</div>' +
-      '<h2>' + m.title + '</h2><p>' + m.body + '</p>' +
-      '<div class="m-actions"><button class="btn" onclick="' + m.act + '">' + m.cta + '</button>' +
-      (m.alt ? '<button class="btn ghost" onclick="' + m.altAct + '">' + m.alt + '</button>' : '') +
-      '</div></div></div>';
-
-      /* ---- stat tiles ---- */
-      if (agg.total.seen) {
-        var trapCount = 0;
-        Object.keys(agg.traps).forEach(function (k) { trapCount += agg.traps[k].n; });
-        h += '<div class="tiles">';
-        h += '<div class="tile"><div class="t-lbl">Accuracy</div><div class="t-val">' + pct(agg.total.right, agg.total.seen) + '%</div>' +
-        '<div class="t-sub">' + agg.total.right + ' right out of ' + agg.total.seen + '</div></div>';
-        if (last && last.total) {
-          h += '<div class="tile"><div class="t-lbl">Latest total</div><div class="t-val">' + last.total + '</div>' +
-          '<div class="t-sub">estimate, out of 1600</div></div>';
-        }
-        h += '<div class="tile spot"><div class="t-lbl">Traps dodged</div><div class="t-val">' +
-        (agg.total.seen - trapCount) + '</div><div class="t-sub">' + trapCount + ' slipped through</div></div>';
-        h += '<div class="tile"><div class="t-lbl">Questions seen</div><div class="t-val">' +
-        Object.keys(window.Store.seenCount()).length + '</div><div class="t-sub">of ' +
-        (window.RW_BANK.length + window.MATH_BANK.length) + ' in the bank</div></div>';
-        h += '</div>';
+      h += '<div class="today"><div class="t-kicker">' +
+      (today > 0 ? 'Done for today. Anything else is a bonus.' : 'Today') + '</div>';
+      h += '<h2>' + (today > 0 ? 'One more set?' : 'One move and one trap. That is the day.') + '</h2>';
+      h += '<div class="today-pair">';
+      if (nextStrat && window.STRATS[nextStrat]) {
+        h += '<div class="today-card"><div class="tc-lbl">Strategy</div>' +
+        '<h3>' + esc(window.STRATS[nextStrat].name) + '</h3>' +
+        '<p>' + esc(window.STRATS[nextStrat].move) + '</p>' +
+        '<button class="btn" onclick="APP.drillStrat(\'' + nextStrat + '\')">Practice this move</button></div>';
       }
+      if (nextTrap && window.TRAPS[nextTrap]) {
+        h += '<div class="today-card"><div class="tc-lbl">Trap</div>' +
+        '<h3>' + esc(window.TRAPS[nextTrap].name) + '</h3>' +
+        '<p>' + esc(window.TRAPS[nextTrap].tell) + '</p>' +
+        '<button class="btn" onclick="APP.drillTrap(\'' + nextTrap + '\')">Practice spotting it</button></div>';
+      }
+      h += '</div></div>';
 
-      /* ---- practice modes ---- */
-      h += '<div class="section-title">Practice</div><div class="card-grid">';
-
-      if (window.CONFIG && window.CONFIG.showFullTest) {
-    h += '<div class="card mode-card full"><div class="icon">' + ic('clock') + '</div>' +
-      '<h3>Full-length test</h3>' +
-      '<p>The real thing. Two Reading and Writing modules, a 10 minute break, then two Math modules. Module 2 gets harder or easier depending on how Module 1 goes, exactly like the real test.</p>' +
-      '<div class="spacer"></div><div class="meta">98 questions \u00b7 2 hr 14 min</div>' +
-      '<div class="card-actions"><button class="btn" onclick="APP.startFull()">Start</button></div></div>';
-    }
-
-      h += '<div class="card mode-card sec"><div class="icon">' + ic('layers') + '</div>' +
-      '<h3>One section</h3>' +
-      '<p>Both modules of one section with the real clock running, or a single module if you have half an hour. ' +
-      'This is pace practice, not a score.</p>' +
-      '<div class="spacer"></div><div class="meta">54 q / 64 min \u00b7 44 q / 70 min</div>' +
-      '<div class="card-actions"><button class="btn" onclick="APP.startSection(\'rw\')">Reading &amp; Writing</button>' +
-      '<button class="btn ghost" onclick="APP.startSection(\'math\')">Math</button></div></div>';
-
-      h += '<div class="card mode-card skill"><div class="icon">' + ic('target') + '</div>' +
-      '<h3>Untimed practice</h3>' +
-      '<p>One skill at a time, no clock. You get a hint, the strategy, a full worked solution, and the name of the trick behind every wrong answer.</p>' +
-      '<div class="spacer"></div><div class="meta">' + (window.RW_BANK.length + window.MATH_BANK.length) +
-      ' questions \u00b7 ' + skillList().length + ' skills</div>' +
-      '<div class="card-actions"><button class="btn" onclick="APP.go(\'skills\')">Pick a skill</button>' +
-      '<button class="btn ghost" onclick="APP.quickMix()">Quick 10</button></div></div>';
-
-      var dueNow = dueCards().length;
-      var lockedNow = lockedCount();
-      h += '<div class="card mode-card cards"><div class="icon">' + ic('bolt') + '</div>' +
-        '<h3>Strategy cards</h3>' +
-        '<p>Quick recall on all ' + Object.keys(window.STRATS).length + ' moves, spaced out over days so they stay put. Two minutes at a time.</p>' +
-        '<div class="spacer"></div><div class="meta">' + lockedNow + ' of ' +
-        Object.keys(window.STRATS).length + ' locked in' + (dueNow ? ' \u00b7 ' + dueNow + ' due now' : ' \u00b7 none due') + '</div>' +
-        '<div class="card-actions"><button class="btn" onclick="APP.go(\'cards\')">' +
-        (dueNow ? 'Review ' + dueNow : 'Open deck') + '</button></div></div>';
-
-      h += '<div class="card mode-card log"><div class="icon">' + ic('sheet') + '</div>' +
-        '<h3>Log a practice test</h3>' +
-        '<p>Took a test in Bluebook? Walk through what you missed and this turns your real results into ' +
-        'practice aimed at exactly those mistakes.</p>' +
-        '<div class="spacer"></div><div class="meta">about 20 seconds per question</div>' +
-        '<div class="card-actions"><button class="btn" onclick="APP.openLogger()">Log a test</button></div></div>';
-
-      h += '<div class="card mode-card diag"><div class="icon">' + ic('scope') + '</div>' +
-      '<h3>Diagnosis</h3>' +
-      '<p>See which traps keep working on you, which strategies are slipping, and everything you have missed and not yet fixed.</p>' +
-      '<div class="spacer"></div><div class="meta">' +
-      (agg.total.seen ? Object.keys(agg.traps).length + ' trap types recorded' : 'needs a few questions first') + '</div>' +
-      '<div class="card-actions"><button class="btn" onclick="APP.go(\'diagnosis\')">Open diagnosis</button>' +
-      (window.Cloud && window.Cloud.aiEnabled && window.Cloud.signedIn()
-        ? '<button class="btn ghost" onclick="APP.aiCoach()">Coaching note</button>' : '') +
-      '</div></div>';
-
+      h += '<div class="two-up">';
+      h += '<button class="big-entry" onclick="APP.go(\'strategies\')">' +
+      '<div class="be-num">' + sum.strats.mastered + '<span>/' + sum.strats.total + '</span></div>' +
+      '<div class="be-name">Strategies</div>' +
+      '<div class="be-sub">The moves that get you to the answer. ' + sum.strats.learning + ' in progress.</div></button>';
+      h += '<button class="big-entry spot" onclick="APP.go(\'traps\')">' +
+      '<div class="be-num">' + sum.traps.mastered + '<span>/' + sum.traps.total + '</span></div>' +
+      '<div class="be-name">Traps</div>' +
+      '<div class="be-sub">The ways a wrong answer is built. ' + sum.traps.learning + ' in progress.</div></button>';
       h += '</div>';
 
-      /* ---- top trap + recent ---- */
-      var topTrap = window.Store.topTraps(1)[0];
-      if (topTrap && window.TRAPS[topTrap.id] || last) {
-        h += '<div class="section-title">Where things stand</div><div class="card-grid">';
-        if (topTrap && window.TRAPS[topTrap.id]) {
-          var tp = window.TRAPS[topTrap.id];
-          h += '<div class="card"><span class="pill">Most common trap</span><h3>' + tp.name + '</h3>' +
-          '<p><strong>How to spot it:</strong> ' + tp.tell + '</p><p><strong>What to do:</strong> ' + tp.fix + '</p>' +
-          '<div class="spacer"></div><div class="card-actions">' +
-          '<button class="btn ghost sm" onclick="APP.drillTrap(\'' + topTrap.id + '\')">Practice against it</button></div></div>';
-        }
-        var wStrats = window.Store.weakestStrats(3);
-        if (wStrats.length) {
-          h += '<div class="card"><span class="pill">Strategies</span><h3>Moves to work on</h3>';
-          wStrats.forEach(function (st) {
-              var meta = window.STRATS[st.id]; if (!meta) return;
-              var p = pct(st.right, st.seen);
-              h += '<div class="skill-row"><div>' + esc(meta.name) + '</div>' +
-              '<div class="bar ' + (p >= 70 ? 'good' : p >= 50 ? 'mid' : 'bad') + '"><i style="width:' + p + '%"></i></div>' +
-              '<div class="n">' + p + '%</div></div>';
-          });
-          h += '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.go(\'diagnosis\')">Full diagnosis</button></div></div>';
-        }
-        if (last) {
-          h += '<div class="card"><span class="pill">Last sitting</span><h3>' +
-          (last.total ? last.total + ' / 1600' : (last.label ? esc(last.label) : 'Practice set')) + '</h3>' +
-          '<p class="meta">' + dateLabel(last.finishedAt) + '</p><div class="spacer"></div>' +
-          '<div class="card-actions"><button class="btn ghost sm" onclick="APP.review(\'' + last.id + '\')">Review it</button>' +
-          '<button class="btn subtle sm" onclick="APP.go(\'progress\')">All attempts</button></div></div>';
-        }
-        h += '</div>';
-      }
+      h += '<button class="paste-entry" onclick="APP.go(\'analyze\')">' +
+      '<div class="pe-icon">' + ic('scope') + '</div><div>' +
+      '<div class="pe-name">Missed one in Bluebook? Paste it here.</div>' +
+      '<div class="pe-sub">You get the move it was testing and the trap the wrong answer was built from, ' +
+      'and it joins your two lists.</div></div></button>';
 
-      /* ---- reference ---- */
-      h += '<div class="section-title">Reference</div><div class="card-grid">' +
-      '<div class="card"><h3>Strategy library</h3><p>Every move worth knowing, grouped by question type, plus pacing and the fill-in answer rules.</p>' +
-      '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.strategies()">Open</button></div></div>' +
-      '<div class="card"><h3>Trap catalog</h3><p>All ' + Object.keys(window.TRAPS).length +
-      ' tricks the test uses to build wrong answers, with how to spot each one.</p>' +
-      '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.trapBook()">Open</button></div></div>' +
-      '<div class="card"><h3>Math formulas</h3><p>What the test hands you, and the dozen it does not. The second list is the one worth knowing.</p>' +
-      '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.reference()">Open</button></div></div>' +
-      '<div class="card"><h3>Why strategies matter</h3><p>The argument, with a real question: every wrong ' +
-      'answer on the SAT was built for a specific mistake, and there are only so many of them.</p>' +
-      '<div class="spacer"></div><div class="card-actions">' +
-      '<button class="btn ghost sm" onclick="APP.go(\'about\')">Read it</button></div></div>' +
-      '<div class="card"><h3>Where practice tests fit</h3><p>Take your full practice tests in ' +
-      '<strong>Bluebook</strong>, the College Board app. That is the real software, the real questions, and the ' +
-      'only scoring worth trusting. Come back here to work out why you missed what you missed.</p>' +
-      '<div class="spacer"></div><div class="card-actions">' +
-      '<button class="btn ghost sm" onclick="APP.testFormat()">How the real test is built</button></div></div>' +
-      '<div class="card"><h3>Everything to lock in</h3><p>The full checklist: ' + Object.keys(window.STRATS).length + ' strategies and ' + Object.keys(window.TRAPS).length + ' traps, with everything you have already locked in ticked off.</p>' +
-        '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.go(\'coverage\')">Open checklist</button></div></div>' +
-        '<div class="card"><h3>Colors</h3><p>Five palettes. Pick the one you like opening.</p>' +
-      '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.colors()">Change colors</button></div></div>' +
-      '<div class="card"><h3>How the test is built</h3><p>Module structure, timing, domain weighting, and how the adaptive routing sets your score ceiling.</p>' +
-      '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.testFormat()">Open</button></div></div>' +
+      h += '<div class="home-foot">' +
+      '<button class="link-btn" onclick="APP.go(\'landing\')">Why strategies decide the score</button>' +
       '</div>';
-
       h += '</div>';
       return h;
     }
 
-    /* ============================================================
-       PRACTICE BY SKILL
-       ============================================================ */
-    function skillList() {
-      var out = {};
-      window.RW_BANK.concat(window.MATH_BANK).forEach(function (q) {
-          var k = q.section + '|' + q.domain + '|' + q.skill;
-          out[k] = out[k] || { section: q.section, domain: q.domain, skill: q.skill, n: 0 };
-          out[k].n++;
-      });
-      return Object.keys(out).map(function (k) { return out[k]; });
+    /* Before any data exists a new student still needs a concrete pair to
+       start on, so fall back to the first thing in each catalog. */
+    function firstUnmet(kind) {
+      var cov = window.Store.coverage();
+      var book = kind === 'strat' ? window.STRATS : window.TRAPS;
+      var seen = kind === 'strat' ? cov.strats : cov.traps;
+      var ids = Object.keys(book).filter(function (id) { return !book[id].meta; });
+      var fresh = ids.filter(function (id) { return !seen[id] || !seen[id].n; });
+      return (fresh.length ? fresh : ids)[0] || null;
     }
-    function skillsHTML() {
-      var agg = window.Store.agg();
-      var list = skillList();
-      var h = '<div class="home"><div class="home-head"><div><div class="brand">Practice by skill</div>' +
-      '<div class="tagline">Untimed. Every question comes with a hint, the strategy, the worked solution, and a look at each wrong answer.</div></div>' +
-      '<button class="btn subtle sm" onclick="APP.go(\'home\')">\u2190 Home</button></div><div class="home-hr"></div>';
-
-      ['rw', 'math'].forEach(function (sec) {
-          var domains = {};
-          list.filter(function (s) { return s.section === sec; }).forEach(function (s) {
-              (domains[s.domain] = domains[s.domain] || []).push(s);
-          });
-          h += '<div class="section-title">' + (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</div>';
-          Object.keys(domains).forEach(function (dom) {
-              h += '<div class="card" style="margin-bottom:12px"><h3>' + esc(dom) + '</h3>';
-              domains[dom].forEach(function (s) {
-                  var st = agg.skills[s.section + '|' + s.domain + '|' + s.skill];
-                  var p = st && st.seen ? pct(st.right, st.seen) : null;
-                  h += '<div class="skill-row" style="grid-template-columns:1fr 90px 70px 130px">' +
-                  '<div>' + esc(s.skill) + ' <span class="n">(' + s.n + ' available)</span></div>' +
-                  '<div class="bar ' + (p === null ? '' : p >= 70 ? 'good' : p >= 50 ? 'mid' : 'bad') + '"><i style="width:' + (p || 0) + '%"></i></div>' +
-                  '<div class="n">' + (p === null ? '-' : p + '%') + '</div>' +
-                  '<div style="text-align:right"><button class="btn ghost sm" onclick="APP.drillSkill(\'' + s.section + '\',\'' + esc(s.skill).replace(/'/g, "\\'") + '\')">Practice</button></div>' +
-                  '</div>';
-              });
-              h += '</div>';
-          });
-      });
-      h += '</div>';
-      return h;
-    }
-
-    /* ============================================================
-       PROGRESS
-       ============================================================ */
-    function progressHTML() {
-      var d = window.Store.data();
-      var h = '<div class="home"><div class="home-head"><div><div class="brand">Progress</div>' +
-      '<div class="tagline">Every attempt is stored in this browser only.</div></div>' +
-      '<button class="btn subtle sm" onclick="APP.go(\'home\')">\u2190 Home</button></div><div class="home-hr"></div>';
-
-      if (!d.attempts.length) {
-        h += '<div class="card"><p>No attempts yet. Run a section or a practice set to start building a record.</p></div></div>';
-        return h;
-      }
-
-      h += '<div class="section-title">Attempts</div><div class="card"><table class="plain">' +
-      '<tr><th>When</th><th>What</th><th>RW</th><th>Math</th><th>Total</th><th></th></tr>';
-      d.attempts.forEach(function (a) {
-          var kind = a.kind === 'full' ? 'Full test' : a.kind === 'drill' ? (a.label || 'Practice set') :
-          (a.kind === 'rw' ? 'RW section' : 'Math section');
-          h += '<tr><td>' + dateLabel(a.finishedAt) + '</td><td>' + esc(kind) + '</td>' +
-          '<td>' + (a.sections.rw ? a.sections.rw.scaled : '-') + '</td>' +
-          '<td>' + (a.sections.math ? a.sections.math.scaled : '-') + '</td>' +
-          '<td><strong>' + (a.total || '-') + '</strong></td>' +
-          '<td style="text-align:right"><button class="btn ghost sm" onclick="APP.review(\'' + a.id + '\')">Review</button></td></tr>';
-      });
-      h += '</table></div>';
-
-      var aggS = window.Store.agg().skills;
-      var skills = Object.keys(aggS).map(function (k) { return aggS[k]; })
-      .filter(function (s) { return s.seen > 0; })
-      .sort(function (a, b) { return (a.right / a.seen) - (b.right / b.seen); });
-      if (skills.length) {
-        h += '<div class="section-title">Accuracy by skill</div><div class="card">';
-        skills.forEach(function (s) {
-            var p = pct(s.right, s.seen);
-            h += '<div class="skill-row" style="grid-template-columns:1fr 110px 60px 110px">' +
-            '<div>' + esc(s.skill) + ' <span class="n">\u00b7 ' + (s.section === 'rw' ? 'RW' : 'Math') + '</span></div>' +
-            '<div class="bar ' + (p >= 70 ? 'good' : p >= 50 ? 'mid' : 'bad') + '"><i style="width:' + p + '%"></i></div>' +
-            '<div class="n">' + s.right + '/' + s.seen + '</div>' +
-            '<div style="text-align:right"><button class="btn ghost sm" onclick="APP.drillSkill(\'' + s.section + '\',\'' + esc(s.skill).replace(/'/g, "\\'") + '\')">Practice</button></div></div>';
-        });
-        h += '</div>';
-      }
-
-      h += '<div class="section-title">Data</div><div class="card"><p class="note">Everything is stored locally in this browser. Clearing it cannot be undone.</p>' +
-      '<div class="card-actions"><button class="btn subtle sm" onclick="APP.resetData()">Clear all saved progress</button></div></div>';
-      h += '</div>';
-      return h;
-    }
-
-
-    /* ============================================================
-       DIAGNOSIS -- which strategies are failing, which tricks keep working
-       ============================================================ */
-    function trendChip(t) {
-      if (t === null || t === undefined) return '<span class="chip flat">too early to tell</span>';
-      if (t > 4) return '<span class="chip up">getting better +' + t + '</span>';
-      if (t < -4) return '<span class="chip down">slipping ' + t + '</span>';
-      return '<span class="chip flat">steady</span>';
-    }
-
-    function diagnosisHTML() {
-      var agg = window.Store.agg();
-      var traps = window.Store.topTraps(8);
-      var strats = [];
-      Object.keys(agg.strats).forEach(function (k) { strats.push(agg.strats[k]); });
-      strats.sort(function (a, b) { return (a.right / a.seen) - (b.right / b.seen); });
-      var missed = window.Store.missedQueue(60);
-
-      var h = '<div class="home"><div class="home-head"><div><div class="brand">Diagnosis</div>' +
-      '<div class="tagline">Here is what is actually tripping you up, and what to do about each one.</div></div>' +
-      '<div class="card-actions">' +
-      (missed.length ? '<button class="btn sm" onclick="APP.drillMissed()">Fix my last ' + Math.min(missed.length, 10) + '</button>' : '') +
-      '<button class="btn subtle sm" onclick="APP.go(\'home\')">&larr; Home</button></div></div><div class="home-hr"></div>';
-
-      if (!agg.total.seen) {
-        h += '<div class="card"><p>Nothing to show yet. Once you have answered a few questions this fills in, because every wrong answer gets labeled with the trick behind it and every question is tagged with the move it tests.</p>' +
-        '<div class="card-actions" style="margin-top:12px"><button class="btn" onclick="APP.quickMix()">Start a 10-question set</button></div></div></div>';
-        return h;
-      }
-
-      /* ---- headline leaks ---- */
-      h += '<div class="section-title">What keeps catching you</div>';
-      if (!traps.length) {
-        h += '<div class="card"><p>No wrong multiple choice answers yet. Keep going.</p></div>';
-      } else {
-        h += '<div class="leaks">';
-        traps.slice(0, 3).forEach(function (t, i) {
-            var tp = window.TRAPS[t.id];
-            h += '<div class="leak"><div class="leak-rank">' + (i + 1) + '</div><div class="leak-body">' +
-            '<h3>' + tp.name + ' <span class="leak-n">' + t.n + ' time' + (t.n > 1 ? 's' : '') + '</span></h3>' +
-            '<p class="leak-fam">' + window.TRAP_FAMILIES[tp.fam].name + ' &middot; ' + window.TRAP_FAMILIES[tp.fam].blurb + '</p>' +
-            '<p><strong>How to spot it:</strong> ' + tp.tell + '</p>' +
-            '<p><strong>What to do:</strong> ' + tp.fix + '</p>' +
-            '<div class="card-actions"><button class="btn ghost sm" onclick="APP.drillTrap(\'' + t.id + '\')">Practice spotting it</button></div>' +
-            '</div></div>';
-        });
-        h += '</div>';
-      }
-
-      /* ---- all traps, by family ---- */
-      var famTotal = 0;
-      Object.keys(agg.fams).forEach(function (f) { famTotal += agg.fams[f]; });
-      if (famTotal) {
-        h += '<div class="section-title">Where your wrong answers come from</div><div class="card">';
-        Object.keys(window.TRAP_FAMILIES).forEach(function (f) {
-            var n = agg.fams[f] || 0;
-            var p = famTotal ? Math.round(100 * n / famTotal) : 0;
-            h += '<div class="skill-row" style="grid-template-columns:190px 1fr 70px">' +
-            '<div><strong>' + window.TRAP_FAMILIES[f].name + '</strong><div class="n" style="text-align:left">' +
-            window.TRAP_FAMILIES[f].blurb + '</div></div>' +
-            '<div class="bar ' + (p >= 34 ? 'bad' : p >= 20 ? 'mid' : '') + '"><i style="width:' + p + '%"></i></div>' +
-            '<div class="n">' + n + ' (' + p + '%)</div></div>';
-        });
-        h += '</div>';
-
-        if (traps.length > 3) {
-          h += '<div class="card" style="margin-top:12px"><h3>Every trick that has caught you</h3><table class="plain">' +
-          '<tr><th>Trick</th><th>Family</th><th>Times</th><th></th></tr>';
-          traps.forEach(function (t) {
-              var tp = window.TRAPS[t.id];
-              h += '<tr><td><strong>' + tp.name + '</strong><div class="n" style="text-align:left">' + tp.fix + '</div></td>' +
-              '<td>' + window.TRAP_FAMILIES[tp.fam].name + '</td><td>' + t.n + '</td>' +
-              '<td style="text-align:right"><button class="btn ghost sm" onclick="APP.drillTrap(\'' + t.id + '\')">Practice</button></td></tr>';
-          });
-          h += '</table></div>';
-        }
-      }
-
-      /* ---- strategies ---- */
-      h += '<div class="section-title">Your moves, weakest first</div><div class="card">';
-      h += '<p class="note" style="margin-bottom:14px">Every question is really testing whether you make one particular move. This is how often you make it, across every topic where it shows up.</p>';
-      strats.forEach(function (st) {
-          var meta = window.STRATS[st.id]; if (!meta) return;
-          var p = pct(st.right, st.seen);
-          var tr = window.Store.trend(st.id, 8);
-          h += '<div class="strat-row">' +
-          '<div><strong>' + meta.name + '</strong> <span class="n">' + (meta.section === 'rw' ? 'Reading and Writing' : 'Math') + '</span>' +
-          '<div class="strat-move-sm">' + meta.move + '</div></div>' +
-          '<div class="bar ' + (p >= 70 ? 'good' : p >= 50 ? 'mid' : 'bad') + '"><i style="width:' + p + '%"></i></div>' +
-          '<div class="n">' + st.right + '/' + st.seen + '</div>' +
-          '<div>' + trendChip(tr) + '</div>' +
-          '<div style="text-align:right"><button class="btn ghost sm" onclick="APP.drillStrat(\'' + st.id + '\')">Practice</button></div>' +
-          '</div>';
-      });
-      h += '</div>';
-
-      /* ---- retry queue ---- */
-      if (missed.length) {
-        h += '<div class="section-title">Still unfixed</div><div class="card">' +
-        '<p class="note">' + missed.length + ' question' + (missed.length > 1 ? 's' : '') +
-        ' where your most recent try was wrong. Coming back to these after a few days is the best practice there is.</p>' +
-        '<div class="card-actions" style="margin-top:12px">' +
-        '<button class="btn" onclick="APP.drillMissed()">Do ' + Math.min(missed.length, 10) + ' of them now</button></div></div>';
-      }
-
-      h += '</div>';
-      return h;
-    }
-
-
-
 
     function aiPanelHTML() {
       if (!window.Cloud || !window.Cloud.aiEnabled) return '';
@@ -9269,7 +9002,7 @@ window.STRATEGIES = {
           h += '<div class="card cheer"><h3>Nothing due right now</h3>' +
             '<p>Everything you have reviewed is still holding. Come back tomorrow and the ones that are ' +
             'starting to fade will be waiting. In the meantime, the useful thing is questions.</p>' +
-            '<div class="card-actions"><button class="btn" onclick="APP.quickMix()">Do a 10-question set</button>' +
+            '<div class="card-actions"><button class="btn" onclick="APP.go(\'strategies\')">Back to the moves</button>' +
             '<button class="btn ghost" onclick="APP.cardsCram()">Review anyway</button></div></div>';
         } else {
           h += '<div class="card cheer"><h3>' + due.length + ' card' + (due.length === 1 ? '' : 's') + ' ready</h3>' +
@@ -9420,7 +9153,7 @@ window.STRATEGIES = {
         'still often get.</p></div>';
       h += '</div>';
 
-      h += '<div class="section-title">What you learn here</div>';
+      h += '<div class="section-title">The two things you learn</div>';
       h += '<div class="card"><div class="two-col">' +
         '<div><h3>' + Object.keys(window.STRATS).length + ' strategies</h3><p>One named move per question type. Predict before you read the choices. ' +
         'Circle the quantity before you solve. Name the relationship before you pick the transition. Each one is ' +
@@ -9428,32 +9161,12 @@ window.STRATEGIES = {
         '<div><h3>' + Object.keys(window.TRAPS).length + ' traps</h3><p>Every way a wrong answer is built, in six families: it says more than the text ' +
         'allows, it does half the job, it points the right idea the wrong way, it describes the wrong thing, it ' +
         'breaks a grammar rule, or it slips a step.</p></div>' +
-        '</div><p class="note" style="margin-top:16px">The app tracks which of those still work on you, and ' +
-        'gives you questions where that exact trap is waiting until it stops working.</p></div>';
+        '</div><p class="note" style="margin-top:16px">Those two lists are the whole app. Every day you work one ' +
+        'move and one trap, and you watch both lists empty out.</p></div>';
 
-      h += '<div class="card" style="margin-top:14px"><h3>Where the real practice tests fit</h3>' +
-        '<p>Take your full practice tests in <strong>Bluebook</strong>, College Board\'s own app. That is the real ' +
-        'software, the real retired questions, and the only scoring worth trusting. This is not a replacement ' +
-        'for it and should not pretend to be.</p>' +
-        '<p>What Bluebook does not do is tell you <em>why</em> you missed what you missed. It gives you a score. ' +
-        'Bring the misses here, spend twenty seconds on each, and you get the other half.</p></div>';
       return h;
     }
 
-    function aboutHTML() {
-      var h = '<div class="home landing"><div class="home-head"><div><div class="brand">' + wordmark() + '</div>' +
-        '<div class="tagline">' + esc(window.BRAND.tagline) + '</div></div>' +
-        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back to practice</button></div>';
-      h += argumentHTML();
-      h += '<div class="card-actions" style="margin-top:24px;justify-content:center">' +
-        '<button class="btn big" style="max-width:320px" onclick="APP.go(\'home\')">Start practicing</button></div>';
-      h += '</div>';
-      return h;
-    }
-
-    /* ============================================================
-       SIGN IN
-       ============================================================ */
     function authHTML() {
       var C = window.Cloud, cfg = window.CONFIG || {};
       var h = '<div class="home landing"><div class="lead-mark">' + wordmark() + '</div>';
@@ -9602,43 +9315,34 @@ window.STRATEGIES = {
       (c ? 'Practice' : 'Start') + '</button></div></div>';
     }
 
-    function coverageHTML() {
+    function catalogHead(title, sub) {
+      return '<div class="home"><div class="home-head"><div><div class="brand">' + title + '</div>' +
+      '<div class="tagline">' + sub + '</div></div>' +
+      '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
+    }
+
+    function genOfferHTML() {
+      if (!(window.Cloud && window.Cloud.aiEnabled && window.Cloud.signedIn())) return '';
+      return '<div class="mission" style="margin-bottom:16px"><div class="m-body">' +
+      '<div class="m-kicker">Never run out</div><h2>Write me questions for what is left</h2>' +
+      '<p>Claude writes new questions aimed at whatever is still unlearned, in SAT format and scope, ' +
+      'and every one is checked before it reaches you.</p>' +
+      '<div class="m-actions"><button class="btn" onclick="APP.fillGaps()">Write 3 for my biggest gap</button>' +
+      '<button class="btn ghost" onclick="APP.genPicker()">Choose what to write</button></div></div></div>';
+    }
+
+    function strategiesHTML() {
       var cov = window.Store.coverage();
       var sum = window.Store.coverageSummary();
-      var canWrite = window.Cloud && window.Cloud.aiEnabled && window.Cloud.signedIn();
-      var gen = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) { return q.generated; }).length;
-
-      var h = '<div class="home"><div class="home-head"><div><div class="brand">Everything to lock in</div>' +
-      '<div class="tagline">Two checklists: the moves you need to make, and the traps you need to see coming. ' +
-      'Something is locked in once you have met it three times and got the last three right.</div></div>' +
-      '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
-
-      h += '<div class="tiles">' +
-      '<div class="tile"><div class="t-lbl">Strategies locked in</div><div class="t-val">' + sum.strats.mastered +
-      '<span style="font-size:17px;color:var(--shell-soft)">/' + sum.strats.total + '</span></div>' +
-      '<div class="t-sub">' + sum.strats.learning + ' in progress</div></div>' +
-      '<div class="tile spot"><div class="t-lbl">Traps you can spot</div><div class="t-val">' + sum.traps.mastered +
-      '<span style="font-size:17px;color:var(--shell-soft)">/' + sum.traps.total + '</span></div>' +
-      '<div class="t-sub">' + sum.traps.learning + ' in progress</div></div>' +
-      '<div class="tile"><div class="t-lbl">Questions in your bank</div><div class="t-val">' +
-      (window.RW_BANK.length + window.MATH_BANK.length) + '</div><div class="t-sub">' +
-      (gen ? gen + ' written for you' : 'all built in') + '</div></div></div>';
-
-      if (canWrite) {
-        h += '<div class="mission" style="margin-top:20px"><div class="m-body">' +
-        '<div class="m-kicker">Never run out</div><h2>Write me questions for what is left</h2>' +
-        '<p>Claude writes new questions aimed at whatever is still unlearned, in SAT format and scope, ' +
-        'and every one is checked before it reaches you. Sonnet does the writing, because inventing a ' +
-        'genuinely tempting wrong answer is the hard part.</p>' +
-        '<div class="m-actions"><button class="btn" onclick="APP.fillGaps()">Write 3 for my biggest gap</button>' +
-        '<button class="btn ghost" onclick="APP.genPicker()">Choose what to write</button></div></div></div>';
-      } else {
-        h += '<div class="card" style="margin-top:20px"><h3>Want unlimited questions?</h3>' +
-        '<p>With the AI tutor switched on, the app writes new questions aimed at whatever is still ' +
-        'unlearned, so you never run out and every strategy gets covered. Setup is in SETUP-CLOUD.md.</p></div>';
-      }
-
-      h += '<div class="section-title">The ' + Object.keys(window.STRATS).length + ' moves</div>';
+      var h = catalogHead('Strategies', 'One named move per question type. ' + sum.strats.mastered +
+        ' of ' + sum.strats.total + ' locked in, which means met three times with the last three right.');
+      h += genOfferHTML();
+      var due = dueCards().length;
+      h += '<button class="paste-entry" style="margin-bottom:16px" onclick="APP.go(\'cards\')">' +
+      '<div class="pe-icon">' + ic('bolt') + '</div><div>' +
+      '<div class="pe-name">Quick recall on the moves' + (due ? ', ' + due + ' due' : '') + '</div>' +
+      '<div class="pe-sub">Two minutes. The moves have to be there under time pressure, which means ' +
+      'recalling them, not rereading them.</div></div></button>';
       ['rw', 'math'].forEach(function (sec) {
           h += '<div class="card" style="margin-bottom:12px"><h3>' +
           (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</h3>';
@@ -9646,10 +9350,23 @@ window.STRATEGIES = {
               if (window.STRATS[id].section !== sec) return;
               h += cvRow(id, window.STRATS[id].name, window.STRATS[id].move, cov.strats[id], 'strat');
           });
+          if (sec === 'math') {
+            h += '<div class="cv-note"><button class="link-btn" onclick="APP.reference()">' +
+            'Which formulas the test gives you, and the twelve it does not</button></div>';
+          }
           h += '</div>';
       });
+      h += '<div class="cv-note" style="text-align:center"><button class="link-btn" onclick="APP.strategies()">' +
+      'Read the full guide to these moves</button></div></div>';
+      return h;
+    }
 
-      h += '<div class="section-title">The ' + Object.keys(window.TRAPS).length + ' traps</div>';
+    function trapsHTML() {
+      var cov = window.Store.coverage();
+      var sum = window.Store.coverageSummary();
+      var h = catalogHead('Traps', 'Every way a wrong answer gets built, in six families. ' +
+        sum.traps.mastered + ' of ' + sum.traps.total + ' you can now spot.');
+      h += genOfferHTML();
       Object.keys(window.TRAP_FAMILIES).forEach(function (fam) {
           h += '<div class="card" style="margin-bottom:12px"><h3>' + window.TRAP_FAMILIES[fam].name + '</h3>' +
           '<p style="margin-bottom:8px">' + window.TRAP_FAMILIES[fam].blurb + '</p>';
@@ -9659,206 +9376,220 @@ window.STRATEGIES = {
           });
           h += '</div>';
       });
-
       h += '</div>';
       return h;
     }
 
+    function landingHTML() {
+      var started = window.Store.agg().total.seen > 0;
+      var h = '<div class="home landing"><div class="lead-mark">' + wordmark() + '</div>';
+      h += argumentHTML();
+      h += '<div class="section-title">What you get here</div><div class="card-grid">';
+      h += '<div class="card"><h3>Practice one move at a time</h3>' +
+      '<p>Pick a strategy and every question in the set rewards that same move, so the habit forms instead ' +
+      'of blurring into general practice. Pick a trap and every question in the set has that trap waiting.</p></div>';
+      h += '<div class="card"><h3>A wrong answer tells you which trap caught you</h3>' +
+      '<p>Every wrong choice in the bank is labeled with the mistake it was built from. Miss one and you get ' +
+      'the name of the trap, how to spot it next time, and a set to practice against it.</p></div>';
+      h += '<div class="card"><h3>Two lists, and you watch them empty</h3>' +
+      '<p>Every move and every trap is either not met, in progress, or locked in. No score estimate, because ' +
+      'a score is not something this app can honestly compute for you.</p></div>';
+      h += '<div class="card"><h3>Bring your Bluebook misses</h3>' +
+      '<p>Take your full practice tests in <strong>Bluebook</strong>, College Board\'s own app. That is the real ' +
+      'software and the only scoring worth trusting, and this is not a replacement for it. What it will not tell ' +
+      'you is <em>why</em> you missed what you missed. Paste the question in here and you get the move it was ' +
+      'testing and the trap behind the answer you picked, on the same two lists as everything else.</p></div>';
+      h += '</div>';
+      h += '<div class="card-actions" style="margin-top:26px;justify-content:center">' +
+      '<button class="btn big" style="max-width:340px" onclick="APP.go(\'home\')">' +
+      (started ? 'Back to practice' : 'Start with one move') + '</button></div></div>';
+      return h;
+    }
 
     /* ============================================================
-       LOG A PRACTICE TEST
-       She takes the real test in Bluebook. This turns each miss into the
-       same kind of record the app already keeps, so her official results
-       feed the same diagnosis as her practice here.
+       PASTE A QUESTION
+       She takes real tests in Bluebook. Bluebook gives her a score but
+       never tells her which move the question wanted or which trap the
+       wrong answer was built from. This is the bridge: paste it in, get
+       both, and have it land in the same two lists as everything else.
        ============================================================ */
-    function loggerHTML() {
-      var h = '<div class="home"><div class="home-head"><div><div class="brand">Log a practice test</div>' +
-        '<div class="tagline">Took a test in Bluebook? Walk through what you missed and this turns it into ' +
-        'practice aimed at exactly those mistakes.</div></div>' +
-        '<button class="btn subtle sm" onclick="APP.go(\'home\')">Back</button></div><div class="home-hr"></div>';
 
-      if (log.step === 'start') {
-        h += '<div class="card"><h3>Which test?</h3>' +
-          '<label class="fld"><span>Name it however you like</span>' +
-          '<input id="log-source" placeholder="Bluebook Practice Test 4" value="' + esc(log.source) + '"></label>' +
-          '<label class="fld"><span>Which section were these misses in?</span></label>' +
-          '<div class="card-actions">' +
-          '<button class="btn' + (log.section === 'rw' ? '' : ' subtle') + '" onclick="APP.logSection(\'rw\')">Reading and Writing</button>' +
-          '<button class="btn' + (log.section === 'math' ? '' : ' subtle') + '" onclick="APP.logSection(\'math\')">Math</button>' +
-          '</div>' +
-          '<label class="fld" style="margin-top:18px"><span>How many questions did you miss in it?</span>' +
-          '<input id="log-count" type="number" min="1" max="40" placeholder="6"></label>' +
-          '<div class="card-actions"><button class="btn" onclick="APP.logBegin()">Start walking through them</button></div>' +
-          '<p class="note" style="margin-top:14px">You will go through them one at a time. It takes about twenty ' +
-          'seconds each, and it is the most useful twenty seconds in your whole study session.</p></div></div>';
-        return h;
-      }
+    /* The model must classify against our catalog rather than inventing
+       labels, so the whole catalog goes along with every request. */
+    function catalogContext() {
+      var out = ['STRATEGY IDS. Choose exactly one.'];
+      Object.keys(window.STRATS).forEach(function (id) {
+          out.push('  ' + id + ' [' + window.STRATS[id].section + '] = ' +
+          window.STRATS[id].name + '. ' + window.STRATS[id].move);
+      });
+      out.push('', 'TRAP IDS. Choose one per wrong choice.');
+      Object.keys(window.TRAPS).forEach(function (id) {
+          out.push('  ' + id + ' = ' + window.TRAPS[id].name + '. ' + window.TRAPS[id].tell);
+      });
+      return out.join('\n');
+    }
 
-      if (log.step === 'done') {
-        var byTrap = {};
-        log.rows.forEach(function (r) { if (r.trap) byTrap[r.trap] = (byTrap[r.trap] || 0) + 1; });
-        var ranked = Object.keys(byTrap).sort(function (a, b) { return byTrap[b] - byTrap[a]; });
-        var rushed = log.rows.filter(function (r) { return r.cause === 'rushed'; }).length;
-        var gap = log.rows.filter(function (r) { return r.cause === 'gap'; }).length;
+    /* Models wrap JSON in prose often enough that this has to be tolerant,
+       and anything it hands back still gets id-checked below. */
+    function azParse(text) {
+      var t = String(text || '').trim();
+      t = t.replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+      var a = t.indexOf('{'), b = t.lastIndexOf('}');
+      if (a < 0 || b < a) return null;
+      try { return JSON.parse(t.slice(a, b + 1)); } catch (e) { return null; }
+    }
 
-        h += '<div class="mission"><div class="m-body"><div class="m-kicker">' + esc(log.source) + '</div>' +
-          '<h2>' + log.rows.length + ' miss' + (log.rows.length === 1 ? '' : 'es') + ' logged</h2>';
-        if (ranked.length) {
-          var top = window.TRAPS[ranked[0]];
-          h += '<p>Your most common one was <strong>' + top.name + '</strong>, ' + byTrap[ranked[0]] +
-            ' of ' + log.rows.length + '. ' + top.fix + '</p>' +
-            '<div class="m-actions"><button class="btn" onclick="APP.drillTrap(\'' + ranked[0] + '\')">' +
-            'Practice that trap now</button>' +
-            '<button class="btn ghost" onclick="APP.go(\'diagnosis\')">See the full picture</button></div>';
-        } else {
-          h += '<p>None of these came down to a trap, so the work is elsewhere. Look at the breakdown below.</p>' +
-            '<div class="m-actions"><button class="btn ghost" onclick="APP.go(\'diagnosis\')">See the full picture</button></div>';
-        }
-        h += '</div></div>';
-
-        h += '<div class="tiles">' +
-          '<div class="tile"><div class="t-lbl">Caught by a trap</div><div class="t-val">' +
-          (log.rows.length - rushed - gap) + '</div><div class="t-sub">you knew it, the question got you</div></div>' +
-          '<div class="tile spot"><div class="t-lbl">Ran out of time</div><div class="t-val">' + rushed +
-          '</div><div class="t-sub">a pacing problem, not a knowledge one</div></div>' +
-          '<div class="tile"><div class="t-lbl">Did not know it</div><div class="t-val">' + gap +
-          '</div><div class="t-sub">content to go and learn</div></div></div>';
-
-        if (rushed >= 2) {
-          h += '<div class="card" style="margin-top:16px"><h3>About the pacing</h3>' +
-            '<p>' + rushed + ' of these were time, not difficulty. That is worth knowing, because more content ' +
-            'review will not fix it. Run a timed module here and watch the clock per question: the target is about ' +
-            '71 seconds in Reading and Writing and 95 in Math.</p>' +
-            '<div class="card-actions"><button class="btn ghost sm" onclick="APP.startSection(\'' + log.section + '\')">' +
-            'Run a timed module</button></div></div>';
-        }
-        if (gap >= 2) {
-          h += '<div class="card" style="margin-top:12px"><h3>About the content gaps</h3>' +
-            '<p>' + gap + ' of these were things you had not learned yet, which no amount of strategy fixes. ' +
-            'Those are worth taking to a teacher or a textbook rather than grinding more questions.</p></div>';
-        }
-
-        h += '<div class="section-title">Everything you logged</div><div class="card">';
-        log.rows.forEach(function (r, i) {
-          var t = r.trap && window.TRAPS[r.trap];
-          h += '<div class="skill-row" style="grid-template-columns:30px 1fr 200px">' +
-            '<div class="n" style="text-align:left">' + (i + 1) + '</div>' +
-            '<div>' + esc(r.skill || 'unspecified') + '</div>' +
-            '<div class="n" style="text-align:right">' +
-            (t ? t.name : r.cause === 'rushed' ? 'ran out of time' : 'did not know it') + '</div></div>';
+    /* Ids that are not in our catalogs are dropped rather than displayed,
+       because a made-up label is worse than no label. */
+    function azClean(res) {
+      var out = {
+        section: res.section === 'math' ? 'math' : 'rw',
+        skill: typeof res.skill === 'string' ? res.skill : null,
+        strategy: window.STRATS[res.strategy] ? res.strategy : null,
+        strategyWhy: typeof res.strategyWhy === 'string' ? res.strategyWhy : '',
+        correct: res.correct === undefined || res.correct === null ? '' : String(res.correct),
+        walkthrough: Array.isArray(res.walkthrough) ? res.walkthrough.filter(function (x) {
+            return typeof x === 'string' && x.trim();
+        }) : [],
+        traps: [],
+        picked: null,
+        confidence: ['high', 'medium', 'low'].indexOf(res.confidence) >= 0 ? res.confidence : 'medium'
+      };
+      if (Array.isArray(res.traps)) {
+        res.traps.forEach(function (t) {
+            if (!t || !window.TRAPS[t.trap]) return;
+            out.traps.push({ choice: String(t.choice || '').slice(0, 3), trap: t.trap,
+                             why: typeof t.why === 'string' ? t.why : '' });
         });
-        h += '</div>';
-        h += '<div class="card-actions" style="margin-top:18px">' +
-          '<button class="btn" onclick="APP.logReset()">Log another test</button>' +
-          '<button class="btn subtle" onclick="APP.go(\'home\')">Done</button></div></div>';
-        return h;
       }
+      if (res.picked && window.TRAPS[res.picked.trap]) {
+        out.picked = { trap: res.picked.trap,
+                       why: typeof res.picked.why === 'string' ? res.picked.why : '' };
+      }
+      return out;
+    }
 
-      /* ---- walking one miss ---- */
-      var n = log.idx + 1;
-      h += '<div class="card"><span class="pill">' + esc(log.source) + '</span>' +
-        '<h3>Miss ' + n + ' of ' + log.count + '</h3>';
+    /* A pasted question becomes the same kind of record as everything else,
+       so it moves the same two lists. */
+    function recordPasted(res) {
+      var row = {
+        section: res.section || null,
+        skill: res.skill || null,
+        domain: null,
+        strat: res.strategy || null,
+        trap: res.picked ? res.picked.trap : null,
+        cause: res.picked ? 'trap' : 'gap'
+      };
+      window.Store.logMisses({
+          id: String(new Date().getTime()),
+          label: 'Pasted from a practice test',
+          section: row.section
+      }, [row]);
+    }
 
-      if (!log.current.skill) {
-        h += '<p>What kind of question was it? If you are not sure, pick the closest.</p>';
-        var groups = skillsForSection(log.section);
-        Object.keys(groups).forEach(function (dom) {
-          h += '<div class="log-group"><div class="log-dom">' + esc(dom) + '</div><div class="log-opts">';
-          groups[dom].forEach(function (sk) {
-            h += '<button class="log-opt" onclick="APP.logSkill(' + JSON.stringify(sk).replace(/"/g, '&quot;') + ')">' +
-              esc(sk) + '</button>';
+    function azSelect(kind) {
+      var book = kind === 'strat' ? window.STRATS : window.TRAPS;
+      var cur = kind === 'strat' ? az.mStrat : az.mTrap;
+      var h = '<select class="az-select" onchange="APP.azManual(\'' + kind + '\', this.value)">' +
+      '<option value="">' + (kind === 'strat' ? 'Which move did it want?' : 'Which trap caught you?') + '</option>';
+      Object.keys(book).forEach(function (id) {
+          h += '<option value="' + id + '"' + (cur === id ? ' selected' : '') + '>' +
+          esc(book[id].name) + '</option>';
+      });
+      return h + '</select>';
+    }
+
+    function analyzeHTML() {
+      var ai = window.Cloud && window.Cloud.aiEnabled;
+      var h = catalogHead('Paste a question',
+        'From Bluebook or any official practice test. You get the move it was testing and the trap ' +
+        'behind the answer you picked, and it joins your two lists.');
+
+      if (az.res) {
+        var r = az.res;
+        if (r.confidence === 'low') {
+          h += '<p class="az-warn">Low confidence on this one, usually because part of the question ' +
+          'did not come through. Read it as a suggestion rather than a verdict.</p>';
+        }
+
+        if (r.strategy) {
+          var st = window.STRATS[r.strategy];
+          h += '<div class="az-card strat"><div class="az-lbl">The move it wanted</div>' +
+          '<h3>' + esc(st.name) + '</h3><p class="az-move">' + esc(st.move) + '</p>' +
+          (r.strategyWhy ? '<p>' + esc(r.strategyWhy) + '</p>' : '') +
+          '<button class="btn sm" onclick="APP.drillStrat(\'' + r.strategy + '\')">Practice this move</button></div>';
+        }
+
+        if (r.picked) {
+          var tp = window.TRAPS[r.picked.trap];
+          h += '<div class="az-card trap"><div class="az-lbl">What caught you</div>' +
+          '<h3>' + esc(tp.name) + '</h3>' +
+          (r.picked.why ? '<p>' + esc(r.picked.why) + '</p>' : '') +
+          '<p><strong>How to spot it:</strong> ' + esc(tp.tell) + '</p>' +
+          '<p><strong>How to beat it:</strong> ' + esc(tp.fix) + '</p>' +
+          '<button class="btn sm" onclick="APP.drillTrap(\'' + r.picked.trap + '\')">Practice spotting it</button></div>';
+        }
+
+        if (r.walkthrough.length) {
+          h += '<div class="card"><h3>How it works out' +
+          (r.correct ? ', to ' + esc(r.correct) : '') + '</h3><ol class="az-steps">';
+          r.walkthrough.forEach(function (x) { h += '<li>' + esc(x) + '</li>'; });
+          h += '</ol></div>';
+        }
+
+        if (r.traps.length) {
+          h += '<div class="card"><h3>What each wrong answer was built from</h3>';
+          r.traps.forEach(function (t) {
+              h += '<div class="az-row"><div class="az-ch">' + esc(t.choice || '?') + '</div><div>' +
+              '<strong>' + esc(window.TRAPS[t.trap].name) + '</strong>' +
+              (t.why ? '<div class="n" style="text-align:left">' + esc(t.why) + '</div>' : '') +
+              '</div><div style="text-align:right"><button class="btn ghost sm" ' +
+              'onclick="APP.drillTrap(\'' + t.trap + '\')">Practice</button></div></div>';
           });
-          h += '</div></div>';
-        });
-      } else {
-        h += '<p class="note">' + esc(log.current.skill) + ' <button class="link-btn" onclick="APP.logBackSkill()">change</button></p>';
-        h += '<p style="margin-top:14px">What happened? Pick whichever is closest to the truth.</p><div class="log-opts col">';
-        var likely = trapsForSkill(log.current.skill);
-        var show = log.expanded ? Object.keys(window.TRAPS) : likely.slice(0, 6);
-        show.forEach(function (tid) {
-          var t = window.TRAPS[tid];
-          if (!t) return;
-          h += '<button class="log-opt wide" onclick="APP.logCause(\'trap\',\'' + tid + '\')">' +
-            '<span class="lo-felt">' + t.felt + '</span>' +
-            '<span class="lo-name">' + t.name + '</span></button>';
-        });
-        h += '<button class="log-opt wide alt" onclick="APP.logCause(\'rushed\')">' +
-          '<span class="lo-felt">I ran out of time and guessed</span>' +
-          '<span class="lo-name">pacing, not a trap</span></button>';
-        h += '<button class="log-opt wide alt" onclick="APP.logCause(\'gap\')">' +
-          '<span class="lo-felt">I did not know how to do it at all</span>' +
-          '<span class="lo-name">content gap, not a trap</span></button>';
-        h += '</div>';
-        if (!log.expanded) {
-          h += '<div class="card-actions" style="margin-top:12px">' +
-            '<button class="btn subtle sm" onclick="APP.logExpand()">None of these, show me all ' +
-            Object.keys(window.TRAPS).length + '</button></div>';
+          h += '</div>';
         }
-      }
-      h += '</div>';
-      h += '<div class="card-actions" style="margin-top:16px">' +
-        '<button class="btn subtle sm" onclick="APP.logSkip()">Skip this one</button>' +
-        (log.rows.length ? '<button class="btn ghost sm" onclick="APP.logFinish()">Stop here and see the summary</button>' : '') +
-        '</div></div>';
-      return h;
-    }
 
-    /* ============================================================
-       DIRECTIONS / BREAK
-       ============================================================ */
-    function directionsHTML() {
-      var m = S.mod();
-      var isRW = m.section === 'rw';
-      var h = '<div class="exam"><div class="exam-top"><div><div class="sec-name">' + esc(m.label) + '</div>' +
-      '<div class="sec-sub">Directions</div></div><div class="timer-wrap"><div class="timer-hidden">Clock starts when you begin</div></div><div class="tools"></div></div>';
-      h += '<div class="centered"><div class="box"><h2>' + esc(m.label) + '</h2>' +
-      '<p>' + m.questions.length + ' questions \u00b7 ' + Math.round(m.seconds / 60) + ' minutes</p>' +
-      '<div class="dirs">';
-      if (isRW) {
-        h += '<strong>Directions</strong><ul>' +
-        '<li>The questions in this section address a number of important reading and writing skills. Each question includes one or more passages, which you should read before answering.</li>' +
-        '<li>All questions are multiple choice with four answer choices. Each question has a single best answer.</li>' +
-        '<li>There is no penalty for guessing, so answer every question.</li></ul>';
+        h += '<div class="card-actions" style="margin-top:16px">';
+        h += az.saved
+        ? '<span class="pill green">Added to your lists</span>'
+        : '<button class="btn" onclick="APP.azSave()">Add this to my lists</button>';
+        h += '<button class="btn ghost" onclick="APP.azReset()">Paste another</button></div>';
+        h += '</div>';
+        return h;
+      }
+
+      h += '<div class="card"><h3>How to do this</h3>' +
+      '<p>Copy the whole question out of Bluebook: the passage if there is one, the question itself, and ' +
+      'all four choices. Then say which one you picked. The more you paste, the better the answer.</p>' +
+      '<label class="fld"><span>The question</span>' +
+      '<textarea id="az-text" class="az-text" rows="10" oninput="APP.azText(this.value)" placeholder="Paste the passage, the question, and all four choices here.">' +
+      esc(az.text) + '</textarea></label>' +
+      '<label class="fld"><span>Which one did you pick? Optional</span>' +
+      '<input id="az-picked" type="text" maxlength="60" oninput="APP.azPick(this.value)" placeholder="B" value="' + esc(az.picked) + '"></label>';
+
+      if (az.busy) {
+        h += '<p class="az-wait">Working through it' + '\u2026' + '</p>';
+      } else if (ai) {
+        h += '<button class="btn big" onclick="APP.azRun()">Name the strategy and the trap</button>';
       } else {
-        h += '<strong>Directions</strong><ul>' +
-        '<li>Most questions are multiple choice. On the rest you type your answer straight in. Those are the student-produced response questions.</li>' +
-        '<li>A calculator and the reference sheet are available for every question in this section, from the tools in the upper right.</li>' +
-        '<li>For fill-in answers: no mixed numbers (enter 5/2, not 2 1/2), no symbols, and if an answer will not fit, give at least three digits, rounded or truncated.</li>' +
-        '<li>There is no penalty for guessing, so answer every question.</li></ul>';
+        h += '<p class="az-warn">Automatic classification needs the AI turned on for this server. ' +
+        'You can still record the miss yourself, which counts exactly the same on your lists.</p>';
       }
+      if (az.err) h += '<p class="auth-err">' + esc(az.err) + '</p>';
       h += '</div>';
-      h += '<div class="dirs" style="background:var(--blue-soft);border-color:var(--blue)"><strong>Tools you can use, same as on test day</strong><ul>' +
-      '<li><strong>Mark for Review</strong> flags a question so you can come back to it.</li>' +
-      '<li><strong>ABC</strong> turns on the answer eliminator so you can cross out choices you have ruled out.</li>' +
-      (isRW ? '<li><strong>Highlight</strong> marks up any text you have selected in the passage.</li>'
-        : '<li><strong>Calculator</strong> and <strong>Reference</strong> are open as often as you like.</li>') +
-      '<li>The <strong>question navigator</strong> at the bottom shows which questions are answered and which are flagged.</li></ul></div>';
-      h += '<button class="btn" style="font-size:17px;padding:12px 34px" onclick="APP.beginModule()">Begin ' +
-      (m.num === 2 ? 'Module 2' : 'this module') + '</button>';
-      if (m.num === 2) {
-        h += '<p class="note" style="margin-top:14px">Module 2 has been assembled at the <strong>' +
-        (m.kind === 'hard' ? 'harder' : 'easier') + '</strong> difficulty, based on how Module 1 went. This is the adaptive step the real test takes.</p>';
-      }
-      h += '</div></div></div>';
+
+      h += '<div class="card"><h3>' + (ai ? 'Or label it yourself' : 'Label it yourself') + '</h3>' +
+      '<p>If you already know what happened, pick it here and it goes straight onto your lists.</p>' +
+      '<div class="az-manual">' + azSelect('strat') + azSelect('trap') + '</div>' +
+      (az.saved
+        ? '<span class="pill green">Added to your lists</span>'
+        : '<button class="btn subtle" onclick="APP.azSaveManual()">Add to my lists</button>') +
+      '</div>';
+
+      h += '</div>';
       return h;
     }
 
-    function breakHTML() {
-      var m = S.mod();
-      return '<div class="exam"><div class="exam-top"><div><div class="sec-name">Break</div>' +
-      '<div class="sec-sub">Reading and Writing complete</div></div><div class="timer-wrap"></div><div class="tools"></div></div>' +
-      '<div class="centered"><div class="box"><h2>Take a 10-minute break</h2>' +
-      '<div class="bigtimer" id="timer">' + fmt(m.remaining) + '</div>' +
-      '<p>Stand up, drink some water, and shake out your hands. On test day you may not use your phone, leave the room without permission, or discuss the test.</p>' +
-      '<p class="note" style="margin-top:16px">Testing resumes automatically when the break ends.</p>' +
-      '<div class="card-actions" style="justify-content:center;margin-top:22px">' +
-      '<button class="btn" onclick="APP.skipBreak()">Resume testing now</button></div>' +
-      '</div></div></div>';
-    }
-
-    /* ============================================================
-       EXAM
-       ============================================================ */
     function stemHTML(q) {
       var h = '';
       if (q.blurb) h += '<p class="blurb">' + q.blurb + '</p>';
@@ -10025,29 +9756,17 @@ window.STRATEGIES = {
        ============================================================ */
     function reviewHTML() {
       var a = reviewData;
+      var backTo = /^Trap:/.test(String(a.label || '')) ? 'traps' : 'strategies';
       var h = '<div class="review-wrap"><div class="home-head"><div><div class="brand">' +
-      (a.kind === 'full' ? 'Full test results' : a.kind === 'drill' ? 'Practice set results' : 'Section results') + '</div>' +
+      esc(a.label || 'Practice set') + '</div>' +
       '<div class="tagline">' + dateLabel(a.finishedAt) + '</div></div>' +
-      '<div class="card-actions"><button class="btn subtle sm" onclick="APP.go(\'progress\')">Progress</button>' +
+      '<div class="card-actions"><button class="btn subtle sm" onclick="APP.go(\'' + backTo + '\')">' +
+      (backTo === 'traps' ? 'All traps' : 'All moves') + '</button>' +
       '<button class="btn ghost sm" onclick="APP.go(\'home\')">Home</button></div></div>';
 
-      if (a.kind !== 'drill') {
-        h += '<div class="score-hero">';
-        if (a.total) h += '<div class="score-box"><div class="lbl">Total (estimated)</div><div class="big">' + a.total + '</div><div class="sub">out of 1600</div></div>';
-        ['rw', 'math'].forEach(function (sec) {
-            var s = a.sections[sec];
-            if (!s) return;
-            h += '<div class="score-box"><div class="lbl">' + (sec === 'rw' ? 'Reading and Writing' : 'Math') + '</div>' +
-            '<div class="big">' + s.scaled + '</div><div class="sub">' + s.raw + ' of ' + s.total + ' correct' +
-            (s.path ? ' \u00b7 routed to the ' + (s.path === 'hard' ? 'harder' : 'easier') + ' module 2' : '') + '</div></div>';
-        });
-        h += '</div>';
-        h += '<p class="note">Estimated from published practice-test curves. The module you were routed to caps the section score, which is why the routing is shown.</p>';
-      } else {
-        var right = a.items.filter(function (i) { return i.correct === true; }).length;
-        h += '<div class="score-hero"><div class="score-box"><div class="lbl">Correct</div><div class="big">' +
-        right + '/' + a.items.length + '</div><div class="sub">' + esc(a.label || 'practice set') + '</div></div></div>';
-      }
+      var right = a.items.filter(function (i) { return i.correct === true; }).length;
+      h += '<div class="score-hero"><div class="score-box"><div class="lbl">Correct</div><div class="big">' +
+      right + '/' + a.items.length + '</div><div class="sub">' + esc(a.label || 'practice set') + '</div></div></div>';
 
       var counts = {
         all: a.items.length,
@@ -10057,7 +9776,7 @@ window.STRATEGIES = {
       h += '<div class="filters">' +
       fbtn('all', 'All ' + counts.all) + fbtn('wrong', 'Missed and skipped ' + counts.wrong) +
       fbtn('marked', 'Marked ' + counts.marked) +
-      (a.sections.rw && a.sections.math ? fbtn('rw', 'Reading and Writing') + fbtn('math', 'Math') : '') +
+      (a.sections && a.sections.rw && a.sections.math ? fbtn('rw', 'Reading and Writing') + fbtn('math', 'Math') : '') +
       '</div>';
 
       var items = a.items.filter(function (i) {
@@ -10075,7 +9794,7 @@ window.STRATEGIES = {
           h += '<button class="qrow" onclick="APP.detail(\'' + it.qid + '\')">' + badge +
           '<div><div>' + esc(snippet(q, 96)) + '</div>' +
           '<div class="skill">' + esc(q.skill) + ' \u00b7 ' + dfLabel(q.difficulty) +
-          (it.module ? ' \u00b7 Module ' + it.module : '') + (it.marked ? ' \u00b7 marked' : '') + '</div></div>' +
+          (it.marked ? ' \u00b7 marked' : '') + '</div></div>' +
           '<div class="skill">' + (q.type === 'spr' ? 'Fill-in' : (it.choice === null ? '-' : LETTERS[it.choice])) + '</div>' +
           '<div class="skill">' + (it.seconds ? it.seconds + 's' : '') + '</div></button>';
       });
@@ -10170,13 +9889,6 @@ window.STRATEGIES = {
           '<button class="btn" onclick="APP.advance()">Continue</button></div>';
           openModal('End of module', msg);
       });
-      sess.on('module-change', function () {
-          closeModal();
-          S.paused = true;
-          view = S.isBreak() ? 'break' : 'directions';
-          if (S.isBreak()) S.paused = false;
-          render();
-      });
       sess.on('expired', function () { toast('Time is up on that module'); });
       sess.on('finished', function (res) {
           closeModal();
@@ -10191,7 +9903,7 @@ window.STRATEGIES = {
        ============================================================ */
     var APP = {
       go: function (v) {
-        if (S && !S.finished && (view === 'exam' || view === 'break' || view === 'directions')) return;
+        if (S && !S.finished && view === 'exam') return;
         view = v; render();
       },
       closeModal: closeModal,
@@ -10261,69 +9973,60 @@ window.STRATEGIES = {
       demoPick: function (i) { demo.picked = i; render(); },
       demoReset: function () { demo.picked = null; render(); },
 
-      /* ---------- logging an official practice test ---------- */
-      openLogger: function () { log.step = 'start'; log.rows = []; log.idx = 0; log.current = {}; view = 'logger'; render(); },
-      logSection: function (sec) {
-        var src = document.getElementById('log-source');
-        if (src) log.source = src.value;
-        log.section = sec; render();
+      /* ---------- a question pasted in from a real practice test ---------- */
+      azText: function (v) { az.text = v; },
+      azPick: function (v) { az.picked = v; },
+      azReset: function () {
+        az.text = ''; az.picked = ''; az.res = null; az.err = ''; az.saved = false;
+        az.mStrat = ''; az.mTrap = ''; render();
       },
-      logBegin: function () {
-        var src = document.getElementById('log-source');
-        var cnt = document.getElementById('log-count');
-        log.source = (src && src.value.trim()) || 'Practice test';
-        log.count = Math.max(1, Math.min(40, parseInt(cnt && cnt.value, 10) || 1));
-        log.rows = []; log.idx = 0; log.current = {}; log.expanded = false;
-        log.step = 'question';
-        render();
+      azManual: function (which, v) {
+        if (which === 'strat') az.mStrat = v; else az.mTrap = v;
       },
-      logSkill: function (skill) {
-        log.current.skill = skill;
-        log.current.strat = stratForSkill(skill);
-        var q = window.RW_BANK.concat(window.MATH_BANK).filter(function (x) { return x.skill === skill; })[0];
-        log.current.domain = q ? q.domain : null;
-        log.expanded = false;
-        render();
+      azSaveManual: function () {
+        if (!az.mStrat && !az.mTrap) { toast('Pick a move or a trap first'); return; }
+        recordPasted({ strategy: az.mStrat, section: null, skill: null,
+                       picked: az.mTrap ? { trap: az.mTrap } : null });
+        az.saved = true; render();
+        toast('Added to your lists');
       },
-      logBackSkill: function () { log.current = {}; log.expanded = false; render(); },
-      logExpand: function () { log.expanded = true; render(); },
-      logCause: function (cause, trap) {
-        log.rows.push({
-          skill: log.current.skill,
-          domain: log.current.domain,
-          strat: log.current.strat,
-          trap: cause === 'trap' ? trap : null,
-          cause: cause
-        });
-        log.idx++;
-        log.current = {};
-        log.expanded = false;
-        if (log.idx >= log.count) return APP.logFinish();
-        render();
-      },
-      logSkip: function () {
-        log.idx++;
-        log.current = {};
-        log.expanded = false;
-        if (log.idx >= log.count) return APP.logFinish();
-        render();
-      },
-      logFinish: function () {
-        if (log.rows.length) {
-          window.Store.logMisses({ id: String(Date.now()), label: log.source, section: log.section }, log.rows);
-        }
-        log.step = 'done';
-        render();
-      },
-      logReset: function () { log.step = 'start'; log.rows = []; log.idx = 0; log.current = {}; render(); },
+      azRun: function () {
+        var box = document.getElementById('az-text');
+        if (box) az.text = box.value;
+        var pk = document.getElementById('az-picked');
+        if (pk) az.picked = pk.value;
+        if (az.text.trim().length < 40) { toast('Paste the whole question, including the choices'); return; }
+        az.busy = true; az.err = ''; az.res = null; az.saved = false; render();
 
-      /* ---------- writing new questions ---------- */
+        var prompt = 'Question pasted by the student:\n\n' + az.text.trim() +
+        (az.picked.trim() ? '\n\nThe student answered: ' + az.picked.trim() : '') +
+        '\n\nClassify it against the catalog and return only the JSON object.';
+
+        window.Cloud.ask('analyze', prompt, catalogContext()).then(function (r) {
+            az.busy = false;
+            var parsed = azParse(r.text);
+            if (!parsed) { az.err = 'That came back in a shape the app could not read. Try again.'; }
+            else if (parsed.ok === false) { az.err = parsed.reason || 'That does not look like a full SAT question.'; }
+            else { az.res = azClean(parsed); }
+            render();
+        }).catch(function (e) {
+            az.busy = false;
+            az.err = e.message || 'Could not reach the tutor.';
+            render();
+        });
+      },
+      azSave: function () {
+        if (!az.res) return;
+        recordPasted(az.res);
+        az.saved = true; render();
+        toast('Added to your lists');
+      },
       fillGaps: function () {
         var plan = window.Generate.gapPlan();
         if (!plan.length) {
           openModal('Nothing left', '<p>You have met and beaten every strategy and every trap in the catalog. ' +
             'That is the whole checklist done. Now go and prove it on a real practice test in Bluebook.</p>' +
-          '<div class="card-actions"><button class="btn" onclick="APP.closeModal();APP.startSection(\'rw\')">Run a timed module</button></div>');
+          '<div class="card-actions"><button class="btn" onclick="APP.closeModal();APP.go(\'home\')">Back to today</button></div>');
           return;
         }
         var target = plan[0];
@@ -10394,7 +10097,7 @@ window.STRATEGIES = {
               (target.kind === 'trap' ? 'APP.drillTrap(\'' + target.id + '\')' : 'APP.drillStrat(\'' + target.id + '\')') +
               '">Try them now</button>';
             }
-            h += '<button class="btn subtle" onclick="APP.closeModal();APP.go(\'coverage\')">Back to the checklist</button></div>';
+            h += '<button class="btn subtle" onclick="APP.closeModal();APP.go(\'' + (target.kind === 'trap' ? 'traps' : 'strategies') + '\')">Back to the list</button></div>';
             openModal(rep.added ? 'Questions ready' : 'Nothing usable came back', h);
             render();
         }).catch(function (e) {
@@ -10476,6 +10179,11 @@ window.STRATEGIES = {
           h += '<div class="card-actions"><button class="btn subtle sm" onclick="APP.syncNow()">Sync now</button>' +
           '<button class="btn subtle sm" onclick="APP.signOut()">Sign out</button></div>';
         }
+        h += '<h3>Look</h3><p class="note">Five palettes. Pick the one you like opening.</p>' +
+        '<div class="card-actions"><button class="btn subtle sm" onclick="APP.colors()">Change colors</button></div>';
+        h += '<h3>Start over</h3><p class="note">Clears every answer, both lists, and your streak on this device. ' +
+        'There is no undo.</p><div class="card-actions">' +
+        '<button class="btn subtle sm" onclick="APP.resetData()">Clear my progress</button></div>';
         openModal('Account', h);
       },
       saveName: function () {
@@ -10533,55 +10241,11 @@ window.STRATEGIES = {
         box.value = '';
         askTutor('chat', text, questionContext(q, S.st()));
       },
-      aiCoach: function () {
-        var agg = window.Store.agg();
-        var traps = window.Store.topTraps(5).map(function (t) {
-            return (window.TRAPS[t.id] ? window.TRAPS[t.id].name : t.id) + ': ' + t.n + ' times';
-        }).join('; ');
-        var strats = window.Store.weakestStrats(5).map(function (st) {
-            return (window.STRATS[st.id] ? window.STRATS[st.id].name : st.id) + ': ' + st.right + '/' + st.seen;
-        }).join('; ');
-        var best = [];
-        Object.keys(agg.strats).forEach(function (k) { best.push(agg.strats[k]); });
-        best.sort(function (a, b) { return (b.right / b.seen) - (a.right / a.seen); });
-        var strongest = best.slice(0, 2).map(function (st) {
-            return (window.STRATS[st.id] ? window.STRATS[st.id].name : st.id) + ': ' + st.right + '/' + st.seen;
-        }).join('; ');
-        var ctx = 'Questions answered: ' + agg.total.seen + ', correct: ' + agg.total.right + '.\n' +
-        'Traps she falls for most: ' + (traps || 'none recorded') + '.\n' +
-        'Weakest strategies (correct/attempted): ' + (strats || 'none recorded') + '.\n' +
-        'Strongest strategies: ' + (strongest || 'none recorded') + '.';
-        openModal('Coaching note', '<p class="note">Writing your note\u2026</p>');
-        window.Cloud.ask('coach', 'Write me a short coaching note based on this practice data.', ctx)
-        .then(function (r) {
-            openModal('Coaching note', '<div class="ai-answer">' + mdLite(r.text) + '</div>' +
-              '<p class="note" style="margin-top:14px">Written by ' + esc(r.model) + '. ' +
-              (r.remaining !== undefined ? r.remaining + ' tutor requests left today.' : '') + '</p>');
-        })
-        .catch(function (e) { openModal('Coaching note', '<p>' + esc(e.message || 'Could not write the note.') + '</p>'); });
-      },
       rename: function () {
         var n = prompt('Name to show during the test:', window.Store.data().name);
         if (n && n.trim()) { window.Store.setName(n.trim()); render(); }
       },
 
-      startFull: function () {
-        S = new window.SATP.Session({ kind: 'full', name: window.Store.data().name });
-        wire(S); S.paused = true; view = 'directions'; render();
-      },
-      startSection: function (sec) {
-        S = new window.SATP.Session({ kind: sec, name: window.Store.data().name });
-        wire(S); S.paused = true; view = 'directions'; render();
-      },
-      drillSkill: function (sec, skill) {
-        var pool = window.SATP.bankFor(sec).filter(function (q) { return q.skill === skill; });
-        if (!pool.length) { toast('No questions available for that skill yet'); return; }
-        S = new window.SATP.Session({
-            kind: 'drill', section: sec, count: Math.min(pool.length, 10),
-            label: skill, filter: function (q) { return q.skill === skill; }
-        });
-        wire(S); view = 'exam'; render();
-      },
       drillTrap: function (trapId) {
         var pool = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) {
             var t = window.tagsFor(q).traps;
@@ -10612,38 +10276,6 @@ window.STRATEGIES = {
         });
         wire(S); view = 'exam'; render();
       },
-      drillMissed: function () {
-        var ids = window.Store.missedQueue(10).map(function (e) { return e.qid; });
-        if (!ids.length) { toast('Nothing in the retry queue'); return; }
-        closeModal();
-        S = new window.SATP.Session({
-            kind: 'drill', section: 'both', count: ids.length,
-            label: 'Retry: questions previously missed',
-            filter: function (q) { return ids.indexOf(q.id) >= 0; }
-        });
-        wire(S); view = 'exam'; render();
-      },
-      quickMix: function () {
-        var sec = Math.random() < 0.5 ? 'rw' : 'math';
-        S = new window.SATP.Session({ kind: 'drill', section: sec, count: 10, label: 'Mixed ' + (sec === 'rw' ? 'Reading and Writing' : 'Math') + ' set' });
-        wire(S); view = 'exam'; render();
-      },
-      drillWeak: function () {
-        var weak = window.Store.weakest(3);
-        if (!weak.length) { toast('Not enough data yet. Try a section first.'); return; }
-        var names = weak.map(function (w) { return w.skill; });
-        var sec = weak[0].section;
-        var pool = window.SATP.bankFor(sec).filter(function (q) { return names.indexOf(q.skill) >= 0; });
-        if (!pool.length) { toast('Not enough data yet. Try a section first.'); return; }
-        S = new window.SATP.Session({
-            kind: 'drill', section: sec, count: 10, label: 'Weakest skills: ' + names.join(', '),
-            filter: function (q) { return names.indexOf(q.skill) >= 0; }
-        });
-        wire(S); view = 'exam'; render();
-      },
-
-      beginModule: function () { S.paused = false; view = 'exam'; render(); },
-      skipBreak: function () { S.skipBreak(); },
       advance: function () { closeModal(); S.advanceModule(); },
 
       pick: function (i) { S.select(i); },
@@ -10772,8 +10404,8 @@ window.STRATEGIES = {
       },
       colors: function () {
         var cur = currentPalette();
-        var h = '<p class="note">Pick whatever you actually like looking at. This only changes the app around the test. ' +
-        'Inside a timed module the colors stay the same as the real thing, on purpose.</p><div class="pal-grid">';
+        var h = '<p class="note">Pick whatever you actually like opening. The question itself always looks the ' +
+        'same as it does on the real test, on purpose.</p><div class="pal-grid">';
         PALETTES.forEach(function (pl) {
             h += '<button class="pal' + (pl.id === cur ? ' on' : '') + '" onclick="APP.setPalette(\'' + pl.id + '\')">' +
             '<div class="swatches">' + pl.sw.map(function (c) {
@@ -10810,39 +10442,6 @@ window.STRATEGIES = {
         h += '<div class="help-card caught"><h4>How this question type goes wrong</h4><p>' + st.gen.avoid + '</p></div>';
         openModal(st.name, h);
       },
-      trapBook: function () {
-        var agg = window.Store.agg();
-        var h = '<p class="note">Every wrong answer on the SAT is built from one of these. The counts are how many times each one has caught you.</p>';
-        Object.keys(window.TRAP_FAMILIES).forEach(function (f) {
-            h += '<h3>' + window.TRAP_FAMILIES[f].name + '</h3><p class="note" style="margin-top:-6px">' +
-            window.TRAP_FAMILIES[f].blurb + '</p>';
-            Object.keys(window.TRAPS).forEach(function (k) {
-                var t = window.TRAPS[k];
-                if (t.fam !== f) return;
-                var n = (agg.traps[k] || {}).n || 0;
-                h += '<div class="help-card" style="margin-bottom:10px"><h4>' + t.name +
-                (n ? ' <span class="trap-count">' + n + '\u00d7</span>' : '') + '</h4>' +
-                '<p><strong>How to spot it:</strong> ' + t.tell + '</p>' +
-                '<p><strong>What to do:</strong> ' + t.fix + '</p>' +
-                '<div class="card-actions"><button class="btn subtle sm" onclick="APP.drillTrap(\'' + k + '\')">Practice</button></div></div>';
-            });
-        });
-        openModal('Trap catalog', h);
-      },
-      testFormat: function () {
-        openModal('How the real test is built',
-          '<table class="plain"><tr><th>Part</th><th>Questions</th><th>Time</th><th>Notes</th></tr>' +
-          '<tr><td>Reading and Writing, Module 1</td><td>27</td><td>32 min</td><td>Mixed difficulty; sets your routing</td></tr>' +
-          '<tr><td>Reading and Writing, Module 2</td><td>27</td><td>32 min</td><td>Harder or easier, based on Module 1</td></tr>' +
-          '<tr><td>Break</td><td>-</td><td>10 min</td><td>You cannot leave the room on test day</td></tr>' +
-          '<tr><td>Math, Module 1</td><td>22</td><td>35 min</td><td>Calculator allowed throughout</td></tr>' +
-          '<tr><td>Math, Module 2</td><td>22</td><td>35 min</td><td>Harder or easier, based on Module 1</td></tr></table>' +
-          '<h3>Why Module 1 matters so much</h3>' +
-          '<p>The module you get routed to sets the ceiling on your section score. Clear the hard questions in Module 1 and the harder Module 2 opens up the top of the scale; miss them and the easier Module 2 caps you lower however well you then do.</p>' +
-          '<p>This app routes on a difficulty-weighted estimate rather than a raw count, so getting the hard ones right counts for more, which is the same principle the real test uses.</p>' +
-          '<h3>How scores here are worked out</h3>' +
-        '<p>Each section is estimated on the real 200&ndash;800 scale, blending your raw count with how hard the questions you got right actually were, then mapped through published practice-test curves. It is an estimate and the app always labels it as one.</p>');
-      },
       strategies: function () {
         var h = '<div class="strat-list">';
         h += '<h3>Pacing</h3>';
@@ -10860,11 +10459,6 @@ window.STRATEGIES = {
       },
 
       /* review */
-      review: function (id) {
-        var a = window.Store.attempt(id);
-        if (!a) { toast('That attempt is no longer stored'); return; }
-        reviewData = a; reviewFilter = 'all'; view = 'review'; render();
-      },
       filter: function (k) { reviewFilter = k; render(); },
       detail: function (qid) { openModal('Question review', detailHTML(qid)); },
 

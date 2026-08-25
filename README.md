@@ -1,10 +1,10 @@
 # SAT LockIn
 
-**Every wrong answer on the SAT is a trap. Learn to spot them.**
+**Every wrong answer on the SAT was built to be picked. Learn to spot them.**
 
-Full-length adaptive practice in the real digital SAT format, plus the thing no other prep
-app does: it names the *trick* behind every wrong answer, and keeps a running record of
-which tricks keep working on you.
+The app is two catalogs and a daily loop through them: **30 strategies** (the move each
+question type wants) and **43 traps** (the way each wrong answer is built). You practice one
+move and one trap a day, and you watch both lists empty out.
 
 Open **`index.html`**. No install, no build step, works offline.
 
@@ -12,24 +12,21 @@ Open **`index.html`**. No install, no build step, works offline.
 
 ## Where this fits
 
-**This is not a replacement for Bluebook.** Take full practice tests in College Board's own
-app: that is the real software, the real retired questions, and the only scoring worth
-trusting. A homemade imitation of a full test is strictly worse at the one job it would have.
+**This is not a replacement for Bluebook.** Take your full practice tests in College Board's
+own app: that is the real software, the real retired questions, and the only scoring worth
+trusting. A homemade imitation of a full test is strictly worse at the one job it would have,
+so there is no full test here at all.
 
-What this app is for is the part Bluebook does not do. Bluebook tells you that you scored
-1340. It does not tell you that you have fallen for "answered a different quantity" seven
-times, or hand you ten questions where that exact trap is waiting.
-
-So the 98-question full test is hidden by default (`showFullTest` in `js/config.js`, if you
-ever want it back). What is left is timed single modules for pace, and targeted practice for
-everything else.
+What Bluebook will not do is tell you *why* you missed what you missed. It gives you a score.
+So when you miss one there, you paste the question in here and get the move it was testing and
+the trap the wrong answer was built from, on the same two lists as everything else.
 
 ## What makes it different
 
-Most prep apps tell you *what topic* you're weak at. That's not actionable, "work on
-Algebra" isn't advice. SAT LockIn classifies the actual mistake:
+Most prep apps tell you *what topic* you are weak at. That is not actionable, because "work on
+Algebra" is not advice. SAT LockIn names the actual mistake:
 
-> **The trick that caught you: Answered a different quantity** · Partial credit · 7 times so far
+> **What caught you: Answered a different quantity** · Half the job · 7 times so far
 >
 > **How to spot it:** Correct work, wrong thing reported: x instead of x + y, the vertex x
 > instead of the minimum value, the rate instead of the time.
@@ -39,20 +36,29 @@ Algebra" isn't advice. SAT LockIn classifies the actual mistake:
 >
 > [Practice against this trap]
 
-Every one of the **384 wrong answers** in the question bank is classified against a catalog
-of **42 trap types** in 6 families, and every question is tagged with the **strategy** it
-tests. That's what the Diagnosis screen is built from.
+Every wrong answer in the bank is classified against the trap catalog, and every question is
+tagged with the strategy it tests. Those tags are the whole app: they build the daily pair,
+the two lists, and the sets you drill.
 
 ---
 
-## The five screens
+## The screens
+
+There are five, and four of them are the two catalogs.
 
 | Screen | What it does |
 |---|---|
-| **Home** | A mission picked from your own data, retry your misses, or attack your number one trap, or sit a full test if nothing is flagged. Streak, accuracy, and "traps dodged" tiles. |
-| **Untimed practice** | One skill, one strategy, or one trap type at a time. Hint → strategy → worked solution → why every wrong answer is tempting. |
-| **Diagnosis** | Your biggest leaks, where wrong answers come from by family, every strategy ranked worst-first with an improving/slipping trend, and the retry queue. |
-| **Class** | For teachers: roster, accuracy, latest scores, and the traps catching the most students. |
+| **Landing** | Why the wrong answers are engineered, with a live question you can try, and what you get here. A first-time visitor sees this before anything else. |
+| **Today** | One move and one trap to work, your streak, and the two lists with their counts. Nothing else competes for attention. |
+| **Strategies** | All 30 moves, grouped by section, each with its state, a set to practice it, and the recipe used to generate more. Spaced recall on the moves lives here too. |
+| **Traps** | All 43 traps in six families, each with how to spot it, how to beat it, and a set where it is waiting. |
+| **Paste a question** | Paste a miss from Bluebook. You get the move it wanted, the trap behind the answer you picked, a walkthrough, and what each wrong choice was built from. It joins both lists. |
+
+A practice set is untimed and always anchored to one move or one trap. Miss a question and you
+get the hint, the strategy, the worked solution, and why every wrong answer was tempting.
+
+Accounts and a class dashboard are still there for a teacher handing this to a group, reached
+from the account chip rather than the practice surface.
 
 ---
 
@@ -122,7 +128,7 @@ still works with nothing installed.
 
 ---
 
-## Keyboard shortcuts (during a test)
+## Keyboard shortcuts (during a practice set)
 
 | Key | Action |
 |---|---|
@@ -174,13 +180,19 @@ A multiple-choice item needs `domain`, `skill`, `difficulty` (`E`/`M`/`H`), `pro
 
 ## Honest limitations
 
-- **The bank is 128 questions.** A full test uses 98, so a second full test reuses a lot of
- material. It's sized for the diagnosis loop (drills, retries, targeted practice), not for
- six distinct mock tests. Growing it is the highest-value next step.
+- **The bank is 179 questions.** Every one of the 72 catalog entries has at least four
+ questions behind it, which `verify.js` enforces, but four is a floor and not a lot. With the
+ AI turned on the app writes more against each strategy's own recipe; without it, the thinner
+ entries repeat sooner.
 - **These are my questions, not College Board's.** Written to match the format, difficulty
- range, and domain mix. For score prediction, pair this with the official free **Bluebook**
- app and College Board's released practice tests, that's the real software and real items.
-- **Scores are estimates.** Real scoring is item-response-theory based and form-specific.
+ range, and domain mix. Take your real practice tests in **Bluebook** and bring the misses here.
+- **There is no score anywhere in the app.** Scoring is item-response-theory based and
+ form-specific, so any number this app produced would be invented. The two lists are what it
+ can honestly measure.
+- **A pasted question is classified by a model, not by a person.** It is checked against the
+ real catalogs, so it cannot invent a strategy or trap that does not exist, and it reports low
+ confidence when the question came through incomplete. It can still be wrong, and you can
+ always label a miss yourself instead.
 
 
 ## A note on the writing

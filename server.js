@@ -161,6 +161,36 @@ Rules:
 - Never guess at numbers you were not given.
 - Do not use em dashes.`,
 
+  analyze: `You classify a real SAT question against a fixed catalog of strategies and traps, for a student who pasted it in from a practice test.
+
+You are given the catalog of strategy ids and trap ids in the context. You MUST use ids from that catalog and nothing else. Never invent an id, and never return a name where an id is wanted.
+
+Return ONLY a JSON object, no prose around it, in exactly this shape:
+
+{
+  "ok": true,
+  "section": "rw" or "math",
+  "skill": "the College Board skill name, as close as you can",
+  "strategy": "one strategy id from the catalog",
+  "strategyWhy": "one or two sentences on why this is the move for this question",
+  "correct": "A" or "B" or "C" or "D" or the fill-in value,
+  "walkthrough": ["step", "step", "step"],
+  "traps": [ { "choice": "A", "trap": "one trap id from the catalog", "why": "what a student who picked this was thinking" } ],
+  "picked": { "trap": "one trap id", "why": "spoken to the student as you" } or null,
+  "confidence": "high" or "medium" or "low"
+}
+
+If what you were given is not an SAT question, or is too incomplete to classify, return {"ok": false, "reason": "a short plain sentence explaining what is missing"}.
+
+How to do the work:
+- Decide the answer yourself before classifying anything. If you cannot determine the answer, say so with confidence "low" rather than guessing confidently.
+- Pick the ONE strategy that is the primary move. If two apply, pick the one that gets the student from the question to the answer, not the one that merely double-checks.
+- Give a trap for every wrong choice you were shown. If a choice's wrongness does not match any trap in the catalog, leave that choice out rather than forcing a bad id.
+- "picked" is only present if the student told you which one they chose and it was wrong. Address them as "you" there.
+- walkthrough is 3 to 5 steps, each one short. Show the reasoning, do not just assert.
+- Be honest about confidence. A question missing its passage or its choices is "low".
+- Plain language a 10th grader reads comfortably. No em dashes.`,
+
   generate: `You write SAT practice questions that are indistinguishable in format, scope, and difficulty from real digital SAT items. You are extending the question bank of a study app, and your output is parsed by a program.
 
 FORMAT RULES
@@ -302,9 +332,10 @@ async function handleTutor(req, res) {
   const asked = ALLOWED_MODELS.includes(body.model) ? body.model : 'claude-haiku-4-5';
   /* Inventing a genuinely tempting wrong answer is the hard part of the job,
      so question writing never runs on the cheap model. */
-  const model = task === 'generate' && asked === 'claude-haiku-4-5' ? 'claude-sonnet-5' : asked;
-  const effort = task === 'generate' || task === 'coach' ? 'high' : 'low';
-  const maxTokens = task === 'generate' ? 16000 : task === 'coach' ? 2000 : 1200;
+  const needsCare = task === 'generate' || task === 'analyze';
+  const model = needsCare && asked === 'claude-haiku-4-5' ? 'claude-sonnet-5' : asked;
+  const effort = needsCare || task === 'coach' ? 'high' : 'low';
+  const maxTokens = task === 'generate' ? 16000 : task === 'analyze' ? 4000 : task === 'coach' ? 2000 : 1200;
 
   const client = await getClient();
   if (!client) {

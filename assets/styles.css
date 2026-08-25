@@ -916,3 +916,106 @@ body{background:var(--shell-bg)}
 .link-btn.tiny{font-size:11.5px;margin-left:8px;text-decoration:none;color:var(--brand);
   border:1px solid var(--shell-line);border-radius:999px;padding:1px 8px}
 .link-btn.tiny:hover{background:var(--brand-soft);border-color:var(--brand)}
+
+/* ============================================================
+   TODAY, THE TWO CATALOGS, AND THE PASTE BRIDGE
+   The app is two lists and a daily loop through them, so home is
+   built from exactly three blocks and nothing competes with them.
+   ============================================================ */
+.today{
+  background:var(--brand-soft);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px;margin:18px 0;
+}
+.today .t-kicker{
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--brand-ink);font-weight:700;margin-bottom:6px;
+}
+.today h2{font-size:21px;margin:0 0 16px;text-wrap:balance}
+.today-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.today-card{
+  background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;
+}
+.today-card .tc-lbl{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:700;
+}
+.today-card h3{font-size:16px;margin:0;text-wrap:balance}
+.today-card p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;flex:1}
+.today-card .btn{margin-top:4px}
+
+.two-up{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.big-entry{
+  display:block;text-align:left;cursor:pointer;font:inherit;color:inherit;
+  background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+  transition:border-color .12s,transform .12s;
+}
+.big-entry:hover{border-color:var(--brand);transform:translateY(-1px)}
+.big-entry:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.big-entry .be-num{
+  font-size:34px;font-weight:800;line-height:1;color:var(--brand-ink);
+  font-variant-numeric:tabular-nums;
+}
+.big-entry .be-num span{font-size:16px;font-weight:600;color:var(--ink-soft)}
+.big-entry.spot .be-num{color:var(--red)}
+.big-entry .be-name{font-size:17px;font-weight:700;margin:8px 0 3px}
+.big-entry .be-sub{font-size:13px;color:var(--ink-soft);line-height:1.45}
+
+.paste-entry{
+  display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;
+  cursor:pointer;font:inherit;color:inherit;
+  background:var(--bg);border:1px dashed var(--line-strong);border-radius:14px;padding:18px 20px;
+  transition:border-color .12s,background .12s;
+}
+.paste-entry:hover{border-color:var(--brand);background:var(--bg-soft)}
+.paste-entry:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.paste-entry .pe-icon{color:var(--brand-ink);flex:0 0 auto;margin-top:1px}
+.paste-entry .pe-name{font-size:15.5px;font-weight:700;margin-bottom:3px}
+.paste-entry .pe-sub{font-size:13px;color:var(--ink-soft);line-height:1.45}
+
+.home-foot{margin-top:22px;text-align:center}
+.cv-note{padding:10px 2px 2px;font-size:13.5px}
+
+/* ---- pasted question ---- */
+.az-text{
+  width:100%;font:inherit;font-size:14.5px;line-height:1.55;padding:12px 13px;
+  border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);
+  resize:vertical;min-height:150px;
+}
+.az-text:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:var(--brand)}
+.az-manual{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 14px}
+.az-select{
+  font:inherit;font-size:14px;padding:10px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--bg);color:var(--ink);width:100%;
+}
+.az-card{border:1px solid var(--line);border-left-width:4px;border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.az-card.strat{border-left-color:var(--brand);background:var(--brand-soft)}
+.az-card.trap{border-left-color:var(--red);background:var(--red-soft)}
+.az-card h3{font-size:17px;margin:2px 0 8px}
+.az-card p{margin:0 0 8px;font-size:14px;line-height:1.55}
+.az-card .az-lbl{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);
+}
+.az-card .az-move{font-weight:600}
+.az-steps{padding-left:22px;margin:0}
+.az-steps li{margin-bottom:8px;line-height:1.55}
+.az-row{
+  display:grid;grid-template-columns:34px 1fr 110px;gap:12px;align-items:center;
+  padding:11px 0;border-top:1px solid var(--line);
+}
+.az-row:first-of-type{border-top:0}
+.az-ch{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  border:1px solid var(--line-strong);font-size:13px;font-weight:700;
+}
+.az-warn{
+  background:var(--amber-soft);color:var(--amber);border-radius:8px;
+  padding:11px 13px;margin:0 0 14px;font-size:13.5px;line-height:1.5;
+}
+.az-wait{color:var(--ink-soft);font-size:14px;padding:10px 0}
+
+@media (max-width:720px){
+  .today-pair,.two-up,.az-manual{grid-template-columns:1fr}
+  .az-row{grid-template-columns:30px 1fr;row-gap:6px}
+  .az-row>div:last-child{grid-column:1 / -1;text-align:left !important}
+}

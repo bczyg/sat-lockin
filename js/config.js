@@ -25,18 +25,6 @@ window.CONFIG = {
   /* Shown on the sign-in screen so students know they are in the right place. */
   className: '',
 
-  /* The 98-question full test is hidden by default, on purpose.
-
-     Bluebook is the real test software with real retired items and real
-     scoring, so a homemade imitation is strictly worse at the one job it
-     would have. This app is for learning the strategies and finding the
-     traps; take the practice tests in Bluebook.
-
-     The mode still works and nothing was deleted. Set this to true to bring
-     the card back, which is worth doing only once the bank is large enough
-     for several full tests without repeating questions. */
-  showFullTest: false,
-
   /* Which model handles which job. Haiku is fast and cheap for conversation;
      Sonnet does the work that needs real reasoning. Question writing always
      runs on Sonnet or better, whatever is set here, because a weak wrong
@@ -45,7 +33,8 @@ window.CONFIG = {
     chat:     'claude-haiku-4-5',   // follow-up questions on a problem
     explain:  'claude-haiku-4-5',   // re-explain a step a different way
     coach:    'claude-sonnet-5',    // a coaching note from her own data
-    generate: 'claude-sonnet-5'     // writing brand new practice questions
+    generate: 'claude-sonnet-5',    // writing brand new practice questions
+    analyze:  'claude-sonnet-5'     // naming the strategy and trap in a pasted question
   },
 
   /* Only for running the tutor on your own machine with no database, which
