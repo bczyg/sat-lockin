@@ -975,11 +975,17 @@
       h += '<p class="auth-sub">' + esc(window.BRAND.tagline) + '</p>';
       if (cfg.className) h += '<p class="auth-class">' + esc(cfg.className) + '</p>';
 
+      var mailOff = C && C.enabled && C.ready && !C.mail;
+      if (mailOff) {
+        h += '<p class="auth-warn">Sign-in codes are not being emailed yet, so signing in will not work on this ' +
+        'device. Use <strong>Skip for now</strong> below and everything still works, saved in this browser.</p>';
+      }
+
       if (authState.stage === 'email') {
         h += '<label class="fld"><span>Your email</span>' +
         '<input id="auth-email" type="email" autocomplete="email" placeholder="you@school.edu" value="' + esc(authState.email) + '" ' +
         'onkeydown="if(event.key===\'Enter\')APP.sendCode()"></label>';
-        h += '<button class="btn big" ' + (authState.busy ? 'disabled' : '') + ' onclick="APP.sendCode()">' +
+        h += '<button class="btn big" ' + (authState.busy || mailOff ? 'disabled' : '') + ' onclick="APP.sendCode()">' +
         (authState.busy ? 'Sending&hellip;' : 'Email me a sign-in code') + '</button>';
         h += '<p class="auth-note">We send a 6-digit code. No password to remember, and nothing to install.</p>';
       } else {
