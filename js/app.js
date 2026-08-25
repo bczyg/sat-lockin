@@ -186,9 +186,16 @@
           body: st.move + ' Right now you are getting ' + weak.right + ' of ' + weak.seen + ' when this move is what is being tested.',
           cta: 'Practice this move', act: "APP.drillStrat('" + weak.id + "')", alt: 'See the full diagnosis', altAct: "APP.go('diagnosis')" };
       }
-      return { kicker: 'Nothing needs fixing', title: 'Time for a full test',
-        body: 'Nothing is flagged for you right now, so the best use of a free couple of hours is a full test under real timing.',
-        cta: 'Start full test', act: 'APP.startFull()' };
+      if (window.CONFIG && window.CONFIG.showFullTest) {
+        return { kicker: 'Nothing needs fixing', title: 'Time for a full test',
+          body: 'Nothing is flagged for you right now, so the best use of a free couple of hours is a full test under real timing.',
+          cta: 'Start full test', act: 'APP.startFull()' };
+      }
+      return { kicker: 'Nothing needs fixing', title: 'Run a module against the clock',
+        body: 'Nothing is flagged for you right now. Take a single module under real timing to work on pace, ' +
+              'then sit a full practice test in Bluebook when you want a score.',
+        cta: 'Reading and Writing module', act: "APP.startSection('rw')",
+        alt: 'Math module', altAct: "APP.startSection('math')" };
     }
 
     function homeHTML() {
@@ -254,15 +261,18 @@
       /* ---- practice modes ---- */
       h += '<div class="section-title">Practice</div><div class="card-grid">';
 
-      h += '<div class="card mode-card full"><div class="icon">' + ic('clock') + '</div>' +
+      if (window.CONFIG && window.CONFIG.showFullTest) {
+    h += '<div class="card mode-card full"><div class="icon">' + ic('clock') + '</div>' +
       '<h3>Full-length test</h3>' +
       '<p>The real thing. Two Reading and Writing modules, a 10 minute break, then two Math modules. Module 2 gets harder or easier depending on how Module 1 goes, exactly like the real test.</p>' +
       '<div class="spacer"></div><div class="meta">98 questions \u00b7 2 hr 14 min</div>' +
       '<div class="card-actions"><button class="btn" onclick="APP.startFull()">Start</button></div></div>';
+    }
 
       h += '<div class="card mode-card sec"><div class="icon">' + ic('layers') + '</div>' +
       '<h3>One section</h3>' +
-      '<p>Both modules of one section, with the real clock running. Short enough for a school night.</p>' +
+      '<p>Both modules of one section with the real clock running, or a single module if you have half an hour. ' +
+      'This is pace practice, not a score.</p>' +
       '<div class="spacer"></div><div class="meta">54 q / 64 min \u00b7 44 q / 70 min</div>' +
       '<div class="card-actions"><button class="btn" onclick="APP.startSection(\'rw\')">Reading &amp; Writing</button>' +
       '<button class="btn ghost" onclick="APP.startSection(\'math\')">Math</button></div></div>';
@@ -329,6 +339,11 @@
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.trapBook()">Open</button></div></div>' +
       '<div class="card"><h3>Math reference sheet</h3><p>The formula sheet the real test gives you. Knowing when to open it is the skill.</p>' +
       '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.reference()">Open</button></div></div>' +
+      '<div class="card"><h3>Where practice tests fit</h3><p>Take your full practice tests in ' +
+      '<strong>Bluebook</strong>, the College Board app. That is the real software, the real questions, and the ' +
+      'only scoring worth trusting. Come back here to work out why you missed what you missed.</p>' +
+      '<div class="spacer"></div><div class="card-actions">' +
+      '<button class="btn ghost sm" onclick="APP.testFormat()">How the real test is built</button></div></div>' +
       '<div class="card"><h3>Everything to lock in</h3><p>The full checklist: 22 strategies and 42 traps, with everything you have already locked in ticked off.</p>' +
         '<div class="spacer"></div><div class="card-actions"><button class="btn ghost sm" onclick="APP.go(\'coverage\')">Open checklist</button></div></div>' +
         '<div class="card"><h3>Colors</h3><p>Five palettes. Pick the one you like opening.</p>' +
@@ -395,7 +410,7 @@
       '<button class="btn subtle sm" onclick="APP.go(\'home\')">← Home</button></div><div class="home-hr"></div>';
 
       if (!d.attempts.length) {
-        h += '<div class="card"><p>No attempts yet. Take a full test or a section to start building a record.</p></div></div>';
+        h += '<div class="card"><p>No attempts yet. Run a section or a practice set to start building a record.</p></div></div>';
         return h;
       }
 
@@ -1225,8 +1240,8 @@
         var plan = window.Generate.gapPlan();
         if (!plan.length) {
           openModal('Nothing left', '<p>You have met and beaten every strategy and every trap in the catalog. ' +
-            'That is the whole checklist done. Sit a full test to see it hold up under time pressure.</p>' +
-          '<div class="card-actions"><button class="btn" onclick="APP.closeModal();APP.startFull()">Start a full test</button></div>');
+            'That is the whole checklist done. Now go and prove it on a real practice test in Bluebook.</p>' +
+          '<div class="card-actions"><button class="btn" onclick="APP.closeModal();APP.startSection(\'rw\')">Run a timed module</button></div>');
           return;
         }
         var target = plan[0];

@@ -10,6 +10,20 @@ Open **`index.html`**. No install, no build step, works offline.
 
 ---
 
+## Where this fits
+
+**This is not a replacement for Bluebook.** Take full practice tests in College Board's own
+app: that is the real software, the real retired questions, and the only scoring worth
+trusting. A homemade imitation of a full test is strictly worse at the one job it would have.
+
+What this app is for is the part Bluebook does not do. Bluebook tells you that you scored
+1340. It does not tell you that you have fallen for "answered a different quantity" seven
+times, or hand you ten questions where that exact trap is waiting.
+
+So the 98-question full test is hidden by default (`showFullTest` in `js/config.js`, if you
+ever want it back). What is left is timed single modules for pace, and targeted practice for
+everything else.
+
 ## What makes it different
 
 Most prep apps tell you *what topic* you're weak at. That's not actionable, "work on
@@ -36,7 +50,6 @@ tests. That's what the Diagnosis screen is built from.
 | Screen | What it does |
 |---|---|
 | **Home** | A mission picked from your own data, retry your misses, or attack your number one trap, or sit a full test if nothing is flagged. Streak, accuracy, and "traps dodged" tiles. |
-| **Full-length test** | 98 questions, 2 hr 14 min, two-stage adaptive, real Bluebook-style interface and tools. |
 | **Untimed practice** | One skill, one strategy, or one trap type at a time. Hint → strategy → worked solution → why every wrong answer is tempting. |
 | **Diagnosis** | Your biggest leaks, where wrong answers come from by family, every strategy ranked worst-first with an improving/slipping trend, and the retry queue. |
 | **Class** | For teachers: roster, accuracy, latest scores, and the traps catching the most students. |
