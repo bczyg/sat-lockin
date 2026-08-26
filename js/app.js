@@ -71,7 +71,7 @@
           if (C.enabled && !C.signedIn() && !skipped && view === 'home') {
             view = 'auth';
           }
-          if (view === 'auth' || view === 'home' || view === 'class' || view === 'strategies' || view === 'traps' || view === 'analyze') render();
+          if (view === 'auth' || view === 'home' || view === 'class' || view === 'strategies' || view === 'traps' || view === 'analyze' || view === 'desmos') render();
         });
       }
       document.addEventListener('keydown', onKey);
@@ -147,6 +147,7 @@
       view === 'strategies' ? strategiesHTML() :
       view === 'traps' ? trapsHTML() :
       view === 'analyze' ? analyzeHTML() :
+      view === 'desmos' ? desmosHTML() :
       view === 'cards' ? cardsHTML() :
       view === 'auth' ? authHTML() :
       view === 'class' ? classHTML() :
@@ -748,11 +749,34 @@
       return '<span class="cv learn">' + c.right + '/' + c.seen + '</span>';
     }
 
+    function desmosTrickCount() {
+      var n = 0;
+      (window.DESMOS ? window.DESMOS.groups : []).forEach(function (g) { n += g.tricks.length; });
+      return n;
+    }
+
+    /* Every question the calculator page cites, deduplicated. */
+    function desmosExampleIds() {
+      var seen = {}, out = [];
+      (window.DESMOS ? window.DESMOS.groups : []).forEach(function (g) {
+          g.tricks.forEach(function (t) {
+              (t.qids || []).forEach(function (id) {
+                  if (!seen[id] && ALLQ[id]) { seen[id] = 1; out.push(id); }
+              });
+          });
+      });
+      return out;
+    }
+
     function cvRow(id, name, blurb, c, kind) {
       var act = kind === 'trap' ? 'APP.drillTrap' : 'APP.drillStrat';
       var st = kind === 'strat' ? window.STRATS[id] : null;
       var recipe = (st && st.gen)
         ? ' <button class="link-btn tiny" onclick="APP.showRecipe(\'' + id + '\')">recipe</button>' : '';
+      if (id === 'desmos-first') {
+        recipe = ' <button class="link-btn tiny strong" onclick="APP.go(\'desmos\')">' +
+        desmosTrickCount() + ' calculator tricks</button>' + recipe;
+      }
       if (st && st.meta) {
         return '<div class="cv-row"><div><strong>' + name + '</strong>' + recipe +
         '<div class="n" style="text-align:left">' + blurb + '</div></div>' +
@@ -802,6 +826,8 @@
               h += cvRow(id, window.STRATS[id].name, window.STRATS[id].move, cov.strats[id], 'strat');
           });
           if (sec === 'math') {
+            h += '<div class="cv-note"><button class="link-btn" onclick="APP.go(\'desmos\')">' +
+            'What the built-in Desmos calculator can actually do</button></div>';
             h += '<div class="cv-note"><button class="link-btn" onclick="APP.reference()">' +
             'Which formulas the test gives you, and the twelve it does not</button></div>';
           }
@@ -1035,6 +1061,74 @@
           esc(book[id].name) + '</option>';
       });
       return h + '</select>';
+    }
+
+    /* ============================================================
+       THE BUILT-IN CALCULATOR
+       Desmos is on every math question and most students use it as a
+       four-function calculator. This is the deep content behind the
+       "graph it before you solve it" move, so it lives one click from
+       that move rather than as a fifth thing on the home screen.
+       ============================================================ */
+    function desmosHTML() {
+      var D = window.DESMOS;
+      var h = catalogHead('The built-in calculator',
+        'Bluebook puts a Desmos graphing calculator on every math question, in both modules. ' +
+        'These are the things it does that most students never find.');
+
+      D.intro.forEach(function (p) {
+          h += '<p class="lead-sub" style="margin-bottom:12px">' + esc(p) + '</p>';
+      });
+
+      var exIds = desmosExampleIds();
+      h += '<div class="card" style="margin:18px 0"><h3>Try it on real questions</h3>' +
+      '<p>Every trick below names questions in this bank where the graph is the fastest route. ' +
+      'Those ' + exIds.length + ' questions also make a set of their own, so you can practice the ' +
+      'habit rather than read about it.</p>' +
+      '<div class="card-actions"><button class="btn" onclick="APP.drillDesmos()">' +
+      'Practice on ' + Math.min(exIds.length, 10) + ' of them</button>' +
+      '<button class="btn ghost" onclick="APP.drillStrat(\'desmos-first\')">' +
+      'Just the graphing questions</button></div></div>';
+
+      D.groups.forEach(function (g, gi) {
+          h += '<div class="section-title">' + esc(g.name) + '</div>';
+          h += '<p class="dz-blurb">' + esc(g.blurb) + '</p>';
+          g.tricks.forEach(function (t) {
+              h += '<div class="dz-trick">';
+              h += '<div class="dz-head"><h3>' + esc(t.name) + '</h3>' +
+              (t.confirm ? '<span class="pill amber">Try it in Bluebook first</span>' : '') + '</div>';
+              h += '<div class="dz-type"><div class="dz-lbl">Type this</div>' +
+              '<pre>' + esc(t.type) + '</pre></div>';
+              h += '<div class="dz-body">';
+              h += '<p><strong>What happens.</strong> ' + esc(t.then) + '</p>';
+              if (t.why) h += '<p><strong>Why it is worth it.</strong> ' + esc(t.why) + '</p>';
+              if (t.edge) {
+                h += '<p class="dz-edge"><strong>Where it bites.</strong> ' + esc(t.edge) + '</p>';
+              }
+              if (t.qids && t.qids.length) {
+                h += '<div class="dz-ex"><span class="dz-lbl">Try it on</span>';
+                t.qids.forEach(function (qid) {
+                    h += '<button class="link-btn tiny" onclick="APP.peek(\'' + qid + '\')">' +
+                    esc(qid) + '</button>';
+                });
+                h += '</div>';
+              }
+              h += '</div></div>';
+          });
+      });
+
+      h += '<div class="card" style="margin-top:20px"><h3>One honest caveat</h3>' +
+      '<p>Two of the tricks above are marked <strong>Try it in Bluebook first</strong>. Regressions ' +
+      'and the statistics functions are standard Desmos features, but I have not personally ' +
+      'confirmed them inside Bluebook\'s embedded build, and finding out in a timed module is the ' +
+      'wrong time. Open Bluebook, start any practice test, and type one of them. Thirty seconds now ' +
+      'is worth more than a guess later.</p></div>';
+
+      h += '<div class="card-actions" style="margin-top:22px;justify-content:center">' +
+      '<button class="btn" onclick="APP.drillDesmos()">Practice these on the graph</button>' +
+      '<button class="btn ghost" onclick="APP.go(\'strategies\')">Back to the moves</button></div>';
+      h += '</div>';
+      return h;
     }
 
     function analyzeHTML() {
@@ -1381,9 +1475,12 @@
         : null) || {};
       var h = '';
       var ok = it.correct;
-      h += '<div class="verdict ' + (ok ? 'ok' : 'no') + '">' +
-      (ok === true ? '✓ You got this one right' : ok === false ? '✗ Missed' : '– Left blank') +
-      '</div>';
+      /* Browsing an example is not an attempt, so it gets no verdict. */
+      if (!it.peek) {
+        h += '<div class="verdict ' + (ok ? 'ok' : 'no') + '">' +
+        (ok === true ? '✓ You got this one right' : ok === false ? '✗ Missed' : '– Left blank') +
+        '</div>';
+      }
       h += '<p class="note">' + esc(q.domain) + ' · ' + esc(q.skill) + ' · ' + dfLabel(q.difficulty) +
       (it.seconds ? ' · ' + it.seconds + ' seconds spent' : '') + '</p>';
       if (q.blurb || q.figure || q.passage) h += '<div class="passage" style="font-size:16px;margin:14px 0">' + stemHTML(q) + '</div>';
@@ -2035,6 +2132,24 @@
       /* review */
       filter: function (k) { reviewFilter = k; render(); },
       detail: function (qid) { openModal('Question review', detailHTML(qid)); },
+      peek: function (qid) {
+        var q = ALLQ[qid];
+        openModal(q ? 'Example: ' + q.skill : 'Example', detailHTML(qid, { peek: true }));
+      },
+      /* The set the calculator page promises: every question the page cites as
+         faster on the graph, not just the four tagged with the move. */
+      drillDesmos: function () {
+        var ids = desmosExampleIds();
+        if (!ids.length) { toast('No examples available'); return; }
+        closeModal();
+        S = new window.SATP.Session({
+            kind: 'drill', section: 'both', count: Math.min(ids.length, 10),
+            label: 'Faster on the graph',
+            filter: function (q) { return ids.indexOf(q.id) >= 0; }
+        });
+        wire(S); view = 'exam'; render();
+        toast('Every question here is quicker to graph than to solve by hand');
+      },
 
       resetData: function () {
         openModal('Clear all saved progress?', '<p>This deletes every stored attempt and all skill statistics in this browser. It cannot be undone.</p>' +

@@ -1086,3 +1086,53 @@ ul.plain li{font-size:14.5px;line-height:1.6}
   .price{padding:22px 18px 20px}
   .price .p-amt{font-size:38px}
 }
+
+/* ============================================================
+   THE BUILT-IN CALCULATOR PAGE
+   Each trick is a keystroke block and an outcome, so the typed
+   input gets the same visual weight as a code sample would.
+   ============================================================ */
+.dz-blurb{
+  font-size:14.5px;line-height:1.6;color:var(--ink-soft);
+  margin:0 0 14px;max-width:70ch;
+}
+.dz-trick{
+  border:1px solid var(--line);border-radius:12px;background:var(--bg);
+  margin-bottom:14px;overflow:hidden;
+}
+.dz-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:15px 18px 0;
+}
+.dz-head h3{font-size:16.5px;margin:0;text-wrap:balance}
+.dz-type{padding:12px 18px 0}
+.dz-lbl{
+  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-soft);margin-bottom:6px;
+}
+.dz-type pre{
+  font-family:var(--mono);font-size:13.5px;line-height:1.75;
+  background:var(--bg-soft);border-left:3px solid var(--brand);
+  border-radius:0 6px 6px 0;padding:11px 14px;margin:0;
+  white-space:pre-wrap;overflow-x:auto;color:var(--ink);
+}
+.dz-body{padding:14px 18px 16px}
+.dz-body p{margin:0 0 10px;font-size:14px;line-height:1.6}
+.dz-body p:last-child{margin-bottom:0}
+.dz-body strong{color:var(--ink)}
+.dz-edge{
+  background:var(--amber-soft);border-radius:7px;
+  padding:10px 12px;margin-top:12px !important;
+}
+.dz-edge strong{color:var(--amber)}
+.dz-ex{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  margin-top:13px;padding-top:12px;border-top:1px solid var(--line);
+}
+.dz-ex .dz-lbl{margin:0}
+.link-btn.tiny.strong{font-weight:700;color:var(--brand-ink)}
+
+@media (max-width:720px){
+  .dz-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .dz-type pre{font-size:12.5px}
+}

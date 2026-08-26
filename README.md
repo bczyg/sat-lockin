@@ -61,6 +61,7 @@ There are five, and four of them are the two catalogs.
 | **Strategies** | All 30 moves, grouped by section, each with its state, a set to practice it, and the recipe used to generate more. Spaced recall on the moves lives here too. |
 | **Traps** | All 43 traps in six families, each with how to spot it, how to beat it, and a set where it is waiting. |
 | **Paste a question** | Paste a miss from Bluebook. You get the move it wanted, the trap behind the answer you picked, a walkthrough, and what each wrong choice was built from. It joins both lists. |
+| **The built-in calculator** | 16 Desmos tricks, each as a keystroke and an outcome, with the bank questions where that trick is the fastest route. Reached from the graphing move on the Strategies list, since it is that move's deep content rather than a sixth screen. |
 
 A practice set is untimed and always anchored to one move or one trap. Miss a question and you
 get the hint, the strategy, the worked solution, and why every wrong answer was tempting.
@@ -114,6 +115,26 @@ Untouched. The app is single-device and offline. Fill in `js/config.js` to add:
 
 Step-by-step, including deploying to **Railway** and pointing **satlockin.com** at it:
 **[SETUP-CLOUD.md](SETUP-CLOUD.md)**
+
+## The built-in calculator
+
+Bluebook puts a Desmos graphing calculator on every math question, in both modules, and most
+students use it as a four-function calculator. That is the biggest unforced error on the math
+section, so it gets its own page: 16 tricks, each written as *what you literally type* and
+*what happens*, because "use the calculator" is not advice.
+
+The content lives in `js/desmos.js` as data, not markup, so `verify.js` can check it. Each trick
+names bank questions where the graph is the fastest route, and the page offers a set built from
+exactly those 32 questions. The checks fail if a trick loses its keystrokes, cites a question
+that no longer exists, or if that set comes back with anything the page never cited.
+
+Two tricks carry a **Try it in Bluebook first** badge: regressions and the statistics functions.
+Those are standard Desmos features and I have not personally confirmed them inside Bluebook's
+embedded build. Saying so is better than being confidently wrong in a timed module, and the page
+tells the student to spend thirty seconds checking rather than trusting it.
+
+The page hangs off the graphing move on the Strategies list rather than being another home
+screen entry, because it is that one strategy's deep content.
 
 ## Price
 
@@ -184,6 +205,7 @@ js/data-rw.js 100 Reading and Writing questions, fully explained
 js/data-math.js 79 Math questions, fully explained
 js/tags.js 43 trap types, 30 strategies, and the tag for every question
 js/daily.js Daily LockIn: the date-driven rotation, the streak, and the history
+js/desmos.js the calculator tricks, as data, with the questions each one applies to
 js/strategies.js strategy library and math reference sheet
 js/engine.js set assembly, grading, the event log, and storage
 js/cloud.js accounts and offline-first sync (no dependencies)

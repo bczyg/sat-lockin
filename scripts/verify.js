@@ -254,6 +254,45 @@ await load('js/daily.js');
   notes.push(`daily rotation: ${cycle} days, ${seenStrat.size} distinct moves, no repeats`);
 }
 
+/* ---------- 4c. the calculator page points at questions that exist ----------
+   Every trick names bank questions where it is the fastest route. A dead id
+   there is a "try it on m0xx" link that opens nothing. */
+await load('js/desmos.js');
+{
+  const ids = new Set(bank.map((q) => q.id));
+  let refs = 0, tricks = 0;
+  const dead = [];
+  for (const g of window.DESMOS.groups) {
+    if (!g.tricks || !g.tricks.length) fail(`calculator group "${g.name}" has no tricks`);
+    for (const t of g.tricks) {
+      tricks++;
+      if (!t.type || !t.then) fail(`calculator trick "${t.name}" is missing its keystrokes or outcome`);
+      for (const id of (t.qids || [])) {
+        refs++;
+        if (!ids.has(id)) dead.push(`${t.name} -> ${id}`);
+      }
+    }
+  }
+  if (dead.length) fail(`calculator page references questions that do not exist: ${dead.join(', ')}`);
+  /* The page is the deep content for one strategy, so that strategy has to
+     be real and drillable or the page has nowhere to send anyone. */
+  if (!window.STRATS['desmos-first']) fail('the calculator page links to a strategy that does not exist');
+
+  /* The page offers a set built from its own examples, so that set has to
+     assemble and must not quietly include anything the page never cited. */
+  const cited = [...new Set(window.DESMOS.groups.flatMap((g) => g.tricks.flatMap((t) => t.qids || [])))];
+  const set = new window.SATP.Session({
+    kind: 'drill', section: 'both', count: Math.min(cited.length, 10),
+    label: 'check', seed: 7, filter: (q) => cited.includes(q.id)
+  });
+  set.stopTimer();
+  const served = set.mod().questions.map((q) => q.id);
+  if (!served.length) fail('the calculator page offers a practice set that comes back empty');
+  const stray = served.filter((id) => !cited.includes(id));
+  if (stray.length) fail(`the calculator set served questions the page never cited: ${stray.join(', ')}`);
+  notes.push(`calculator page: ${tricks} tricks, ${refs} refs, ${cited.length} questions in its set`);
+}
+
 /* ---------- 5. house style ---------- */
 /* Em dashes are allowed only inside passages, prompts and answer choices,
    where they are authentic SAT prose. The app's own voice never uses them. */
