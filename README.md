@@ -1,10 +1,18 @@
 # SAT LockIn
 
-**Every wrong answer on the SAT was built to be picked. Learn to spot them.**
+**Knowing the material gets you about three quarters of the way. The last quarter is strategy.**
 
-The app is two catalogs and a daily loop through them: **30 strategies** (the move each
-question type wants) and **43 traps** (the way each wrong answer is built). You practice one
-move and one trap a day, and you watch both lists empty out.
+Content review is necessary and there is no shortcut past it. But past a point the questions
+you keep missing are not the ones you lack the math for: they are the ones where you did the
+work correctly and reported the wrong quantity, or picked the choice that was true but did not
+answer the question. That last stretch is a limited set of moves and a limited set of traps,
+they repeat on every test, and they are learnable.
+
+So the app is two catalogs and a daily loop through them: **30 strategies** (the move each
+question type wants) and **43 traps** (the way each wrong answer is built).
+
+**Daily LockIn** serves one question a day, rotating through the moves in order, so one pass
+covers every strategy exactly once and nothing gets skipped. `verify.js` enforces that.
 
 Open **`index.html`**. No install, no build step, works offline.
 
@@ -48,8 +56,8 @@ There are five, and four of them are the two catalogs.
 
 | Screen | What it does |
 |---|---|
-| **Landing** | Why the wrong answers are engineered, with a live question you can try, and what you get here. A first-time visitor sees this before anything else. |
-| **Today** | One move and one trap to work, your streak, and the two lists with their counts. Nothing else competes for attention. |
+| **Landing** | The three-quarters argument, a live question you can try, what you get, the price, and what this is not. A first-time visitor sees it before anything else. |
+| **Today** | Daily LockIn: today's one question and which move it is drilling, your streak, a seven-day strip, and the two lists with their counts. Nothing else competes. |
 | **Strategies** | All 30 moves, grouped by section, each with its state, a set to practice it, and the recipe used to generate more. Spaced recall on the moves lives here too. |
 | **Traps** | All 43 traps in six families, each with how to spot it, how to beat it, and a set where it is waiting. |
 | **Paste a question** | Paste a miss from Bluebook. You get the move it wanted, the trap behind the answer you picked, a walkthrough, and what each wrong choice was built from. It joins both lists. |
@@ -107,6 +115,32 @@ Untouched. The app is single-device and offline. Fill in `js/config.js` to add:
 Step-by-step, including deploying to **Railway** and pointing **satlockin.com** at it:
 **[SETUP-CLOUD.md](SETUP-CLOUD.md)**
 
+## Price
+
+One payment of **$14.99**. No subscription, no renewal, no premium tier, no ads.
+
+Both halves live in `js/config.js`:
+
+```js
+price: '$14.99',      // display text only, must match what the link charges
+checkoutUrl: ''       // a Stripe Payment Link, Gumroad, Lemon Squeezy, anything hosted
+```
+
+With `checkoutUrl` empty the buy button is disabled and says checkout is not connected, rather
+than pretending to take a payment. Set it to a hosted checkout URL and the button becomes a
+real link. **The app never sees card details**, which is the entire reason for handing off to a
+hosted checkout instead of building a form.
+
+Two things worth deciding before you switch it on:
+
+- **There is no entitlement check.** Every question works before anyone pays. That is a
+ deliberate default for a study tool you are handing to one class, but if you sell this widely
+ you will want the checkout to issue a license the app verifies.
+- **The AI features cost you money per use.** Pasted-question classification and question
+ generation call the Anthropic API on your key. The server caps usage per student per day
+ (`AI_DAILY_LIMIT`, 40 by default), so the exposure is bounded, but a one-time price against a
+ recurring cost is a margin question, not a technical one.
+
 ## Deploying
 
 The app is static, so it hosts anywhere. For Railway (or any Node host) there is a
@@ -143,14 +177,15 @@ still works with nothing installed.
 
 ```
 index.html the app, open this
-assets/styles.css exam UI (Bluebook-accurate) + shell UI (deliberately friendlier)
+assets/styles.css question UI (Bluebook-accurate) + shell UI (deliberately friendlier)
 js/brand.js name and tagline, change these to rename the app
 js/config.js optional cloud + AI settings; empty = offline single-device
-js/data-rw.js 68 Reading and Writing questions, fully explained
-js/data-math.js 60 Math questions, fully explained
+js/data-rw.js 100 Reading and Writing questions, fully explained
+js/data-math.js 79 Math questions, fully explained
 js/tags.js 43 trap types, 30 strategies, and the tag for every question
+js/daily.js Daily LockIn: the date-driven rotation, the streak, and the history
 js/strategies.js strategy library and math reference sheet
-js/engine.js test assembly, adaptive routing, scoring, event log, storage
+js/engine.js set assembly, grading, the event log, and storage
 js/cloud.js accounts and offline-first sync (no dependencies)
 js/app.js all screens
 db/schema.sql                 Postgres tables, applied automatically on boot
@@ -161,8 +196,8 @@ lib/routes.js                 the JSON API: sync, classes, roster
 build-single-file.py bundles everything into dist/sat-lockin.html
 ```
 
-Progress lives in the browser's local storage unless you sign in. "Clear all saved progress"
-on the Progress screen wipes it.
+Progress lives in the browser's local storage unless you sign in. "Clear my progress" in the
+account panel wipes it.
 
 ---
 

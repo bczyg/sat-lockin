@@ -8,6 +8,7 @@
     var S = null;            // active Session
     var view = 'home';       // landing | home | strategies | traps | analyze | cards | auth | class | exam | review
     var reviewData = null;   // attempt being reviewed
+    var dailyPending = null; // set while today's Daily LockIn question is open
     var reviewFilter = 'all';
     var ALLQ = {};
     var scrollMemo = null;
@@ -183,17 +184,15 @@
     /* The whole app is two catalogs and a daily loop through them, so home
        is: how you are doing, one move to work, one trap to work, the two
        lists, and the way back in from a real practice test. Nothing else. */
+    /* The app is two catalogs and a daily loop through them, so home is:
+       today's one question, the two lists, and the way back in from a real
+       practice test. Nothing else gets to compete. */
     function homeHTML() {
       var d = window.Store.data();
       var sum = window.Store.coverageSummary();
-      var streak = window.Store.streak();
-      var today = window.Store.answeredToday();
       var C = window.Cloud;
       var firstName = String(d.name || '').split(' ')[0];
-      var weakStrat = (window.Store.weakestStrats(1) || [])[0];
-      var weakTrap = (window.Store.topTraps(1) || [])[0];
-      var nextStrat = weakStrat ? weakStrat.id : firstUnmet('strat');
-      var nextTrap = weakTrap ? weakTrap.id : firstUnmet('trap');
+      var streak = window.Daily.streak();
 
       var h = '<div class="home">';
 
@@ -202,7 +201,6 @@
       '<div class="tagline">' + esc(window.BRAND.tagline) + '</div>' +
       '</div><div class="chips">';
       if (streak > 0) h += '<span class="chip streak">' + ic('bolt') + streak + '-day streak</span>';
-      h += '<span class="chip' + (today > 0 ? ' up' : '') + '">' + today + ' today</span>';
       if (C && C.enabled) {
         h += '<button class="chip acct" onclick="APP.account()">' + ic('user') +
         esc(C.signedIn() && C.profile ? (C.profile.display_name || 'Account') : 'Sign in') + '</button>';
@@ -214,23 +212,7 @@
       }
       h += '</div></div>';
 
-      h += '<div class="today"><div class="t-kicker">' +
-      (today > 0 ? 'Done for today. Anything else is a bonus.' : 'Today') + '</div>';
-      h += '<h2>' + (today > 0 ? 'One more set?' : 'One move and one trap. That is the day.') + '</h2>';
-      h += '<div class="today-pair">';
-      if (nextStrat && window.STRATS[nextStrat]) {
-        h += '<div class="today-card"><div class="tc-lbl">Strategy</div>' +
-        '<h3>' + esc(window.STRATS[nextStrat].name) + '</h3>' +
-        '<p>' + esc(window.STRATS[nextStrat].move) + '</p>' +
-        '<button class="btn" onclick="APP.drillStrat(\'' + nextStrat + '\')">Practice this move</button></div>';
-      }
-      if (nextTrap && window.TRAPS[nextTrap]) {
-        h += '<div class="today-card"><div class="tc-lbl">Trap</div>' +
-        '<h3>' + esc(window.TRAPS[nextTrap].name) + '</h3>' +
-        '<p>' + esc(window.TRAPS[nextTrap].tell) + '</p>' +
-        '<button class="btn" onclick="APP.drillTrap(\'' + nextTrap + '\')">Practice spotting it</button></div>';
-      }
-      h += '</div></div>';
+      h += dailyHTML();
 
       h += '<div class="two-up">';
       h += '<button class="big-entry" onclick="APP.go(\'strategies\')">' +
@@ -256,8 +238,50 @@
       return h;
     }
 
-    /* Before any data exists a new student still needs a concrete pair to
-       start on, so fall back to the first thing in each catalog. */
+    /* One question a day, rotating through the moves in order. The point is
+       the habit, so a finished day says so plainly and does not immediately
+       push another set. */
+    function dailyHTML() {
+      var D = window.Daily;
+      var pick = D.pick();
+      if (!pick) return '';
+      var strat = window.STRATS[pick.strat];
+      var day = D.dayIndex();
+      var cycle = D.cycleLength();
+      var done = D.isDone();
+      var res = D.resultFor();
+
+      var h = '<div class="daily' + (done ? ' done' : '') + '">';
+      h += '<div class="d-top"><div class="d-kicker">' + ic('bolt') + 'Daily LockIn</div>' +
+      '<div class="d-day">Move ' + day + ' of ' + cycle + '</div></div>';
+
+      if (!done) {
+        h += '<h2>Today\'s move: ' + esc(strat.name) + '</h2>';
+        h += '<p class="d-move">' + esc(strat.move) + '</p>';
+        h += '<button class="btn big d-go" onclick="APP.startDaily()">Start today\'s question</button>';
+        h += '<p class="d-note">One question. Two minutes. The rotation covers all ' + cycle +
+        ' moves, so nothing gets skipped.</p>';
+      } else {
+        h += '<h2>' + (res && res.correct ? 'Got it.' : 'Logged it.') + ' ' + esc(strat.name) + '</h2>';
+        h += '<p class="d-move">' +
+        (res && res.correct
+          ? 'That move is working. Tomorrow rotates to the next one.'
+          : 'That is the useful kind of miss, because now you know which move to drill.') + '</p>';
+        h += '<div class="card-actions">' +
+        '<button class="btn" onclick="APP.drillStrat(\'' + pick.strat + '\')">Practice this move properly</button>' +
+        '<button class="btn ghost" onclick="APP.reviewDaily()">See the explanation again</button></div>';
+      }
+
+      h += '<div class="d-strip">';
+      D.recent(7).forEach(function (x) {
+          var cls = x.answered ? (x.correct ? 'ok' : 'miss') : (x.today ? 'now' : 'skip');
+          h += '<span class="d-dot ' + cls + '" title="' + x.date + '"></span>';
+      });
+      h += '<span class="d-strip-lbl">last 7 days</span></div>';
+
+      h += '</div>';
+      return h;
+    }
     function firstUnmet(kind) {
       var cov = window.Store.coverage();
       var book = kind === 'strat' ? window.STRATS : window.TRAPS;
@@ -541,14 +565,23 @@
       return h;
     }
 
-    function argumentHTML() {
+    function argumentHTML(withLead) {
       var h = '';
-      h += '<div class="lead">' +
+      if (withLead) {
+        h += '<div class="lead">' +
         '<h1>Every wrong answer on the SAT was<br><span>built to be picked.</span></h1>' +
         '<p class="lead-sub">Nobody writes a wrong answer nobody would choose. Each one encodes a specific, ' +
         'predictable mistake, aimed at a student who almost had it. There are a limited number of those ' +
         'mistakes, they repeat on every test, and they can be learned.</p>' +
         '</div>';
+      } else {
+        /* The hero above has already made the case, so this leads with the
+           evidence instead of a second headline. */
+        h += '<div class="section-title">See it on one question</div>' +
+        '<p class="lead-sub" style="margin-bottom:18px">Nobody writes a wrong answer nobody would ' +
+        'choose. Each one encodes a specific, predictable mistake, aimed at a student who almost had ' +
+        'it. Try this one and see which choice tempts you.</p>';
+      }
 
       h += landingDemoHTML();
 
@@ -588,7 +621,7 @@
     function authHTML() {
       var C = window.Cloud, cfg = window.CONFIG || {};
       var h = '<div class="home landing"><div class="lead-mark">' + wordmark() + '</div>';
-      h += argumentHTML();
+      h += argumentHTML(true);
       h += '<div class="section-title">Get started</div>';
       h += '<div class="auth-inline"><div class="auth-card">';
       h += '<div class="auth-mark">' + ic('target') + '</div>';
@@ -798,42 +831,129 @@
       return h;
     }
 
+    /* The page someone lands on before they have any reason to trust this.
+       It has one job: make the case that the last stretch of the score is
+       strategy, not more content review. Everything else follows from that. */
     function landingHTML() {
+      var cfg = window.CONFIG || {};
       var started = window.Store.agg().total.seen > 0;
+      var nStrat = Object.keys(window.STRATS).length;
+      var nTrap = Object.keys(window.TRAPS).length;
+      var nQ = window.RW_BANK.length + window.MATH_BANK.length;
+      var cycle = window.Daily.cycleLength();
+
       var h = '<div class="home landing"><div class="lead-mark">' + wordmark() + '</div>';
+
+      /* ---- the thesis ---- */
+      h += '<div class="lead">' +
+      '<h1>Knowing the material gets you<br><span>about three quarters of the way.</span></h1>' +
+      '<p class="lead-sub">The last quarter is not more content review. It is knowing how the ' +
+      'questions are built, what each one is really asking, and how every wrong answer was ' +
+      'designed to catch you. That part is learnable, and almost nobody teaches it directly.</p>' +
+      '</div>';
+
+      /* ---- the 75/25 split, spelled out ---- */
+      h += '<div class="split">' +
+      '<div class="split-bar"><div class="sb-a"><span>75%</span><small>Content</small></div>' +
+      '<div class="sb-b"><span>25%</span><small>Strategy</small></div></div>' +
+      '<div class="split-copy">' +
+      '<p><strong>Master the concepts and you get most of the way there.</strong> Algebra, ' +
+      'grammar, reading closely: that work is necessary and there is no shortcut past it.</p>' +
+      '<p><strong>Then the curve flattens.</strong> The questions you keep missing are not the ' +
+      'ones you lack the math for. They are the ones where you did the work correctly and ' +
+      'reported the wrong quantity, or picked the choice that was true but did not answer the ' +
+      'question, or trusted where you would pause when the rule was about clause structure.</p>' +
+      '<p><strong>That last stretch is strategy, and it is the cheapest part of the score to ' +
+      'buy back.</strong> There are a limited number of moves and a limited number of traps. ' +
+      'They repeat on every test. This app is only about those.</p>' +
+      '<p class="note">The three-quarters figure is a way of describing where the returns ' +
+      'change, not a measured statistic. Your own split depends on where you are starting.</p>' +
+      '</div></div>';
+
       h += argumentHTML();
-      h += '<div class="section-title">What you get here</div><div class="card-grid">';
-      h += '<div class="card"><h3>Practice one move at a time</h3>' +
-      '<p>Pick a strategy and every question in the set rewards that same move, so the habit forms instead ' +
-      'of blurring into general practice. Pick a trap and every question in the set has that trap waiting.</p></div>';
-      h += '<div class="card"><h3>A wrong answer tells you which trap caught you</h3>' +
-      '<p>Every wrong choice in the bank is labeled with the mistake it was built from. Miss one and you get ' +
-      'the name of the trap, how to spot it next time, and a set to practice against it.</p></div>';
-      h += '<div class="card"><h3>Two lists, and you watch them empty</h3>' +
-      '<p>Every move and every trap is either not met, in progress, or locked in. No score estimate, because ' +
-      'a score is not something this app can honestly compute for you.</p></div>';
-      h += '<div class="card"><h3>Bring your Bluebook misses</h3>' +
-      '<p>Take your full practice tests in <strong>Bluebook</strong>, College Board\'s own app. That is the real ' +
-      'software and the only scoring worth trusting, and this is not a replacement for it. What it will not tell ' +
-      'you is <em>why</em> you missed what you missed. Paste the question in here and you get the move it was ' +
-      'testing and the trap behind the answer you picked, on the same two lists as everything else.</p></div>';
+
+      /* ---- what you actually get ---- */
+      h += '<div class="section-title">What you get</div><div class="card-grid">';
+      h += '<div class="card"><h3>Daily LockIn</h3>' +
+      '<p>One question a day, rotating through all ' + cycle + ' moves in order, so across ' +
+      cycle + ' days every strategy comes up exactly once and nothing gets skipped. Two minutes. ' +
+      'The streak is the point.</p></div>';
+      h += '<div class="card"><h3>' + nStrat + ' strategies, drillable one at a time</h3>' +
+      '<p>Pick a move and every question in the set rewards that same move, so the habit forms ' +
+      'instead of blurring into general practice.</p></div>';
+      h += '<div class="card"><h3>' + nTrap + ' traps, each with its own set</h3>' +
+      '<p>Every wrong answer in the bank is labeled with the mistake it was built from. Miss one ' +
+      'and you get the trap\'s name, how to spot it, and a set where it is waiting for you.</p></div>';
+      h += '<div class="card"><h3>Paste your Bluebook misses</h3>' +
+      '<p>Bluebook gives you a score, not a reason. Paste a question you got wrong and you get the ' +
+      'move it wanted and the trap behind the answer you picked.</p></div>';
+      h += '<div class="card"><h3>Two lists you watch empty</h3>' +
+      '<p>Every move and every trap is not met, in progress, or locked in. That is the whole ' +
+      'progress model, and it is something the app can honestly measure.</p></div>';
+      h += '<div class="card"><h3>' + nQ + ' questions, written to format</h3>' +
+      '<p>Real SAT stems, real domain mix, worked solutions, and an explanation of why each wrong ' +
+      'answer is tempting. Every strategy and trap has questions behind it.</p></div>';
       h += '</div>';
+
+      /* ---- price ---- */
+      h += priceHTML();
+
+      /* ---- honest limits, before they pay rather than after ---- */
+      h += '<div class="section-title">What this is not</div>';
+      h += '<div class="card"><ul class="plain">' +
+      '<li><strong>Not a replacement for Bluebook.</strong> Take your full practice tests in ' +
+      'College Board\'s own app. That is the real software and the only scoring worth trusting. ' +
+      'This is what you do with the misses.</li>' +
+      '<li><strong>No score prediction.</strong> Real scoring is item-response-theory based and ' +
+      'form specific, so any number here would be invented. There is no score anywhere in the app.</li>' +
+      '<li><strong>Not a content course.</strong> It will not teach you to factor. It assumes you ' +
+      'are doing that work elsewhere and handles the part that comes after.</li>' +
+      '<li><strong>These are not College Board\'s questions.</strong> They are written to match ' +
+      'the format, difficulty range, and domain mix.</li>' +
+      '</ul></div>';
+
       h += '<div class="card-actions" style="margin-top:26px;justify-content:center">' +
       '<button class="btn big" style="max-width:340px" onclick="APP.go(\'home\')">' +
-      (started ? 'Back to practice' : 'Start with one move') + '</button></div></div>';
+      (started ? 'Back to practice' : 'Try it first, no account needed') + '</button></div>';
+      h += '<p class="note" style="text-align:center;margin-top:10px">' +
+      'Every question in the bank works before you pay anything.</p>';
+      h += '</div>';
       return h;
     }
 
-    /* ============================================================
-       PASTE A QUESTION
-       She takes real tests in Bluebook. Bluebook gives her a score but
-       never tells her which move the question wanted or which trap the
-       wrong answer was built from. This is the bridge: paste it in, get
-       both, and have it land in the same two lists as everything else.
-       ============================================================ */
+    /* One payment. The button only claims to take money when a real checkout
+       is actually configured, because a buy button that goes nowhere is worse
+       than an honest one that says so. */
+    function priceHTML() {
+      var cfg = window.CONFIG || {};
+      var price = cfg.price || '$14.99';
+      var url = String(cfg.checkoutUrl || '').trim();
 
-    /* The model must classify against our catalog rather than inventing
-       labels, so the whole catalog goes along with every request. */
+      var h = '<div class="price"><div class="p-head">' +
+      '<div class="p-tag">One time</div>' +
+      '<div class="p-amt">' + esc(price) + '</div>' +
+      '<div class="p-sub">Pay once. That is the whole price.</div></div>';
+
+      h += '<ul class="p-list">' +
+      '<li>' + ic('check') + 'No subscription and no renewal date</li>' +
+      '<li>' + ic('check') + 'No upsell, no premium tier, no ads</li>' +
+      '<li>' + ic('check') + 'Every strategy, every trap, and the whole question bank</li>' +
+      '<li>' + ic('check') + 'Works on a phone, a laptop, or offline with no install</li>' +
+      '<li>' + ic('check') + 'Your practice stays in your browser unless you sign in to sync it</li>' +
+      '</ul>';
+
+      if (url) {
+        h += '<a class="btn big p-buy" href="' + esc(url) + '" rel="noopener">Get it for ' + esc(price) + '</a>';
+        h += '<p class="p-note">Payment is handled by the checkout page, which means this app never ' +
+        'sees your card details.</p>';
+      } else {
+        h += '<button class="btn big p-buy" disabled>Checkout is not connected yet</button>';
+        h += '<p class="p-note">No payment can be taken right now. Set <code>checkoutUrl</code> in ' +
+        '<code>js/config.js</code> to a payment link to switch this on.</p>';
+      }
+      h += '</div>';
+      return h;
+    }
     function catalogContext() {
       var out = ['STRATEGY IDS. Choose exactly one.'];
       Object.keys(window.STRATS).forEach(function (id) {
@@ -1253,9 +1373,12 @@
       return '<button class="btn ' + (reviewFilter === k ? '' : 'subtle') + ' sm" onclick="APP.filter(\'' + k + '\')">' + label + '</button>';
     }
 
-    function detailHTML(qid) {
+    function detailHTML(qid, given) {
       var q = ALLQ[qid];
-      var it = reviewData.items.filter(function (i) { return i.qid === qid; })[0] || {};
+      if (!q) return '<p>That question is no longer in the bank.</p>';
+      var it = given || (reviewData
+        ? reviewData.items.filter(function (i) { return i.qid === qid; })[0]
+        : null) || {};
       var h = '';
       var ok = it.correct;
       h += '<div class="verdict ' + (ok ? 'ok' : 'no') + '">' +
@@ -1310,6 +1433,15 @@
       sess.on('expired', function () { toast('Time is up on that module'); });
       sess.on('finished', function (res) {
           closeModal();
+          if (dailyPending) {
+            var it = res.items[0] || {};
+            window.Daily.record(dailyPending.date, dailyPending.qid, dailyPending.strat, it.correct === true);
+            dailyPending = null;
+            reviewData = res;
+            view = 'home';
+            render();
+            return;
+          }
           reviewData = res; reviewFilter = res.kind === 'drill' ? 'all' : 'wrong';
           view = 'review';
           render();
@@ -1682,6 +1814,30 @@
         });
         wire(S); view = 'exam'; render();
         toast('Every question here has a "' + name + '" answer among the choices');
+      },
+      startDaily: function () {
+        var pick = window.Daily.pick();
+        if (!pick) { toast('No question available for today'); return; }
+        window.Daily.claim(pick);
+        var q = window.Daily.question(pick.qid);
+        if (!q) { toast('That question is no longer in the bank'); return; }
+        dailyPending = { date: pick.date, qid: pick.qid, strat: pick.strat };
+        var name = window.STRATS[pick.strat] ? window.STRATS[pick.strat].name : pick.strat;
+        S = new window.SATP.Session({
+            kind: 'drill', section: 'both', count: 1,
+            label: 'Daily LockIn: ' + name,
+            filter: function (x) { return x.id === pick.qid; }
+        });
+        wire(S); view = 'exam'; render();
+      },
+      reviewDaily: function () {
+        var res = window.Daily.resultFor();
+        if (!res || !res.qid) { toast('Nothing recorded for today yet'); return; }
+        /* Reopened days later there is no attempt in memory, so the record
+           itself supplies the verdict. */
+        var it = (reviewData && reviewData.items.filter(function (i) { return i.qid === res.qid; })[0]) ||
+                 { correct: res.correct, choice: undefined };
+        openModal('Daily LockIn', detailHTML(res.qid, it));
       },
       drillStrat: function (stratId) {
         var pool = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) { return window.tagsFor(q).strat === stratId; });

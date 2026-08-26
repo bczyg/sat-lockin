@@ -39,5 +39,17 @@ window.CONFIG = {
 
   /* Only for running the tutor on your own machine with no database, which
      needs ALLOW_ANON_TUTOR=true on the server as well. Never on a public site. */
-  allowAnonTutor: false
+  allowAnonTutor: false,
+
+  /* ---------- what it costs ----------
+     One payment, no subscription. `price` is display text only, so it has to
+     match whatever the payment link actually charges.
+
+     `checkoutUrl` is where the buy button goes: a Stripe Payment Link, a Gumroad
+     or Lemon Squeezy URL, anything that takes the money and emails a receipt.
+     Leave it empty and the button says checkout is not connected yet rather
+     than pretending to take a payment. This app never touches card details,
+     which is the whole reason for handing off to a hosted checkout. */
+  price: '$14.99',
+  checkoutUrl: ''
 };

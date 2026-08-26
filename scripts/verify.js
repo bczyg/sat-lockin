@@ -226,6 +226,34 @@ for (const id of Object.keys(window.TRAPS)) {
 }
 notes.push(`${drillable} catalog entries all assemble a practice set`);
 
+/* ---------- 4b. the daily rotation reaches every move ----------
+   Daily LockIn promises on the landing page that one pass covers every
+   strategy. If a move has no servable question that promise is broken. */
+await load('js/daily.js');
+{
+  const cycle = window.Daily.cycleLength();
+  const seenStrat = new Set();
+  const seenQ = [];
+  let missing = 0;
+  for (let i = 0; i < cycle; i++) {
+    const key = new Date(Date.UTC(2026, 0, 1) + i * 86400000).toISOString().slice(0, 10);
+    const pick = window.Daily.pick(key);
+    if (!pick) { missing++; continue; }
+    seenStrat.add(pick.strat);
+    seenQ.push(pick.qid);
+    window.Daily.claim(pick);
+  }
+  if (missing) fail(`${missing} of the ${cycle} days in the rotation could not serve a question`);
+  if (seenStrat.size !== cycle) {
+    fail(`one rotation covered ${seenStrat.size} of ${cycle} strategies, so a move gets skipped`);
+  }
+  const dupes = seenQ.length - new Set(seenQ).size;
+  if (dupes) fail(`the rotation repeated ${dupes} question(s) inside a single cycle`);
+  const stable = window.Daily.pick('2026-01-01').qid === window.Daily.pick('2026-01-01').qid;
+  if (!stable) fail('the daily question is not stable for a given date');
+  notes.push(`daily rotation: ${cycle} days, ${seenStrat.size} distinct moves, no repeats`);
+}
+
 /* ---------- 5. house style ---------- */
 /* Em dashes are allowed only inside passages, prompts and answer choices,
    where they are authentic SAT prose. The app's own voice never uses them. */

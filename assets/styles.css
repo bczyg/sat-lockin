@@ -922,27 +922,40 @@ body{background:var(--shell-bg)}
    The app is two lists and a daily loop through them, so home is
    built from exactly three blocks and nothing competes with them.
    ============================================================ */
-.today{
+.daily{
   background:var(--brand-soft);border:1px solid var(--line);border-radius:14px;
-  padding:20px 22px;margin:18px 0;
+  padding:20px 22px 18px;margin:18px 0 14px;
 }
-.today .t-kicker{
+.daily.done{background:var(--green-soft)}
+.daily .d-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.daily .d-kicker{
+  display:inline-flex;align-items:center;gap:6px;
   font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--brand-ink);font-weight:700;margin-bottom:6px;
+  color:var(--brand-ink);font-weight:700;
 }
-.today h2{font-size:21px;margin:0 0 16px;text-wrap:balance}
-.today-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.today-card{
-  background:var(--bg);border:1px solid var(--line);border-radius:10px;
-  padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;
+.daily.done .d-kicker{color:var(--green)}
+.daily .d-kicker svg{width:15px;height:15px}
+.daily .d-day{
+  font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);font-weight:600;font-variant-numeric:tabular-nums;
 }
-.today-card .tc-lbl{
-  font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
-  color:var(--ink-soft);font-weight:700;
+.daily h2{font-size:22px;margin:0 0 8px;text-wrap:balance;line-height:1.25}
+.daily .d-move{margin:0 0 16px;font-size:14.5px;line-height:1.55;color:var(--ink-soft);max-width:62ch}
+.daily .d-go{max-width:320px}
+.daily .d-note{margin:12px 0 0;font-size:12.5px;color:var(--ink-soft)}
+.daily .d-strip{
+  display:flex;align-items:center;gap:7px;margin-top:16px;
+  padding-top:14px;border-top:1px solid var(--line);
 }
-.today-card h3{font-size:16px;margin:0;text-wrap:balance}
-.today-card p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.5;flex:1}
-.today-card .btn{margin-top:4px}
+.d-dot{width:13px;height:13px;border-radius:50%;flex:0 0 auto;background:var(--bg)}
+.d-dot.ok{background:var(--green)}
+.d-dot.miss{background:var(--amber)}
+.d-dot.skip{background:var(--bg);border:1px solid var(--line-strong)}
+.d-dot.now{background:var(--bg);border:2px solid var(--brand)}
+.d-strip-lbl{
+  font-size:11.5px;color:var(--ink-soft);margin-left:4px;
+  letter-spacing:.05em;text-transform:uppercase;
+}
 
 .two-up{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .big-entry{
@@ -1015,7 +1028,61 @@ body{background:var(--shell-bg)}
 .az-wait{color:var(--ink-soft);font-size:14px;padding:10px 0}
 
 @media (max-width:720px){
-  .today-pair,.two-up,.az-manual{grid-template-columns:1fr}
+  .two-up,.az-manual{grid-template-columns:1fr}
   .az-row{grid-template-columns:30px 1fr;row-gap:6px}
   .az-row>div:last-child{grid-column:1 / -1;text-align:left !important}
+}
+
+/* ============================================================
+   THE 75/25 SPLIT AND THE PRICE
+   ============================================================ */
+.split{margin:34px 0 30px}
+.split-bar{
+  display:grid;grid-template-columns:3fr 1fr;gap:4px;
+  height:78px;border-radius:10px;overflow:hidden;margin-bottom:20px;
+}
+.split-bar>div{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+}
+.split-bar span{font-size:24px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.split-bar small{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;opacity:.8}
+.split-bar .sb-a{background:var(--bg-soft);color:var(--ink-soft)}
+.split-bar .sb-b{background:var(--brand);color:#fff}
+.split-copy p{margin:0 0 12px;font-size:15px;line-height:1.65;max-width:68ch}
+.split-copy p.note{font-size:13px;color:var(--ink-soft);margin-top:16px}
+
+.price{
+  border:2px solid var(--brand);border-radius:16px;padding:26px 26px 24px;
+  margin:26px 0 8px;background:var(--bg);
+}
+.price .p-head{text-align:center;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.price .p-tag{
+  display:inline-block;background:var(--brand-soft);color:var(--brand-ink);
+  font-size:11px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;
+  padding:4px 10px;border-radius:999px;margin-bottom:10px;
+}
+.price .p-amt{font-size:46px;font-weight:800;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.price .p-sub{font-size:14px;color:var(--ink-soft);margin-top:8px}
+.price .p-list{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:11px}
+.price .p-list li{
+  display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;
+  font-size:14.5px;line-height:1.5;
+}
+.price .p-list svg{width:18px;height:18px;color:var(--green);margin-top:1px}
+.price .p-buy{display:block;width:100%;max-width:340px;margin:0 auto;text-align:center;text-decoration:none}
+.price .p-buy[disabled]{opacity:.55;cursor:not-allowed}
+.price .p-note{font-size:12.5px;color:var(--ink-soft);text-align:center;margin:12px 0 0;line-height:1.5}
+.price .p-note code{
+  font-family:var(--mono);font-size:11.5px;background:var(--bg-soft);
+  padding:1px 5px;border-radius:4px;
+}
+
+ul.plain{list-style:none;padding:0;margin:0;display:grid;gap:13px}
+ul.plain li{font-size:14.5px;line-height:1.6}
+
+@media (max-width:720px){
+  .split-bar{grid-template-columns:2.4fr 1fr;height:66px}
+  .split-bar span{font-size:20px}
+  .price{padding:22px 18px 20px}
+  .price .p-amt{font-size:38px}
 }
