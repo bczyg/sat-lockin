@@ -226,12 +226,13 @@ CONTENT RULES
   and never use an em dash.`
 };
 
-const ALLOWED_MODELS = ['claude-haiku-4-5', 'claude-sonnet-5', 'claude-opus-5'];
+const CHEAP_MODEL = 'claude-haiku-5-5';
+const CAREFUL_MODEL = 'claude-sonnet-5-5';
+const ALLOWED_MODELS = [CHEAP_MODEL, CAREFUL_MODEL, 'claude-opus-5-5'];
 
-/* Models in the 5 family take adaptive thinking and an effort setting.
-   Haiku 4.5 predates both and rejects them. */
+/* Every allowed model takes adaptive thinking and an effort setting. Effort
+   is always sent explicitly, because the default differs between models. */
 function reasoningParams(model, effort) {
-  if (model === 'claude-haiku-4-5') return {};
   return { thinking: { type: 'adaptive' }, output_config: { effort } };
 }
 
@@ -297,16 +298,20 @@ async function identify(req) {
   );
 }
 
-async function usageToday(user) {
-  if (!user.anon) return api.usageToday(user.id);
+
+/* Claim one unit before the model call. Claiming first, atomically, is what
+   stops a burst of parallel requests from all passing the cap. */
+async function claimUsage(user) {
+  if (!user.anon) return api.claimUsage(user.id);
   const today = new Date().toISOString().slice(0, 10);
   if (anonDay !== today) { anonDay = today; anonCount = 0; }
+  anonCount += 1;
   return anonCount;
 }
 
-async function bumpUsage(user, n) {
-  if (!user.anon) return api.bumpUsage(user.id, n);
-  anonCount = n;
+async function releaseUsage(user) {
+  if (!user.anon) return api.releaseUsage(user.id);
+  anonCount = Math.max(0, anonCount - 1);
 }
 
 async function handleTutor(req, res) {
@@ -317,10 +322,6 @@ async function handleTutor(req, res) {
   catch (e) { return send(res, e.status || 401, { error: e.message }); }
 
   const cap = user.anon ? ANON_DAILY_BUDGET : DAILY_LIMIT;
-  const used = await usageToday(user);
-  if (used >= cap) {
-    return send(res, 429, { error: `Today's ${cap} tutor questions are used up. It resets tomorrow.` });
-  }
 
   let body;
   try { body = await readJSON(req); }
@@ -329,16 +330,28 @@ async function handleTutor(req, res) {
   const task = body.task || 'chat';
   if (!SYSTEMS[task]) return send(res, 400, { error: 'Unknown task.' });
 
-  const asked = ALLOWED_MODELS.includes(body.model) ? body.model : 'claude-haiku-4-5';
+  let used;
+  try { used = await claimUsage(user); }
+  catch (e) {
+    console.error('usage counter unavailable', e?.message);
+    return send(res, 503, { error: 'The tutor is unavailable for a moment. Try again shortly.' });
+  }
+  if (used > cap) {
+    await releaseUsage(user);
+    return send(res, 429, { error: `Today's ${cap} tutor questions are used up. It resets tomorrow.` });
+  }
+
+  const asked = ALLOWED_MODELS.includes(body.model) ? body.model : CHEAP_MODEL;
   /* Inventing a genuinely tempting wrong answer is the hard part of the job,
      so question writing never runs on the cheap model. */
   const needsCare = task === 'generate' || task === 'analyze';
-  const model = needsCare && asked === 'claude-haiku-4-5' ? 'claude-sonnet-5' : asked;
+  const model = needsCare && asked === CHEAP_MODEL ? CAREFUL_MODEL : asked;
   const effort = needsCare || task === 'coach' ? 'high' : 'low';
   const maxTokens = task === 'generate' ? 16000 : task === 'analyze' ? 4000 : task === 'coach' ? 2000 : 1200;
 
   const client = await getClient();
   if (!client) {
+    await releaseUsage(user);
     return send(res, 500, {
       error: 'The Anthropic SDK is not installed on the server. Run npm install, or redeploy so the host installs dependencies.'
     });
@@ -361,6 +374,7 @@ async function handleTutor(req, res) {
     });
 
     if (response.stop_reason === 'refusal') {
+      await releaseUsage(user);
       return send(res, 200, { error: 'The tutor declined that request. Try rephrasing it as a question about the problem.' });
     }
 
@@ -370,15 +384,14 @@ async function handleTutor(req, res) {
       .join('\n')
       .trim();
 
-    await bumpUsage(user, used + 1);
-
     send(res, 200, {
       text,
       model: response.model,
       usage: { input: response.usage.input_tokens, output: response.usage.output_tokens },
-      remaining: cap - used - 1
+      remaining: Math.max(0, cap - used)
     });
   } catch (err) {
+    await releaseUsage(user);
     const status = err?.status ?? 500;
     if (status === 429) return send(res, 429, { error: 'The tutor is busy right now. Try again in a moment.' });
     if (status === 401) return send(res, 500, { error: 'The tutor key is not valid. Check ANTHROPIC_API_KEY.' });
@@ -404,16 +417,21 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, {
       ok: true,
       accounts: db.available(),
-      database: db.configured() ? (db.available() ? 'connected' : 'error: ' + db.lastError()) : 'not configured',
+      /* Booleans only: this endpoint is public, so no sender address and no
+         raw database error text. Those go to the server log instead. */
+      database: db.configured() ? (db.available() ? 'connected' : 'unavailable') : 'not configured',
       mail: mailConfigured,
-      mailDetail: mailStatus,
+      mailProvider: mailStatus.provider,
       tutor: !!ANTHROPIC_KEY
     });
   }
 
   if (url === '/api/tutor') {
     if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
-    return handleTutor(req, res);
+    return handleTutor(req, res).catch((e) => {
+      console.error('tutor error', e?.message);
+      if (!res.headersSent) send(res, 500, { error: 'The tutor could not answer that. Try again.' });
+    });
   }
 
   if (url.startsWith('/api/')) {
@@ -449,8 +467,19 @@ async function boot() {
       console.log('  database:    connected, schema applied');
     } else {
       console.error('  database:    FAILED to connect:', db.lastError());
-      console.error('               the app still serves offline practice');
+      console.error('               the app still serves offline practice, retrying every 30s');
+      /* A database that was still starting when the app booted should not
+         leave accounts off until the next deploy. */
+      const retry = setInterval(async () => {
+        if (await db.init()) {
+          clearInterval(retry);
+          await auth.sweep();
+          console.log('  database:    connected on retry, schema applied');
+        }
+      }, 30000);
+      retry.unref();
     }
+    setInterval(() => { if (db.available()) auth.sweep(); }, 24 * 3600 * 1000).unref();
   }
 
   server.listen(PORT, () => {
@@ -466,5 +495,8 @@ async function boot() {
     console.log(`  tutor:       ${ANTHROPIC_KEY ? 'enabled at POST /api/tutor' : 'off (no ANTHROPIC_API_KEY)'}`);
   });
 }
+
+/* Log, do not die: one failed promise should not take every student offline. */
+process.on('unhandledRejection', (e) => { console.error('unhandled rejection:', e?.message || e); });
 
 boot();

@@ -10,8 +10,18 @@ Re-run after editing any source file:  python3 build-single-file.py
 import os, re, pathlib
 
 ROOT = pathlib.Path(__file__).parent
-JS = ['js/brand.js', 'js/config.js', 'js/data-rw.js', 'js/data-math.js', 'js/tags.js',
-      'js/strategies.js', 'js/engine.js', 'js/cloud.js', 'js/generate.js', 'js/app.js']
+
+
+def read(p):
+    return (ROOT / p).read_text(encoding='utf-8')
+
+
+# The script list comes from index.html itself, in its order. A hand-kept copy
+# here once fell behind and shipped a bundle with no Daily LockIn and no
+# calculator page, whose home screen threw on load.
+JS = re.findall(r'<script src="(js/[^"]+\.js)"></script>', read('index.html'))
+if not JS or JS[-1] != 'js/app.js':
+    raise SystemExit('could not read the script list from index.html (app.js must load last)')
 
 
 def js_escape(text):
@@ -32,10 +42,6 @@ def html_escape(text):
 def css_escape(text):
     # non-ASCII in this stylesheet only ever appears inside content:"..." strings
     return re.sub(r'[^\x00-\x7f]', lambda m: '\\%06X' % ord(m.group()), text)
-
-
-def read(p):
-    return (ROOT / p).read_text(encoding='utf-8')
 
 
 index = read('index.html')

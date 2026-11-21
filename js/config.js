@@ -30,11 +30,11 @@ window.CONFIG = {
      runs on Sonnet or better, whatever is set here, because a weak wrong
      answer makes a worthless question. */
   aiModels: {
-    chat:     'claude-haiku-4-5',   // follow-up questions on a problem
-    explain:  'claude-haiku-4-5',   // re-explain a step a different way
-    coach:    'claude-sonnet-5',    // a coaching note from her own data
-    generate: 'claude-sonnet-5',    // writing brand new practice questions
-    analyze:  'claude-sonnet-5'     // naming the strategy and trap in a pasted question
+    chat:     'claude-haiku-5-5',   // follow-up questions on a problem
+    explain:  'claude-haiku-5-5',   // re-explain a step a different way
+    coach:    'claude-sonnet-5-5',    // a coaching note from her own data
+    generate: 'claude-sonnet-5-5',    // writing brand new practice questions
+    analyze:  'claude-sonnet-5-5'     // naming the strategy and trap in a pasted question
   },
 
   /* Only for running the tutor on your own machine with no database, which

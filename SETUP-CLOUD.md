@@ -290,17 +290,17 @@ Optional variables:
 
 | Feature | Where | Model |
 |---|---|---|
-| "Explain it a different way" | after checking an answer in untimed practice, and in test review | `claude-haiku-4-5` |
-| Follow-up questions on a problem | same place | `claude-haiku-4-5` |
-| A coaching note from her own trap data | Diagnosis screen | `claude-sonnet-5` |
-| Writing new practice questions | Everything to learn screen | `claude-sonnet-5` |
+| "Explain it a different way" | after checking an answer in untimed practice, and in test review | `claude-haiku-5-5` |
+| Follow-up questions on a problem | same place | `claude-haiku-5-5` |
+| A coaching note from her own trap data | Diagnosis screen | `claude-sonnet-5-5` |
+| Writing new practice questions | Everything to learn screen | `claude-sonnet-5-5` |
 
 Set these in `js/config.js` under `aiModels`. Question writing ignores a Haiku setting and
 upgrades itself to Sonnet, because a weak distractor makes a worthless question. Use
-`claude-opus-5` there if you want the best questions and do not mind the cost.
+`claude-opus-5-5` there if you want the best questions and do not mind the cost.
 
-Generated questions land in `generated_questions`, which every signed-in student can read and
-add to. That is deliberate, so a class of thirty grows one shared bank instead of each student
+Generated questions land in `generated_questions`. Each student sees their own, plus those written
+by classmates in the same class, so a class of thirty grows one shared bank instead of each student
 paying to regenerate the same material. It holds no personal data.
 
 Guardrails already in place:

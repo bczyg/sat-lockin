@@ -26,8 +26,69 @@
       });
     }
 
+    /* ---------- sanitizing ----------
+       A generated question can arrive from a classmate's account through sync,
+       and its passage, figure and choices are rendered as HTML. So everything
+       installed from storage is reduced to a short list of formatting tags,
+       with every event handler and link stripped. */
+    var SAFE_TAGS = ('p br b strong i em u sup sub span div table thead tbody tfoot tr th td caption ' +
+      'ul ol li blockquote svg g line polyline polygon path rect circle ellipse text tspan title').split(' ');
+    var DROP_WHOLE = ['script', 'style', 'iframe', 'object', 'embed', 'foreignobject', 'template', 'noscript'];
+    var BAD_ATTR = /^(on|href$|src$|xlink:href$|action$|formaction$|style$|srcdoc$)/i;
+
+    function cleanNode(node) {
+      var kids = Array.prototype.slice.call(node.childNodes);
+      kids.forEach(function (n) {
+          if (n.nodeType === 3) return;
+          if (n.nodeType !== 1) { node.removeChild(n); return; }
+          var tag = n.nodeName.toLowerCase();
+          if (DROP_WHOLE.indexOf(tag) >= 0) { node.removeChild(n); return; }
+          cleanNode(n);
+          if (SAFE_TAGS.indexOf(tag) < 0) {
+            while (n.firstChild) node.insertBefore(n.firstChild, n);
+            node.removeChild(n);
+            return;
+          }
+          Array.prototype.slice.call(n.attributes).forEach(function (at) {
+              if (BAD_ATTR.test(at.name) || /javascript:/i.test(at.value)) n.removeAttribute(at.name);
+          });
+      });
+    }
+
+    function safeHTML(html) {
+      if (html === undefined || html === null) return html;
+      html = String(html);
+      if (typeof global.DOMParser !== 'function') return html.replace(/<[^>]*>/g, '');
+      var doc = new global.DOMParser().parseFromString('<body>' + html + '</body>', 'text/html');
+      cleanNode(doc.body);
+      return doc.body.innerHTML;
+    }
+
+    function sanitizeQuestion(q) {
+      ['blurb', 'figure', 'figcap', 'passage', 'prompt', 'strategy', 'hint'].forEach(function (k) {
+          if (typeof q[k] === 'string') q[k] = safeHTML(q[k]);
+      });
+      ['choices', 'steps', 'answers'].forEach(function (k) {
+          if (Array.isArray(q[k])) q[k] = q[k].map(function (x) { return typeof x === 'string' ? safeHTML(x) : x; });
+      });
+      if (q.traps && typeof q.traps === 'object') {
+        Object.keys(q.traps).forEach(function (k) { q.traps[k] = safeHTML(q.traps[k]); });
+      }
+      /* Tags must name real catalog entries, never arbitrary strings that later
+         land in an onclick attribute. */
+      if (!global.STRATS || !global.STRATS[q.strat]) q.strat = null;
+      var tt = {};
+      Object.keys(q.trapTags || {}).forEach(function (k) {
+          if (global.TRAPS && global.TRAPS[q.trapTags[k]] && /^[0-3]$/.test(k)) tt[k] = q.trapTags[k];
+      });
+      q.trapTags = tt;
+      q.id = String(q.id).replace(/[^A-Za-z0-9_-]/g, '').slice(0, 80);
+      return q;
+    }
+
     var Generate = {
       busy: false,
+      safeHTML: safeHTML,
       lastReport: null,
 
       stored: function () {
@@ -43,7 +104,9 @@
         indexSkills();
         var added = 0;
         this.stored().forEach(function (q) {
-            if (!q || !q.id) return;
+            if (!q || !q.id || (q.section !== 'rw' && q.section !== 'math')) return;
+            q = sanitizeQuestion(q);
+            if (!q.id || !q.strat) return;
             var bank = q.section === 'rw' ? global.RW_BANK : global.MATH_BANK;
             if (bank.some(function (x) { return x.id === q.id; })) return;
             bank.push(q);

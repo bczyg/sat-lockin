@@ -80,6 +80,13 @@
     /* ---------------- what does this server support? ---------------- */
     probe: function () {
       var self = this;
+      /* Opened straight from disk with no API configured, there is no server
+         to ask. Skip the request rather than log a CORS error every load. */
+      if (global.location && global.location.protocol === 'file:' && !CFG.apiUrl) {
+        self.ready = true;
+        self.emit();
+        return Promise.resolve(false);
+      }
       return fetch(this.url('/healthz'), { method: 'GET' })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
@@ -275,7 +282,7 @@
     /* ---------------- AI tutor ---------------- */
     ask: function (task, prompt, context, model) {
       if (!this.aiEnabled) return Promise.reject(new Error('The AI tutor is not switched on for this server.'));
-      var chosen = model || (CFG.aiModels && CFG.aiModels[task]) || 'claude-haiku-4-5';
+      var chosen = model || (CFG.aiModels && CFG.aiModels[task]) || 'claude-haiku-5-5';
       return this.post(CFG.tutorUrl || '/api/tutor', {
         task: task, prompt: prompt, context: context, model: chosen
       });

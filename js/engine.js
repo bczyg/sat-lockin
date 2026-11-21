@@ -718,11 +718,15 @@
       };
     },
 
+    /* Days are the student's local calendar days, the same as Daily LockIn,
+       so evening practice in the US is not filed under tomorrow. */
     streak: function () {
+        var key = function (dt) {
+          return dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2);
+        };
         var days = {};
-        this.data().events.forEach(function (e) { if (e.t) days[String(e.t).slice(0, 10)] = true; });
+        this.data().events.forEach(function (e) { if (e.t) days[key(new Date(e.t))] = true; });
         var n = 0, d = new Date();
-        var key = function (dt) { return dt.toISOString().slice(0, 10); };
         if (!days[key(d)]) { // today not done yet: start from yesterday
           d.setDate(d.getDate() - 1);
           if (!days[key(d)]) return 0;
@@ -732,8 +736,12 @@
       },
 
       answeredToday: function () {
-        var today = new Date().toISOString().slice(0, 10), n = 0;
-        this.data().events.forEach(function (e) { if (e.t && String(e.t).slice(0, 10) === today) n++; });
+        var t = new Date(), n = 0;
+        this.data().events.forEach(function (e) {
+            if (!e.t) return;
+            var d = new Date(e.t);
+            if (d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate()) n++;
+        });
         return n;
       },
 
