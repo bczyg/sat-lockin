@@ -16,6 +16,9 @@
 window.STRATS = {
   /* Reading and Writing */
   'predict-first': { section:'rw', name:'Predict, then match',
+    cues:[
+      "The question asks what the whole text is mainly saying: \"Which choice best states the main idea of the text?\"",
+      "Every choice is a one-sentence summary, and they all sound reasonable."],
     move:'Say the answer in your own words before you read a single choice, then look for the choice closest to what you said.',
     why:'Once you read four polished choices, all four start to sound reasonable. Your own prediction gives you something to measure them against.',
     drill:'Cover the choices with your hand. Write your prediction in five words. Then uncover.',
@@ -26,6 +29,10 @@ window.STRATS = {
       avoid: "Do not let the correct choice reuse distinctive wording from the text, because then it can be found by word-matching instead of by understanding. At least one distractor must be a true detail from the text."
     } },
   'claim-fit': { section:'rw', name:'Make the evidence fit the exact claim',
+    cues:[
+      "The question says \"most directly support\" or \"most directly weaken\" a claim, hypothesis, or conclusion.",
+      "Or it asks which quotation \"most effectively illustrates\" a claim about a poem, novel, or speech.",
+      "The choices are findings or quotations, not summaries."],
     move:'Put the claim in your own words, list what it needs to be true, then ask whether the choice actually props that up or knocks it down.',
     why:'You win these by being precise about the claim, not by picking whichever option sounds the most scientific.',
     drill:'Before you look at choices, write the claim down and underline the task word: support, or weaken.',
@@ -36,6 +43,10 @@ window.STRATS = {
       avoid: "Exactly one distractor must support when the task is to weaken, or vice versa. Do not make the correct finding simply restate the hypothesis."
     } },
   'data-discipline': { section:'rw', name:'Read the units, then do the math',
+    cues:[
+      "There is a table or graph next to the text.",
+      "The question says \"uses data from the table (or graph) to complete the example\" or to support a claim.",
+      "The choices quote specific numbers or name specific groups."],
     move:'Read the axis labels first. A relationship needs two data points. A "most" or "steepest" needs you to actually compute every group.',
     why:'These look like reading questions but they are arithmetic. Eyeballing the chart is exactly how they catch you.',
     drill:'Jot the numbers you need in the margin before you read any choice.',
@@ -46,6 +57,9 @@ window.STRATS = {
       avoid: "Include one distractor that is a correct reading of a single cell but establishes no relationship, and one that reverses a more/less comparison. Every number in every choice must match the table exactly."
     } },
   'smallest-step': { section:'rw', name:'Take the smallest step you can prove',
+    cues:[
+      "The text ends in a blank after a phrase like \"This suggests that\" or \"it can most reasonably be concluded that\".",
+      "The question says \"Which choice most logically completes the text?\" and there is no table."],
     move:'Pick the most modest thing the text fully supports. No outside knowledge, even if you know it is true.',
     why:'An inference is one small step past the text. The dramatic conclusion is nearly always the wrong one.',
     drill:'For each choice ask: which words in the text prove this? If you cannot point at them, cross it off.',
@@ -56,6 +70,10 @@ window.STRATS = {
       avoid: "One distractor must be the same idea overstated with an absolute word. Never make the correct answer require outside knowledge."
     } },
   'context-word': { section:'rw', name:'Let the sentence pick the word',
+    cues:[
+      "The question says \"most logical and precise word or phrase\", with a blank inside a sentence.",
+      "Or it asks what a word \"most nearly means\" as used in the text.",
+      "All four choices are single words or short phrases of the same type."],
     move:'Put your own word in the blank first. Use the colon, the dash, or the contrast that the sentence hands you.',
     why:'The most common meaning of the word is sitting right there in the choices on purpose. The sentence decides, not the dictionary.',
     drill:'Slot your choice back in and read the whole sentence out loud.',
@@ -66,6 +84,9 @@ window.STRATS = {
       avoid: "One distractor must be the everyday meaning of the word. Keep all four choices the same part of speech and similar length."
     } },
   'author-move': { section:'rw', name:'Name what the author is doing',
+    cues:[
+      "The question asks for the \"function\" of an underlined sentence, the \"overall structure\" of the text, or its \"main purpose\".",
+      "The choices start with verbs: \"To describe...\", \"To challenge...\", \"It introduces...\"."],
     move:'Answer with a verb: describing, correcting, conceding, redirecting. For an underlined sentence, read the sentence before and after it.',
     why:'These ask about how the text is built, not what it says. A choice can be true about the content and still name the wrong move.',
     drill:'Sum up each sentence in three words, then count the moves you get.',
@@ -76,6 +97,9 @@ window.STRATS = {
       avoid: "One distractor should describe a different sentence than the underlined one. If the text has three moves, no distractor should describe only two and still be correct."
     } },
   'concession-map': { section:'rw', name:'State each claim, then name the relationship',
+    cues:[
+      "There are two short texts, labeled Text 1 and Text 2.",
+      "The question asks how the author of Text 2 would most likely respond to Text 1."],
     move:'Put each author\'s point in one sentence, then name how they relate: agree, disagree, qualify, or answer different questions. If it is a disagreement, go on to split what the second author accepts from what they reject.',
     why:'Not every pair of texts argues. Going in hunting for an objection makes you invent one, and on an agreement pair that costs you the question.',
     drill:'Write both claims in one sentence each before reading any choice. Then pick the relationship word out loud.',
@@ -86,6 +110,9 @@ window.STRATS = {
       avoid: "One distractor must overstate the disagreement into total rejection. Text 2 must contain an explicit concession, using a word like grants, accepts or does not dispute."
     } },
   'relationship-first': { section:'rw', name:'Name the relationship first',
+    cues:[
+      "The question says \"most logical transition\".",
+      "The blank opens a sentence, and every choice is a linking word: However, Therefore, For example, Similarly."],
     move:'Name what is happening between the sentences before you look at the choices. There are six options, not four: same direction, opposite, cause, example, restatement, and sequence in time. Concession words such as granted and admittedly are a flavor of opposite.',
     why:'Transition words blur together when you shop through them. Name the logic first and the choice becomes obvious.',
     drill:'Cover the choices and say out loud what the second sentence does to the first: agrees, clashes, causes, illustrates, restates, or comes later.',
@@ -96,6 +123,9 @@ window.STRATS = {
       avoid: "All three distractors are transitions of the wrong logical type, and each trap explanation must name which type it wrongly signals. Never offer two transitions that both work."
     } },
   'goal-checklist': { section:'rw', name:'Treat the goal as a checklist',
+    cues:[
+      "The text is a bulleted list of notes a student has taken.",
+      "The question says \"The student wants to...\" and asks which choice \"most effectively uses relevant information from the notes\"."],
     move:'Break the stated goal into parts and make the choice tick every one.',
     why:'All the notes are true, so being accurate cannot separate the choices. Only the goal can.',
     drill:'Underline the goal and number its parts before you read anything else.',
@@ -106,6 +136,9 @@ window.STRATS = {
       avoid: "Every choice must be factually consistent with the notes, so only the goal separates them. If the goal says 'explain why', one distractor must restate the effect without a cause."
     } },
   'boundary-test': { section:'rw', name:'Test each side for a full sentence',
+    cues:[
+      "The question says \"conforms to the conventions of Standard English\".",
+      "The choices are the same words with different punctuation: comma, semicolon, colon, dash, period, or nothing."],
     move:'Decide what sits on each side: a full sentence, a fragment, a list, or an interrupter. Then pick the mark that relationship requires, and remember that no mark at all is one of the options.',
     why:'Punctuation is structural, not musical. Where you would pause while reading is not evidence.',
     drill:'Say "complete" or "incomplete" out loud for each side, then ask whether this relationship needs any mark at all. Students over-punctuate far more often than they under-punctuate.',
@@ -116,6 +149,9 @@ window.STRATS = {
       avoid: "Critically: check that no second option is also grammatically legal. A semicolon and a colon are often both acceptable between two independent clauses, so if the answer is a colon, the material after it must not be an independent clause."
     } },
   'choice-split': { section:'rw', meta:true, name:'Read the choices down the column',
+    cues:[
+      "Every question that says \"conforms to the conventions of Standard English\".",
+      "The four choices look nearly identical, which tells you exactly one thing is being tested."],
     move:'Before you read the sentence again, read the four choices vertically and find the one thing they change. That names the rule on trial.',
     why:'Every Standard English question tests exactly one rule, and the choices tell you which one for free. Guessing the rule is the slow way.',
     drill:'Say the dimension out loud: "these differ in verb number," or "these differ in apostrophes." Then go back to the sentence.',
@@ -126,6 +162,9 @@ window.STRATS = {
       avoid: "Never let two dimensions vary at once, because then reading the column no longer names one rule. Do not mix a punctuation change and a verb change in the same choice set."
     } },
   'subject-verb': { section:'rw', name:'Strip to the bare subject, then match',
+    cues:[
+      "The choices are one verb in singular and plural forms: is or are, has or have, was or were.",
+      "A long phrase sits between the subject and the blank, so the nearest noun is a decoy."],
     move:'Cross out the prepositional phrases and anything between commas, find the one word that is really the subject, and match the verb to it.',
     why:'These questions bury the subject behind three or four nouns so that the nearest one is the tempting match. Stripping is what makes the real subject visible.',
     drill:'Cross out every "of" phrase, then point at the single word doing the verb and say singular or plural.',
@@ -136,6 +175,9 @@ window.STRATS = {
       avoid: "Only use this shape when number is the dimension the choices vary. Collective nouns like team and committee are singular in American usage, so do not build a question whose answer depends on the British reading. Inverted subjects (\"there are\", \"among the finds were\") are fair and good."
     } },
   'verb-time': { section:'rw', name:'Let the time markers pick the verb',
+    cues:[
+      "The choices are one verb in different tenses: studied, has studied, will study, studies.",
+      "The sentence carries a time marker: a year, \"since\", \"by\", \"currently\", or another verb whose tense it should match."],
     move:'Find the words that fix the time (in 1953, since then, by next spring, currently) and choose the verb form that fits them. After recommend, require, insist, or demand, use the plain form.',
     why:'Tense questions are decided by evidence elsewhere in the sentence, not by what sounds smooth. Once you find the time marker there is only one answer.',
     drill:'Underline the date or time phrase first. If there is none, look at the tense of the other verb in the sentence.',
@@ -146,6 +188,9 @@ window.STRATS = {
       avoid: "The time evidence must be in the sentence, otherwise more than one tense is defensible. Do not offer two forms that both fit the marker, and never make a future perfect the distractor unless the sentence really has a future reference point."
     } },
   'apostrophe-count': { section:'rw', name:'Count the owners, then place the apostrophe',
+    cues:[
+      "The choices differ only in where the apostrophe goes, or whether there is one: researchers, researcher's, researchers'.",
+      "Or the choices are its, it's, their, they're, whose, or who's."],
     move:'Ask how many owners there are, then whether they own anything at all. One owner takes apostrophe-s, several owners take s-apostrophe, and a plain plural takes no apostrophe. For its, their, and whose, no apostrophe ever.',
     why:'Every one of these four choices sounds identical out loud, so your ear gives you nothing. Counting is the only method.',
     drill:'Turn the phrase around: "the notes of the three geologists" tells you there are three owners.',
@@ -156,6 +201,9 @@ window.STRATS = {
       avoid: "The sentence must make the owner count unambiguous, or two forms become defensible. Avoid the double form geologists's, which nobody actually writes; a stronger fourth choice is the plain plural or an its/it's contrast."
     } },
   'modifier-attach': { section:'rw', name:'Name who is doing the opening phrase',
+    cues:[
+      "The sentence opens with a descriptive phrase and a comma, and the blank is what comes right after the comma.",
+      "The choices say the same thing but start with different nouns."],
     move:'Read the opening phrase, then ask who or what is performing it. Whatever comes right after the comma has to be that thing.',
     why:'This is the one conventions question where you must not strip the modifier, because the modifier is the evidence. The error is a mismatch between two parts of the sentence, so you need both.',
     drill:'Point at the opening phrase and say "who did this?" Then point at the word after the comma and check it is the same.',
@@ -166,6 +214,9 @@ window.STRATS = {
       avoid: "Do not make all three distractors the same dangling participle, or the item collapses to two real choices. Vary them: one dangler, one complete sentence spliced on with a comma, one that changes the subject."
     } },
   'parallel-pairs': { section:'rw', name:'Make both halves the same shape',
+    cues:[
+      "The sentence has a list, a comparison, or a paired phrase: not only... but also, either... or, both... and.",
+      "The choices give the same idea in different grammatical forms: to analyze, analyzing, analysis."],
     move:'Find the pair (not only with but also, either with or, a list, or a comparison) and make the second half the same grammatical shape as the first.',
     why:'Parallelism and illogical comparison are the same move. Both are decided by matching the form of one half against the other, not by meaning.',
     drill:'Read the first half and the second half back to back with nothing in between. If they do not sound like siblings, it is wrong.',
@@ -176,6 +227,9 @@ window.STRATS = {
       avoid: "Decide what the first half is and write it down, because keying a noun clause against a noun-phrase first half is the standard way this question type gets written wrong. On comparisons, the two things compared must be the same kind of thing, so never compare summers with ledgers unless that is the error you are testing."
     } },
   'pronoun-check': { section:'rw', name:'Send every pronoun back to its noun',
+    cues:[
+      "The choices are pronouns: it, they, its, their, this, these, him, them.",
+      "Or the choices differ in whether a pronoun or a specific noun fills the blank."],
     move:'For each pronoun, find the exact noun it replaces and check they match in number. If you cannot point at one specific noun, the pronoun is the problem.',
     why:'A pronoun with a plausible but absent antecedent reads perfectly smoothly, which is why this one slips past almost everybody.',
     drill:'Put your finger on the pronoun, then move it back to the noun. If your finger keeps moving, that is the answer.',
@@ -187,6 +241,9 @@ window.STRATS = {
     } },
   /* Math */
   'translate': { section:'math', name:'Turn the words into equations',
+    cues:[
+      "A word problem describes a situation and asks for the equation, expression, or inequality that models it.",
+      "Words like each, per, total, more than, and at least are carrying the math."],
     move:'Write "let x = ..." every time, then build one equation per condition. Convert units before you substitute anything.',
     why:'Most word problems go wrong in the setup, not the algebra.',
     drill:'Label every number with its unit as you write it down.',
@@ -197,6 +254,10 @@ window.STRATS = {
       avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean."
     } },
   'desmos-first': { section:'math', name:'Graph it before you solve it',
+    cues:[
+      "You are given an equation or a system and asked for a solution, an x-intercept, or where two things are equal.",
+      "The algebra looks ugly (fractions, radicals, a quadratic) but the question only wants a number.",
+      "A function is given and the question asks for its maximum, minimum, vertex, or intercepts."],
     move:'Every math question on the real test comes with a Desmos graphing calculator. Type each side of an equation as its own function and read the intersection. Enter a system and read the crossing point. Shade inequalities and click a candidate point.',
     why:'This is the single highest-leverage habit on the current test, and it sidesteps whole categories of error. A graph cannot produce an extraneous root, because a false solution simply is not an intersection.',
     drill:'On every equation, ask "could I just graph both sides?" before you start doing algebra by hand.',
@@ -207,6 +268,9 @@ window.STRATS = {
       avoid: "The question still has to ask for something specific, so make at least one distractor the other coordinate of the point. Graphing finds the point; reading the question tells you which half of it to report."
     } },
   'count-solutions': { section:'math', name:'Count the solutions by comparing sides',
+    cues:[
+      "The question asks \"how many solutions\", or says the equation or system has \"no solution\" or \"infinitely many solutions\".",
+      "An unknown constant such as k or c appears, and you must find the value that makes that happen."],
     move:'To count solutions, compare the two sides rather than solving. For a linear equation, match coefficients: identical both sides means infinitely many, same slope with a different constant means none. For a system, compare the coefficient ratios. For a quadratic, use the discriminant.',
     why:'How many solutions is one idea, but it shows up in three disguises. Students who learn it three separate times never notice it is the same question.',
     drill:'When a question asks how many, stop yourself from solving. Line the two sides up and compare them term by term.',
@@ -217,6 +281,9 @@ window.STRATS = {
       avoid: "Be explicit about which case you are asking for, since no solution and infinitely many differ only in the constant term and it is easy to key the wrong one. Verify by substituting your constant back and checking the count is what you claimed."
     } },
   'solve-check': { section:'math', name:'Solve it, then check it',
+    cues:[
+      "One equation in one variable, asking for the value of x.",
+      "There is a radical or a variable in a denominator, where squaring or clearing fractions can create a fake solution."],
     move:'Undo the operations in reverse order, then put your answer back into the original equation.',
     why:'Checking takes ten seconds and catches sign errors, extraneous roots, and stopping one step early.',
     drill:'Never leave an equation without substituting your answer back in once.',
@@ -227,6 +294,9 @@ window.STRATS = {
       avoid: "Verify both roots yourself before writing the choices. For a radical equation the extraneous root is the one making the other side negative. Never offer 'both roots' as the correct answer."
     } },
   'systems-tactics': { section:'math', name:'Pick the cheaper way through a system',
+    cues:[
+      "Two equations, two variables.",
+      "The question asks for x, for y, or for a combination such as x + y or 2x - y."],
     move:'Eliminate when a variable cancels for free. Substitute when a coefficient is already 1. Then re-read what was actually asked for.',
     why:'Systems questions love to ask for x + y, or for the variable you did not solve for first.',
     drill:'Circle the quantity you need before you start solving.',
@@ -237,6 +307,9 @@ window.STRATS = {
       avoid: "One distractor must be the other variable, and one the value one step before the end. Choose coefficients so the solution is an integer."
     } },
   'expression-structure': { section:'math', name:'Look at the shape of the expression',
+    cues:[
+      "The question asks which expression \"is equivalent to\" the one given.",
+      "You can see a pattern: a difference of squares, a perfect square, a common factor, or matching exponent bases."],
     move:'Spot the structure first: difference of squares, perfect square, common base. Then use the exponent or factoring rule that fits.',
     why:'These reward recognizing a shape more than grinding through steps.',
     drill:'Ask "what shape is this?" before you touch it, then test your result with x = 3.',
@@ -247,6 +320,9 @@ window.STRATS = {
       avoid: "Test every distractor at x = 2 and confirm none of them coincidentally equals the original there, otherwise plugging in a number cannot separate them."
     } },
   'function-notation': { section:'math', name:'Substitute in parentheses, inside out',
+    cues:[
+      "The question uses f(x) notation: f(3), f(x + 2), f(g(2)).",
+      "A function is defined, and you are asked to evaluate it at a number or an expression."],
     move:'Put the input in parentheses. For a composition, work out the inner value and write it on its own line before you use it.',
     why:'Nearly every miss here is a sign error or a reversed order, and one extra line prevents both.',
     drill:'Write the middle value down. Do not do it in your head.',
@@ -257,6 +333,9 @@ window.STRATS = {
       avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling."
     } },
   'function-behavior': { section:'math', name:'Use how the function behaves',
+    cues:[
+      "The question asks about a quadratic's vertex, minimum, maximum, zeros, or the sum or product of its solutions.",
+      "Or an exponential model like a(1.05)^t, asking about the growth rate, the starting value, or the doubling time."],
     move:'Vertex at x = -b/2a. Discriminant for how many solutions. Sum of roots is -b/a, product is c/a. For exponentials, read the growth factor and the doubling or halving time out of the exponent.',
     why:'These shortcuts answer the question without solving it, as long as you then report the thing that was asked for.',
     drill:'After you find the vertex x, stop and ask whether the question wants x or the value there.',
@@ -267,6 +346,9 @@ window.STRATS = {
       avoid: "If the question asks for a minimum or maximum VALUE, one distractor must be the x at which it occurs. For exponentials, define the time unit and make one distractor ignore the conversion."
     } },
   'proportional-reasoning': { section:'math', name:'Think in rates, ratios, and percents',
+    cues:[
+      "The words percent, ratio, rate, or per, or a unit conversion (feet to inches, hours to minutes).",
+      "Two percent changes in a row, or a percent of a percent."],
     move:'Percent change is change over the original. Two percent changes multiply, they never add. Convert every unit before you divide.',
     why:'The traps here are structural: wrong denominator, added percents, a missed conversion.',
     drill:'Write the units into the fraction and cancel them on the page.',
@@ -277,6 +359,9 @@ window.STRATS = {
       avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean."
     } },
   'data-inference': { section:'math', name:'Know what a statistic is allowed to say',
+    cues:[
+      "A survey, sample, or experiment is described, and the question asks which conclusion is supported.",
+      "Mean, median, range, standard deviation, margin of error, or a two-way table."],
     move:'Find the condition, because it sets the denominator. Ask which measure an outlier moves. A margin of error gives a range, not a fact. You may generalize only to the population that was randomly sampled, and only a randomized experiment supports a causal claim.',
     why:'These test whether you can say what the number means, not whether you can compute it.',
     drill:'Say the statistic back as a full sentence, naming which group it describes and whether the study was an experiment or an observation.',
@@ -287,6 +372,9 @@ window.STRATS = {
       avoid: "For conditional probability, one distractor must use the grand total as the denominator. For a margin of error, one must treat the estimate as exact. If an axis is in thousands, one distractor must ignore that."
     } },
   'geometry-toolkit': { section:'math', name:'Find the radius, open the formula sheet',
+    cues:[
+      "A figure with triangles, circles, or parallel lines, or words like radius, arc, sine, cosine, or similar.",
+      "Area or volume of a shape, or a scale factor between similar figures."],
     move:'Route circle problems through the radius. Take trig ratios relative to the angle named. Scale with symbols, not numbers. Use the angle relationship the figure gives you.',
     why:'The provided sheet covers areas, volumes, the Pythagorean theorem, and the special right triangles. It does not give you arc length, sector area, surface area, or the radian conversion, so those you carry in.',
     drill:'Label the figure with everything you know before you write an equation.',
@@ -297,6 +385,9 @@ window.STRATS = {
       avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean."
     } },
   'coordinate-geometry': { section:'math', name:'Work in the coordinate plane',
+    cues:[
+      "Points given as coordinates, a slope, or lines described as parallel or perpendicular.",
+      "An equation like (x - h)^2 + (y - k)^2 = r^2, or one you can complete the square to reach."],
     move:'Slope is rise over run with both points in the same order. Parallel lines have equal slopes; perpendicular lines have slopes that are negative reciprocals, so their product is -1. Complete the square to read a circle out of its equation.',
     why:'Parallel versus perpendicular, and rise versus run, are the two places this reliably slips.',
     drill:'Label your two points before you subtract, and sketch it when you can.',
@@ -307,6 +398,9 @@ window.STRATS = {
       avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope."
     } },
   'choice-tactics': { section:'math', name:'Use the answer choices',
+    cues:[
+      "The choices are numbers you could plug straight back into the equation.",
+      "The question asks which expression is equivalent and the choices are expressions in x, so a test number settles it."],
     move:'Back-solve by testing the choices, or plug in a number on "which expression is equivalent" questions. Use 3 or 5, never 0, 1, or 2, and if two choices survive, test a second number.',
     why:'On some questions, testing four choices is genuinely faster and safer than doing the algebra. The catch is the number you pick: at x = 2, x squared and 2x are both 4, so genuinely different expressions collide and a wrong choice can look right.',
     drill:'Before you solve, ask yourself whether you could just test the choices instead.',
@@ -316,6 +410,50 @@ window.STRATS = {
       traps: ["half-right", "arith-slip", "wrong-target"],
       avoid: "Each distractor must fail a specific, checkable test, and the trap explanation must say which test it fails and with what numbers. For a system of inequalities, make each distractor satisfy exactly one of the two."
     } }
+};
+
+
+/* ---------------- telling look-alike strategies apart ----------------
+   The pairs students actually confuse, and the one question that separates
+   them. Keyed "a|b" in alphabetical order; use window.stratVs(a, b). */
+window.STRAT_VS = {
+  "author-move|predict-first":
+    "Main idea asks what the text says. Main purpose or function asks what the author is doing, and the choices start with verbs.",
+  "predict-first|smallest-step":
+    "A blank at the end after \"this suggests\" wants one small step past the text. A main-idea question wants a summary of what is already there.",
+  "claim-fit|data-discipline":
+    "If there is a table or graph, compute from it before judging the claim. If there is no data, it is about the exact wording of the claim.",
+  "claim-fit|smallest-step":
+    "Support or weaken means the choices are new findings to test against a claim. A blank at the end means you are writing the conclusion yourself.",
+  "data-discipline|smallest-step":
+    "Both can end in a blank. If a table or graph is attached, read the numbers first; it is a data question.",
+  "boundary-test|relationship-first":
+    "If the choices are different words (However, Therefore), name the relationship. If they are the same words with different punctuation, test each side for a full sentence.",
+  "subject-verb|verb-time":
+    "Choices that differ in number (is, are) mean find the subject. Choices that differ in time (was, has been, will be) mean find the time marker.",
+  "parallel-pairs|verb-time":
+    "If there is a list or a pair in the sentence, match the shape of the other half first. Only reach for tense when there is no list.",
+  "apostrophe-count|pronoun-check":
+    "Its, it's, their, they're are an apostrophe question. It, they, this, these are a pronoun question: find the noun it points back to.",
+  "boundary-test|modifier-attach":
+    "If the choices move the punctuation, it is a boundary. If the choices reorder the clause so a different noun comes first, it is a modifier.",
+  "count-solutions|solve-check":
+    "\"How many solutions\" or a constant that makes \"no solution\" means compare the sides. Do not solve.",
+  "count-solutions|systems-tactics":
+    "A system that asks for x or y means solve it. A system that asks when it has no solution, or infinitely many, means compare the coefficients.",
+  "desmos-first|systems-tactics":
+    "Both work on a system. If the numbers are clean and one variable cancels, eliminate by hand. If not, graph both and read the crossing.",
+  "function-behavior|function-notation":
+    "f(3) or f(g(2)) means substitute. Vertex, zeros, or a growth rate means read it off the form of the function.",
+  "proportional-reasoning|translate":
+    "If the story is about percents, ratios, or unit conversions, think in rates. If it asks you to build the equation, translate word by word.",
+  "coordinate-geometry|geometry-toolkit":
+    "Coordinates, slopes, or an equation of a circle mean the coordinate plane. A drawn figure with angles and lengths means the geometry toolkit.",
+  "choice-tactics|expression-structure":
+    "Both handle \"which expression is equivalent\". Spot the structure if you can see it in five seconds. If not, plug in 3 and test the choices."
+};
+window.stratVs = function (a, b) {
+  return window.STRAT_VS[a < b ? a + '|' + b : b + '|' + a] || null;
 };
 
 /* ---------------- trap catalog ---------------- */

@@ -1136,3 +1136,48 @@ ul.plain li{font-size:14.5px;line-height:1.6}
   .dz-head{flex-direction:column;align-items:flex-start;gap:6px}
   .dz-type pre{font-size:12.5px}
 }
+
+/* ---------- name the move ---------- */
+.spot-entry{margin:14px 0 16px;border-style:solid;border-color:var(--brand);background:var(--brand-soft)}
+.spot-entry:hover{background:#fff}
+.spot-q{background:#fff;border:1px solid var(--shell-line);border-radius:14px;padding:18px 20px}
+.spot-q .spot-passage{font-size:16px;line-height:1.6;margin:0 0 14px;padding-bottom:14px;border-bottom:1px solid var(--shell-line)}
+.spot-q .stem{font-weight:600;margin:0 0 12px}
+.spot-spr{font-size:14px;color:var(--ink-soft);margin:0}
+.choice.ro{cursor:default}
+.choice.ro:hover{background:#fff}
+.choice.ro.correct:hover{background:var(--green-soft)}
+.spot-ask{margin-top:22px}
+.spot-ask h3{margin:0 0 4px}
+.spot-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 10px}
+.spot-opt{
+  display:flex;gap:10px;align-items:center;text-align:left;font:inherit;font-size:15px;font-weight:600;
+  color:var(--ink);background:#fff;border:2px solid var(--shell-line);border-radius:12px;padding:12px 14px;cursor:pointer;
+  transition:border-color .12s,background .12s;
+}
+.spot-opt:hover{border-color:var(--brand);background:var(--brand-soft)}
+.spot-opt:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.spot-opt .ltr{
+  flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--brand);color:var(--brand-ink);
+  display:grid;place-items:center;font-size:12.5px;font-weight:700;
+}
+.help-card.spot-cues{border-left-color:var(--brand)}
+.help-card.spot-cues h4{color:var(--brand-ink)}
+.help-card.spot-cues ul{margin:6px 0 0;padding-left:20px}
+.help-card.spot-cues li{margin:4px 0;line-height:1.5}
+.spot-also{margin:2px 0 0}
+.spot .help-stack .card-actions{margin-top:4px}
+.spot-row{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--shell-line)}
+.spot-row:first-of-type{border-top:0}
+.spot-row > div{flex:1}
+.spot-row svg{flex:none;width:20px;height:20px;margin-top:2px}
+.spot-row.ok svg{color:var(--green)}
+.spot-row.miss svg{color:var(--red)}
+.spot-record{margin-top:16px}
+.spot-conf-title{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--ink-soft);margin:16px 0 4px}
+.spot-conf{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--shell-line)}
+@media (max-width:640px){
+  .spot-opts{grid-template-columns:1fr}
+  .spot-q{padding:14px}
+  .spot-conf{flex-direction:column;align-items:flex-start}
+}

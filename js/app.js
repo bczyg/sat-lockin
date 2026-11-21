@@ -6,7 +6,7 @@
 
     var shell = document.getElementById('shell');
     var S = null;            // active Session
-    var view = 'home';       // landing | home | strategies | traps | analyze | cards | auth | class | exam | review
+    var view = 'home';       // landing | home | spot | strategies | traps | analyze | desmos | cards | auth | class | exam | review
     var reviewData = null;   // attempt being reviewed
     var dailyPending = null; // set while today's Daily LockIn question is open
     var reviewFilter = 'all';
@@ -43,7 +43,8 @@
       err: '',
       saved: false,
       mStrat: '',
-      mTrap: ''
+      mTrap: '',
+      guess: ''      // the move the student named before the AI did
     };
 
     /* Which traps actually occur on questions of a given skill, most common
@@ -71,7 +72,7 @@
           if (C.enabled && !C.signedIn() && !skipped && view === 'home') {
             view = 'auth';
           }
-          if (view === 'auth' || view === 'home' || view === 'class' || view === 'strategies' || view === 'traps' || view === 'analyze' || view === 'desmos') render();
+          if (view === 'auth' || view === 'home' || view === 'class' || view === 'strategies' || view === 'traps' || view === 'analyze' || view === 'desmos' || (view === 'spot' && !spot)) render();
         });
       }
       document.addEventListener('keydown', onKey);
@@ -148,6 +149,7 @@
       view === 'traps' ? trapsHTML() :
       view === 'analyze' ? analyzeHTML() :
       view === 'desmos' ? desmosHTML() :
+      view === 'spot' ? spotHTML() :
       view === 'cards' ? cardsHTML() :
       view === 'auth' ? authHTML() :
       view === 'class' ? classHTML() :
@@ -215,6 +217,13 @@
 
       h += dailyHTML();
 
+      var ss = window.Spot.summary();
+      h += '<button class="paste-entry spot-entry" onclick="APP.go(\'spot\')">' +
+      '<div class="pe-icon">' + ic('target') + '</div><div>' +
+      '<div class="pe-name">Name the move</div>' +
+      '<div class="pe-sub">Eight unlabeled questions. Name the strategy each one wants before you solve it.' +
+      (ss.seen ? ' You name ' + ss.solid + ' of ' + ss.total + ' reliably.' : '') + '</div></div></button>';
+
       h += '<div class="two-up">';
       h += '<button class="big-entry" onclick="APP.go(\'strategies\')">' +
       '<div class="be-num">' + sum.strats.mastered + '<span>/' + sum.strats.total + '</span></div>' +
@@ -257,19 +266,20 @@
       '<div class="d-day">Move ' + day + ' of ' + cycle + '</div></div>';
 
       if (!done) {
-        h += '<h2>Today\'s move: ' + esc(strat.name) + '</h2>';
-        h += '<p class="d-move">' + esc(strat.move) + '</p>';
+        h += '<h2>Today\'s question comes with no label</h2>';
+        h += '<p class="d-move">Read it, name the move it wants, then work it. On test day nobody tells you ' +
+        'which strategy a question is testing, so that is the part to practice.</p>';
         h += '<button class="btn big d-go" onclick="APP.startDaily()">Start today\'s question</button>';
         h += '<p class="d-note">One question. Two minutes. The rotation covers all ' + cycle +
         ' moves, so nothing gets skipped.</p>';
       } else {
-        h += '<h2>' + (res && res.correct ? 'Got it.' : 'Logged it.') + ' ' + esc(strat.name) + '</h2>';
+        h += '<h2>' + (res && res.correct ? 'Named it.' : 'Logged it.') + ' ' + esc(strat.name) + '</h2>';
         h += '<p class="d-move">' +
         (res && res.correct
-          ? 'That move is working. Tomorrow rotates to the next one.'
-          : 'That is the useful kind of miss, because now you know which move to drill.') + '</p>';
+          ? 'You spotted the move before solving. Tomorrow rotates to the next one.'
+          : 'That is the useful kind of miss, because now you know which move to learn to spot.') + '</p>';
         h += '<div class="card-actions">' +
-        '<button class="btn" onclick="APP.drillStrat(\'' + pick.strat + '\')">Practice this move properly</button>' +
+        '<button class="btn" onclick="APP.spotGuide(\'' + pick.strat + '\')">How to spot this move</button>' +
         '<button class="btn ghost" onclick="APP.reviewDaily()">See the explanation again</button></div>';
       }
 
@@ -773,6 +783,12 @@
       var st = kind === 'strat' ? window.STRATS[id] : null;
       var recipe = (st && st.gen)
         ? ' <button class="link-btn tiny" onclick="APP.showRecipe(\'' + id + '\')">recipe</button>' : '';
+      if (st && st.cues) {
+        var sp = window.Spot.statFor(id);
+        recipe = ' <button class="link-btn tiny strong" onclick="APP.spotGuide(\'' + id + '\')">how to spot it</button>' +
+          (sp && sp.seen ? ' <span class="cv learn" title="named correctly before solving">named ' + sp.right + '/' + sp.seen + '</span>' : '') +
+          recipe;
+      }
       if (id === 'desmos-first') {
         recipe = ' <button class="link-btn tiny strong" onclick="APP.go(\'desmos\')">' +
         desmosTrickCount() + ' calculator tricks</button>' + recipe;
@@ -900,8 +916,11 @@
 
       /* ---- what you actually get ---- */
       h += '<div class="section-title">What you get</div><div class="card-grid">';
+      h += '<div class="card"><h3>Name the move before you solve</h3>' +
+      '<p>On test day nothing is labeled. Questions here arrive the same way: you name the strategy ' +
+      'the question wants, see what gave it away, then work it with that move one step at a time.</p></div>';
       h += '<div class="card"><h3>Daily LockIn</h3>' +
-      '<p>One question a day, rotating through all ' + cycle + ' moves in order, so across ' +
+      '<p>One unlabeled question a day, rotating through all ' + cycle + ' moves in order, so across ' +
       cycle + ' days every strategy comes up exactly once and nothing gets skipped. Two minutes. ' +
       'The streak is the point.</p></div>';
       h += '<div class="card"><h3>' + nStrat + ' strategies, drillable one at a time</h3>' +
@@ -1064,6 +1083,217 @@
     }
 
     /* ============================================================
+       NAME THE MOVE
+       Recognition first: the question arrives with no label, the student
+       names the move, and only then works it, one step at a time. The
+       logic and the record live in js/spot.js.
+       ============================================================ */
+    var spot = null; // { round, phase: 'ask'|'named'|'work'|'done', step, answer, daily }
+
+    function stratName(id) { return window.STRATS[id] ? window.STRATS[id].name : id; }
+
+    function spotQuestionHTML(q, reveal) {
+      var h = '<div class="spot-q">';
+      if (q.blurb || q.figure || q.passage) h += '<div class="passage spot-passage">' + stemHTML(q) + '</div>';
+      h += '<div class="stem">' + q.prompt + '</div>';
+      if (q.type === 'spr') {
+        h += reveal
+          ? '<p class="spot-spr">Accepted: <strong>' + q.answers.map(esc).join('</strong> or <strong>') + '</strong></p>'
+          : '<p class="spot-spr">Student-produced response: you type the number in.</p>';
+      } else {
+        h += '<ul class="choices">';
+        q.choices.forEach(function (c, i) {
+            var cls = 'choice ro' + (reveal && i === q.answer ? ' correct' : '');
+            h += '<li><div class="' + cls + '"><span class="ltr">' + LETTERS[i] + '</span><span class="txt">' + c + '</span>' +
+              (reveal && i === q.answer ? '<span class="tag">Correct</span>' : '') + '</div></li>';
+        });
+        h += '</ul>';
+      }
+      return h + '</div>';
+    }
+
+    function cuesHTML(id, title) {
+      var st = window.STRATS[id];
+      if (!st || !st.cues) return '';
+      return '<div class="help-card spot-cues"><h4>' + title + '</h4><ul>' +
+        st.cues.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul></div>';
+    }
+
+    function spotStatsHTML() {
+      var sum = window.Spot.summary();
+      var conf = window.Spot.confusions(4);
+      var h = '<div class="card spot-record"><h3>Your record</h3>';
+      if (!sum.seen) {
+        return h + '<p>Nothing yet. After a round or two this shows which moves you can name on sight ' +
+          'and which ones you keep mixing up.</p></div>';
+      }
+      h += '<p><strong>' + sum.solid + '</strong> of ' + sum.total + ' moves you can name reliably, ' +
+        'meaning three or more tries at 80 percent or better. You have met ' + sum.seen + ' so far.</p>';
+      if (conf.length) {
+        h += '<div class="spot-conf-title">What you keep mixing up</div>';
+        conf.forEach(function (c) {
+            h += '<div class="spot-conf"><div><strong>' + esc(stratName(c.strat)) + '</strong> read as ' +
+              '<strong>' + esc(stratName(c.as)) + '</strong>' + (c.n > 1 ? ' <span class="n">' + c.n + ' times</span>' : '') +
+              (c.vs ? '<div class="n" style="text-align:left">' + esc(c.vs) + '</div>' : '') + '</div>' +
+              '<button class="btn ghost sm" onclick="APP.spotFocus(\'' + c.strat + '\')">Drill it</button></div>';
+        });
+      }
+      return h + '</div>';
+    }
+
+    function spotIntroHTML() {
+      var h = catalogHead('Name the move',
+        'On test day nobody tells you which strategy a question wants. Read it, name the move, then work it.');
+      h += '<div class="card spot-intro"><h3>Eight questions, about five minutes</h3>' +
+        '<p>Each question arrives with no label. Read the question and the choices, then pick the move it wants ' +
+        'before you solve anything. Then you work it through with that move, one step at a time. No timer, and ' +
+        'nothing here is a score.</p>' +
+        '<p class="note">In math, more than one route often works. The options are chosen so that only one of them ' +
+        'fits; when the calculator would also get you there, it says so.</p>' +
+        '<div class="card-actions" style="margin-top:14px">' +
+        '<button class="btn" onclick="APP.spotStart()">Mixed round</button>' +
+        '<button class="btn ghost" onclick="APP.spotStart(\'rw\')">Reading and Writing</button>' +
+        '<button class="btn ghost" onclick="APP.spotStart(\'math\')">Math</button></div></div>';
+      h += spotStatsHTML();
+      return h + '</div>';
+    }
+
+    function spotHTML() {
+      if (!spot) return spotIntroHTML();
+      if (spot.phase === 'done') return spotDoneHTML();
+
+      var r = spot.round;
+      var it = r.items[r.i];
+      var q = ALLQ[it.qid];
+      var st = window.STRATS[it.strat];
+      var h = '<div class="home spot"><div class="home-head"><div><div class="brand">' +
+        (spot.daily ? 'Daily LockIn' : 'Name the move') + '</div>' +
+        '<div class="tagline">' + (r.items.length > 1 ? 'Question ' + (r.i + 1) + ' of ' + r.items.length + ' · ' : '') +
+        esc(q.section === 'rw' ? 'Reading and Writing' : 'Math') + ' · ' + esc(q.domain) + '</div></div>' +
+        '<button class="btn subtle sm" onclick="APP.spotQuit()">Exit</button></div><div class="home-hr"></div>';
+
+      h += spotQuestionHTML(q, spot.phase === 'work' && spot.answer);
+
+      if (spot.phase === 'ask') {
+        h += '<div class="spot-ask"><h3>Which move does this question want?</h3>' +
+          '<p class="note">Decide before you solve. Keys 1 to ' + it.options.length + ' work too.</p><div class="spot-opts">';
+        it.options.forEach(function (id, i) {
+            h += '<button class="spot-opt" onclick="APP.spotPick(\'' + id + '\')"><span class="ltr">' + (i + 1) + '</span>' +
+              '<span>' + esc(stratName(id)) + '</span></button>';
+        });
+        h += '</div><button class="link-btn" onclick="APP.spotPick(null)">I do not know yet, show me</button></div>';
+        return h + '</div>';
+      }
+
+      if (spot.phase === 'named') {
+        h += '<div class="verdict ' + (it.right ? 'ok' : 'no') + '">' +
+          (it.right ? 'Yes, that is the move' : it.picked ? 'Not this time' : 'Here is the move') + '</div>';
+        h += '<div class="help-stack">';
+        h += '<div class="help-card strategy"><h4>The move: ' + esc(st.name) + '</h4><p class="strat-move">' + esc(st.move) + '</p></div>';
+        h += cuesHTML(it.strat, 'What gives it away');
+        if (it.picked && !it.right) {
+          var vs = window.stratVs(it.strat, it.picked);
+          var other = window.STRATS[it.picked];
+          h += '<div class="help-card caught"><h4>You picked ' + esc(other.name) + '</h4>' +
+            '<p>' + esc(vs || ('That move is for a different signal. ' + other.cues[0])) + '</p></div>';
+        }
+        if (q.section === 'math' && it.strat !== 'desmos-first' && desmosCites(q.id)) {
+          h += '<p class="note spot-also">The built-in calculator also gets you there on this one. ' +
+            '<button class="link-btn" onclick="APP.go(\'desmos\')">See how</button></p>';
+        }
+        h += '</div><div class="card-actions" style="margin-top:16px">' +
+          '<button class="btn big" onclick="APP.spotWork()">Work it with this move</button></div>';
+        return h + '</div>';
+      }
+
+      /* work: the move, then one step at a time, then the answer */
+      h += '<div class="help-stack">';
+      h += '<div class="help-card strategy"><h4>Apply it: ' + esc(st.name) + '</h4><p class="strat-move">' + esc(st.move) + '</p>' +
+        (q.strategy ? '<p>' + q.strategy + '</p>' : '') + '</div>';
+      h += '<div class="help-card steps"><h4>Working it through</h4>';
+      if (spot.step === 0) h += '<p class="note">Try the first step yourself, then check it here.</p>';
+      else {
+        h += '<ol>';
+        q.steps.slice(0, spot.step).forEach(function (s) { h += '<li>' + s + '</li>'; });
+        h += '</ol>';
+      }
+      h += '</div>';
+
+      if (spot.step < q.steps.length) {
+        h += '<div class="card-actions"><button class="btn" onclick="APP.spotStep()">' +
+          (spot.step === 0 ? 'Show the first step' : 'Next step') + '</button>' +
+          '<button class="btn subtle" onclick="APP.spotStep(true)">Show all of it</button></div>';
+      } else if (!spot.answer) {
+        h += '<div class="card-actions"><button class="btn" onclick="APP.spotAnswer()">Show the answer and the traps</button></div>';
+      } else {
+        var tg = window.tagsFor(q);
+        if (q.traps && Object.keys(q.traps).length) {
+          h += '<div class="help-card traps"><h4>Why each wrong answer is tempting</h4>';
+          Object.keys(q.traps).forEach(function (k) {
+              var t = tg.traps[k] ? window.TRAPS[tg.traps[k]] : null;
+              h += '<div class="trap-row"><b>' + LETTERS[+k] + '</b><div>' +
+                (t ? '<span class="trap-chip">' + t.name + '</span> ' : '') + q.traps[k] + '</div></div>';
+          });
+          h += '</div>';
+        }
+        var last = r.i === r.items.length - 1;
+        h += '<div class="card-actions"><button class="btn big" onclick="APP.spotNext()">' +
+          (spot.daily ? 'Done for today' : last ? 'See how you did' : 'Next question') + '</button></div>';
+      }
+      return h + '</div></div>';
+    }
+
+    function desmosCites(qid) { return desmosExampleIds().indexOf(qid) >= 0; }
+
+    function spotDoneHTML() {
+      var r = spot.round;
+      var right = r.items.filter(function (x) { return x.right; }).length;
+      var h = catalogHead('Round done', 'You named ' + right + ' of ' + r.items.length + ' moves before solving.');
+      h += '<div class="card"><h3>' + (right === r.items.length ? 'Every one. That is the skill.' :
+        right >= r.items.length * 0.75 ? 'Strong round.' : 'Each miss below is a pair worth learning to tell apart.') + '</h3>';
+      r.items.forEach(function (it) {
+          var vs = it.picked ? window.stratVs(it.strat, it.picked) : null;
+          h += '<div class="spot-row ' + (it.right ? 'ok' : 'miss') + '">' + ic(it.right ? 'check' : 'close') +
+            '<div><strong>' + esc(stratName(it.strat)) + '</strong>' +
+            (!it.right ? '<div class="n" style="text-align:left">' +
+              (it.picked ? 'You said ' + esc(stratName(it.picked)) + '.' : 'You asked to be shown.') +
+              (vs ? ' ' + esc(vs) : '') + '</div>' : '') +
+            '</div><button class="link-btn tiny" onclick="APP.peek(\'' + it.qid + '\')">question</button></div>';
+      });
+      h += '<div class="card-actions" style="margin-top:16px">' +
+        '<button class="btn" onclick="APP.spotAgain()">Another round</button>' +
+        '<button class="btn ghost" onclick="APP.spotQuit()">Back</button></div></div>';
+      h += spotStatsHTML();
+      return h + '</div>';
+    }
+
+    /* A strategy's recognition card: when to use it, what it gets confused
+       with, and the move itself. Opened from the Strategies list. */
+    function spotGuideHTML(id) {
+      var st = window.STRATS[id];
+      var h = cuesHTML(id, 'How you know it is this one');
+      var pairs = Object.keys(window.STRAT_VS).filter(function (k) { return k.split('|').indexOf(id) >= 0; });
+      if (pairs.length) {
+        h += '<div class="help-card caught"><h4>Easy to mix up with</h4>';
+        pairs.forEach(function (k) {
+            var p = k.split('|');
+            var other = p[0] === id ? p[1] : p[0];
+            h += '<p><strong>' + esc(stratName(other)) + '.</strong> ' + esc(window.STRAT_VS[k]) + '</p>';
+        });
+        h += '</div>';
+      }
+      h += '<div class="help-card strategy"><h4>The move</h4><p class="strat-move">' + esc(st.move) + '</p>' +
+        '<p class="note">' + esc(st.why) + '</p></div>';
+      h += '<div class="help-card steps"><h4>Drill</h4><p>' + esc(st.drill) + '</p></div>';
+      if (!st.meta) {
+        h += '<div class="card-actions" style="margin-top:12px">' +
+          '<button class="btn" onclick="APP.closeModal();APP.spotFocus(\'' + id + '\')">Practice naming it</button>' +
+          '<button class="btn ghost" onclick="APP.drillStrat(\'' + id + '\')">Practice the move itself</button></div>';
+      }
+      return h;
+    }
+
+    /* ============================================================
        THE BUILT-IN CALCULATOR
        Desmos is on every math question and most students use it as a
        four-function calculator. This is the deep content behind the
@@ -1144,6 +1374,13 @@
           'did not come through. Read it as a suggestion rather than a verdict.</p>';
         }
 
+        if (r.strategy && az.guess) {
+          var hit = az.guess === r.strategy;
+          var vs = hit ? null : window.stratVs(r.strategy, az.guess);
+          h += '<div class="verdict ' + (hit ? 'ok' : 'no') + '">' +
+          (hit ? 'You named the move before looking' : 'You guessed ' + esc(stratName(az.guess))) + '</div>' +
+          (vs ? '<p class="note">' + esc(vs) + '</p>' : '');
+        }
         if (r.strategy) {
           var st = window.STRATS[r.strategy];
           h += '<div class="az-card strat"><div class="az-lbl">The move it wanted</div>' +
@@ -1199,6 +1436,15 @@
       '<label class="fld"><span>Which one did you pick? Optional</span>' +
       '<input id="az-picked" type="text" maxlength="60" oninput="APP.azPick(this.value)" placeholder="B" value="' + esc(az.picked) + '"></label>';
 
+      if (ai) {
+        h += '<label class="fld"><span>Before you look: which move do you think it wanted? Optional</span>' +
+        '<select class="az-select" onchange="APP.azGuess(this.value)"><option value="">Skip the guess</option>';
+        Object.keys(window.STRATS).forEach(function (id) {
+            if (window.STRATS[id].meta) return;
+            h += '<option value="' + id + '"' + (az.guess === id ? ' selected' : '') + '>' + esc(window.STRATS[id].name) + '</option>';
+        });
+        h += '</select></label>';
+      }
       if (az.busy) {
         h += '<p class="az-wait">Working through it' + '\u2026' + '</p>';
       } else if (ai) {
@@ -1625,8 +1871,9 @@
       azPick: function (v) { az.picked = v; },
       azReset: function () {
         az.text = ''; az.picked = ''; az.res = null; az.err = ''; az.saved = false;
-        az.mStrat = ''; az.mTrap = ''; render();
+        az.mStrat = ''; az.mTrap = ''; az.guess = ''; render();
       },
+      azGuess: function (v) { az.guess = v; },
       azManual: function (which, v) {
         if (which === 'strat') az.mStrat = v; else az.mTrap = v;
       },
@@ -1654,7 +1901,16 @@
             var parsed = azParse(r.text);
             if (!parsed) { az.err = 'That came back in a shape the app could not read. Try again.'; }
             else if (parsed.ok === false) { az.err = parsed.reason || 'That does not look like a full SAT question.'; }
-            else { az.res = azClean(parsed); }
+            else {
+              az.res = azClean(parsed);
+              /* A guess on a real Bluebook miss is the best recognition rep
+                 there is, so it counts toward the naming record. Only when
+                 the classification is confident, since a wrong label would
+                 teach the wrong pairing. */
+              if (az.guess && az.res.strategy && az.res.confidence !== 'low') {
+                window.Spot.record({ qid: 'pasted', strat: az.res.strategy }, az.guess);
+              }
+            }
             render();
         }).catch(function (e) {
             az.busy = false;
@@ -1893,6 +2149,70 @@
         if (n && n.trim()) { window.Store.setName(n.trim()); render(); }
       },
 
+      /* ---------- name the move ---------- */
+      spotStart: function (section) {
+        var round = window.Spot.build({ section: section || undefined });
+        if (!round.items.length) { toast('No questions available for that'); return; }
+        spot = { round: round, phase: 'ask', step: 0, answer: false, daily: null };
+        view = 'spot'; render();
+      },
+      spotFocus: function (id) {
+        var round = window.Spot.build({ focus: id });
+        if (!round.items.length) { toast('No questions for that move'); return; }
+        spot = { round: round, phase: 'ask', step: 0, answer: false, daily: null };
+        view = 'spot'; render();
+      },
+      spotAgain: function () {
+        var o = spot && spot.round ? spot.round.opts : {};
+        if (o.focus) APP.spotFocus(o.focus); else APP.spotStart(o.section);
+      },
+      spotPick: function (id) {
+        if (!spot || spot.phase !== 'ask') return;
+        var it = spot.round.items[spot.round.i];
+        window.Spot.record(it, id);
+        spot.phase = 'named'; render();
+      },
+      spotWork: function () {
+        if (!spot) return;
+        spot.phase = 'work'; spot.step = 0; spot.answer = false; render();
+      },
+      spotStep: function (all) {
+        if (!spot) return;
+        var q = ALLQ[spot.round.items[spot.round.i].qid];
+        spot.step = all ? q.steps.length : Math.min(q.steps.length, spot.step + 1);
+        render();
+      },
+      spotAnswer: function () {
+        if (!spot) return;
+        spot.answer = true; render();
+      },
+      spotNext: function () {
+        if (!spot) return;
+        if (spot.daily) {
+          var it = spot.round.items[0];
+          window.Daily.record(spot.daily.date, it.qid, it.strat, it.right === true);
+          spot = null; view = 'home'; render();
+          return;
+        }
+        var r = spot.round;
+        if (r.i < r.items.length - 1) {
+          r.i++; spot.phase = 'ask'; spot.step = 0; spot.answer = false;
+        } else {
+          spot.phase = 'done';
+        }
+        render();
+      },
+      spotQuit: function () {
+        var wasDaily = spot && spot.daily;
+        spot = null;
+        view = wasDaily ? 'home' : 'spot';
+        render();
+      },
+      spotGuide: function (id) {
+        if (!window.STRATS[id]) return;
+        openModal(window.STRATS[id].name, spotGuideHTML(id));
+      },
+
       drillTrap: function (trapId) {
         var pool = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) {
             var t = window.tagsFor(q).traps;
@@ -1918,23 +2238,20 @@
         window.Daily.claim(pick);
         var q = window.Daily.question(pick.qid);
         if (!q) { toast('That question is no longer in the bank'); return; }
-        dailyPending = { date: pick.date, qid: pick.qid, strat: pick.strat };
-        var name = window.STRATS[pick.strat] ? window.STRATS[pick.strat].name : pick.strat;
-        S = new window.SATP.Session({
-            kind: 'drill', section: 'both', count: 1,
-            label: 'Daily LockIn: ' + name,
-            filter: function (x) { return x.id === pick.qid; }
-        });
-        wire(S); view = 'exam'; render();
+        /* The daily question arrives unlabeled, like a real one: name the
+           move first, then work it. The day counts as got-it when the move
+           was named correctly. */
+        var round = window.Spot.build({ qids: [pick.qid] });
+        if (!round.items.length) { toast('That question is no longer in the bank'); return; }
+        spot = { round: round, phase: 'ask', step: 0, answer: false, daily: { date: pick.date } };
+        view = 'spot'; render();
       },
       reviewDaily: function () {
         var res = window.Daily.resultFor();
         if (!res || !res.qid) { toast('Nothing recorded for today yet'); return; }
         /* Reopened days later there is no attempt in memory, so the record
            itself supplies the verdict. */
-        var it = (reviewData && reviewData.items.filter(function (i) { return i.qid === res.qid; })[0]) ||
-                 { correct: res.correct, choice: undefined };
-        openModal('Daily LockIn', detailHTML(res.qid, it));
+        openModal('Daily LockIn', detailHTML(res.qid, { peek: true }));
       },
       drillStrat: function (stratId) {
         var pool = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) { return window.tagsFor(q).strat === stratId; });
@@ -2162,6 +2479,15 @@
 
     /* ---------------- keyboard ---------------- */
     function onKey(e) {
+      if (view === 'spot' && spot && spot.phase === 'ask') {
+        var tg = (e.target.tagName || '').toLowerCase();
+        if (tg === 'input' || tg === 'textarea') return;
+        if (!document.getElementById('modal-root').classList.contains('hidden')) return;
+        var it = spot.round.items[spot.round.i];
+        var k = ['1', '2', '3', '4'].indexOf(e.key);
+        if (k >= 0 && k < it.options.length) { e.preventDefault(); APP.spotPick(it.options[k]); }
+        return;
+      }
       if (view !== 'exam' || !S) return;
       var tag = (e.target.tagName || '').toLowerCase();
       if (tag === 'input' || tag === 'textarea') {

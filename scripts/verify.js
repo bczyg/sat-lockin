@@ -13,6 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const problems = [];
@@ -42,7 +43,9 @@ global.localStorage = {
   _d: {}, getItem(k) { return this._d[k] ?? null; },
   setItem(k, v) { this._d[k] = v; }, removeItem(k) { delete this._d[k]; }
 };
-const load = async (f) => import(path.join(ROOT, f));
+/* A file URL, not a bare path: on Windows a bare c:\ path is read as a URL
+   scheme and the import fails. */
+const load = async (f) => import(pathToFileURL(path.join(ROOT, f)).href);
 await load('js/brand.js');
 await load('js/config.js');
 await load('js/data-rw.js');
@@ -293,6 +296,68 @@ await load('js/desmos.js');
   notes.push(`calculator page: ${tricks} tricks, ${refs} refs, ${cited.length} questions in its set`);
 }
 
+/* ---------- 4c2. markup that renders ----------
+   A curly quote inside a tag is invisible in review and fatal in the browser:
+   four charts once shipped with viewBox=“0 0 460 250” and drew nothing, which
+   leaves a data question with no data. */
+{
+  const curly = /<[^>]*[“”][^>]*>/;
+  const broken = bank.filter((q) => [q.figure, q.passage, q.blurb, q.prompt, ...(q.choices || [])]
+    .some((x) => typeof x === 'string' && curly.test(x))).map((q) => q.id);
+  if (broken.length) fail(`curly quotes inside HTML tags (the figure will not render): ${broken.join(', ')}`);
+  else notes.push('every figure and passage has well-formed tags');
+}
+
+/* ---------- 4d. naming the move ----------
+   Recognition only teaches anything if every strategy says how to spot it,
+   and if no question offers a "wrong" option that is actually a fair route.
+   In math that means never offering a universal tool, a look-alike, or a
+   move from the question's own family. */
+await load('js/spot.js');
+{
+  const S = window.Spot;
+  const ids = Object.keys(window.STRATS);
+  for (const id of ids) {
+    const c = window.STRATS[id].cues;
+    if (!Array.isArray(c) || c.length < 2) fail(`strategy ${id} needs at least two recognition cues`);
+    for (const line of c || []) if (/—/.test(line)) fail(`strategy ${id}: em dash in a cue`);
+  }
+  for (const k of Object.keys(window.STRAT_VS)) {
+    const [a, b] = k.split('|');
+    if (!window.STRATS[a] || !window.STRATS[b]) fail(`look-alike pair ${k} names a strategy that does not exist`);
+    if (!(a < b)) fail(`look-alike pair ${k} is not in alphabetical order, so stratVs() cannot find it`);
+    if (/—/.test(window.STRAT_VS[k])) fail(`look-alike pair ${k}: em dash`);
+  }
+
+  let rnd = 1;
+  const seeded = () => { rnd = (rnd * 16807) % 2147483647; return rnd / 2147483647; };
+  let thin = 0, items = 0;
+  for (const q of bank) {
+    const right = window.tagsFor(q).strat;
+    if (!right || window.STRATS[right].meta) continue;
+    items++;
+    const opts = S.options(q, seeded);
+    if (opts[0] === undefined || !opts.includes(right)) fail(`${q.id}: the options leave out the right move`);
+    if (new Set(opts).size !== opts.length) fail(`${q.id}: an option is offered twice`);
+    if (opts.length < 3) fail(`${q.id}: only ${opts.length - 1} fair wrong option(s)`);
+    if (opts.length < 4) thin++;
+    for (const o of opts) {
+      if (o === right) continue;
+      if (window.STRATS[o].section !== q.section) fail(`${q.id}: offers ${o} from the other section`);
+      if (q.section === 'math') {
+        if (S.UNIVERSAL[o]) fail(`${q.id}: offers ${o} as wrong, but it works on almost any math question`);
+        if (window.stratVs(right, o)) fail(`${q.id}: offers the look-alike ${o} as wrong`);
+      }
+    }
+  }
+  const round = S.build({}, seeded);
+  if (round.items.length !== 8) fail(`a mixed round came back with ${round.items.length} questions, expected 8`);
+  if (new Set(round.items.map((i) => i.qid)).size !== round.items.length) fail('a round repeats a question');
+  const daily = window.Daily.pick('2026-01-01');
+  if (S.build({ qids: [daily.qid] }).items.length !== 1) fail('the daily question cannot be served as a naming round');
+  notes.push(`naming the move: ${ids.length} strategies with cues, ${Object.keys(window.STRAT_VS).length} look-alike pairs, ${items} questions with fair options (${thin} with three)`);
+}
+
 /* ---------- 5. house style ---------- */
 /* Em dashes are allowed only inside passages, prompts and answer choices,
    where they are authentic SAT prose. The app's own voice never uses them. */
@@ -302,7 +367,8 @@ for (const q of bank) {
   voiceDashes += (voice.match(/—/g) || []).length;
 }
 for (const t of Object.values(window.TRAPS)) voiceDashes += ((t.tell + t.fix).match(/—/g) || []).length;
-for (const st of Object.values(window.STRATS)) voiceDashes += ((st.move + st.why + st.drill).match(/—/g) || []).length;
+for (const st of Object.values(window.STRATS)) voiceDashes += ((st.move + st.why + st.drill + (st.cues || []).join(' ')).match(/—/g) || []).length;
+for (const v of Object.values(window.STRAT_VS || {})) voiceDashes += (v.match(/—/g) || []).length;
 if (voiceDashes) fail(`${voiceDashes} em dashes in the app's own voice (allowed only in passages and choices)`);
 else notes.push('no em dashes in the app voice');
 
