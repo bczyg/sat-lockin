@@ -165,6 +165,17 @@
       });
     },
 
+    /* A day answered on another device, carried by a synced naming rep.
+       Never overwrites a day already answered here. */
+    restore: function (rep) {
+      if (!rep || !/^\d{4}-\d{2}-\d{2}$/.test(String(rep.daily || ''))) return;
+      var have = this.all()[rep.daily];
+      if (have && have.answered) return;
+      this._put(rep.daily, {
+          qid: rep.qid, strat: rep.strat, answered: true, correct: !!rep.right, at: rep.t
+      });
+    },
+
     /* Consecutive days answered, counting back from today. Yesterday still
        counts as an unbroken streak until today is over. */
     streak: function () {

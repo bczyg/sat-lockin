@@ -8,7 +8,6 @@
     var S = null;            // active Session
     var view = 'home';       // landing | home | spot | strategies | traps | analyze | desmos | cards | auth | class | exam | review
     var reviewData = null;   // attempt being reviewed
-    var dailyPending = null; // set while today's Daily LockIn question is open
     var reviewFilter = 'all';
     var ALLQ = {};
     var scrollMemo = null;
@@ -112,7 +111,6 @@
     function esc(s) {
       return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
-    function fmt(s) { return window.SATP.fmtTime(s); }
     function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
     function dfLabel(d) { return d === 'E' ? 'Easier' : d === 'M' ? 'Medium' : 'Harder'; }
     function toast(msg) {
@@ -698,12 +696,27 @@
 
       if (classState.loading) { h += '<div class="card"><p>Loading the roster&hellip;</p></div></div>'; return h; }
       var roster = classState.roster || [];
+      var pending = classState.pending || [];
 
       h += '<div class="card"><h3>Class code</h3><p class="code-pill">' + esc(prof.class_code) + '</p>' +
-      '<p class="note">Students enter this on their Account screen to join.</p></div>';
+      '<p class="note">Students enter this on their Account screen. You approve each one before they ' +
+      'appear here or see the class question bank, so a code that gets passed around lets nobody in.</p></div>';
+
+      if (pending.length) {
+        h += '<div class="section-title">Waiting for you</div><div class="card">';
+        pending.forEach(function (r) {
+            h += '<div class="pend-row"><div><strong>' + esc(r.display_name || 'Student') + '</strong>' +
+            '<div class="note">' + esc(r.email || '') + '</div></div>' +
+            '<div class="card-actions"><button class="btn subtle sm" onclick="APP.classDecide(\'' + r.student_id + '\',false)">Decline</button>' +
+            '<button class="btn sm" onclick="APP.classDecide(\'' + r.student_id + '\',true)">Approve</button></div></div>';
+        });
+        h += '</div>';
+      }
 
       if (!roster.length) {
-        h += '<div class="card" style="margin-top:14px"><p>No students have joined yet. Share the code above.</p></div></div>';
+        h += '<div class="card" style="margin-top:14px"><p>' + (pending.length
+          ? 'Approve a student above and their practice shows up here.'
+          : 'No students have joined yet. Share the code above.') + '</p></div></div>';
         return h;
       }
 
@@ -730,16 +743,33 @@
         h += '</div>';
       }
 
+      var conf = (classState.confusions || []).filter(function (c) {
+          return window.STRATS[c.strat] && window.STRATS[c.picked];
+      });
+      if (conf.length) {
+        h += '<div class="section-title">Moves the class mixes up</div><div class="card">' +
+        '<p class="note" style="margin-bottom:14px">When a question wanted the first move, students named the second. ' +
+        'Each pair is a five minute lesson: the tell-apart is under it.</p>';
+        conf.slice(0, 6).forEach(function (c) {
+            var vs = window.stratVs(c.strat, c.picked);
+            h += '<div class="conf-row"><div><strong>' + esc(stratName(c.strat)) + '</strong> read as <strong>' +
+            esc(stratName(c.picked)) + '</strong> <span class="n">' + c.n + '&times;</span></div>' +
+            (vs ? '<div class="note">' + esc(vs) + '</div>' : '') + '</div>';
+        });
+        h += '</div>';
+      }
+
       h += '<div class="section-title">Roster</div><div class="card"><table class="plain">' +
-      '<tr><th>Student</th><th>Answered</th><th>Accuracy</th><th>Latest total</th><th>Most common trap</th><th>Last active</th></tr>';
+      '<tr><th>Student</th><th>Answered</th><th>Accuracy</th><th>Named the move</th><th>Most common trap</th><th>Last active</th><th></th></tr>';
       roster.forEach(function (r) {
           var tp = r.top_trap && window.TRAPS[r.top_trap];
           h += '<tr><td><strong>' + esc(r.display_name || r.email || 'Student') + '</strong></td>' +
           '<td>' + (r.answered || 0) + '</td>' +
           '<td>' + (r.answered ? pct(r.correct, r.answered) + '%' : '-') + '</td>' +
-          '<td>' + (r.latest_total || '-') + '</td>' +
+          '<td>' + (r.named ? r.named_right + '/' + r.named : '-') + '</td>' +
           '<td>' + (tp ? esc(tp.name) : '-') + '</td>' +
-          '<td>' + (r.last_active ? dateLabel(r.last_active) : 'never') + '</td></tr>';
+          '<td>' + (r.last_active ? dateLabel(r.last_active) : 'never') + '</td>' +
+          '<td><button class="link-btn" onclick="APP.classDecide(\'' + r.student_id + '\',false)">Remove</button></td></tr>';
       });
       h += '</table></div>';
       h += '<p class="note" style="margin-top:14px">Students can leave a class at any time from their Account screen, which stops sharing immediately.</p>';
@@ -969,6 +999,24 @@
     /* One payment. The button only claims to take money when a real checkout
        is actually configured, because a buy button that goes nowhere is worse
        than an honest one that says so. */
+    /* A signed-in buyer's checkout carries their account id and email, so the
+       payment lands on the right account even if they type another address
+       into the checkout page. Stripe Payment Links read both parameters;
+       other hosted checkouts ignore them. */
+    function checkoutLink(url) {
+      var C = window.Cloud, p = C && C.signedIn && C.signedIn() ? C.profile : null;
+      if (!p || !p.id) return url;
+      return url + (url.indexOf('?') >= 0 ? '&' : '?') +
+      'client_reference_id=' + encodeURIComponent(p.id) +
+      (p.email ? '&prefilled_email=' + encodeURIComponent(p.email) : '');
+    }
+
+    function joinedMsg(u, code) {
+      return u && u.class_status === 'pending'
+        ? 'Request sent. ' + code + ' will appear once your teacher approves it.'
+        : 'Joined ' + code;
+    }
+
     function priceHTML() {
       var cfg = window.CONFIG || {};
       var price = cfg.price || '$14.99';
@@ -987,8 +1035,11 @@
       '<li>' + ic('check') + 'Your practice stays in your browser unless you sign in to sync it</li>' +
       '</ul>';
 
-      if (url) {
-        h += '<a class="btn big p-buy" href="' + esc(url) + '" rel="noopener">Get it for ' + esc(price) + '</a>';
+      var C = window.Cloud;
+      if (C && C.signedIn && C.signedIn() && C.paid()) {
+        h += '<div class="verdict ok">You own SAT LockIn. Thank you.</div>';
+      } else if (url) {
+        h += '<a class="btn big p-buy" href="' + esc(checkoutLink(url)) + '" rel="noopener">Get it for ' + esc(price) + '</a>';
         h += '<p class="p-note">Payment is handled by the checkout page, which means this app never ' +
         'sees your card details.</p>';
       } else {
@@ -1521,19 +1572,7 @@
       h += '<div class="exam-top"><div><div class="sec-name">' + esc(m.label) + '</div>' +
       '<div class="sec-sub">Question ' + (S.qi + 1) + ' of ' + total +
       ' · ' + esc(q.domain) + '</div></div>';
-      h += '<div class="timer-wrap">';
-      if (m.remaining === null) {
-        h += '<div class="timer-hidden">Untimed practice</div>';
-      } else if (S.timerHidden) {
-        h += '<div class="timer-hidden" id="timer">Clock hidden</div>' +
-        '<div class="timer-actions"><button onclick="APP.toggleTimer()">Show</button>' +
-        '<button onclick="APP.pause()">' + (S.paused ? 'Resume' : 'Pause') + '</button></div>';
-      } else {
-        h += '<div class="timer' + (m.remaining <= 300 ? ' warn' : '') + '" id="timer">' + fmt(m.remaining) + '</div>' +
-        '<div class="timer-actions"><button onclick="APP.toggleTimer()">Hide</button>' +
-        '<button onclick="APP.pause()">' + (S.paused ? 'Resume' : 'Pause') + '</button></div>';
-      }
-      h += '</div>';
+      h += '<div class="timer-wrap"><div class="timer-hidden">Untimed practice</div></div>';
       h += '<div class="tools">';
       if (isRW) h += '<button class="tool" onclick="APP.highlight()">' + ic('pen') + 'Highlight</button>';
       else h += '<button class="tool" onclick="APP.calculator()">' + ic('calc') + 'Calculator</button>' +
@@ -1746,46 +1785,11 @@
       return h;
     }
 
-    /* ============================================================
-       TIMER TICK (targeted DOM update, no full re-render)
-       ============================================================ */
     function wire(sess) {
       sess.on('change', render);
-      sess.on('tick', function (r) {
-          var t = document.getElementById('timer');
-          if (!t) return;
-          if (S.timerHidden && view === 'exam') return;
-          t.textContent = fmt(r);
-          if (r <= 300 && view === 'exam') t.classList.add('warn');
-          if (r === 300 && view === 'exam') toast('5 minutes remaining in this module');
-      });
-      sess.on('module-end', function () {
-          var m = S.mod();
-          var unanswered = m.state.filter(function (s, i) { return S.gradeQuestion(m, i) === null; }).length;
-          var marked = m.state.filter(function (s) { return s.marked; }).length;
-          var msg = '<p>You have reached the end of <strong>' + esc(m.label) + '</strong>.</p>';
-          if (unanswered) msg += '<p><strong>' + unanswered + ' question' + (unanswered > 1 ? 's are' : ' is') +
-          ' unanswered.</strong> There is no penalty for guessing on the SAT, so it is always worth entering something.</p>';
-          if (marked) msg += '<p>' + marked + ' question' + (marked > 1 ? 's are' : ' is') + ' marked for review.</p>';
-          msg += '<p>Once you move on you cannot come back to this module, same as the real test.</p>' +
-          '<div class="card-actions" style="margin-top:16px">' +
-          '<button class="btn subtle" onclick="APP.closeModal()">Keep working</button>' +
-          '<button class="btn" onclick="APP.advance()">Continue</button></div>';
-          openModal('End of module', msg);
-      });
-      sess.on('expired', function () { toast('Time is up on that module'); });
       sess.on('finished', function (res) {
           closeModal();
-          if (dailyPending) {
-            var it = res.items[0] || {};
-            window.Daily.record(dailyPending.date, dailyPending.qid, dailyPending.strat, it.correct === true);
-            dailyPending = null;
-            reviewData = res;
-            view = 'home';
-            render();
-            return;
-          }
-          reviewData = res; reviewFilter = res.kind === 'drill' ? 'all' : 'wrong';
+          reviewData = res; reviewFilter = 'all';
           view = 'review';
           render();
       });
@@ -2066,8 +2070,17 @@
           h += '<p><strong>' + esc((p && p.email) || C.session.user.email) + '</strong></p>';
           h += '<label class="fld"><span>Display name</span><input id="acct-name" value="' + esc((p && p.display_name) || '') + '"></label>';
           h += '<div class="card-actions"><button class="btn sm" onclick="APP.saveName()">Save name</button></div>';
+          if (C.payments) {
+            h += '<h3>Purchase</h3>' + (C.paid()
+              ? '<p class="note">Purchased. Thank you.</p>'
+              : '<p class="note">Not purchased on this account yet. If you paid with a different email, sign in with that one.</p>');
+          }
           h += '<h3>Class</h3>';
-          if (p && p.class_code) {
+          if (p && p.class_code && p.class_status === 'pending') {
+            h += '<p>You asked to join class <strong>' + esc(p.class_code) + '</strong>. Your teacher has not approved it yet, ' +
+            'so nothing is shared until they do.</p>' +
+            '<div class="card-actions"><button class="btn subtle sm" onclick="APP.leaveClass()">Cancel the request</button></div>';
+          } else if (p && p.class_code) {
             h += '<p>You are sharing practice data with class <strong>' + esc(p.class_code) + '</strong>.</p>' +
             '<div class="card-actions"><button class="btn subtle sm" onclick="APP.leaveClass()">Leave the class</button>' +
             (p.role === 'teacher' ? '<button class="btn ghost sm" onclick="APP.closeModal();APP.openClass()">Open class dashboard</button>' : '') +
@@ -2099,7 +2112,7 @@
       joinClassFromAccount: function () {
         var v = document.getElementById('acct-class').value.trim().toUpperCase();
         if (!v) return;
-        window.Cloud.joinClass(v).then(function () { toast('Joined ' + v); closeModal(); render(); })
+        window.Cloud.joinClass(v).then(function (u) { toast(joinedMsg(u, v)); closeModal(); render(); })
         .catch(function (e) { toast(e.message || 'Could not join that class'); });
       },
       leaveClass: function () {
@@ -2107,9 +2120,17 @@
       },
       openClass: function () {
         view = 'class'; classState.loading = true; render();
-        Promise.all([window.Cloud.classRoster(), window.Cloud.classTraps()]).then(function (r) {
-            classState.roster = r[0]; classState.traps = r[1]; classState.loading = false; render();
+        window.Cloud.classData().then(function (d) {
+            classState.roster = d.roster || []; classState.traps = d.traps || [];
+            classState.pending = d.pending || []; classState.confusions = d.confusions || [];
+            classState.loading = false; render();
         }).catch(function (e) { classState.loading = false; toast(e.message || 'Could not load the class'); render(); });
+      },
+      classDecide: function (id, approve) {
+        window.Cloud.classDecide(id, approve).then(function () {
+            toast(approve ? 'Approved' : 'Removed from the class');
+            APP.openClass();
+        }).catch(function (e) { toast(e.message || 'That did not work'); });
       },
       createClass: function () {
         var name = document.getElementById('cls-name').value.trim();
@@ -2121,7 +2142,7 @@
       joinClass: function () {
         var code = document.getElementById('join-code').value.trim().toUpperCase();
         if (!code) return;
-        window.Cloud.joinClass(code).then(function () { toast('Joined ' + code); render(); })
+        window.Cloud.joinClass(code).then(function (u) { toast(joinedMsg(u, code)); render(); })
         .catch(function (e) { toast(e.message || 'Could not join'); });
       },
       syncNow: function () {
@@ -2169,7 +2190,7 @@
       spotPick: function (id) {
         if (!spot || spot.phase !== 'ask') return;
         var it = spot.round.items[spot.round.i];
-        window.Spot.record(it, id);
+        window.Spot.record(it, id, spot.daily ? spot.daily.date : null);
         spot.phase = 'named'; render();
       },
       spotWork: function () {
@@ -2264,7 +2285,6 @@
         });
         wire(S); view = 'exam'; render();
       },
-      advance: function () { closeModal(); S.advanceModule(); },
 
       pick: function (i) { S.select(i); },
       strike: function (e, i) { e.stopPropagation(); S.toggleStrike(i); },
@@ -2275,13 +2295,6 @@
       },
       mark: function () { S.toggleMark(); },
       abc: function () { S.toggleAbc(); },
-      toggleTimer: function () { S.toggleTimer(); },
-      pause: function () {
-        S.togglePause();
-        if (S.paused) openModal('Paused', '<p>Clock stopped. There is no pause button on the real test, so save this for actual interruptions.</p>' +
-        '<div class="card-actions"><button class="btn" onclick="APP.pause();APP.closeModal()">Resume</button></div>');
-        else closeModal();
-      },
       next: function () {
         if (S.isDrill() && S.qi === S.mod().questions.length - 1) { S.finish(); return; }
         S.next();
@@ -2311,7 +2324,7 @@
         '<button class="btn" onclick="APP.confirmQuit()">Leave</button></div>');
       },
       confirmQuit: function () {
-        if (S) { S.stopTimer(); S.finished = true; }
+        if (S) { S.finished = true; }
         S = null; closeModal(); view = 'home'; render();
       },
 

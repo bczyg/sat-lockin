@@ -129,3 +129,43 @@ create table if not exists ai_usage (
   n        int  not null default 0,
   primary key (user_id, day)
 );
+
+-- ---------- class membership needs the teacher's approval ----------
+-- Rows that already had a class before approvals existed stay approved, so
+-- adding this column changes nothing for a running class. New joins go in
+-- as 'pending' (set by the server) until the teacher approves them.
+alter table users add column if not exists class_status text not null default 'approved';
+
+-- ---------- naming reps: one row per "name the move" answer ----------
+-- The recognition record. Keyed by a client-made id so re-sync is
+-- idempotent and two devices merge without double counting. `daily` is
+-- set when the rep was that day's Daily LockIn question, which is how the
+-- streak follows a student to another device.
+create table if not exists naming_reps (
+  key      text primary key,
+  user_id  uuid not null references users (id) on delete cascade,
+  t        timestamptz not null,
+  qid      text,
+  strat    text not null,
+  picked   text,
+  "right"  boolean not null,
+  daily    date
+);
+create index if not exists naming_user_idx on naming_reps (user_id, t desc);
+
+-- ---------- purchases ----------
+-- Written only by the payment provider's signed webhook. Matched to an
+-- account by user id when checkout carried one, and otherwise by email, so
+-- someone can pay first and sign in later with the same address.
+create table if not exists purchases (
+  ref         text primary key,              -- the provider's payment id
+  provider    text not null,
+  email       text,
+  user_id     uuid references users (id) on delete set null,
+  amount      int,
+  currency    text,
+  created_at  timestamptz not null default now(),
+  revoked_at  timestamptz                    -- set on a full refund
+);
+create index if not exists purchases_email_idx on purchases (lower(email));
+create index if not exists purchases_user_idx on purchases (user_id);

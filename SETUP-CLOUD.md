@@ -230,32 +230,38 @@ becoming a way to spend your mail quota:
 Codes are stored only as hashes, expire after 20 minutes, are single use, and lock out after
 6 wrong guesses.
 
-### 2.4 Make yourself the teacher### 2.4 Make yourself the teacher### 2.4 Make yourself the teacher
+### 2.4 Make yourself the teacher
 
 1. Sign in with your own email.
 2. Home screen → your name → **Account → I am the teacher**.
 3. Enter a class name and a class code, for example `ALVAREZ26`.
 4. Give students the code. They enter it under **Account → Join class**.
+5. Each one appears under **Waiting for you** on the class dashboard. Approve the ones you
+   know. Until you do, a student shares nothing with you and sees nothing from the class, so
+   a code that ends up in a group chat lets nobody in.
 
-Your **Class** chip then shows each student's questions answered, accuracy, latest total
-score, most common trap, and last activity, plus the traps catching the most students
-across the class, which is the useful thing for planning a lesson.
+Your **Class** chip then shows each student's questions answered, accuracy, how often they
+name the move correctly, most common trap, and last activity. Above the roster are the traps
+catching the most students and the **moves the class mixes up**, each pair with its one-line
+tell-apart: those two lists are the lesson plan. **Remove** takes a student out of the class.
 
 ### 2.5 What the database holds, and who can read what
 
 | Table | Contents |
 |---|---|
-| `users` | email, display name, role, class code |
+| `users` | email, display name, role, class code, and whether the teacher has approved the join |
 | `sessions` | a hash of each session token, never the token |
 | `login_codes` | a hash of the current sign-in code, with an expiry |
 | `events` | one row per answered question: which question, which strategy, which trap, right or wrong, seconds |
 | `attempts` | one row per test or practice set, with the full result for the review screen |
+| `naming_reps` | one row per "name the move" answer: which question, the move it wanted, the move named, and the Daily LockIn date if it was that day's question |
 | `generated_questions` | questions written by Claude, shared across the class |
 | `ai_usage` | a per-student daily counter, so nobody can run up the AI bill |
+| `purchases` | one row per payment: the provider's payment id, the email, the account if known, the amount, and a refund date |
 
 Access is enforced by the server, and every query is scoped to the caller. A student can read
 and write only their own rows. A teacher can additionally read students whose `class_code`
-matches a class they own, and nothing else. Verified: a student calling the roster endpoint
+matches a class they own and whom they have approved, and nothing else. Verified: a student calling the roster endpoint
 gets an empty list, a student cannot promote themselves to teacher, and a student cannot take
 over an existing class code.
 
@@ -316,6 +322,39 @@ Guardrails already in place:
 
 ---
 
+## Part 4: Taking payments (optional)
+
+The buy button on the landing page goes to a hosted checkout, so card details never touch this
+server. Stripe then tells the server who paid by calling a webhook, and that signed call is the
+only thing that can mark an account as paid.
+
+1. 🔑 In Stripe, create a **Payment Link** for one payment of your price. Under *After
+   payment*, redirect to your app, for example `https://satlockin.com/`.
+2. Put the link in `js/config.js` as `checkoutUrl`. When a signed-in student clicks Buy, the
+   app adds their account id and email to the link, so the payment lands on their account even
+   if they type a different email at checkout. Someone who pays without signing in is matched
+   by the email they paid with when they first sign in.
+3. 🔑 In Stripe → Developers → Webhooks, add an endpoint at
+   `https://satlockin.com/api/billing/webhook` listening for
+   `checkout.session.completed`, `checkout.session.async_payment_succeeded` and
+   `charge.refunded`. Copy its **signing secret**.
+4. Set `STRIPE_WEBHOOK_SECRET` to that secret in Railway → Variables and redeploy. `/healthz`
+   then reports `"payments": true`.
+5. Optional: set `COMP_EMAILS` to addresses that get access without paying, such as your own.
+
+A full refund ends access; a partial one keeps it. Account → **Purchase** shows a student
+whether their account is paid.
+
+Two things change once payments are on:
+
+- **Sign-in codes must be emailed.** Writing them to the log is fine while you test alone, but
+  a buyer who cannot get a code cannot reach what they paid for, so the server refuses instead.
+  Set up mail (2.3) first. `LOG_SIGNIN_CODES=true` overrides this on a staging copy.
+- **Nothing is locked yet.** The server knows who has paid, but every feature still works for
+  everyone. Deciding what the free tier is comes before switching any lock on.
+
+---
+
 ## Costs
 
 | Item | Cost |
@@ -364,4 +403,13 @@ Their work is in that browser's local storage; signing in on the same browser up
 the next sync.
 
 **Class dashboard is empty**, students have to enter the class code themselves under
-Account. The code is case-insensitive on entry but stored uppercase.
+Account, and then you approve them under **Waiting for you**. The code is case-insensitive on
+entry but stored uppercase.
+
+**Someone paid but the app says not purchased.** Check the webhook's recent deliveries in
+Stripe. A 400 means `STRIPE_WEBHOOK_SECRET` does not match that endpoint's signing secret; a
+404 means it is not set on the server. If they paid with a different email and were not signed
+in, ask them to sign in with the email on their receipt.
+
+**The app is on another host and every call fails with a CORS error.** Set
+`ALLOWED_ORIGINS` on the server to that host, for example `https://satlockin.com`.

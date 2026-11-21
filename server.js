@@ -23,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 import * as db from './lib/db.js';
 import * as api from './lib/routes.js';
 import * as auth from './lib/auth.js';
+import * as billing from './lib/billing.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8080;
@@ -38,6 +39,24 @@ const ALLOW_ANON_TUTOR = process.env.ALLOW_ANON_TUTOR === 'true';
 const ANON_DAILY_BUDGET = Number(process.env.ANON_DAILY_BUDGET || '60');
 let anonDay = '';
 let anonCount = 0;
+
+/* Which other websites may call this API from a browser. Unset means none:
+   the app served by this server is same-origin and needs no CORS at all.
+   Set it only if the app is hosted somewhere else with CONFIG.apiUrl
+   pointing here, e.g. ALLOWED_ORIGINS=https://satlockin.com */
+const ALLOWED_ORIGINS = new Set(
+  String(process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim().replace(/\/+$/, '')).filter(Boolean)
+);
+function allowCors(req, res) {
+  const origin = req.headers.origin;
+  if (!origin) return;
+  if (ALLOWED_ORIGINS.has('*') || ALLOWED_ORIGINS.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS.has('*') ? '*' : origin);
+    res.setHeader('Access-Control-Allow-Headers', 'authorization, content-type');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    res.setHeader('Vary', 'Origin');
+  }
+}
 
 /* ---------------- static files ---------------- */
 const TYPES = {
@@ -250,7 +269,7 @@ async function getClient() {
   return anthropic;
 }
 
-function readJSON(req, limit = 200000) {
+function readRaw(req, limit = 200000) {
   return new Promise((resolve, reject) => {
     let size = 0;
     const chunks = [];
@@ -259,21 +278,22 @@ function readJSON(req, limit = 200000) {
       if (size > limit) { reject(new Error('too large')); req.destroy(); return; }
       chunks.push(c);
     });
-    req.on('end', () => {
-      try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')); }
-      catch { reject(new Error('bad json')); }
-    });
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     req.on('error', reject);
   });
+}
+
+async function readJSON(req, limit = 200000) {
+  const raw = await readRaw(req, limit);
+  try { return JSON.parse(raw || '{}'); }
+  catch { throw new Error('bad json'); }
 }
 
 function send(res, status, obj) {
   const body = JSON.stringify(obj);
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Content-Length': Buffer.byteLength(body),
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type'
+    'Content-Length': Buffer.byteLength(body)
   });
   res.end(body);
 }
@@ -404,12 +424,9 @@ async function handleTutor(req, res) {
 const server = http.createServer(async (req, res) => {
   const url = req.url.split('?')[0];
 
+  allowCors(req, res);
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'authorization, content-type',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-    });
+    res.writeHead(204);
     return res.end();
   }
 
@@ -422,8 +439,34 @@ const server = http.createServer(async (req, res) => {
       database: db.configured() ? (db.available() ? 'connected' : 'unavailable') : 'not configured',
       mail: mailConfigured,
       mailProvider: mailStatus.provider,
+      payments: billing.configured(),
       tutor: !!ANTHROPIC_KEY
     });
+  }
+
+  /* Stripe calls this, not a browser. The signature is computed over the
+     exact bytes sent, so the body is read raw and parsed only after it
+     verifies. A 5xx makes Stripe retry, which is what we want while the
+     database is down; a bad signature gets a 400 and is never retried. */
+  if (url === '/api/billing/webhook') {
+    if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
+    if (!billing.configured()) return send(res, 404, { error: 'Payments are not set up on this server.' });
+    let raw;
+    try { raw = await readRaw(req, 1000000); }
+    catch { return send(res, 400, { error: 'Bad request body.' }); }
+    if (!billing.verifySignature(raw, req.headers['stripe-signature'])) {
+      return send(res, 400, { error: 'Signature did not verify.' });
+    }
+    if (!db.available()) return send(res, 503, { error: 'Database unavailable, retry later.' });
+    try {
+      const evt = JSON.parse(raw);
+      const note = await billing.handleEvent(evt);
+      console.log('[billing]', evt.type, evt.id, note);
+      return send(res, 200, { received: true });
+    } catch (e) {
+      console.error('[billing] failed', e?.message);
+      return send(res, 500, { error: 'Could not record that event.' });
+    }
   }
 
   if (url === '/api/tutor') {
@@ -493,6 +536,11 @@ async function boot() {
   console.log(`  mail:        ${mailLine}`);
   if (mailStatus.warning) console.warn(`               ${mailStatus.warning}`);
     console.log(`  tutor:       ${ANTHROPIC_KEY ? 'enabled at POST /api/tutor' : 'off (no ANTHROPIC_API_KEY)'}`);
+    console.log(`  payments:    ${billing.configured() ? 'webhook at POST /api/billing/webhook' : 'off (no STRIPE_WEBHOOK_SECRET)'}`);
+    if (billing.configured() && !mailConfigured && process.env.LOG_SIGNIN_CODES !== 'true') {
+      console.warn('               payments are on but no mail provider is set, so sign-in codes are refused');
+    }
+    if (ALLOWED_ORIGINS.size) console.log(`  cors:        ${[...ALLOWED_ORIGINS].join(', ')}`);
   });
 }
 

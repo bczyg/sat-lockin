@@ -23,6 +23,8 @@
 
   var KEY = 'lockin.spot.v1';
   var RECENT_MAX = 60;
+  var REPS_MAX = 5000;
+  var MEMO = null;   // { raw, out }: data() for the stored log as it last was
 
   /* Moves that apply to nearly every math question. Never offered as a
      wrong option, because they are never really wrong. */
@@ -110,20 +112,79 @@
     mathFamily: mathFamily,
     distractorPool: distractorPool,
 
-    /* ---------- storage ---------- */
-    data: function () {
+    /* ---------- storage ----------
+       The unit of record is one rep: one question, the move it wanted, the
+       move the student named. Each rep has its own key, so two devices can
+       merge their logs without double counting, and the per-move totals and
+       the confusion pairs are always derived from the log, never stored. */
+    _raw: function () {
+      try { return global.localStorage.getItem(KEY) || ''; } catch (e) { return ''; }
+    },
+    _read: function () {
       var d = null;
-      try { d = JSON.parse(global.localStorage.getItem(KEY)); } catch (e) {}
+      try { d = JSON.parse(this._raw()); } catch (e) {}
       d = d || {};
-      d.strats = d.strats || {};
-      d.confusions = d.confusions || {};
-      d.recent = d.recent || [];
+      d.reps = Array.isArray(d.reps) ? d.reps : [];
       return d;
     },
     _write: function (d) {
-      try { global.localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
+      MEMO = null;
+      try { global.localStorage.setItem(KEY, JSON.stringify({ reps: d.reps })); } catch (e) {}
     },
-    reset: function () { this._write({}); },
+    reset: function () { this._write({ reps: [] }); },
+
+    reps: function () { return this._read().reps; },
+
+    /* Totals per move, confusion pairs, and recently seen questions.
+       The Strategies list asks once per row, so the result is kept until
+       the stored log changes (here, or in another tab). */
+    data: function () {
+      var raw = this._raw();
+      if (MEMO && MEMO.raw === raw) return MEMO.out;
+      var out = this._derive();
+      MEMO = { raw: raw, out: out };
+      return out;
+    },
+    _derive: function () {
+      var out = { strats: {}, confusions: {}, recent: [] };
+      this._read().reps.forEach(function (r) {
+          var s = out.strats[r.strat] || (out.strats[r.strat] = { seen: 0, right: 0 });
+          s.seen++;
+          if (r.right) s.right++;
+          if (!s.last || r.t > s.last) s.last = r.t;
+          if (r.picked && !r.right) {
+            var k = r.strat + '>' + r.picked;
+            out.confusions[k] = (out.confusions[k] || 0) + 1;
+          }
+          if (r.qid && r.qid !== 'pasted') {
+            out.recent = out.recent.filter(function (id) { return id !== r.qid; });
+            out.recent.push(r.qid);
+          }
+      });
+      out.recent = out.recent.slice(-RECENT_MAX);
+      return out;
+    },
+
+    /* Adds reps from another device. Returns how many were new. */
+    merge: function (incoming) {
+      var d = this._read();
+      var have = {};
+      d.reps.forEach(function (r) { have[r.k] = 1; });
+      var added = 0;
+      (incoming || []).forEach(function (r) {
+          if (!r || !r.k || have[r.k] || !r.strat) return;
+          have[r.k] = 1;
+          d.reps.push({ k: r.k, t: r.t, qid: r.qid || null, strat: r.strat,
+            picked: r.picked || null, right: !!r.right, daily: r.daily || null });
+          added++;
+      });
+      if (added) {
+        d.reps.sort(function (a, b) { return a.t < b.t ? -1 : a.t > b.t ? 1 : 0; });
+        d.reps = d.reps.slice(-REPS_MAX);
+        this._write(d);
+      }
+      return added;
+    },
 
     /* ---------- the four options for one question ---------- */
     options: function (q, rnd) {
@@ -213,22 +274,23 @@
     },
 
     /* ---------- recording an answer ----------
-       picked is a strategy id, or null for "I do not know". */
-    record: function (item, picked) {
+       picked is a strategy id, or null for "I do not know". daily is the
+       Daily LockIn date when this rep was the day's question, so the streak
+       can follow a signed-in student to another device. */
+    record: function (item, picked, daily) {
       item.picked = picked;
       item.right = picked === item.strat;
-      var d = this.data();
-      var s = d.strats[item.strat] || { seen: 0, right: 0 };
-      s.seen++;
-      if (item.right) s.right++;
-      s.last = new Date().toISOString();
-      d.strats[item.strat] = s;
-      if (picked && !item.right) {
-        var k = item.strat + '>' + picked;
-        d.confusions[k] = (d.confusions[k] || 0) + 1;
-      }
-      d.recent = d.recent.filter(function (id) { return id !== item.qid; }).concat([item.qid]).slice(-RECENT_MAX);
+      var t = new Date().toISOString();
+      var rep = {
+        k: 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        t: t, qid: item.qid || null, strat: item.strat,
+        picked: picked || null, right: item.right, daily: daily || null
+      };
+      var d = this._read();
+      d.reps.push(rep);
+      d.reps = d.reps.slice(-REPS_MAX);
       this._write(d);
+      if (global.Cloud && global.Cloud.pushNaming) global.Cloud.pushNaming([rep]);
       return item.right;
     },
 

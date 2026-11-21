@@ -208,7 +208,6 @@ function drillFor(kind, id) {
     kind: 'drill', section: 'both', count: Math.min(pool.length, 10),
     label: 'check', filter: match, seed: 99
   });
-  s.stopTimer();
   const qs = s.mod().questions;
   return { n: qs.length, offTarget: qs.filter((q) => !match(q)).length };
 }
@@ -288,7 +287,6 @@ await load('js/desmos.js');
     kind: 'drill', section: 'both', count: Math.min(cited.length, 10),
     label: 'check', seed: 7, filter: (q) => cited.includes(q.id)
   });
-  set.stopTimer();
   const served = set.mod().questions.map((q) => q.id);
   if (!served.length) fail('the calculator page offers a practice set that comes back empty');
   const stray = served.filter((id) => !cited.includes(id));

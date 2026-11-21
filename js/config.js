@@ -16,7 +16,9 @@ window.CONFIG = {
      is what you want when server.js serves the app. Set a full origin only
      if you host the app somewhere else, for example a static host in front
      of a Railway API:
-       apiUrl: 'https://sat-lockin-production.up.railway.app'  */
+       apiUrl: 'https://sat-lockin-production.up.railway.app'
+     and then list the static host on the server, or the browser will block
+     the calls: ALLOWED_ORIGINS=https://satlockin.com  */
   apiUrl: '',
 
   /* Path to the tutor endpoint. Only change this if you moved it. */

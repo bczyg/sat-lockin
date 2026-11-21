@@ -118,11 +118,7 @@ table.data th{background:var(--bg-soft);font-weight:700}
 .exam-top .sec-name{font-weight:700;font-size:15px}
 .exam-top .sec-sub{font-size:12.5px;color:var(--ink-soft)}
 .timer-wrap{text-align:center}
-.timer{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.5px}
-.timer.warn{color:var(--red)}
 .timer-hidden{font-size:15px;color:var(--ink-soft);letter-spacing:.5px}
-.timer-actions{display:flex;gap:6px;justify-content:center;margin-top:2px}
-.timer-actions button{font-size:11.5px;color:var(--blue);background:none;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
 .tools{display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
 .tool{
   background:#fff;border:1px solid transparent;border-radius:6px;padding:6px 9px;
@@ -238,7 +234,6 @@ table.data th{background:var(--bg-soft);font-weight:700}
 .centered .box{max-width:620px}
 .centered h2{font-size:26px;margin-bottom:10px}
 .centered p{color:var(--ink-soft);font-size:16px;line-height:1.6}
-.bigtimer{font-size:52px;font-weight:800;font-variant-numeric:tabular-nums;margin:18px 0}
 .dirs{text-align:left;background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:20px 0;font-size:14.5px;line-height:1.6}
 .dirs ul{margin:8px 0 0 18px;padding:0}
 .dirs li{margin-bottom:6px}
@@ -1185,6 +1180,15 @@ ul.plain li{font-size:14.5px;line-height:1.6}
   .spot-conf{flex-direction:column;align-items:flex-start}
 }
 
+/* class dashboard: approvals and class-wide confusions */
+.pend-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.pend-row:last-child{border-bottom:0}
+.pend-row .card-actions{margin:0}
+.conf-row{padding:10px 0;border-bottom:1px solid var(--line)}
+.conf-row:last-child{border-bottom:0}
+.conf-row .n{color:var(--ink-soft);font-size:13px;margin-left:4px}
+@media (max-width:560px){.pend-row{flex-direction:column;align-items:flex-start}}
+
 </style>
 <div id="shell"></div>
 
@@ -1231,7 +1235,9 @@ window.CONFIG = {
      is what you want when server.js serves the app. Set a full origin only
      if you host the app somewhere else, for example a static host in front
      of a Railway API:
-       apiUrl: 'https://sat-lockin-production.up.railway.app'  */
+       apiUrl: 'https://sat-lockin-production.up.railway.app'
+     and then list the static host on the server, or the browser will block
+     the calls: ALLOWED_ORIGINS=https://satlockin.com  */
   apiUrl: '',
 
   /* Path to the tutor endpoint. Only change this if you moved it. */
@@ -7721,17 +7727,14 @@ window.STRATEGIES = {
 </script>
 <script>
 /* ============================================================
-   SAT PrepMe, test engine
-   Digital SAT (Bluebook) structure, as administered 2024-2026:
+   SAT LockIn, practice engine
 
-   Reading and Writing Module 1 27 questions 32 min
-   Reading and Writing Module 2 27 questions 32 min <- adaptive
-   Break 10 min
-   Math Module 1 22 questions 35 min
-   Math Module 2 22 questions 35 min <- adaptive
+   One untimed practice set at a time, always anchored to a move or a
+   trap, plus the event log every list in the app is derived from.
 
-   98 questions total, 2 h 14 min of testing time. Module 2 difficulty is
-   chosen from Module 1 performance; the routing decides the score ceiling.
+   There is no full test. The adaptive module routing and score curves
+   that used to live here went with it: Bluebook is the real test and the
+   only score worth trusting.
    ============================================================ */
 (function (global) {
     'use strict';
@@ -7754,163 +7757,41 @@ window.STRATEGIES = {
       return a;
     }
 
-    /* ---------------- test blueprint -------------------------------------- */
-    var BLUEPRINT = {
-      rw: {
-        label: 'Reading and Writing',
-        count: 27,
-        seconds: 32 * 60,
-        // College Board domain weighting for each RW module
-        domains: {
-          'Information and Ideas': 7,
-          'Craft and Structure': 8,
-          'Expression of Ideas': 5,
-          'Standard English Conventions': 7
-        }
-      },
-      math: {
-        label: 'Math',
-        count: 22,
-        seconds: 35 * 60,
-        domains: {
-          'Algebra': 8,
-          'Advanced Math': 8,
-          'Problem-Solving and Data Analysis': 3,
-          'Geometry and Trigonometry': 3
-        }
-      }
-    };
-
-    // difficulty mixes: [easy, medium, hard] proportions
-    var MIX = {
-      module1: { E: 0.35, M: 0.40, H: 0.25 },
-      hard: { E: 0.10, M: 0.35, H: 0.55 },
-      easy: { E: 0.55, M: 0.35, H: 0.10 }
-    };
-
-    /* ---------------- scaled-score estimation -----------------------------
-       Anchor points interpolated linearly. These approximate published
-       practice-test curves; the app always labels the result an estimate. */
-    var CURVES = {
-      rw: {
-        hard: [[0, 400], [7, 450], [14, 520], [21, 580], [28, 640], [35, 690], [42, 740], [48, 775], [54, 800]],
-        easy: [[0, 200], [7, 260], [14, 330], [21, 390], [28, 450], [35, 500], [42, 545], [48, 575], [54, 600]]
-      },
-      math: {
-        hard: [[0, 420], [5, 470], [10, 530], [15, 590], [20, 640], [26, 700], [32, 750], [38, 780], [44, 800]],
-        easy: [[0, 200], [5, 250], [10, 310], [15, 370], [20, 425], [26, 480], [32, 530], [38, 565], [44, 590]]
-      }
-    };
-    function interp(anchors, x) {
-      if (x <= anchors[0][0]) return anchors[0][1];
-      for (var i = 1; i < anchors.length; i++) {
-        if (x <= anchors[i][0]) {
-          var a = anchors[i - 1], b = anchors[i];
-          var t = (x - a[0]) / (b[0] - a[0]);
-          return a[1] + t * (b[1] - a[1]);
-        }
-      }
-      return anchors[anchors.length - 1][1];
-    }
-    function midCurve(sec, raw) {
-      return (interp(CURVES[sec].hard, raw) + interp(CURVES[sec].easy, raw)) / 2;
-    }
-    function scaleScore(sec, raw, path) {
-      var v = path === 'hard' ? interp(CURVES[sec].hard, raw)
-      : path === 'easy' ? interp(CURVES[sec].easy, raw)
-      : midCurve(sec, raw);
-      return Math.round(v / 10) * 10;
-    }
-
     /* ---------------- question selection ---------------------------------- */
     function bankFor(sec) {
       if (sec === 'both') return (global.RW_BANK || []).concat(global.MATH_BANK || []);
       return sec === 'rw' ? global.RW_BANK : global.MATH_BANK;
     }
 
-    function pickByDifficulty(pool, want, used, rnd, seen) {
-      // want = {E:n, M:n, H:n}; falls back across difficulties when a level is thin.
-      // Within a difficulty, questions she has seen fewest times come first, so
-      // repeat sittings draw fresh material until the bank is genuinely exhausted.
-      var out = [];
-      var order = { E: ['E', 'M', 'H'], M: ['M', 'E', 'H'], H: ['H', 'M', 'E'] };
-      seen = seen || {};
-      ['H', 'M', 'E'].forEach(function (lvl) {
-          var need = want[lvl] || 0;
-          for (var k = 0; k < order[lvl].length && need > 0; k++) {
-            var d = order[lvl][k];
-            var avail = shuffle(pool.filter(function (q) {
-                  return q.difficulty === d && !used[q.id];
-              }), rnd).sort(function (a, b) { return (seen[a.id] || 0) - (seen[b.id] || 0); });
-            while (need > 0 && avail.length) {
-              var q = avail.shift();
-              used[q.id] = true; out.push(q); need--;
-            }
-          }
-      });
-      return out;
-    }
-
-    function splitMix(n, mix) {
-      var e = Math.round(n * mix.E), h = Math.round(n * mix.H);
-      var m = n - e - h;
-      if (m < 0) { m = 0; e = n - h; }
-      return { E: e, M: m, H: h };
-    }
-
-    function buildModule(sec, kind, used, rnd) {
-      var bp = BLUEPRINT[sec], bank = bankFor(sec), mix = MIX[kind];
-      var seen = (global.Store && global.Store.seenCount) ? global.Store.seenCount() : {};
-      var qs = [];
-      Object.keys(bp.domains).forEach(function (dom) {
-          var n = bp.domains[dom];
-          var pool = bank.filter(function (q) { return q.domain === dom; });
-          qs = qs.concat(pickByDifficulty(pool, splitMix(n, mix), used, rnd, seen));
-      });
-      // top up if a domain ran thin, then trim if rounding overshot
-      var guard = 0;
-      while (qs.length < bp.count && guard++ < 500) {
-        var left = shuffle(bank.filter(function (q) { return !used[q.id]; }), rnd)
-        .sort(function (a, b) { return (seen[a.id] || 0) - (seen[b.id] || 0); });
-        if (!left.length) break;
-        used[left[0].id] = true; qs.push(left[0]);
-      }
-      qs = qs.slice(0, bp.count);
-      // interleave domains a little so it doesn't feel blocked by topic
-      qs = shuffle(qs, rnd);
-      if (sec === 'rw') {
-        // real RW modules group by question type: II/C&S first, then EoI, then SEC
-        var rank = {
-          'Information and Ideas': 0, 'Craft and Structure': 0,
-          'Expression of Ideas': 1, 'Standard English Conventions': 2
-        };
-        qs.sort(function (a, b) { return rank[a.domain] - rank[b.domain]; });
-      } else {
-        // real math modules put multiple-choice first, then student-response
-        qs.sort(function (a, b) { return (a.type === 'spr' ? 1 : 0) - (b.type === 'spr' ? 1 : 0); });
-      }
-      return qs;
-    }
-
-    /* ---------------- session --------------------------------------------- */
+    /* ---------------- practice set ----------------------------------------
+       config: {section: 'rw'|'math'|'both', filter, count, label, seed} */
     function Session(config) {
-      this.cfg = config; // {kind, sections:[], seed, name}
+      this.cfg = config;
+      this.cfg.kind = 'drill';
       this.seed = config.seed || (Date.now() % 2147483647);
       this.rnd = mulberry32(this.seed);
-      this.used = {};
-      this.name = config.name || 'Student';
-      this.modules = [];
-      this.mi = 0; // module index
-      this.qi = 0; // question index inside module
+      this.mi = 0; // kept so the question screen can address mod()
+      this.qi = 0; // question index
       this.startedAt = new Date().toISOString();
       this.id = 'a' + Date.now() + '-' + Math.floor(this.seed % 9973);
       this.finished = false;
-      this.paused = false;
-      this.timerHidden = false;
       this.abcOn = false;
       this.listeners = {};
-      this._buildInitial();
-      this._enterModule(0);
+
+      var pool = bankFor(config.section || 'both').filter(config.filter || function () { return true; });
+      pool = shuffle(pool, this.rnd).slice(0, config.count || 10);
+      this.modules = [{
+          section: config.section === 'both' || !config.section ? 'mixed' : config.section,
+          kind: 'drill', num: 1,
+          label: config.label || 'Practice set',
+          questions: pool,
+          state: pool.map(function () {
+              return { choice: null, text: '', marked: false, struck: [], seconds: 0, visited: false, checked: false };
+          }),
+          done: false
+      }];
+      if (pool.length) this.modules[0].state[0].visited = true;
+      this._qClock = Date.now();
     }
 
     Session.prototype.on = function (evt, fn) {
@@ -7920,87 +7801,15 @@ window.STRATEGIES = {
       (this.listeners[evt] || []).forEach(function (f) { f(data); });
     };
 
-    Session.prototype._mkModule = function (sec, kind, num, label) {
-      var qs = buildModule(sec, kind, this.used, this.rnd);
-      return {
-        section: sec, kind: kind, num: num,
-        label: label || (BLUEPRINT[sec].label + ', Module ' + num),
-        seconds: BLUEPRINT[sec].seconds,
-        remaining: BLUEPRINT[sec].seconds,
-        questions: qs,
-        state: qs.map(function () {
-            return { choice: null, text: '', marked: false, struck: [], seconds: 0, visited: false };
-        }),
-        done: false
-      };
-    };
-
-    Session.prototype._buildInitial = function () {
-      var k = this.cfg.kind;
-      if (k === 'full') {
-        this.modules = [this._mkModule('rw', 'module1', 1)];
-        this.plan = ['rw1', 'rw2', 'break', 'math1', 'math2'];
-      } else if (k === 'rw' || k === 'math') {
-        this.modules = [this._mkModule(k, 'module1', 1)];
-        this.plan = [k + '1', k + '2'];
-      } else if (k === 'drill') {
-        var bank = bankFor(this.cfg.section);
-        var pool = bank.filter(this.cfg.filter || function () { return true; });
-        var self = this;
-        pool = shuffle(pool, this.rnd).slice(0, this.cfg.count || 10);
-        pool.forEach(function (q) { self.used[q.id] = true; });
-        this.modules = [{
-            section: this.cfg.section === 'both' ? 'mixed' : this.cfg.section, kind: 'drill', num: 1,
-            label: this.cfg.label || 'Practice set',
-            seconds: null, remaining: null, questions: pool,
-            state: pool.map(function () {
-                return { choice: null, text: '', marked: false, struck: [], seconds: 0, visited: false, checked: false };
-            }),
-            done: false
-        }];
-        this.plan = ['drill'];
-      }
-    };
-
     Session.prototype.mod = function () { return this.modules[this.mi]; };
     Session.prototype.q = function () { return this.mod().questions[this.qi]; };
     Session.prototype.st = function () { return this.mod().state[this.qi]; };
-    Session.prototype.isDrill = function () { return this.cfg.kind === 'drill'; };
-    Session.prototype.isBreak = function () { return this.mod().kind === 'break'; };
+    Session.prototype.isDrill = function () { return true; };
     Session.prototype.paneSection = function () {
       var m = this.mod();
       return m.section === 'mixed' ? (this.q() ? this.q().section : 'math') : m.section;
     };
 
-    Session.prototype._enterModule = function (i) {
-      this.mi = i; this.qi = 0;
-      var m = this.mod();
-      if (m.state && m.state[0]) m.state[0].visited = true;
-      this._qClock = Date.now();
-      this.startTimer();
-    };
-
-    /* ---- timing ---- */
-    Session.prototype.startTimer = function () {
-      var self = this;
-      this.stopTimer();
-      if (this.mod().remaining === null) return; // untimed drill
-      this._iv = setInterval(function () {
-          if (self.paused || self.finished) return;
-          var m = self.mod();
-          m.remaining -= 1;
-          self.emit('tick', m.remaining);
-          if (m.remaining <= 0) { m.remaining = 0; self.stopTimer(); self.timeExpired(); }
-        }, 1000);
-    };
-    Session.prototype.stopTimer = function () { if (this._iv) clearInterval(this._iv); this._iv = null; };
-    Session.prototype.togglePause = function () {
-      this.paused = !this.paused; this.emit('change');
-    };
-    Session.prototype.timeExpired = function () {
-      this.emit('expired');
-      this.advanceModule();
-    };
     Session.prototype._chargeTime = function () {
       var now = Date.now();
       var st = this.mod().state[this.qi];
@@ -8031,7 +7840,6 @@ window.STRATEGIES = {
     };
     Session.prototype.toggleMark = function () { this.st().marked = !this.st().marked; this.emit('change'); };
     Session.prototype.toggleAbc = function () { this.abcOn = !this.abcOn; this.emit('change'); };
-    Session.prototype.toggleTimer = function () { this.timerHidden = !this.timerHidden; this.emit('change'); };
 
     /* ---- navigation ---- */
     Session.prototype.goto = function (i) {
@@ -8043,11 +7851,11 @@ window.STRATEGIES = {
     };
     Session.prototype.next = function () {
       if (this.qi < this.mod().questions.length - 1) this.goto(this.qi + 1);
-      else this.emit('module-end');
+      else this.finish();
     };
     Session.prototype.prev = function () { this.goto(this.qi - 1); };
 
-    /* ---- module scoring / routing ---- */
+    /* ---- grading ---- */
     Session.prototype.gradeQuestion = function (mod, i) {
       var q = mod.questions[i], st = mod.state[i];
       if (q.type === 'spr') {
@@ -8063,80 +7871,14 @@ window.STRATEGIES = {
       return right;
     };
 
-    /* A crude ability estimate: harder items count for more, easier for less.
-       The real test uses item response theory; this captures the part that
-       matters to a student -- getting the hard ones right is worth more than
-       getting the same number of easy ones right. */
-    var WEIGHT = { E: 0.72, M: 1.0, H: 1.32 };
-    Session.prototype.moduleAbility = function (mod) {
-      var self = this, got = 0, max = 0;
-      mod.questions.forEach(function (q, i) {
-          var w = WEIGHT[q.difficulty] || 1;
-          max += w;
-          if (self.gradeQuestion(mod, i) === true) got += w;
-      });
-      return max ? got / max : 0;
-    };
-
-    Session.prototype.advanceModule = function () {
-      this._chargeTime();
-      this.stopTimer();
-      var m = this.mod(); m.done = true;
-
-      var planPos = this.modules.length; // how many modules exist so far
-      var kindNow = m.kind, sec = m.section;
-
-      if (this.isDrill()) { return this.finish(); }
-
-      // decide what comes next based on the plan
-      if (this.cfg.kind === 'full') {
-        if (sec === 'rw' && m.num === 1) {
-          this.modules.push(this._mkModule('rw', this._route(m), 2));
-          this._enterModule(this.modules.length - 1);
-        } else if (sec === 'rw' && m.num === 2) {
-          this.modules.push({
-              section: 'break', kind: 'break', num: 0, label: 'Break',
-              seconds: 10 * 60, remaining: 10 * 60, questions: [], state: [], done: false
-          });
-          this._enterModule(this.modules.length - 1);
-        } else if (sec === 'break') {
-          this.modules.push(this._mkModule('math', 'module1', 1));
-          this._enterModule(this.modules.length - 1);
-        } else if (sec === 'math' && m.num === 1) {
-          this.modules.push(this._mkModule('math', this._route(m), 2));
-          this._enterModule(this.modules.length - 1);
-        } else {
-          return this.finish();
-        }
-      } else {
-        if (m.num === 1) {
-          this.modules.push(this._mkModule(sec, this._route(m), 2));
-          this._enterModule(this.modules.length - 1);
-        } else {
-          return this.finish();
-        }
-      }
-      this.emit('module-change');
-      this.emit('change');
-    };
-
-    // Routing uses the difficulty-weighted estimate, not the raw count, so a
-    // student who cleared the hard items routes up even a question or two short.
-    Session.prototype._route = function (mod) {
-      return this.moduleAbility(mod) >= 0.6 ? 'hard' : 'easy';
-    };
-
-    Session.prototype.skipBreak = function () { this.advanceModule(); };
-
     /* ---- results ---- */
     Session.prototype.finish = function () {
+      if (this.finished) return this.result;
       this._chargeTime();
-      this.stopTimer();
       this.finished = true;
       this.result = this.buildResult();
       var self = this, evs = [];
       this.modules.forEach(function (m) {
-          if (m.kind === 'break') return;
           m.questions.forEach(function (q, i) { evs.push(self.eventFor(m, i)); });
       });
       global.Store.recordEvents(evs);
@@ -8152,44 +7894,25 @@ window.STRATEGIES = {
         id: this.id, kind: this.cfg.kind, seed: this.seed,
         startedAt: this.startedAt, finishedAt: new Date().toISOString(),
         label: this.cfg.label || null,
-        sections: {}, items: [], path: {}
+        sections: {}, items: []
       };
-      ['rw', 'math'].forEach(function (sec) {
-          var mods = self.modules.filter(function (m) { return m.section === sec; });
-          if (!mods.length) return;
-          var raw = 0, total = 0;
-          mods.forEach(function (m) { raw += self.moduleRaw(m); total += m.questions.length; });
-          var m2 = mods[1];
-          var path = m2 ? (m2.kind === 'hard' ? 'hard' : 'easy') : null;
-          out.path[sec] = path;
-          var full = BLUEPRINT[sec].count * 2;
-          var ability = 0, wsum = 0;
-          mods.forEach(function (m) {
-              var w = m.questions.length;
-              ability += self.moduleAbility(m) * w; wsum += w;
+      /* Right and total per section, for the review filters. No score: a
+         ten-question set says nothing honest about one. */
+      this.modules.forEach(function (m) {
+          m.questions.forEach(function (q, i) {
+              var sec = out.sections[q.section] || (out.sections[q.section] = { raw: 0, total: 0, answered: 0 });
+              sec.total++;
+              var g = self.gradeQuestion(m, i);
+              if (g === true) sec.raw++;
+              if (g !== null) sec.answered++;
           });
-          ability = wsum ? ability / wsum : 0;
-          // half the estimate from the raw count, half from the difficulty-weighted
-          // performance, then pro-rated to a full section's worth of questions
-          var rawShare = total ? raw / total : 0;
-          var scaledRaw = full * (0.5 * rawShare + 0.5 * ability);
-          out.sections[sec] = {
-            raw: raw, total: total, answered: 0, ability: Math.round(ability * 100),
-            scaled: scaleScore(sec, scaledRaw, path),
-            path: path, prorated: total < full
-          };
       });
-      if (out.sections.rw && out.sections.math) {
-        out.total = out.sections.rw.scaled + out.sections.math.scaled;
-      }
-      this.modules.forEach(function (m, mIdx) {
-          if (m.kind === 'break') return;
+      this.modules.forEach(function (m) {
           m.questions.forEach(function (q, i) {
               var st = m.state[i], g = self.gradeQuestion(m, i);
-              if (g !== null && out.sections[m.section]) out.sections[m.section].answered++;
               var tg = global.tagsFor ? global.tagsFor(q) : { strat: null, traps: {} };
               out.items.push({
-                  qid: q.id, section: m.section, module: m.num, moduleKind: m.kind,
+                  qid: q.id, section: q.section,
                   domain: q.domain, skill: q.skill, difficulty: q.difficulty,
                   choice: st.choice, text: st.text, marked: st.marked,
                   correct: g, seconds: st.seconds,
@@ -8517,15 +8240,8 @@ window.STRATEGIES = {
 
 
     global.SATP = {
-      BLUEPRINT: BLUEPRINT, CURVES: CURVES, Session: Session, Store: Store,
-      scaleScore: scaleScore, shuffle: shuffle, mulberry32: mulberry32,
-      bankFor: bankFor,
-      fmtTime: function (s) {
-        if (s === null || s === undefined) return '--:--';
-        s = Math.max(0, Math.round(s));
-        var m = Math.floor(s / 60), r = s % 60;
-        return m + ':' + (r < 10 ? '0' : '') + r;
-      }
+      Session: Session, Store: Store, shuffle: shuffle, mulberry32: mulberry32,
+      bankFor: bankFor
     };
     global.Store = Store;
 })(window);
@@ -8699,6 +8415,17 @@ window.STRATEGIES = {
       });
     },
 
+    /* A day answered on another device, carried by a synced naming rep.
+       Never overwrites a day already answered here. */
+    restore: function (rep) {
+      if (!rep || !/^\d{4}-\d{2}-\d{2}$/.test(String(rep.daily || ''))) return;
+      var have = this.all()[rep.daily];
+      if (have && have.answered) return;
+      this._put(rep.daily, {
+          qid: rep.qid, strat: rep.strat, answered: true, correct: !!rep.right, at: rep.t
+      });
+    },
+
     /* Consecutive days answered, counting back from today. Yesterday still
        counts as an unbroken streak until today is over. */
     streak: function () {
@@ -8770,6 +8497,8 @@ window.STRATEGIES = {
 
   var KEY = 'lockin.spot.v1';
   var RECENT_MAX = 60;
+  var REPS_MAX = 5000;
+  var MEMO = null;   // { raw, out }: data() for the stored log as it last was
 
   /* Moves that apply to nearly every math question. Never offered as a
      wrong option, because they are never really wrong. */
@@ -8857,20 +8586,79 @@ window.STRATEGIES = {
     mathFamily: mathFamily,
     distractorPool: distractorPool,
 
-    /* ---------- storage ---------- */
-    data: function () {
+    /* ---------- storage ----------
+       The unit of record is one rep: one question, the move it wanted, the
+       move the student named. Each rep has its own key, so two devices can
+       merge their logs without double counting, and the per-move totals and
+       the confusion pairs are always derived from the log, never stored. */
+    _raw: function () {
+      try { return global.localStorage.getItem(KEY) || ''; } catch (e) { return ''; }
+    },
+    _read: function () {
       var d = null;
-      try { d = JSON.parse(global.localStorage.getItem(KEY)); } catch (e) {}
+      try { d = JSON.parse(this._raw()); } catch (e) {}
       d = d || {};
-      d.strats = d.strats || {};
-      d.confusions = d.confusions || {};
-      d.recent = d.recent || [];
+      d.reps = Array.isArray(d.reps) ? d.reps : [];
       return d;
     },
     _write: function (d) {
-      try { global.localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {}
+      MEMO = null;
+      try { global.localStorage.setItem(KEY, JSON.stringify({ reps: d.reps })); } catch (e) {}
     },
-    reset: function () { this._write({}); },
+    reset: function () { this._write({ reps: [] }); },
+
+    reps: function () { return this._read().reps; },
+
+    /* Totals per move, confusion pairs, and recently seen questions.
+       The Strategies list asks once per row, so the result is kept until
+       the stored log changes (here, or in another tab). */
+    data: function () {
+      var raw = this._raw();
+      if (MEMO && MEMO.raw === raw) return MEMO.out;
+      var out = this._derive();
+      MEMO = { raw: raw, out: out };
+      return out;
+    },
+    _derive: function () {
+      var out = { strats: {}, confusions: {}, recent: [] };
+      this._read().reps.forEach(function (r) {
+          var s = out.strats[r.strat] || (out.strats[r.strat] = { seen: 0, right: 0 });
+          s.seen++;
+          if (r.right) s.right++;
+          if (!s.last || r.t > s.last) s.last = r.t;
+          if (r.picked && !r.right) {
+            var k = r.strat + '>' + r.picked;
+            out.confusions[k] = (out.confusions[k] || 0) + 1;
+          }
+          if (r.qid && r.qid !== 'pasted') {
+            out.recent = out.recent.filter(function (id) { return id !== r.qid; });
+            out.recent.push(r.qid);
+          }
+      });
+      out.recent = out.recent.slice(-RECENT_MAX);
+      return out;
+    },
+
+    /* Adds reps from another device. Returns how many were new. */
+    merge: function (incoming) {
+      var d = this._read();
+      var have = {};
+      d.reps.forEach(function (r) { have[r.k] = 1; });
+      var added = 0;
+      (incoming || []).forEach(function (r) {
+          if (!r || !r.k || have[r.k] || !r.strat) return;
+          have[r.k] = 1;
+          d.reps.push({ k: r.k, t: r.t, qid: r.qid || null, strat: r.strat,
+            picked: r.picked || null, right: !!r.right, daily: r.daily || null });
+          added++;
+      });
+      if (added) {
+        d.reps.sort(function (a, b) { return a.t < b.t ? -1 : a.t > b.t ? 1 : 0; });
+        d.reps = d.reps.slice(-REPS_MAX);
+        this._write(d);
+      }
+      return added;
+    },
 
     /* ---------- the four options for one question ---------- */
     options: function (q, rnd) {
@@ -8960,22 +8748,23 @@ window.STRATEGIES = {
     },
 
     /* ---------- recording an answer ----------
-       picked is a strategy id, or null for "I do not know". */
-    record: function (item, picked) {
+       picked is a strategy id, or null for "I do not know". daily is the
+       Daily LockIn date when this rep was the day's question, so the streak
+       can follow a signed-in student to another device. */
+    record: function (item, picked, daily) {
       item.picked = picked;
       item.right = picked === item.strat;
-      var d = this.data();
-      var s = d.strats[item.strat] || { seen: 0, right: 0 };
-      s.seen++;
-      if (item.right) s.right++;
-      s.last = new Date().toISOString();
-      d.strats[item.strat] = s;
-      if (picked && !item.right) {
-        var k = item.strat + '>' + picked;
-        d.confusions[k] = (d.confusions[k] || 0) + 1;
-      }
-      d.recent = d.recent.filter(function (id) { return id !== item.qid; }).concat([item.qid]).slice(-RECENT_MAX);
+      var t = new Date().toISOString();
+      var rep = {
+        k: 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        t: t, qid: item.qid || null, strat: item.strat,
+        picked: picked || null, right: item.right, daily: daily || null
+      };
+      var d = this._read();
+      d.reps.push(rep);
+      d.reps = d.reps.slice(-REPS_MAX);
       this._write(d);
+      if (global.Cloud && global.Cloud.pushNaming) global.Cloud.pushNaming([rep]);
       return item.right;
     },
 
@@ -9113,6 +8902,7 @@ window.STRATEGIES = {
           self.enabled = !!d.accounts;
           self.aiEnabled = !!(d.tutor && d.accounts) || !!(d.tutor && CFG.allowAnonTutor);
           self.mail = !!d.mail;
+          self.payments = !!d.payments;
           if (self.enabled && self.signedIn()) {
             return self.afterSignIn().then(function () { return true; });
           }
@@ -9189,19 +8979,33 @@ window.STRATEGIES = {
     classTraps: function () {
       return this._classFetch().then(function (d) { return d.traps || []; });
     },
+    classData: function () {
+      return this._classFetch();
+    },
+    classDecide: function (studentId, approve) {
+      this._classCache = null;
+      return this.post('/api/class/decide', { student_id: studentId, approve: !!approve });
+    },
+
+    /* Has this account paid? Only the server can say, and only a signed
+       webhook from the payment provider can make it true. */
+    paid: function () { return !!(this.profile && this.profile.paid); },
 
     /* ---------------- outbound sync ---------------- */
     queue: function (kind, rows) {
       try {
-        var q = JSON.parse(localStorage.getItem(QKEY)) || { events: [], attempts: [], generated: [] };
+        var q = this.readQueue();
         q[kind] = (q[kind] || []).concat(rows);
         if (q.events.length > 4000) q.events = q.events.slice(-4000);
         localStorage.setItem(QKEY, JSON.stringify(q));
       } catch (e) {}
     },
     readQueue: function () {
-      try { return JSON.parse(localStorage.getItem(QKEY)) || { events: [], attempts: [], generated: [] }; }
-      catch (e) { return { events: [], attempts: [], generated: [] }; }
+      var q = null;
+      try { q = JSON.parse(localStorage.getItem(QKEY)); } catch (e) {}
+      q = q || {};
+      ['events', 'attempts', 'generated', 'naming'].forEach(function (k) { q[k] = q[k] || []; });
+      return q;
     },
     clearQueue: function () { try { localStorage.removeItem(QKEY); } catch (e) {} },
 
@@ -9237,12 +9041,30 @@ window.STRATEGIES = {
       });
     },
 
+    pushNaming: function (reps) {
+      var self = this;
+      if (!reps || !reps.length) return;
+      if (!this.enabled || !this.signedIn()) return;
+      this.post('/api/sync/naming', { reps: reps }).catch(function (err) {
+        self.lastError = String(err.message || err);
+        self.queue('naming', reps);
+      });
+    },
+
     flushQueue: function () {
       var self = this;
       if (!this.enabled || !this.signedIn()) return Promise.resolve();
       var q = this.readQueue();
-      if (!q.events.length && !q.attempts.length && !(q.generated || []).length) return Promise.resolve();
+      /* Naming reps made while signed out were never queued, so send the
+         whole local log on every flush. The server skips keys it already
+         has, so this is cheap and makes the first sign-in on a device carry
+         that device's history up. */
+      var reps = global.Spot ? global.Spot.reps() : q.naming;
+      if (!q.events.length && !q.attempts.length && !q.generated.length && !reps.length) return Promise.resolve();
       var jobs = [];
+      for (var i = 0; i < reps.length; i += 2000) {
+        jobs.push(this.post('/api/sync/naming', { reps: reps.slice(i, i + 2000) }));
+      }
       if (q.events.length) jobs.push(this.post('/api/sync/events', { events: q.events }));
       (q.attempts || []).forEach(function (a) {
         jobs.push(self.post('/api/sync/attempt', { attempt: a }));
@@ -9277,8 +9099,19 @@ window.STRATEGIES = {
         store.attempts.sort(function (a, b) { return (a.finishedAt < b.finishedAt) ? 1 : -1; });
 
         if (d.user && d.user.display_name) store.name = d.user.display_name;
-        if (d.user) { self.profile = d.user; }
+        if (d.user) {
+          self.profile = d.user;
+          if (self.session) { self.session.user = d.user; self.saveSession(self.session); }
+        }
         global.Store._write(store);
+
+        /* The naming record, and the Daily LockIn days it carries. */
+        if ((d.naming || []).length && global.Spot) {
+          global.Spot.merge(d.naming);
+          if (global.Daily && global.Daily.restore) {
+            d.naming.forEach(function (r) { if (r.daily) global.Daily.restore(r); });
+          }
+        }
 
         if ((d.generated || []).length && global.Generate) {
           var mine = {};
@@ -9709,7 +9542,6 @@ window.STRATEGIES = {
     var S = null;            // active Session
     var view = 'home';       // landing | home | spot | strategies | traps | analyze | desmos | cards | auth | class | exam | review
     var reviewData = null;   // attempt being reviewed
-    var dailyPending = null; // set while today's Daily LockIn question is open
     var reviewFilter = 'all';
     var ALLQ = {};
     var scrollMemo = null;
@@ -9813,7 +9645,6 @@ window.STRATEGIES = {
     function esc(s) {
       return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
-    function fmt(s) { return window.SATP.fmtTime(s); }
     function pct(a, b) { return b ? Math.round(100 * a / b) : 0; }
     function dfLabel(d) { return d === 'E' ? 'Easier' : d === 'M' ? 'Medium' : 'Harder'; }
     function toast(msg) {
@@ -10399,12 +10230,27 @@ window.STRATEGIES = {
 
       if (classState.loading) { h += '<div class="card"><p>Loading the roster&hellip;</p></div></div>'; return h; }
       var roster = classState.roster || [];
+      var pending = classState.pending || [];
 
       h += '<div class="card"><h3>Class code</h3><p class="code-pill">' + esc(prof.class_code) + '</p>' +
-      '<p class="note">Students enter this on their Account screen to join.</p></div>';
+      '<p class="note">Students enter this on their Account screen. You approve each one before they ' +
+      'appear here or see the class question bank, so a code that gets passed around lets nobody in.</p></div>';
+
+      if (pending.length) {
+        h += '<div class="section-title">Waiting for you</div><div class="card">';
+        pending.forEach(function (r) {
+            h += '<div class="pend-row"><div><strong>' + esc(r.display_name || 'Student') + '</strong>' +
+            '<div class="note">' + esc(r.email || '') + '</div></div>' +
+            '<div class="card-actions"><button class="btn subtle sm" onclick="APP.classDecide(\'' + r.student_id + '\',false)">Decline</button>' +
+            '<button class="btn sm" onclick="APP.classDecide(\'' + r.student_id + '\',true)">Approve</button></div></div>';
+        });
+        h += '</div>';
+      }
 
       if (!roster.length) {
-        h += '<div class="card" style="margin-top:14px"><p>No students have joined yet. Share the code above.</p></div></div>';
+        h += '<div class="card" style="margin-top:14px"><p>' + (pending.length
+          ? 'Approve a student above and their practice shows up here.'
+          : 'No students have joined yet. Share the code above.') + '</p></div></div>';
         return h;
       }
 
@@ -10431,16 +10277,33 @@ window.STRATEGIES = {
         h += '</div>';
       }
 
+      var conf = (classState.confusions || []).filter(function (c) {
+          return window.STRATS[c.strat] && window.STRATS[c.picked];
+      });
+      if (conf.length) {
+        h += '<div class="section-title">Moves the class mixes up</div><div class="card">' +
+        '<p class="note" style="margin-bottom:14px">When a question wanted the first move, students named the second. ' +
+        'Each pair is a five minute lesson: the tell-apart is under it.</p>';
+        conf.slice(0, 6).forEach(function (c) {
+            var vs = window.stratVs(c.strat, c.picked);
+            h += '<div class="conf-row"><div><strong>' + esc(stratName(c.strat)) + '</strong> read as <strong>' +
+            esc(stratName(c.picked)) + '</strong> <span class="n">' + c.n + '&times;</span></div>' +
+            (vs ? '<div class="note">' + esc(vs) + '</div>' : '') + '</div>';
+        });
+        h += '</div>';
+      }
+
       h += '<div class="section-title">Roster</div><div class="card"><table class="plain">' +
-      '<tr><th>Student</th><th>Answered</th><th>Accuracy</th><th>Latest total</th><th>Most common trap</th><th>Last active</th></tr>';
+      '<tr><th>Student</th><th>Answered</th><th>Accuracy</th><th>Named the move</th><th>Most common trap</th><th>Last active</th><th></th></tr>';
       roster.forEach(function (r) {
           var tp = r.top_trap && window.TRAPS[r.top_trap];
           h += '<tr><td><strong>' + esc(r.display_name || r.email || 'Student') + '</strong></td>' +
           '<td>' + (r.answered || 0) + '</td>' +
           '<td>' + (r.answered ? pct(r.correct, r.answered) + '%' : '-') + '</td>' +
-          '<td>' + (r.latest_total || '-') + '</td>' +
+          '<td>' + (r.named ? r.named_right + '/' + r.named : '-') + '</td>' +
           '<td>' + (tp ? esc(tp.name) : '-') + '</td>' +
-          '<td>' + (r.last_active ? dateLabel(r.last_active) : 'never') + '</td></tr>';
+          '<td>' + (r.last_active ? dateLabel(r.last_active) : 'never') + '</td>' +
+          '<td><button class="link-btn" onclick="APP.classDecide(\'' + r.student_id + '\',false)">Remove</button></td></tr>';
       });
       h += '</table></div>';
       h += '<p class="note" style="margin-top:14px">Students can leave a class at any time from their Account screen, which stops sharing immediately.</p>';
@@ -10670,6 +10533,24 @@ window.STRATEGIES = {
     /* One payment. The button only claims to take money when a real checkout
        is actually configured, because a buy button that goes nowhere is worse
        than an honest one that says so. */
+    /* A signed-in buyer's checkout carries their account id and email, so the
+       payment lands on the right account even if they type another address
+       into the checkout page. Stripe Payment Links read both parameters;
+       other hosted checkouts ignore them. */
+    function checkoutLink(url) {
+      var C = window.Cloud, p = C && C.signedIn && C.signedIn() ? C.profile : null;
+      if (!p || !p.id) return url;
+      return url + (url.indexOf('?') >= 0 ? '&' : '?') +
+      'client_reference_id=' + encodeURIComponent(p.id) +
+      (p.email ? '&prefilled_email=' + encodeURIComponent(p.email) : '');
+    }
+
+    function joinedMsg(u, code) {
+      return u && u.class_status === 'pending'
+        ? 'Request sent. ' + code + ' will appear once your teacher approves it.'
+        : 'Joined ' + code;
+    }
+
     function priceHTML() {
       var cfg = window.CONFIG || {};
       var price = cfg.price || '$14.99';
@@ -10688,8 +10569,11 @@ window.STRATEGIES = {
       '<li>' + ic('check') + 'Your practice stays in your browser unless you sign in to sync it</li>' +
       '</ul>';
 
-      if (url) {
-        h += '<a class="btn big p-buy" href="' + esc(url) + '" rel="noopener">Get it for ' + esc(price) + '</a>';
+      var C = window.Cloud;
+      if (C && C.signedIn && C.signedIn() && C.paid()) {
+        h += '<div class="verdict ok">You own SAT LockIn. Thank you.</div>';
+      } else if (url) {
+        h += '<a class="btn big p-buy" href="' + esc(checkoutLink(url)) + '" rel="noopener">Get it for ' + esc(price) + '</a>';
         h += '<p class="p-note">Payment is handled by the checkout page, which means this app never ' +
         'sees your card details.</p>';
       } else {
@@ -11222,19 +11106,7 @@ window.STRATEGIES = {
       h += '<div class="exam-top"><div><div class="sec-name">' + esc(m.label) + '</div>' +
       '<div class="sec-sub">Question ' + (S.qi + 1) + ' of ' + total +
       ' \u00b7 ' + esc(q.domain) + '</div></div>';
-      h += '<div class="timer-wrap">';
-      if (m.remaining === null) {
-        h += '<div class="timer-hidden">Untimed practice</div>';
-      } else if (S.timerHidden) {
-        h += '<div class="timer-hidden" id="timer">Clock hidden</div>' +
-        '<div class="timer-actions"><button onclick="APP.toggleTimer()">Show</button>' +
-        '<button onclick="APP.pause()">' + (S.paused ? 'Resume' : 'Pause') + '</button></div>';
-      } else {
-        h += '<div class="timer' + (m.remaining <= 300 ? ' warn' : '') + '" id="timer">' + fmt(m.remaining) + '</div>' +
-        '<div class="timer-actions"><button onclick="APP.toggleTimer()">Hide</button>' +
-        '<button onclick="APP.pause()">' + (S.paused ? 'Resume' : 'Pause') + '</button></div>';
-      }
-      h += '</div>';
+      h += '<div class="timer-wrap"><div class="timer-hidden">Untimed practice</div></div>';
       h += '<div class="tools">';
       if (isRW) h += '<button class="tool" onclick="APP.highlight()">' + ic('pen') + 'Highlight</button>';
       else h += '<button class="tool" onclick="APP.calculator()">' + ic('calc') + 'Calculator</button>' +
@@ -11447,46 +11319,11 @@ window.STRATEGIES = {
       return h;
     }
 
-    /* ============================================================
-       TIMER TICK (targeted DOM update, no full re-render)
-       ============================================================ */
     function wire(sess) {
       sess.on('change', render);
-      sess.on('tick', function (r) {
-          var t = document.getElementById('timer');
-          if (!t) return;
-          if (S.timerHidden && view === 'exam') return;
-          t.textContent = fmt(r);
-          if (r <= 300 && view === 'exam') t.classList.add('warn');
-          if (r === 300 && view === 'exam') toast('5 minutes remaining in this module');
-      });
-      sess.on('module-end', function () {
-          var m = S.mod();
-          var unanswered = m.state.filter(function (s, i) { return S.gradeQuestion(m, i) === null; }).length;
-          var marked = m.state.filter(function (s) { return s.marked; }).length;
-          var msg = '<p>You have reached the end of <strong>' + esc(m.label) + '</strong>.</p>';
-          if (unanswered) msg += '<p><strong>' + unanswered + ' question' + (unanswered > 1 ? 's are' : ' is') +
-          ' unanswered.</strong> There is no penalty for guessing on the SAT, so it is always worth entering something.</p>';
-          if (marked) msg += '<p>' + marked + ' question' + (marked > 1 ? 's are' : ' is') + ' marked for review.</p>';
-          msg += '<p>Once you move on you cannot come back to this module, same as the real test.</p>' +
-          '<div class="card-actions" style="margin-top:16px">' +
-          '<button class="btn subtle" onclick="APP.closeModal()">Keep working</button>' +
-          '<button class="btn" onclick="APP.advance()">Continue</button></div>';
-          openModal('End of module', msg);
-      });
-      sess.on('expired', function () { toast('Time is up on that module'); });
       sess.on('finished', function (res) {
           closeModal();
-          if (dailyPending) {
-            var it = res.items[0] || {};
-            window.Daily.record(dailyPending.date, dailyPending.qid, dailyPending.strat, it.correct === true);
-            dailyPending = null;
-            reviewData = res;
-            view = 'home';
-            render();
-            return;
-          }
-          reviewData = res; reviewFilter = res.kind === 'drill' ? 'all' : 'wrong';
+          reviewData = res; reviewFilter = 'all';
           view = 'review';
           render();
       });
@@ -11767,8 +11604,17 @@ window.STRATEGIES = {
           h += '<p><strong>' + esc((p && p.email) || C.session.user.email) + '</strong></p>';
           h += '<label class="fld"><span>Display name</span><input id="acct-name" value="' + esc((p && p.display_name) || '') + '"></label>';
           h += '<div class="card-actions"><button class="btn sm" onclick="APP.saveName()">Save name</button></div>';
+          if (C.payments) {
+            h += '<h3>Purchase</h3>' + (C.paid()
+              ? '<p class="note">Purchased. Thank you.</p>'
+              : '<p class="note">Not purchased on this account yet. If you paid with a different email, sign in with that one.</p>');
+          }
           h += '<h3>Class</h3>';
-          if (p && p.class_code) {
+          if (p && p.class_code && p.class_status === 'pending') {
+            h += '<p>You asked to join class <strong>' + esc(p.class_code) + '</strong>. Your teacher has not approved it yet, ' +
+            'so nothing is shared until they do.</p>' +
+            '<div class="card-actions"><button class="btn subtle sm" onclick="APP.leaveClass()">Cancel the request</button></div>';
+          } else if (p && p.class_code) {
             h += '<p>You are sharing practice data with class <strong>' + esc(p.class_code) + '</strong>.</p>' +
             '<div class="card-actions"><button class="btn subtle sm" onclick="APP.leaveClass()">Leave the class</button>' +
             (p.role === 'teacher' ? '<button class="btn ghost sm" onclick="APP.closeModal();APP.openClass()">Open class dashboard</button>' : '') +
@@ -11800,7 +11646,7 @@ window.STRATEGIES = {
       joinClassFromAccount: function () {
         var v = document.getElementById('acct-class').value.trim().toUpperCase();
         if (!v) return;
-        window.Cloud.joinClass(v).then(function () { toast('Joined ' + v); closeModal(); render(); })
+        window.Cloud.joinClass(v).then(function (u) { toast(joinedMsg(u, v)); closeModal(); render(); })
         .catch(function (e) { toast(e.message || 'Could not join that class'); });
       },
       leaveClass: function () {
@@ -11808,9 +11654,17 @@ window.STRATEGIES = {
       },
       openClass: function () {
         view = 'class'; classState.loading = true; render();
-        Promise.all([window.Cloud.classRoster(), window.Cloud.classTraps()]).then(function (r) {
-            classState.roster = r[0]; classState.traps = r[1]; classState.loading = false; render();
+        window.Cloud.classData().then(function (d) {
+            classState.roster = d.roster || []; classState.traps = d.traps || [];
+            classState.pending = d.pending || []; classState.confusions = d.confusions || [];
+            classState.loading = false; render();
         }).catch(function (e) { classState.loading = false; toast(e.message || 'Could not load the class'); render(); });
+      },
+      classDecide: function (id, approve) {
+        window.Cloud.classDecide(id, approve).then(function () {
+            toast(approve ? 'Approved' : 'Removed from the class');
+            APP.openClass();
+        }).catch(function (e) { toast(e.message || 'That did not work'); });
       },
       createClass: function () {
         var name = document.getElementById('cls-name').value.trim();
@@ -11822,7 +11676,7 @@ window.STRATEGIES = {
       joinClass: function () {
         var code = document.getElementById('join-code').value.trim().toUpperCase();
         if (!code) return;
-        window.Cloud.joinClass(code).then(function () { toast('Joined ' + code); render(); })
+        window.Cloud.joinClass(code).then(function (u) { toast(joinedMsg(u, code)); render(); })
         .catch(function (e) { toast(e.message || 'Could not join'); });
       },
       syncNow: function () {
@@ -11870,7 +11724,7 @@ window.STRATEGIES = {
       spotPick: function (id) {
         if (!spot || spot.phase !== 'ask') return;
         var it = spot.round.items[spot.round.i];
-        window.Spot.record(it, id);
+        window.Spot.record(it, id, spot.daily ? spot.daily.date : null);
         spot.phase = 'named'; render();
       },
       spotWork: function () {
@@ -11965,7 +11819,6 @@ window.STRATEGIES = {
         });
         wire(S); view = 'exam'; render();
       },
-      advance: function () { closeModal(); S.advanceModule(); },
 
       pick: function (i) { S.select(i); },
       strike: function (e, i) { e.stopPropagation(); S.toggleStrike(i); },
@@ -11976,13 +11829,6 @@ window.STRATEGIES = {
       },
       mark: function () { S.toggleMark(); },
       abc: function () { S.toggleAbc(); },
-      toggleTimer: function () { S.toggleTimer(); },
-      pause: function () {
-        S.togglePause();
-        if (S.paused) openModal('Paused', '<p>Clock stopped. There is no pause button on the real test, so save this for actual interruptions.</p>' +
-        '<div class="card-actions"><button class="btn" onclick="APP.pause();APP.closeModal()">Resume</button></div>');
-        else closeModal();
-      },
       next: function () {
         if (S.isDrill() && S.qi === S.mod().questions.length - 1) { S.finish(); return; }
         S.next();
@@ -12012,7 +11858,7 @@ window.STRATEGIES = {
         '<button class="btn" onclick="APP.confirmQuit()">Leave</button></div>');
       },
       confirmQuit: function () {
-        if (S) { S.stopTimer(); S.finished = true; }
+        if (S) { S.finished = true; }
         S = null; closeModal(); view = 'home'; render();
       },
 

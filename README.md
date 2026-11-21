@@ -113,8 +113,8 @@ nothing is unfamiliar on test day:
 - **Unseen questions come first**, so a second set draws fresh material until the bank is
  genuinely exhausted.
 
-`js/engine.js` still carries the adaptive module routing and score curves from when there was
-a full test. Nothing reaches them now; they are candidates for removal.
+What it does not keep is the clock or a score. A ten-question set anchored to one move says
+nothing honest about a score, and the adaptive routing and score curves went with the full test.
 
 ---
 
@@ -123,8 +123,11 @@ a full test. Nothing reaches them now; they are candidates for removal.
 Untouched. The app is single-device and offline. Fill in `js/config.js` to add:
 
 - **Email sign-in** (6-digit code, no passwords, works from any URL)
-- **A Postgres database** (Railway's one-click plugin) so progress follows a student across devices
-- **A class dashboard** for a teacher
+- **A Postgres database** (Railway's one-click plugin) so progress follows a student across
+ devices: practice history, the naming record, and the Daily LockIn streak
+- **A class dashboard** for a teacher, who approves each student who joins. It shows the traps
+ catching the class and the moves the class mixes up, each with its tell-apart
+- **Payments** through a hosted Stripe checkout, with a signed webhook recording who paid
 - **An AI tutor** for "explain this a different way," follow-up questions on a problem, and a
  coaching note written from the student's own trap data. Haiku 5.5 handles conversation;
  Sonnet 5.5 handles the reasoning-heavy tasks. The API key lives in a server-side function,
@@ -169,11 +172,17 @@ than pretending to take a payment. Set it to a hosted checkout URL and the butto
 real link. **The app never sees card details**, which is the entire reason for handing off to a
 hosted checkout instead of building a form.
 
-Two things worth deciding before you switch it on:
+With a database and `STRIPE_WEBHOOK_SECRET` set, the server also knows **who has paid**. Stripe
+calls `/api/billing/webhook` after each payment and refund; the call is signature-checked, and it
+is the only thing that can mark an account paid. A signed-in buyer's checkout link carries their
+account id, so the payment lands on the right account even if they type another email at
+checkout. Setup is Part 4 of [SETUP-CLOUD.md](SETUP-CLOUD.md).
 
-- **There is no entitlement check.** Every question works before anyone pays. That is a
- deliberate default for a study tool you are handing to one class, but if you sell this widely
- you will want the checkout to issue a license the app verifies.
+Two things worth deciding before you sell widely:
+
+- **Nothing is locked yet.** The server knows who paid and the app shows it, but every feature
+ still works for everyone. What the free tier includes is a product decision, and it comes
+ before any lock.
 - **The AI features cost you money per use.** Pasted-question classification and question
  generation call the Anthropic API on your key. The server caps usage per student per day
  (`AI_DAILY_LIMIT`, 40 by default), so the exposure is bounded, but a one-time price against a
@@ -189,6 +198,7 @@ student's browser.
 ```bash
 npm start          # serve the app, http://localhost:8080
 npm run verify     # question bank integrity and house style checks
+TEST_DATABASE_URL=postgresql://... npm run itest   # API against a scratch Postgres (never production)
 npm run bundle     # rebuild the single-file version in dist/
 npm run schema     # apply db/schema.sql to $DATABASE_URL by hand
 npm run mailtest you@example.com   # send one test email and explain any failure
@@ -232,7 +242,8 @@ db/schema.sql                 Postgres tables, applied automatically on boot
 lib/db.js                     database pool
 lib/auth.js                   sign in with an emailed one-time code
 lib/mail.js                   sending that code, via Microsoft Graph or Resend
-lib/routes.js                 the JSON API: sync, classes, roster
+lib/routes.js                 the JSON API: sync, classes, roster, approvals
+lib/billing.js                the signed Stripe webhook and who has paid
 build-single-file.py bundles everything into dist/sat-lockin.html
 ```
 
@@ -260,8 +271,9 @@ A multiple-choice item needs `domain`, `skill`, `difficulty` (`E`/`M`/`H`), `pro
  rounds stay fair"). It trains "is this an algebra, data, or geometry move" well and the finer
  choice between, say, solving by hand and graphing, not at all. That finer choice is taught on
  the calculator page instead.
-- **The naming record lives on this device.** Practice history syncs when signed in; the
- record of which moves you can name does not yet.
+- **Offline means one device.** Without signing in, practice, the naming record, and the
+ streak live in that browser. Signing in carries all three across devices, and the first
+ sign-in on a device uploads what it already has.
 - **The bank is 179 questions.** Every one of the 72 catalog entries has at least four
  questions behind it, which `verify.js` enforces, but four is a floor and not a lot. With the
  AI turned on the app writes more against each strategy's own recipe; without it, the thinner
@@ -306,8 +318,13 @@ colors stay fixed, on purpose.
 - house style holds: no em dashes in the app's own voice, US spelling, no emoji as icons
 - the server boots, answers `/healthz`, and does not serve `server.js`, `.env`, `lib/`, or
   `db/` over HTTP, including through a `/js/../` traversal
+- against a throwaway Postgres: sign-in codes cap at six guesses and sign in once under a race,
+  no account can overwrite another's rows, the naming record syncs without duplicates, only a
+  correctly signed and recent payment webhook marks an account paid (and a full refund unmarks
+  it), class joins wait for the teacher, and CORS answers only listed origins
 
-Run the same checks locally with `npm run verify`.
+Run the same checks locally with `npm run verify` and, given a scratch database,
+`npm run itest`.
 
 `.github/workflows/schema.yml` applies `db/schema.sql` to Railway Postgres, either when the
 schema changes on `main` or on demand from the Actions tab. It needs a `DATABASE_PUBLIC_URL`

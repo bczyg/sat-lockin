@@ -95,6 +95,7 @@
           self.enabled = !!d.accounts;
           self.aiEnabled = !!(d.tutor && d.accounts) || !!(d.tutor && CFG.allowAnonTutor);
           self.mail = !!d.mail;
+          self.payments = !!d.payments;
           if (self.enabled && self.signedIn()) {
             return self.afterSignIn().then(function () { return true; });
           }
@@ -171,19 +172,33 @@
     classTraps: function () {
       return this._classFetch().then(function (d) { return d.traps || []; });
     },
+    classData: function () {
+      return this._classFetch();
+    },
+    classDecide: function (studentId, approve) {
+      this._classCache = null;
+      return this.post('/api/class/decide', { student_id: studentId, approve: !!approve });
+    },
+
+    /* Has this account paid? Only the server can say, and only a signed
+       webhook from the payment provider can make it true. */
+    paid: function () { return !!(this.profile && this.profile.paid); },
 
     /* ---------------- outbound sync ---------------- */
     queue: function (kind, rows) {
       try {
-        var q = JSON.parse(localStorage.getItem(QKEY)) || { events: [], attempts: [], generated: [] };
+        var q = this.readQueue();
         q[kind] = (q[kind] || []).concat(rows);
         if (q.events.length > 4000) q.events = q.events.slice(-4000);
         localStorage.setItem(QKEY, JSON.stringify(q));
       } catch (e) {}
     },
     readQueue: function () {
-      try { return JSON.parse(localStorage.getItem(QKEY)) || { events: [], attempts: [], generated: [] }; }
-      catch (e) { return { events: [], attempts: [], generated: [] }; }
+      var q = null;
+      try { q = JSON.parse(localStorage.getItem(QKEY)); } catch (e) {}
+      q = q || {};
+      ['events', 'attempts', 'generated', 'naming'].forEach(function (k) { q[k] = q[k] || []; });
+      return q;
     },
     clearQueue: function () { try { localStorage.removeItem(QKEY); } catch (e) {} },
 
@@ -219,12 +234,30 @@
       });
     },
 
+    pushNaming: function (reps) {
+      var self = this;
+      if (!reps || !reps.length) return;
+      if (!this.enabled || !this.signedIn()) return;
+      this.post('/api/sync/naming', { reps: reps }).catch(function (err) {
+        self.lastError = String(err.message || err);
+        self.queue('naming', reps);
+      });
+    },
+
     flushQueue: function () {
       var self = this;
       if (!this.enabled || !this.signedIn()) return Promise.resolve();
       var q = this.readQueue();
-      if (!q.events.length && !q.attempts.length && !(q.generated || []).length) return Promise.resolve();
+      /* Naming reps made while signed out were never queued, so send the
+         whole local log on every flush. The server skips keys it already
+         has, so this is cheap and makes the first sign-in on a device carry
+         that device's history up. */
+      var reps = global.Spot ? global.Spot.reps() : q.naming;
+      if (!q.events.length && !q.attempts.length && !q.generated.length && !reps.length) return Promise.resolve();
       var jobs = [];
+      for (var i = 0; i < reps.length; i += 2000) {
+        jobs.push(this.post('/api/sync/naming', { reps: reps.slice(i, i + 2000) }));
+      }
       if (q.events.length) jobs.push(this.post('/api/sync/events', { events: q.events }));
       (q.attempts || []).forEach(function (a) {
         jobs.push(self.post('/api/sync/attempt', { attempt: a }));
@@ -259,8 +292,19 @@
         store.attempts.sort(function (a, b) { return (a.finishedAt < b.finishedAt) ? 1 : -1; });
 
         if (d.user && d.user.display_name) store.name = d.user.display_name;
-        if (d.user) { self.profile = d.user; }
+        if (d.user) {
+          self.profile = d.user;
+          if (self.session) { self.session.user = d.user; self.saveSession(self.session); }
+        }
         global.Store._write(store);
+
+        /* The naming record, and the Daily LockIn days it carries. */
+        if ((d.naming || []).length && global.Spot) {
+          global.Spot.merge(d.naming);
+          if (global.Daily && global.Daily.restore) {
+            d.naming.forEach(function (r) { if (r.daily) global.Daily.restore(r); });
+          }
+        }
 
         if ((d.generated || []).length && global.Generate) {
           var mine = {};
