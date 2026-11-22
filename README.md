@@ -71,7 +71,7 @@ and the sets you drill.
 | Screen | What it does |
 |---|---|
 | **Landing** | The three-quarters argument, a live question you can try, what you get, the price, and what this is not. A first-time visitor sees it before anything else. |
-| **Today** | Daily LockIn: today's one unlabeled question, your streak, a seven-day strip, the way into Name the move, and the two lists with their counts. |
+| **Today** | Daily LockIn: today's one unlabeled question, your streak, a seven-day strip, your coach's plan for the day (when the AI is on), the way into Name the move, and the two lists with their counts. |
 | **Name the move** | Eight unlabeled questions. Name the move each one wants before solving, then work it step by step. Unseen and least reliable moves come first. Ends with what you named, what you mixed up, and how to tell each pair apart. A focused round drills one move against its look-alikes. |
 | **Strategies** | All 30 moves, grouped by section. Each has **how to spot it** (cues, look-alikes, the move, a drill), your naming record, a set to practice the move itself, and the recipe used to generate more. Spaced recall on the moves lives here too. |
 | **Traps** | All 43 traps in six families, each with how to spot it, how to beat it, and a set where it is waiting. |
@@ -128,6 +128,13 @@ Untouched. The app is single-device and offline. Fill in `js/config.js` to add:
 - **A class dashboard** for a teacher, who approves each student who joins. It shows the traps
  catching the class and the moves the class mixes up, each with its tell-apart
 - **Payments** through a hosted Stripe checkout, with a signed webhook recording who paid
+- **A coach** that plans each student's day. It is an agent, not a chat: Claude reads the
+ student's synced record through three read-only tools (an overview, one move in depth, one
+ trap in depth), then submits two to four steps the app runs directly, such as a focused naming
+ round on the pair they keep mixing up, a practice set on the trap that keeps catching them,
+ and Daily LockIn. Every id in a plan is checked against the catalog, and a bad plan goes back
+ to Claude to fix rather than reaching the student. Sonnet 5.5, one plan costs one unit of the
+ daily AI allowance, at most three plans a day.
 - **An AI tutor** for "explain this a different way," follow-up questions on a problem, and a
  coaching note written from the student's own trap data. Haiku 5.5 handles conversation;
  Sonnet 5.5 handles the reasoning-heavy tasks. The API key lives in a server-side function,
@@ -180,13 +187,17 @@ checkout. Setup is Part 4 of [SETUP-CLOUD.md](SETUP-CLOUD.md).
 
 Two things worth deciding before you sell widely:
 
-- **Nothing is locked yet.** The server knows who paid and the app shows it, but every feature
- still works for everyone. What the free tier includes is a product decision, and it comes
- before any lock.
-- **The AI features cost you money per use.** Pasted-question classification and question
- generation call the Anthropic API on your key. The server caps usage per student per day
- (`AI_DAILY_LIMIT`, 40 by default), so the exposure is bounded, but a one-time price against a
- recurring cost is a margin question, not a technical one.
+- **What is free.** Once the server takes payments, Daily LockIn and one Name the move round a
+ day are free, signed in or not. More rounds, practice sets, the coach, the tutor, and pasting a
+ question need the purchase. The question bank ships inside the page, so the lock on rounds and
+ practice sets is honest rather than unbreakable; the AI, which is what costs money, is enforced
+ by the server. A copy opened from disk, or a server with no `STRIPE_WEBHOOK_SECRET`, stays
+ fully open.
+- **The AI features cost you money per use.** The coach, pasted-question classification and
+ question generation call the Anthropic API on your key. With payments on, only buyers reach
+ them, and the server caps each one per day (`AI_DAILY_LIMIT`, 40 by default; the coach at
+ three plans), so the exposure per buyer is bounded. A one-time price against a recurring cost
+ is still a margin question worth watching in the Anthropic console.
 
 ## Deploying
 
@@ -244,6 +255,7 @@ lib/auth.js                   sign in with an emailed one-time code
 lib/mail.js                   sending that code, via Microsoft Graph or Resend
 lib/routes.js                 the JSON API: sync, classes, roster, approvals
 lib/billing.js                the signed Stripe webhook and who has paid
+lib/coach.js                  the coach agent: its tools, the plan check, and the loop
 build-single-file.py bundles everything into dist/sat-lockin.html
 ```
 
@@ -321,7 +333,10 @@ colors stay fixed, on purpose.
 - against a throwaway Postgres: sign-in codes cap at six guesses and sign in once under a race,
   no account can overwrite another's rows, the naming record syncs without duplicates, only a
   correctly signed and recent payment webhook marks an account paid (and a full refund unmarks
-  it), class joins wait for the teacher, and CORS answers only listed origins
+  it), class joins wait for the teacher, CORS answers only listed origins, and the coach agent
+  runs its full tool loop against a scripted stand-in for the Anthropic API: the right model and
+  settings, the tools fed real student data, a bad plan bounced back and fixed, the purchase and
+  daily limits held, and nothing charged when a call fails
 
 Run the same checks locally with `npm run verify` and, given a scratch database,
 `npm run itest`.

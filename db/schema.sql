@@ -169,3 +169,18 @@ create table if not exists purchases (
 );
 create index if not exists purchases_email_idx on purchases (lower(email));
 create index if not exists purchases_user_idx on purchases (user_id);
+
+-- ---------- the coach's daily plans ----------
+-- One row per plan the coach agent writes. `day` is the student's own date,
+-- so it lines up with their Daily LockIn. A few per day at most (the server
+-- caps it), kept so the coach can see yesterday's plan and vary today's.
+create table if not exists coach_plans (
+  id          bigserial primary key,
+  user_id     uuid not null references users (id) on delete cascade,
+  day         date not null,
+  plan        jsonb not null,
+  model       text,
+  turns       int,
+  created_at  timestamptz not null default now()
+);
+create index if not exists coach_user_day_idx on coach_plans (user_id, day desc);

@@ -188,6 +188,131 @@
     /* The app is two catalogs and a daily loop through them, so home is:
        today's one question, the two lists, and the way back in from a real
        practice test. Nothing else gets to compete. */
+    /* ============================================================
+       ACCESS
+       Free: Daily LockIn and one Name the move round a day. Everything
+       else (more rounds, practice sets, the AI) comes with the purchase.
+       Only when the server takes payments: a copy opened from disk, or a
+       teacher's server with no checkout, stays fully open.
+
+       The question bank ships in the page, so this lock is honest rather
+       than unbreakable. The part that costs money, the AI, is enforced by
+       the server.
+       ============================================================ */
+    var FREE_KEY = 'lockin.free.v1';
+    function mustPay() {
+      var C = window.Cloud;
+      return !!(C && C.payments && !C.paid());
+    }
+    function freeRoundsLeft() {
+      var d = {};
+      try { d = JSON.parse(localStorage.getItem(FREE_KEY)) || {}; } catch (e) {}
+      return d.day === window.Daily.todayKey() ? Math.max(0, 1 - (d.rounds || 0)) : 1;
+    }
+    function useFreeRound() {
+      try { localStorage.setItem(FREE_KEY, JSON.stringify({ day: window.Daily.todayKey(), rounds: 1 })); } catch (e) {}
+    }
+    /* kind: 'round' | 'practice' | 'ai'. True when it may go ahead. */
+    function allowed(kind) {
+      if (!mustPay()) return true;
+      if (kind === 'round' && freeRoundsLeft() > 0) { useFreeRound(); return true; }
+      APP.paywall(kind);
+      return false;
+    }
+
+    function paywallHTML(kind) {
+      var C = window.Cloud, cfg = window.CONFIG || {};
+      var price = cfg.price || '$14.99';
+      var url = String(cfg.checkoutUrl || '').trim();
+      var lead = kind === 'round'
+        ? 'That was today’s free round. Daily LockIn is still yours every day.'
+        : kind === 'ai'
+          ? 'The coach and the tutor come with the full version.'
+          : 'Practice sets come with the full version.';
+      var h = '<div class="paywall"><p>' + lead + '</p>' +
+      '<p>The full version is one payment of <strong>' + esc(price) + '</strong>, with no subscription:</p>' +
+      '<ul class="p-list">' +
+      '<li>' + ic('check') + 'As many Name the move rounds as you want</li>' +
+      '<li>' + ic('check') + 'Practice sets on every move and every trap</li>' +
+      '<li>' + ic('check') + 'A coach that plans each day from what you miss</li>' +
+      '<li>' + ic('check') + 'Paste a Bluebook miss and get the move and the trap</li>' +
+      '</ul><div class="card-actions">';
+      if (url) h += '<a class="btn" href="' + esc(checkoutLink(url)) + '" rel="noopener">Get it for ' + esc(price) + '</a>';
+      else h += '<button class="btn" disabled>Checkout is not connected yet</button>';
+      h += '<button class="btn subtle" onclick="APP.closeModal()">Not now</button></div>';
+      if (C && C.enabled && !C.signedIn()) {
+        h += '<p class="note" style="margin-top:12px">Already bought it? <button class="link-btn" onclick="APP.closeModal();APP.signIn()">' +
+        'Sign in with the email you paid with</button>.</p>';
+      } else if (C && C.signedIn()) {
+        h += '<p class="note" style="margin-top:12px">Just paid? <button class="link-btn" onclick="APP.recheckPurchase()">Check again</button>. ' +
+        'If you paid with a different email, sign in with that one.</p>';
+      }
+      return h + '</div>';
+    }
+
+    /* ---------- the coach ---------- */
+    var coach = { day: null, loading: false, busy: false, plan: null, left: 0, err: '', open: false };
+    var COACH_DONE = 'lockin.coach.done.v1';
+    function coachOn() {
+      var C = window.Cloud;
+      return !!(C && C.coach && C.signedIn() && !mustPay());
+    }
+    function coachDone() {
+      try { return JSON.parse(localStorage.getItem(COACH_DONE)) || {}; } catch (e) { return {}; }
+    }
+    function loadCoach() {
+      var today = window.Daily.todayKey();
+      if (coach.day === today || coach.loading) return;
+      coach.loading = true; coach.day = today;
+      window.Cloud.coachToday(today).then(function (d) {
+          coach.plan = d.plan; coach.left = d.left; coach.loading = false;
+          if (view === 'home') render();
+      }).catch(function () { coach.loading = false; });
+    }
+    function stepLabel(st) {
+      var sec = { rw: 'Reading and Writing', math: 'Math', mixed: 'both sections' };
+      switch (st.action) {
+        case 'name_round': return 'Name the move: eight questions, ' + (sec[st.target] || 'both sections');
+        case 'name_focus': return 'Name the move: ' + stratName(st.target) + ' against its look-alikes';
+        case 'practice_move': return 'Practice: ' + stratName(st.target);
+        case 'practice_trap': return 'Practice against: ' + (window.TRAPS[st.target] ? window.TRAPS[st.target].name : st.target);
+        case 'daily': return 'Daily LockIn';
+      }
+      return st.action;
+    }
+    function coachHTML() {
+      if (!coachOn()) return '';
+      loadCoach();
+      var h = '<div class="card coach-card"><div class="coach-head">' + ic('target') + '<span>Your coach</span></div>';
+      if (coach.loading && !coach.plan) return h + '<p class="note">Loading today’s plan&hellip;</p></div>';
+      if (coach.busy) {
+        return h + '<p>Reading your record: the moves you name, the ones you mix up, and the traps that catch you&hellip;</p>' +
+        '<p class="note">This takes about half a minute.</p></div>';
+      }
+      if (coach.plan && !coach.open) {
+        var p = coach.plan, done = coachDone()[p.id] || [];
+        h += '<h3>' + esc(p.headline) + '</h3><p>' + esc(p.note) + '</p><ol class="coach-steps">';
+        p.steps.forEach(function (st, i) {
+            var did = done.indexOf(i) >= 0;
+            h += '<li class="' + (did ? 'did' : '') + '"><div><div class="cs-name">' + esc(stepLabel(st)) + '</div>' +
+            '<div class="note">' + esc(st.why) + '</div></div>' +
+            '<button class="btn sm' + (did ? ' subtle' : '') + '" onclick="APP.coachStep(' + i + ')">' + (did ? 'Again' : 'Start') + '</button></li>';
+        });
+        h += '</ol>';
+        if (coach.left > 0) h += '<p class="note"><button class="link-btn" onclick="APP.coachAgain()">Plan again</button> ' +
+        '(' + coach.left + ' left today), for example after a round changes things.</p>';
+        if (coach.err) h += '<p class="auth-err">' + esc(coach.err) + '</p>';
+        return h + '</div>';
+      }
+      h += '<p>Your coach reads what you name, what you mix up, and which traps catch you, then plans today’s twenty minutes.</p>' +
+      '<label class="fld"><span>Anything it should know? Optional</span>' +
+      '<input id="coach-note" maxlength="300" placeholder="My test is Saturday. Math worries me more."></label>' +
+      '<div class="card-actions"><button class="btn" onclick="APP.coachPlan()">Plan my day</button>' +
+      (coach.plan ? '<button class="btn subtle" onclick="APP.coachCancel()">Keep the current plan</button>' : '') + '</div>';
+      if (coach.err) h += '<p class="auth-err">' + esc(coach.err) + '</p>';
+      return h + '</div>';
+    }
+
     function homeHTML() {
       var d = window.Store.data();
       var sum = window.Store.coverageSummary();
@@ -214,13 +339,16 @@
       h += '</div></div>';
 
       h += dailyHTML();
+      h += coachHTML();
 
       var ss = window.Spot.summary();
       h += '<button class="paste-entry spot-entry" onclick="APP.go(\'spot\')">' +
       '<div class="pe-icon">' + ic('target') + '</div><div>' +
       '<div class="pe-name">Name the move</div>' +
       '<div class="pe-sub">Eight unlabeled questions. Name the strategy each one wants before you solve it.' +
-      (ss.seen ? ' You name ' + ss.solid + ' of ' + ss.total + ' reliably.' : '') + '</div></div></button>';
+      (ss.seen ? ' You name ' + ss.solid + ' of ' + ss.total + ' reliably.' : '') +
+      (mustPay() ? (freeRoundsLeft() ? ' One free round today.' : ' Today\u2019s free round is used.') : '') +
+      '</div></div></button>';
 
       h += '<div class="two-up">';
       h += '<button class="big-entry" onclick="APP.go(\'strategies\')">' +
@@ -348,6 +476,7 @@
     }
 
     function askTutor(task, prompt, context) {
+      if (!allowed('ai')) return;
       var box = document.getElementById('ai-thread');
       if (box) {
         box.innerHTML += '<div class="ai-you">' + esc(prompt) + '</div>' +
@@ -1889,6 +2018,7 @@
         toast('Added to your lists');
       },
       azRun: function () {
+        if (!allowed('ai')) return;
         var box = document.getElementById('az-text');
         if (box) az.text = box.value;
         var pk = document.getElementById('az-picked');
@@ -1984,6 +2114,7 @@
         window.Generate.gapPlan = saved;
       },
       runGenerate: function (opts, target) {
+        if (!allowed('ai')) return;
         var meta = target.kind === 'strat' ? window.STRATS[target.id] : window.TRAPS[target.id];
         openModal('Writing questions',
           '<p>Asking Claude for ' + opts.count + ' questions aimed at <strong>' + (meta ? meta.name : target.id) +
@@ -2171,13 +2302,55 @@
       },
 
       /* ---------- name the move ---------- */
+      paywall: function (kind) {
+        openModal(kind === 'round' ? 'Today\u2019s free round is done' : 'Full version', paywallHTML(kind));
+      },
+      recheckPurchase: function () {
+        toast('Checking\u2026');
+        window.Cloud.pullAll().then(function () {
+            closeModal(); render();
+            toast(window.Cloud.paid() ? 'Purchase found. Everything is unlocked.' : 'No purchase on this account yet.');
+        });
+      },
+      coachPlan: function () {
+        var el = document.getElementById('coach-note');
+        var note = el ? el.value.trim() : '';
+        coach.busy = true; coach.err = ''; render();
+        /* The coach reads the server's copy of the record, so send anything
+           still waiting first. */
+        window.Cloud.flushQueue().then(function () {
+            return window.Cloud.coachPlan(window.Daily.todayKey(), note);
+        }).then(function (d) {
+            coach.busy = false; coach.open = false; coach.plan = d.plan; coach.left = d.left; render();
+        }).catch(function (e) {
+            coach.busy = false;
+            if (e.purchase) { render(); APP.paywall('ai'); return; }
+            coach.err = e.message || 'The coach could not make a plan.'; render();
+        });
+      },
+      coachAgain: function () { coach.open = true; coach.err = ''; render(); },
+      coachCancel: function () { coach.open = false; render(); },
+      coachStep: function (i) {
+        var p = coach.plan; if (!p || !p.steps[i]) return;
+        var st = p.steps[i];
+        var all = coachDone();
+        all[p.id] = (all[p.id] || []).filter(function (x) { return x !== i; }).concat([i]);
+        try { localStorage.setItem(COACH_DONE, JSON.stringify(all)); } catch (e) {}
+        if (st.action === 'name_round') APP.spotStart(st.target === 'mixed' ? undefined : st.target);
+        else if (st.action === 'name_focus') APP.spotFocus(st.target);
+        else if (st.action === 'practice_move') APP.drillStrat(st.target);
+        else if (st.action === 'practice_trap') APP.drillTrap(st.target);
+        else if (st.action === 'daily') APP.startDaily();
+      },
       spotStart: function (section) {
+        if (!allowed('round')) return;
         var round = window.Spot.build({ section: section || undefined });
         if (!round.items.length) { toast('No questions available for that'); return; }
         spot = { round: round, phase: 'ask', step: 0, answer: false, daily: null };
         view = 'spot'; render();
       },
       spotFocus: function (id) {
+        if (!allowed('round')) return;
         var round = window.Spot.build({ focus: id });
         if (!round.items.length) { toast('No questions for that move'); return; }
         spot = { round: round, phase: 'ask', step: 0, answer: false, daily: null };
@@ -2235,6 +2408,7 @@
       },
 
       drillTrap: function (trapId) {
+        if (!allowed('practice')) return;
         var pool = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) {
             var t = window.tagsFor(q).traps;
             return Object.keys(t).some(function (k) { return t[k] === trapId; });
@@ -2275,6 +2449,7 @@
         openModal('Daily LockIn', detailHTML(res.qid, { peek: true }));
       },
       drillStrat: function (stratId) {
+        if (!allowed('practice')) return;
         var pool = window.RW_BANK.concat(window.MATH_BANK).filter(function (q) { return window.tagsFor(q).strat === stratId; });
         if (!pool.length) { toast('No questions for that strategy'); return; }
         closeModal();
@@ -2469,6 +2644,7 @@
       /* The set the calculator page promises: every question the page cites as
          faster on the graph, not just the four tagged with the move. */
       drillDesmos: function () {
+        if (!allowed('practice')) return;
         var ids = desmosExampleIds();
         if (!ids.length) { toast('No examples available'); return; }
         closeModal();

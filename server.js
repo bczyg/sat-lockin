@@ -24,6 +24,7 @@ import * as db from './lib/db.js';
 import * as api from './lib/routes.js';
 import * as auth from './lib/auth.js';
 import * as billing from './lib/billing.js';
+import * as coach from './lib/coach.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8080;
@@ -319,6 +320,15 @@ async function identify(req) {
 }
 
 
+/* Once the server takes payments, the AI is part of what is paid for: it
+   costs real money per call and the price is paid once. COMP_EMAILS count
+   as paid. With payments off (a teacher running this for one class) the AI
+   stays open to every signed-in student, as before. */
+function needsPurchase(user) {
+  return billing.configured() && (user.anon || !user.paid);
+}
+const PURCHASE_ERROR = 'The coach and the tutor come with the full version.';
+
 /* Claim one unit before the model call. Claiming first, atomically, is what
    stops a burst of parallel requests from all passing the cap. */
 async function claimUsage(user) {
@@ -342,6 +352,7 @@ async function handleTutor(req, res) {
   catch (e) { return send(res, e.status || 401, { error: e.message }); }
 
   const cap = user.anon ? ANON_DAILY_BUDGET : DAILY_LIMIT;
+  if (needsPurchase(user)) return send(res, 402, { error: PURCHASE_ERROR, purchase: true });
 
   let body;
   try { body = await readJSON(req); }
@@ -420,6 +431,66 @@ async function handleTutor(req, res) {
   }
 }
 
+/* ---------------- the coach agent ----------------
+   POST /api/coach/today  {today}        today's latest plan, no model call
+   POST /api/coach/plan   {today, note}  run the agent and save a new plan */
+async function handleCoach(req, res, url) {
+  if (!db.available()) return send(res, 503, { error: 'The coach needs accounts, so a database must be attached.' });
+  let user;
+  try {
+    const h = req.headers.authorization || '';
+    user = h.startsWith('Bearer ') ? await auth.userForToken(h.slice(7)) : null;
+  } catch { return send(res, 503, { error: 'The coach is unavailable for a moment.' }); }
+  if (!user) return send(res, 401, { error: 'Sign in first.' });
+
+  let body;
+  try { body = await readJSON(req); }
+  catch { return send(res, 400, { error: 'Bad request body.' }); }
+  const today = coach.studentDay(body.today);
+
+  if (needsPurchase(user)) return send(res, 402, { error: PURCHASE_ERROR, purchase: true });
+  const existing = await coach.plansToday(user.id, today);
+  const left = Math.max(0, coach.PLANS_PER_DAY - existing.length);
+
+  if (url === '/api/coach/today') {
+    const latest = existing[0];
+    return send(res, 200, {
+      plan: latest ? { id: String(latest.id), created_at: latest.created_at, ...latest.plan } : null,
+      left, available: !!ANTHROPIC_KEY
+    });
+  }
+
+  if (!ANTHROPIC_KEY) return send(res, 503, { error: 'The coach is not configured. ANTHROPIC_API_KEY is not set.' });
+  if (!left) return send(res, 429, { error: `That is ${coach.PLANS_PER_DAY} plans today. Work this one and the coach is back tomorrow.` });
+
+  let used;
+  try { used = await claimUsage(user); }
+  catch { return send(res, 503, { error: 'The coach is unavailable for a moment. Try again shortly.' }); }
+  if (used > DAILY_LIMIT) {
+    await releaseUsage(user);
+    return send(res, 429, { error: `Today's ${DAILY_LIMIT} AI requests are used up. It resets tomorrow.` });
+  }
+
+  const client = await getClient();
+  if (!client) {
+    await releaseUsage(user);
+    return send(res, 500, { error: 'The Anthropic SDK is not installed on the server. Run npm install.' });
+  }
+
+  try {
+    const out = await coach.plan({ client, model: CAREFUL_MODEL, userId: user.id, today, note: body.note });
+    const saved = await coach.savePlan(user.id, today, out.plan, { model: CAREFUL_MODEL, turns: out.turns });
+    console.log('[coach] plan', user.id, 'turns', out.turns, 'tokens', JSON.stringify(out.usage));
+    return send(res, 200, { plan: saved, left: left - 1, remaining: Math.max(0, DAILY_LIMIT - used) });
+  } catch (err) {
+    await releaseUsage(user);
+    const status = err?.status ?? 500;
+    if (status === 429) return send(res, 429, { error: 'The coach is busy right now. Try again in a moment.' });
+    console.error('[coach] failed', status, err?.message);
+    return send(res, 502, { error: 'The coach could not make a plan just now. Try again in a moment.' });
+  }
+}
+
 /* ---------------- routing ---------------- */
 const server = http.createServer(async (req, res) => {
   const url = req.url.split('?')[0];
@@ -440,7 +511,8 @@ const server = http.createServer(async (req, res) => {
       mail: mailConfigured,
       mailProvider: mailStatus.provider,
       payments: billing.configured(),
-      tutor: !!ANTHROPIC_KEY
+      tutor: !!ANTHROPIC_KEY,
+      coach: !!ANTHROPIC_KEY && db.available()
     });
   }
 
@@ -467,6 +539,14 @@ const server = http.createServer(async (req, res) => {
       console.error('[billing] failed', e?.message);
       return send(res, 500, { error: 'Could not record that event.' });
     }
+  }
+
+  if (url === '/api/coach/today' || url === '/api/coach/plan') {
+    if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
+    return handleCoach(req, res, url).catch((e) => {
+      console.error('coach error', e?.message);
+      if (!res.headersSent) send(res, 500, { error: 'The coach could not answer that. Try again.' });
+    });
   }
 
   if (url === '/api/tutor') {

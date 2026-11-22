@@ -1058,12 +1058,12 @@ body{background:var(--shell-bg)}
 }
 .price .p-amt{font-size:46px;font-weight:800;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
 .price .p-sub{font-size:14px;color:var(--ink-soft);margin-top:8px}
-.price .p-list{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:11px}
-.price .p-list li{
+.price .p-list,.paywall .p-list{list-style:none;padding:0;margin:18px 0 22px;display:grid;gap:11px}
+.price .p-list li,.paywall .p-list li{
   display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;
   font-size:14.5px;line-height:1.5;
 }
-.price .p-list svg{width:18px;height:18px;color:var(--green);margin-top:1px}
+.price .p-list svg,.paywall .p-list svg{width:18px;height:18px;color:var(--green);margin-top:1px}
 .price .p-buy{display:block;width:100%;max-width:340px;margin:0 auto;text-align:center;text-decoration:none}
 .price .p-buy[disabled]{opacity:.55;cursor:not-allowed}
 .price .p-note{font-size:12.5px;color:var(--ink-soft);text-align:center;margin:12px 0 0;line-height:1.5}
@@ -1185,3 +1185,16 @@ ul.plain li{font-size:14.5px;line-height:1.6}
 .conf-row:last-child{border-bottom:0}
 .conf-row .n{color:var(--ink-soft);font-size:13px;margin-left:4px}
 @media (max-width:560px){.pend-row{flex-direction:column;align-items:flex-start}}
+
+/* the coach's plan on Home */
+.coach-card{margin:14px 0}
+.coach-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.coach-head svg{width:16px;height:16px}
+.coach-card h3{margin:0 0 6px}
+.coach-steps{list-style:none;padding:0;margin:14px 0 10px;counter-reset:cs}
+.coach-steps li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);counter-increment:cs}
+.coach-steps li > div{flex:1}
+.coach-steps .cs-name{font-weight:600}
+.coach-steps .cs-name::before{content:counter(cs) ". ";color:var(--ink-soft)}
+.coach-steps li.did .cs-name{color:var(--ink-soft);text-decoration:line-through}
+@media (max-width:560px){.coach-steps li{flex-direction:column;align-items:flex-start}}

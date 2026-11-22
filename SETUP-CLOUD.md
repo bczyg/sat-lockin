@@ -257,6 +257,7 @@ tell-apart: those two lists are the lesson plan. **Remove** takes a student out 
 | `naming_reps` | one row per "name the move" answer: which question, the move it wanted, the move named, and the Daily LockIn date if it was that day's question |
 | `generated_questions` | questions written by Claude, shared across the class |
 | `ai_usage` | a per-student daily counter, so nobody can run up the AI bill |
+| `coach_plans` | each plan the coach wrote: the day, the steps, and which model wrote it |
 | `purchases` | one row per payment: the provider's payment id, the email, the account if known, the amount, and a refund date |
 
 Access is enforced by the server, and every query is scoped to the caller. A student can read
@@ -296,6 +297,7 @@ Optional variables:
 
 | Feature | Where | Model |
 |---|---|---|
+| The coach: today's plan, from the student's own record | Home, **Your coach** | `claude-sonnet-5-5` |
 | "Explain it a different way" | after checking an answer in untimed practice, and in test review | `claude-haiku-5-5` |
 | Follow-up questions on a problem | same place | `claude-haiku-5-5` |
 | A coaching note from her own trap data | Diagnosis screen | `claude-sonnet-5-5` |
@@ -309,9 +311,21 @@ Generated questions land in `generated_questions`. Each student sees their own, 
 by classmates in the same class, so a class of thirty grows one shared bank instead of each student
 paying to regenerate the same material. It holds no personal data.
 
+The coach is an agent: a short tool loop in `lib/coach.js`. Claude gets the catalog in a system
+prompt that is identical for every student (so it caches across all of them) and three read-only
+tools over that one student's synced rows. It looks at what it needs and then submits a plan of
+two to four steps, each one an action the app already has. The server checks every id in the
+plan against the catalog and the bank; a bad plan goes back to Claude as a tool error to fix, so
+a student never gets a step that leads nowhere. Plans are saved in `coach_plans`, so reopening
+the app shows today's plan without another model call, and the coach can see yesterday's.
+
 Guardrails already in place:
 
-- Per-student daily cap, counted in the database.
+- Once payments are on, the AI is for buyers only, enforced by the server (a 402 for anyone
+  else).
+- Per-student daily cap, counted in the database. A coach plan counts as one request, and there
+  are at most three plans a day.
+- A failed model call gives back what it claimed, so an outage never eats a student's allowance.
 - The tutor is prompted to stay on the current question and decline anything else.
 - Student text is passed as data, not as instructions, so "ignore your instructions" gets
   nowhere useful.
@@ -350,8 +364,10 @@ Two things change once payments are on:
 - **Sign-in codes must be emailed.** Writing them to the log is fine while you test alone, but
   a buyer who cannot get a code cannot reach what they paid for, so the server refuses instead.
   Set up mail (2.3) first. `LOG_SIGNIN_CODES=true` overrides this on a staging copy.
-- **Nothing is locked yet.** The server knows who has paid, but every feature still works for
-  everyone. Deciding what the free tier is comes before switching any lock on.
+- **The free tier switches on.** Daily LockIn and one Name the move round a day stay free.
+  More rounds, practice sets, the coach, the tutor, and pasting a question show the price and
+  the buy button instead. Signed-in buyers, and `COMP_EMAILS`, get everything. A student who
+  paid while signed out signs in with the email on their receipt.
 
 ---
 
@@ -364,7 +380,7 @@ Two things change once payments are on:
 | Static hosting instead (Cloudflare Pages / Netlify / GitHub Pages) | Free |
 | Railway Postgres | Included in your Railway usage. Tiny for this data. |
 | Resend for sign-in emails | Free tier covers a class |
-| AI tutor | Anthropic API usage. A tutor answer on Haiku is a fraction of a cent; a Sonnet coaching note is a few cents. At 30 students × 40 requests/day the cap puts the ceiling around $10–20/month, and real usage is far below the cap. |
+| AI tutor and coach | Anthropic API usage. A tutor answer on Haiku is a fraction of a cent; a Sonnet coaching note or a coach plan is a few cents (a plan is three to five short calls, most of the prompt read from cache). At 30 students × 40 requests/day the cap puts the ceiling around $10–20/month, and real usage is far below the cap. |
 
 Set a monthly spend limit in the Anthropic console if you want a hard ceiling.
 

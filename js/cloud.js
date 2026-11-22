@@ -71,7 +71,12 @@
             self.saveSession(null);
             self.emit();
           }
-          if (!r.ok || d.error) throw new Error(d.error || 'That did not work.');
+          if (!r.ok || d.error) {
+            var err = new Error(d.error || 'That did not work.');
+            err.status = r.status;
+            err.purchase = !!d.purchase;
+            throw err;
+          }
           return d;
         });
       });
@@ -96,6 +101,7 @@
           self.aiEnabled = !!(d.tutor && d.accounts) || !!(d.tutor && CFG.allowAnonTutor);
           self.mail = !!d.mail;
           self.payments = !!d.payments;
+          self.coach = !!d.coach;
           if (self.enabled && self.signedIn()) {
             return self.afterSignIn().then(function () { return true; });
           }
@@ -330,6 +336,14 @@
       return this.post(CFG.tutorUrl || '/api/tutor', {
         task: task, prompt: prompt, context: context, model: chosen
       });
+    },
+
+    /* ---------------- the coach ---------------- */
+    coachToday: function (today) {
+      return this.post('/api/coach/today', { today: today });
+    },
+    coachPlan: function (today, note) {
+      return this.post('/api/coach/plan', { today: today, note: note || '' });
     },
 
     onLocalWrite: function () { /* hook kept for future incremental sync */ }
