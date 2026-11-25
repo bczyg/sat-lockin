@@ -506,7 +506,7 @@ window.TRAPS = {
     tell:'A real number from the correct work, just not the final one.',
     fix:'Ask "am I done?" and re-read the last line of the question before you commit.',
     felt:'I did the work right but stopped one step early' },
-  'wrong-target':   { fam:'partial', name:'Answered a different question',
+  'wrong-target':   { fam:'partial', name:'Solved for the wrong thing',
     tell:'Perfect work, wrong thing reported. x instead of x + y. The vertex x instead of the minimum value. The rate instead of the time.',
     fix:'Circle what is being asked for before you solve, then check your answer against that circle.',
     felt:'My math was right but I answered for the wrong quantity' },

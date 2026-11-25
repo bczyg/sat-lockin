@@ -665,6 +665,7 @@ table.data td:first-child{text-align:left;font-weight:600}
   display:inline-block;margin-right:6px;padding:1px 8px;border-radius:var(--r-pill);
   background:var(--accent-soft);color:var(--accent-ink);font-size:var(--fs-xs);font-weight:800;vertical-align:1px;
 }
+.trap-fix{display:block;margin-top:4px;color:var(--ink-2);font-size:var(--fs-sm)}
 
 /* ---------------- done ---------------- */
 .done-hero{text-align:center;padding:var(--s6) 0 var(--s2)}
@@ -922,7 +923,11 @@ details.trick[open] > *:not(summary){animation:rise .25s var(--ease) both}
 .demo-reveal p + p{margin-top:var(--s3);color:var(--ink-2)}
 .demo-steps{margin:var(--s3) 0 0;padding-left:1.25em;color:var(--ink);line-height:1.6}
 .demo-steps li + li{margin-top:var(--s2)}
-.demo-steps + p{margin-top:var(--s3);color:var(--ink-2)}
+.demo-part{margin-top:var(--s4);padding-top:var(--s3);border-top:1px solid var(--line)}
+.demo-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-ink);margin-bottom:var(--s2)}
+.demo-label span{font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink-2);margin-left:6px}
+.demo-reveal .demo-fix{margin-top:var(--s2);color:var(--ink)}
+.demo-reveal .demo-why{margin-top:var(--s4);color:var(--ink-2)}
 
 .how{margin-top:var(--s8)}
 .how h2,.landing .unlock-card h2{font-size:var(--fs-2xl);font-weight:800;letter-spacing:-.03em}
@@ -6800,7 +6805,7 @@ window.TRAPS = {
     tell:'A real number from the correct work, just not the final one.',
     fix:'Ask "am I done?" and re-read the last line of the question before you commit.',
     felt:'I did the work right but stopped one step early' },
-  'wrong-target':   { fam:'partial', name:'Answered a different question',
+  'wrong-target':   { fam:'partial', name:'Solved for the wrong thing',
     tell:'Perfect work, wrong thing reported. x instead of x + y. The vertex x instead of the minimum value. The rate instead of the time.',
     fix:'Circle what is being asked for before you solve, then check your answer against that circle.',
     felt:'My math was right but I answered for the wrong quantity' },
@@ -9314,7 +9319,8 @@ window.tagsFor = function (q) {
         Object.keys(q.traps).forEach(function (k) {
             var t = tg.traps[k] ? window.TRAPS[tg.traps[k]] : null;
             h += '<div class="trap"><b>' + LETTERS[+k] + '</b><div>' +
-              (t ? '<span class="trap-name">' + esc(t.name) + '</span>' : '') + q.traps[k] + '</div></div>';
+              (t ? '<span class="trap-name">' + esc(t.name) + '</span>' : '') + q.traps[k] +
+              (t ? '<span class="trap-fix"><b>Next time:</b> ' + esc(t.fix) + '</span>' : '') + '</div></div>';
         });
         h += '</div>';
       }
@@ -9692,18 +9698,24 @@ window.tagsFor = function (q) {
           ? (Object.keys(tg.traps).filter(function (x) { return tg.traps[x] === 'wrong-target'; })[0] || Object.keys(tg.traps)[0])
           : demo.picked;
         var tp = window.TRAPS[tg.traps[k]];
-        h += '<div class="demo-reveal">' + (demo.picked === q.answer
-          ? '<p><b>Right.</b> Now look at ' + LETTERS[k] + ', <b>' + q.choices[k] + '</b>. That is the number you get if you do the math right and stop one line early. It is there on purpose.</p>'
-          /* A wrong pick: say what that number actually is (the question's
-             own note for that choice), name the trap, then show the two
-             lines that get the right answer. No claims about what "most
-             people" pick: the same text shows for every wrong choice. */
-          : '<p><b>Not quite. The answer is ' + LETTERS[q.answer] + ', ' + q.choices[q.answer] + '.</b> ' +
-            'You picked ' + LETTERS[demo.picked] + ', ' + q.choices[demo.picked] + '. ' +
-            (q.traps && q.traps[demo.picked] ? q.traps[demo.picked] + ' ' : '') +
-            'It is a trap called <b>' + esc(tp.name) + '</b>, and the SAT puts it there on purpose.</p>' +
-            '<ol class="demo-steps">' + q.steps.slice(0, 2).map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>') +
-          '<p>Every SAT question wants one move, and every wrong answer is built to catch a specific slip. Learn the moves and the slips stop working.</p></div>';
+        var st = window.STRATS[tg.strat];
+        var right = demo.picked === q.answer;
+        /* A first-time visitor does not know our words yet, so the reveal
+           teaches them: the trap (why a wrong answer looked right, and how to
+           dodge it) and the move (the strategy the question tests), each in
+           plain words about THIS question. */
+        h += '<div class="demo-reveal">' +
+          '<p class="demo-verdict"><b>' + (right ? 'Right, it is ' : 'Not quite. The answer is ') +
+            LETTERS[q.answer] + ', ' + q.choices[q.answer] + '.</b></p>' +
+          '<div class="demo-part"><div class="demo-label">The trap <span>a wrong answer built to look right</span></div>' +
+            '<p><b>' + esc(tp.name) + '.</b> ' +
+            (right ? 'Look at ' + LETTERS[k] + ', ' + q.choices[k] + '. ' : 'You picked ' + LETTERS[k] + ', ' + q.choices[k] + '. ') +
+            (q.traps && q.traps[k] ? q.traps[k] + ' ' : '') + 'The SAT puts it there on purpose.</p>' +
+            '<p class="demo-fix"><b>Next time:</b> ' + esc(tp.fix) + '</p></div>' +
+          '<div class="demo-part"><div class="demo-label">The move <span>the strategy this question tests</span></div>' +
+            '<p><b>' + esc(st.name) + '.</b> ' + (q.strategy || esc(st.move)) + '</p>' +
+            '<ol class="demo-steps">' + q.steps.slice(0, 2).map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol></div>' +
+          '<p class="demo-why">Every SAT question tests one move, and every wrong answer is a trap built from a common slip. SAT LockIn trains you to spot both, so the traps stop working on you.</p></div>';
       }
       return h + '</div>';
     }
