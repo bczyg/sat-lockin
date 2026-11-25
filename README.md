@@ -75,7 +75,11 @@ than being confidently wrong in a timed module.
 
 One payment of **$14.99** unlocks everything. No subscription, no tiers, no ads.
 
-- **Daily LockIn is free forever**, with no account.
+- **Sign-in comes first.** When the server has accounts (a database), every screen except the
+  landing page and its one sample question needs an email sign-in. That gives every student an
+  email on file and progress that follows them. A copy opened from disk, or a server with no
+  database, has no accounts and stays open.
+- **Daily LockIn is free forever** with a free account.
 - **Everything else needs the purchase**: today's session, Practice more, practicing a move from
   its guide, and pasting a Bluebook question.
 - **But only when the server takes payments**, meaning `STRIPE_WEBHOOK_SECRET` is set. A copy
