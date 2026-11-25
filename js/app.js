@@ -131,7 +131,15 @@
       } catch (e) {}
       return null;
     }
-    function price() { return (window.CONFIG || {}).price || '$14.99'; }
+    function price() { return (window.CONFIG || {}).price || '$9.99'; }
+    /* The launch end date from config, while it is still ahead; else null. */
+    function launchEnds() {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String((window.CONFIG || {}).launchFreeUntil || ''));
+      if (!m) return null;
+      var d = new Date(+m[1], +m[2] - 1, +m[3]);
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      return d >= today ? d : null;
+    }
 
     /* ---------------- render dispatch ---------------- */
     /* A re-render of the same screen (the next step, the answer) keeps the
@@ -959,7 +967,13 @@
       /* Launch: until Stripe is set up on the server, everything is free and
          the page says so instead of quoting a price nobody can pay. */
       if (!(window.Cloud && window.Cloud.payments)) {
-        h += '<section class="unlock-card plain"><div class="uc-tag">' + ic('star') + 'Launch</div><h2>Free during launch</h2>' +
+        var ends = launchEnds();
+        h += '<section class="unlock-card plain"><div class="uc-tag">' + ic('star') + 'Launch</div>' +
+          (ends
+            ? '<h2><s class="was">' + esc(price()) + '</s> Free</h2><p class="uc-sub">Free until ' +
+              ends.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) +
+              '. Then ' + esc(price()) + ', one time. No subscription.</p>'
+            : '<h2>Free during launch</h2><p class="uc-sub">Then ' + esc(price()) + ', one time. No subscription.</p>') +
           '<ul class="ticks"><li>' + ic('check') + 'Everything is free: sign in with your email to start</li>' +
           '<li>' + ic('check') + 'A daily session, your coach, and your Bluebook misses explained</li>' +
           '<li>' + ic('check') + 'Your progress is saved to your account</li>' +

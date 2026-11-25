@@ -73,7 +73,7 @@ than being confidently wrong in a timed module.
 
 ## Price and what is free
 
-One payment of **$14.99** unlocks everything. No subscription, no tiers, no ads.
+One payment of **$9.99** unlocks everything. No subscription, no tiers, no ads.
 
 - **Sign-in comes first.** When the server has accounts (a database), every screen except the
   landing page and its one sample question needs an email sign-in. That gives every student an
@@ -99,7 +99,7 @@ all set**. On a new device, **Already bought it? Sign in** on the home screen ge
 The price and link live in `js/config.js`:
 
 ```js
-price: '$14.99',      // display text only, must match what the link charges
+price: '$9.99',      // display text only, must match what the link charges
 checkoutUrl: ''       // the Stripe Payment Link
 ```
 

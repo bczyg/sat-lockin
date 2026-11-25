@@ -43,6 +43,17 @@ window.CONFIG = {
      Leave it empty and the button says checkout is not connected yet rather
      than pretending to take a payment. This app never touches card details,
      which is the whole reason for handing off to a hosted checkout. */
-  price: '$14.99',
-  checkoutUrl: ''
+  price: '$9.99',
+  checkoutUrl: '',
+
+  /* The last free day of the launch, as 'YYYY-MM-DD'. While payments are off
+     and this date is still ahead, the landing page shows the price struck
+     through: "$9.99 Free, free until <date>". Leave it empty and the page
+     says "Free during launch, then $9.99" with no strikethrough.
+
+     Keep it honest: a struck-through price says "this is what it costs", so
+     only set a date you will actually start charging on, and switch payments
+     on (STRIPE_WEBHOOK_SECRET plus checkoutUrl) by then. Once the date has
+     passed the strikethrough disappears on its own. */
+  launchFreeUntil: ''
 };

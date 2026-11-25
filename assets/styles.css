@@ -379,6 +379,9 @@ p .link-btn,.small .link-btn{min-height:0;padding:6px 2px}
 .unlock-card .btn.primary{margin-top:var(--s5);width:100%}
 @media (min-width:560px){.unlock-card{padding:var(--s7)}.unlock-card .btn.primary{width:auto}}
 .unlock-card.plain{border-color:var(--line)}
+.unlock-card h2 .was{color:var(--ink-3);font-weight:700;text-decoration-thickness:.08em;margin-right:.25em}
+.unlock-card h2:has(+ .uc-sub){margin-bottom:var(--s2)}
+.uc-sub{margin:0 0 var(--s4);color:var(--ink-2);font-weight:600}
 
 .ticks{list-style:none;margin:0;padding:0;display:grid;gap:var(--s3)}
 .ticks li{display:flex;gap:var(--s3);align-items:flex-start;line-height:1.45;color:var(--ink-2)}

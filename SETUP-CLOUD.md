@@ -6,7 +6,7 @@ optional and adds:
 1. **Accounts**, so a student signs in with their email and their progress follows them across
    devices.
 2. **A database**, one place for every student's practice data.
-3. **Payments**, one $14.99 purchase that unlocks everything past Daily LockIn.
+3. **Payments**, one $9.99 purchase that unlocks everything past Daily LockIn.
 4. **The AI**: the coach that picks each student's questions, and "Missed one in Bluebook?".
 
 Budget: a Render Pro workspace (needed for the AI's keyless sign-in), a small web service, and
@@ -405,7 +405,7 @@ Guardrails already in place:
 
 ## Part 4: Taking payments (optional)
 
-One payment of $14.99 unlocks everything. Card details never touch this server: Stripe takes
+One payment of $9.99 unlocks everything. Card details never touch this server: Stripe takes
 the money, then calls a webhook to tell the server who paid. That signed call is the only thing
 that can mark an account as paid.
 
@@ -415,7 +415,7 @@ Then they are sent to your Stripe Payment Link, which carries their account id
 even if they type a different email at checkout. After paying, Stripe sends them back to the
 app, which confirms the purchase with the server and shows **You are all set**.
 
-1. 🔑 In Stripe, create a **Payment Link** for one payment of $14.99.
+1. 🔑 In Stripe, create a **Payment Link** for one payment of $9.99.
 2. 🔑 In that Payment Link's settings, under **After payment**, choose to redirect to your site
    and enter `https://<site>/?paid=1`, for example `https://satlockin.com/?paid=1`.
    **The `?paid=1` matters.** It is what tells the app to confirm the purchase and show "You
