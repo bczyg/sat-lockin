@@ -11,13 +11,14 @@
     "itest": "node scripts/integration-test.mjs",
     "bundle": "python3 build-single-file.py",
     "schema": "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f db/schema.sql",
-    "mailtest": "node scripts/mailtest.js"
+    "mailtest": "node scripts/mailtest.js",
+    "oidctest": "node scripts/oidc-test.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.68.0",
+    "@anthropic-ai/sdk": "^1.13.0",
     "pg": "^8.13.1"
   }
 }

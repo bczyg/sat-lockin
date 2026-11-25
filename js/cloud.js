@@ -26,7 +26,7 @@
     enabled: false,      // set true once the server reports a working database
     aiEnabled: false,    // set true once the server reports a tutor key
     session: null,       // { token, user }
-    profile: null,       // { id, email, display_name, role, class_code }
+    profile: null,       // { id, email, display_name, paid }
     lastError: null,
     ready: false,
     listeners: [],
@@ -138,7 +138,7 @@
         .then(function () { self.emit(); return true; });
     },
 
-    /* ---------------- profile and class ---------------- */
+    /* ---------------- profile ---------------- */
     updateProfile: function (patch) {
       var self = this;
       return this.post('/api/me/update', patch).then(function (d) {
@@ -147,43 +147,6 @@
         self.emit();
         return d.user;
       });
-    },
-
-    joinClass: function (code) { return this.updateProfile({ class_code: code }); },
-
-    createClass: function (name, code) {
-      var self = this;
-      return this.post('/api/class/create', { name: name, code: code }).then(function (d) {
-        self.profile = d.user;
-        if (self.session) { self.session.user = d.user; self.saveSession(self.session); }
-        self.emit();
-        return d;
-      });
-    },
-
-    _classCache: null,
-    _classFetch: function () {
-      var self = this;
-      if (this._classCache && Date.now() - this._classCache.at < 4000) {
-        return Promise.resolve(this._classCache.data);
-      }
-      return this.post('/api/class/roster', {}).then(function (d) {
-        self._classCache = { at: Date.now(), data: d };
-        return d;
-      });
-    },
-    classRoster: function () {
-      return this._classFetch().then(function (d) { return d.roster || []; });
-    },
-    classTraps: function () {
-      return this._classFetch().then(function (d) { return d.traps || []; });
-    },
-    classData: function () {
-      return this._classFetch();
-    },
-    classDecide: function (studentId, approve) {
-      this._classCache = null;
-      return this.post('/api/class/decide', { student_id: studentId, approve: !!approve });
     },
 
     /* Has this account paid? Only the server can say, and only a signed
@@ -230,16 +193,6 @@
       });
     },
 
-    pushGenerated: function (list) {
-      var self = this;
-      if (!list || !list.length) return;
-      if (!this.enabled || !this.signedIn()) return;
-      this.post('/api/generated', { questions: list }).catch(function (err) {
-        self.lastError = String(err.message || err);
-        self.queue('generated', list);
-      });
-    },
-
     pushNaming: function (reps) {
       var self = this;
       if (!reps || !reps.length) return;
@@ -259,7 +212,7 @@
          has, so this is cheap and makes the first sign-in on a device carry
          that device's history up. */
       var reps = global.Spot ? global.Spot.reps() : q.naming;
-      if (!q.events.length && !q.attempts.length && !q.generated.length && !reps.length) return Promise.resolve();
+      if (!q.events.length && !q.attempts.length && !reps.length) return Promise.resolve();
       var jobs = [];
       for (var i = 0; i < reps.length; i += 2000) {
         jobs.push(this.post('/api/sync/naming', { reps: reps.slice(i, i + 2000) }));
@@ -268,7 +221,6 @@
       (q.attempts || []).forEach(function (a) {
         jobs.push(self.post('/api/sync/attempt', { attempt: a }));
       });
-      if ((q.generated || []).length) jobs.push(this.post('/api/generated', { questions: q.generated }));
       return Promise.all(jobs).then(function () { self.clearQueue(); })
         .catch(function (err) { self.lastError = String(err.message || err); });
     },
@@ -312,22 +264,10 @@
           }
         }
 
-        if ((d.generated || []).length && global.Generate) {
-          var mine = {};
-          global.Generate.stored().forEach(function (q) { mine[q.id] = 1; });
-          var fresh = d.generated.filter(function (q) { return q && q.id && !mine[q.id]; });
-          if (fresh.length) {
-            global.Generate.save(global.Generate.stored().concat(fresh));
-            global.Generate.install();
-          }
-        }
         return true;
       }).catch(function (err) { self.lastError = String(err.message || err); });
     },
 
-    /* kept so callers written against the older shape still work */
-    pullGenerated: function () { return Promise.resolve(0); },
-    fetchProfile: function () { return Promise.resolve(this.profile); },
 
     /* ---------------- AI tutor ---------------- */
     ask: function (task, prompt, context, model) {
@@ -342,8 +282,9 @@
     coachToday: function (today) {
       return this.post('/api/coach/today', { today: today });
     },
-    coachPlan: function (today, note) {
-      return this.post('/api/coach/plan', { today: today, note: note || '' });
+    /* The coach prepares the next session in the background. */
+    coachPrepare: function (today) {
+      return this.post('/api/coach/prepare', { today: today });
     },
 
     onLocalWrite: function () { /* hook kept for future incremental sync */ }

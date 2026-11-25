@@ -126,6 +126,8 @@
       /* Prefer something she has never answered, then something no previous
          daily has used, then anything rather than nothing. */
       var seen = global.Store.seenCount();
+      /* Questions named in a session count as seen too. */
+      if (global.Spot) global.Spot.reps().forEach(function (r) { if (r.qid) seen[r.qid] = (seen[r.qid] || 0) + 1; });
       var usedByDaily = {};
       var hist = this.all();
       Object.keys(hist).forEach(function (k) { if (hist[k].qid) usedByDaily[hist[k].qid] = 1; });
