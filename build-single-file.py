@@ -7,7 +7,7 @@ host declares -- a bundled fragment cannot carry its own <meta charset>.
 
 Re-run after editing any source file:  python3 build-single-file.py
 """
-import os, re, pathlib
+import base64, os, re, pathlib
 
 ROOT = pathlib.Path(__file__).parent
 
@@ -47,7 +47,9 @@ def css_escape(text):
 index = read('index.html')
 body = index.split('<body>', 1)[1].split('<script src', 1)[0]
 
+icon = 'data:image/svg+xml;base64,' + base64.b64encode(read('assets/favicon.svg').encode('utf-8')).decode('ascii')
 parts = ['<title>SAT LockIn</title>',
+         '<link rel="icon" type="image/svg+xml" href="' + icon + '">',
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
          'family=Outfit:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">',
          '<style>', css_escape(read('assets/styles.css')), '</style>',
