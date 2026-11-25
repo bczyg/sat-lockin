@@ -139,6 +139,10 @@
        starts at the top, or at the verdict once a move is named. */
     var lastScreen = '';
     function render() {
+      if (needSignIn() && view !== 'landing' && view !== 'unlock') {
+        view = 'unlock'; unlock.signinOnly = true; unlock.err = '';
+        if (unlock.stage !== 'code') unlock.stage = 'email';
+      }
       var key = view + (view === 'session' && sess ? ':' + sess.round.i + ':' + sess.phase : '');
       var same = key === lastScreen;
       lastScreen = key;
@@ -184,6 +188,19 @@
       if (full()) return true;
       APP.unlock();
       return false;
+    }
+    /* Sign-in comes first: nobody practices without an account, so every
+       student has an email on file and progress that follows them. Only the
+       landing page and the sign-in screen are open. While the first health
+       check is still out, a server copy counts as gated so the home screen
+       never flashes; with no server (opened from disk, or the server down)
+       there are no accounts, so the app stays open. */
+    function needSignIn() {
+      var C = window.Cloud;
+      if (!C || C.signedIn()) return false;
+      if (C.enabled) return true;
+      if (C.ready) return false;
+      return location.protocol !== 'file:' || !!(window.CONFIG || {}).apiUrl;
     }
 
     /* ============================================================
@@ -610,8 +627,8 @@
     /* ============================================================
        ALL THE MOVES
        ============================================================ */
-    function pageHead(title, sub) {
-      return '<header class="page-head"><button class="icon-btn" aria-label="Back" onclick="APP.go(\'home\')">' + ic('back') + '</button>' +
+    function pageHead(title, sub, back) {
+      return '<header class="page-head"><button class="icon-btn" aria-label="Back" onclick="APP.go(\'' + (back || 'home') + '\')">' + ic('back') + '</button>' +
         '<div><h1>' + title + '</h1>' + (sub ? '<p>' + sub + '</p>' : '') + '</div></header>';
     }
 
@@ -820,8 +837,12 @@
     function unlockHTML() {
       var C = window.Cloud;
       var url = String((window.CONFIG || {}).checkoutUrl || '').trim();
-      var h = '<div class="page unlock">' + pageHead(unlock.signinOnly ? 'Sign in' : 'Unlock SAT LockIn', '');
+      var gated = needSignIn();
+      var h = '<div class="page unlock">' + pageHead(unlock.signinOnly ? (gated ? 'Sign in to start' : 'Sign in') : 'Unlock SAT LockIn', '', gated ? 'landing' : 'home');
       h += '<section class="unlock-box">';
+      if (gated && unlock.signinOnly && unlock.stage !== 'code') {
+        h += '<p class="muted">Enter your email and we will send you a 6-digit code. Your progress, streak and coach are saved to your account, so they follow you to any phone or laptop.</p>';
+      }
 
       if (unlock.stage === 'confirming') {
         h += '<div class="hc-done spin">' + ic('spark') + '</div><h2>Finishing up&hellip;</h2>' +
@@ -925,7 +946,7 @@
       h += '<section class="land-hero"><h1>Spot the move.<br><span>Then solve it.</span></h1>' +
         '<p class="lead">On the SAT nobody tells you which strategy a question wants. SAT LockIn trains exactly that: ' +
         'read the question, name the move, work it. Ten minutes a day.</p>' +
-        '<div class="actions left"><button class="btn primary xl" onclick="APP.go(\'home\')">' + (started ? 'Back to practice' : 'Try today’s question free') + ' ' + ic('arrow') + '</button>' +
+        '<div class="actions left"><button class="btn primary xl" onclick="APP.go(\'home\')">' + (needSignIn() ? 'Start free with your email' : started ? 'Back to practice' : 'Try today’s question free') + ' ' + ic('arrow') + '</button>' +
         (full() ? '' : '<button class="btn soft xl" onclick="APP.unlock()">Unlock everything, ' + esc(price()) + '</button>') + '</div></section>';
 
       h += demoHTML();
@@ -939,12 +960,13 @@
          the page says so instead of quoting a price nobody can pay. */
       if (!(window.Cloud && window.Cloud.payments)) {
         h += '<section class="unlock-card plain"><div class="uc-tag">' + ic('star') + 'Launch</div><h2>Free during launch</h2>' +
-          '<ul class="ticks"><li>' + ic('check') + 'Daily LockIn is free, no account needed</li>' +
-          '<li>' + ic('check') + 'Sign in with your email to get your coach and paste your Bluebook misses</li>' +
+          '<ul class="ticks"><li>' + ic('check') + 'Everything is free: sign in with your email to start</li>' +
+          '<li>' + ic('check') + 'A daily session, your coach, and your Bluebook misses explained</li>' +
+          '<li>' + ic('check') + 'Your progress is saved to your account</li>' +
           '<li>' + ic('check') + 'Works on a phone or a laptop</li></ul></section>';
       } else
       h += '<section class="unlock-card plain"><div class="uc-tag">' + ic('star') + 'One price</div><h2>' + esc(price()) + ', once</h2>' +
-        '<ul class="ticks"><li>' + ic('check') + 'Daily LockIn is free forever, no account needed</li>' +
+        '<ul class="ticks"><li>' + ic('check') + 'Daily LockIn is free forever with a free account</li>' +
         '<li>' + ic('check') + 'One payment unlocks everything else. No subscription, no ads.</li>' +
         '<li>' + ic('check') + 'Works on a phone or a laptop</li></ul>' +
         (full() ? '' : '<button class="btn primary" onclick="APP.unlock()">Unlock for ' + esc(price()) + '</button>') + '</section>';
@@ -1135,7 +1157,7 @@
         openModal('Account', h);
       },
       signOut: function () {
-        window.Cloud.signOut().then(function () { closeModal(); coach = { day: null, session: null, left: 0, busy: false }; view = 'home'; render(); toast('Signed out'); });
+        window.Cloud.signOut().then(function () { closeModal(); coach = { day: null, session: null, left: 0, busy: false }; view = 'landing'; render(); toast('Signed out'); });
       },
       resetData: function () {
         openModal('Clear your progress?', '<p>This deletes your naming record, your streak, and your daily history in this browser. It cannot be undone.</p>' +
