@@ -1,15 +1,12 @@
 /* ============================================================
-   SAT PrepMe, test engine
-   Digital SAT (Bluebook) structure, as administered 2024-2026:
+   SAT LockIn, practice engine
 
-   Reading and Writing Module 1 27 questions 32 min
-   Reading and Writing Module 2 27 questions 32 min <- adaptive
-   Break 10 min
-   Math Module 1 22 questions 35 min
-   Math Module 2 22 questions 35 min <- adaptive
+   One untimed practice set at a time, always anchored to a move or a
+   trap, plus the event log every list in the app is derived from.
 
-   98 questions total, 2 h 14 min of testing time. Module 2 difficulty is
-   chosen from Module 1 performance; the routing decides the score ceiling.
+   There is no full test. The adaptive module routing and score curves
+   that used to live here went with it: Bluebook is the real test and the
+   only score worth trusting.
    ============================================================ */
 (function (global) {
     'use strict';
@@ -32,163 +29,41 @@
       return a;
     }
 
-    /* ---------------- test blueprint -------------------------------------- */
-    var BLUEPRINT = {
-      rw: {
-        label: 'Reading and Writing',
-        count: 27,
-        seconds: 32 * 60,
-        // College Board domain weighting for each RW module
-        domains: {
-          'Information and Ideas': 7,
-          'Craft and Structure': 8,
-          'Expression of Ideas': 5,
-          'Standard English Conventions': 7
-        }
-      },
-      math: {
-        label: 'Math',
-        count: 22,
-        seconds: 35 * 60,
-        domains: {
-          'Algebra': 8,
-          'Advanced Math': 8,
-          'Problem-Solving and Data Analysis': 3,
-          'Geometry and Trigonometry': 3
-        }
-      }
-    };
-
-    // difficulty mixes: [easy, medium, hard] proportions
-    var MIX = {
-      module1: { E: 0.35, M: 0.40, H: 0.25 },
-      hard: { E: 0.10, M: 0.35, H: 0.55 },
-      easy: { E: 0.55, M: 0.35, H: 0.10 }
-    };
-
-    /* ---------------- scaled-score estimation -----------------------------
-       Anchor points interpolated linearly. These approximate published
-       practice-test curves; the app always labels the result an estimate. */
-    var CURVES = {
-      rw: {
-        hard: [[0, 400], [7, 450], [14, 520], [21, 580], [28, 640], [35, 690], [42, 740], [48, 775], [54, 800]],
-        easy: [[0, 200], [7, 260], [14, 330], [21, 390], [28, 450], [35, 500], [42, 545], [48, 575], [54, 600]]
-      },
-      math: {
-        hard: [[0, 420], [5, 470], [10, 530], [15, 590], [20, 640], [26, 700], [32, 750], [38, 780], [44, 800]],
-        easy: [[0, 200], [5, 250], [10, 310], [15, 370], [20, 425], [26, 480], [32, 530], [38, 565], [44, 590]]
-      }
-    };
-    function interp(anchors, x) {
-      if (x <= anchors[0][0]) return anchors[0][1];
-      for (var i = 1; i < anchors.length; i++) {
-        if (x <= anchors[i][0]) {
-          var a = anchors[i - 1], b = anchors[i];
-          var t = (x - a[0]) / (b[0] - a[0]);
-          return a[1] + t * (b[1] - a[1]);
-        }
-      }
-      return anchors[anchors.length - 1][1];
-    }
-    function midCurve(sec, raw) {
-      return (interp(CURVES[sec].hard, raw) + interp(CURVES[sec].easy, raw)) / 2;
-    }
-    function scaleScore(sec, raw, path) {
-      var v = path === 'hard' ? interp(CURVES[sec].hard, raw)
-      : path === 'easy' ? interp(CURVES[sec].easy, raw)
-      : midCurve(sec, raw);
-      return Math.round(v / 10) * 10;
-    }
-
     /* ---------------- question selection ---------------------------------- */
     function bankFor(sec) {
       if (sec === 'both') return (global.RW_BANK || []).concat(global.MATH_BANK || []);
       return sec === 'rw' ? global.RW_BANK : global.MATH_BANK;
     }
 
-    function pickByDifficulty(pool, want, used, rnd, seen) {
-      // want = {E:n, M:n, H:n}; falls back across difficulties when a level is thin.
-      // Within a difficulty, questions she has seen fewest times come first, so
-      // repeat sittings draw fresh material until the bank is genuinely exhausted.
-      var out = [];
-      var order = { E: ['E', 'M', 'H'], M: ['M', 'E', 'H'], H: ['H', 'M', 'E'] };
-      seen = seen || {};
-      ['H', 'M', 'E'].forEach(function (lvl) {
-          var need = want[lvl] || 0;
-          for (var k = 0; k < order[lvl].length && need > 0; k++) {
-            var d = order[lvl][k];
-            var avail = shuffle(pool.filter(function (q) {
-                  return q.difficulty === d && !used[q.id];
-              }), rnd).sort(function (a, b) { return (seen[a.id] || 0) - (seen[b.id] || 0); });
-            while (need > 0 && avail.length) {
-              var q = avail.shift();
-              used[q.id] = true; out.push(q); need--;
-            }
-          }
-      });
-      return out;
-    }
-
-    function splitMix(n, mix) {
-      var e = Math.round(n * mix.E), h = Math.round(n * mix.H);
-      var m = n - e - h;
-      if (m < 0) { m = 0; e = n - h; }
-      return { E: e, M: m, H: h };
-    }
-
-    function buildModule(sec, kind, used, rnd) {
-      var bp = BLUEPRINT[sec], bank = bankFor(sec), mix = MIX[kind];
-      var seen = (global.Store && global.Store.seenCount) ? global.Store.seenCount() : {};
-      var qs = [];
-      Object.keys(bp.domains).forEach(function (dom) {
-          var n = bp.domains[dom];
-          var pool = bank.filter(function (q) { return q.domain === dom; });
-          qs = qs.concat(pickByDifficulty(pool, splitMix(n, mix), used, rnd, seen));
-      });
-      // top up if a domain ran thin, then trim if rounding overshot
-      var guard = 0;
-      while (qs.length < bp.count && guard++ < 500) {
-        var left = shuffle(bank.filter(function (q) { return !used[q.id]; }), rnd)
-        .sort(function (a, b) { return (seen[a.id] || 0) - (seen[b.id] || 0); });
-        if (!left.length) break;
-        used[left[0].id] = true; qs.push(left[0]);
-      }
-      qs = qs.slice(0, bp.count);
-      // interleave domains a little so it doesn't feel blocked by topic
-      qs = shuffle(qs, rnd);
-      if (sec === 'rw') {
-        // real RW modules group by question type: II/C&S first, then EoI, then SEC
-        var rank = {
-          'Information and Ideas': 0, 'Craft and Structure': 0,
-          'Expression of Ideas': 1, 'Standard English Conventions': 2
-        };
-        qs.sort(function (a, b) { return rank[a.domain] - rank[b.domain]; });
-      } else {
-        // real math modules put multiple-choice first, then student-response
-        qs.sort(function (a, b) { return (a.type === 'spr' ? 1 : 0) - (b.type === 'spr' ? 1 : 0); });
-      }
-      return qs;
-    }
-
-    /* ---------------- session --------------------------------------------- */
+    /* ---------------- practice set ----------------------------------------
+       config: {section: 'rw'|'math'|'both', filter, count, label, seed} */
     function Session(config) {
-      this.cfg = config; // {kind, sections:[], seed, name}
+      this.cfg = config;
+      this.cfg.kind = 'drill';
       this.seed = config.seed || (Date.now() % 2147483647);
       this.rnd = mulberry32(this.seed);
-      this.used = {};
-      this.name = config.name || 'Student';
-      this.modules = [];
-      this.mi = 0; // module index
-      this.qi = 0; // question index inside module
+      this.mi = 0; // kept so the question screen can address mod()
+      this.qi = 0; // question index
       this.startedAt = new Date().toISOString();
       this.id = 'a' + Date.now() + '-' + Math.floor(this.seed % 9973);
       this.finished = false;
-      this.paused = false;
-      this.timerHidden = false;
       this.abcOn = false;
       this.listeners = {};
-      this._buildInitial();
-      this._enterModule(0);
+
+      var pool = bankFor(config.section || 'both').filter(config.filter || function () { return true; });
+      pool = shuffle(pool, this.rnd).slice(0, config.count || 10);
+      this.modules = [{
+          section: config.section === 'both' || !config.section ? 'mixed' : config.section,
+          kind: 'drill', num: 1,
+          label: config.label || 'Practice set',
+          questions: pool,
+          state: pool.map(function () {
+              return { choice: null, text: '', marked: false, struck: [], seconds: 0, visited: false, checked: false };
+          }),
+          done: false
+      }];
+      if (pool.length) this.modules[0].state[0].visited = true;
+      this._qClock = Date.now();
     }
 
     Session.prototype.on = function (evt, fn) {
@@ -198,87 +73,15 @@
       (this.listeners[evt] || []).forEach(function (f) { f(data); });
     };
 
-    Session.prototype._mkModule = function (sec, kind, num, label) {
-      var qs = buildModule(sec, kind, this.used, this.rnd);
-      return {
-        section: sec, kind: kind, num: num,
-        label: label || (BLUEPRINT[sec].label + ', Module ' + num),
-        seconds: BLUEPRINT[sec].seconds,
-        remaining: BLUEPRINT[sec].seconds,
-        questions: qs,
-        state: qs.map(function () {
-            return { choice: null, text: '', marked: false, struck: [], seconds: 0, visited: false };
-        }),
-        done: false
-      };
-    };
-
-    Session.prototype._buildInitial = function () {
-      var k = this.cfg.kind;
-      if (k === 'full') {
-        this.modules = [this._mkModule('rw', 'module1', 1)];
-        this.plan = ['rw1', 'rw2', 'break', 'math1', 'math2'];
-      } else if (k === 'rw' || k === 'math') {
-        this.modules = [this._mkModule(k, 'module1', 1)];
-        this.plan = [k + '1', k + '2'];
-      } else if (k === 'drill') {
-        var bank = bankFor(this.cfg.section);
-        var pool = bank.filter(this.cfg.filter || function () { return true; });
-        var self = this;
-        pool = shuffle(pool, this.rnd).slice(0, this.cfg.count || 10);
-        pool.forEach(function (q) { self.used[q.id] = true; });
-        this.modules = [{
-            section: this.cfg.section === 'both' ? 'mixed' : this.cfg.section, kind: 'drill', num: 1,
-            label: this.cfg.label || 'Practice set',
-            seconds: null, remaining: null, questions: pool,
-            state: pool.map(function () {
-                return { choice: null, text: '', marked: false, struck: [], seconds: 0, visited: false, checked: false };
-            }),
-            done: false
-        }];
-        this.plan = ['drill'];
-      }
-    };
-
     Session.prototype.mod = function () { return this.modules[this.mi]; };
     Session.prototype.q = function () { return this.mod().questions[this.qi]; };
     Session.prototype.st = function () { return this.mod().state[this.qi]; };
-    Session.prototype.isDrill = function () { return this.cfg.kind === 'drill'; };
-    Session.prototype.isBreak = function () { return this.mod().kind === 'break'; };
+    Session.prototype.isDrill = function () { return true; };
     Session.prototype.paneSection = function () {
       var m = this.mod();
       return m.section === 'mixed' ? (this.q() ? this.q().section : 'math') : m.section;
     };
 
-    Session.prototype._enterModule = function (i) {
-      this.mi = i; this.qi = 0;
-      var m = this.mod();
-      if (m.state && m.state[0]) m.state[0].visited = true;
-      this._qClock = Date.now();
-      this.startTimer();
-    };
-
-    /* ---- timing ---- */
-    Session.prototype.startTimer = function () {
-      var self = this;
-      this.stopTimer();
-      if (this.mod().remaining === null) return; // untimed drill
-      this._iv = setInterval(function () {
-          if (self.paused || self.finished) return;
-          var m = self.mod();
-          m.remaining -= 1;
-          self.emit('tick', m.remaining);
-          if (m.remaining <= 0) { m.remaining = 0; self.stopTimer(); self.timeExpired(); }
-        }, 1000);
-    };
-    Session.prototype.stopTimer = function () { if (this._iv) clearInterval(this._iv); this._iv = null; };
-    Session.prototype.togglePause = function () {
-      this.paused = !this.paused; this.emit('change');
-    };
-    Session.prototype.timeExpired = function () {
-      this.emit('expired');
-      this.advanceModule();
-    };
     Session.prototype._chargeTime = function () {
       var now = Date.now();
       var st = this.mod().state[this.qi];
@@ -309,7 +112,6 @@
     };
     Session.prototype.toggleMark = function () { this.st().marked = !this.st().marked; this.emit('change'); };
     Session.prototype.toggleAbc = function () { this.abcOn = !this.abcOn; this.emit('change'); };
-    Session.prototype.toggleTimer = function () { this.timerHidden = !this.timerHidden; this.emit('change'); };
 
     /* ---- navigation ---- */
     Session.prototype.goto = function (i) {
@@ -321,11 +123,11 @@
     };
     Session.prototype.next = function () {
       if (this.qi < this.mod().questions.length - 1) this.goto(this.qi + 1);
-      else this.emit('module-end');
+      else this.finish();
     };
     Session.prototype.prev = function () { this.goto(this.qi - 1); };
 
-    /* ---- module scoring / routing ---- */
+    /* ---- grading ---- */
     Session.prototype.gradeQuestion = function (mod, i) {
       var q = mod.questions[i], st = mod.state[i];
       if (q.type === 'spr') {
@@ -341,80 +143,14 @@
       return right;
     };
 
-    /* A crude ability estimate: harder items count for more, easier for less.
-       The real test uses item response theory; this captures the part that
-       matters to a student -- getting the hard ones right is worth more than
-       getting the same number of easy ones right. */
-    var WEIGHT = { E: 0.72, M: 1.0, H: 1.32 };
-    Session.prototype.moduleAbility = function (mod) {
-      var self = this, got = 0, max = 0;
-      mod.questions.forEach(function (q, i) {
-          var w = WEIGHT[q.difficulty] || 1;
-          max += w;
-          if (self.gradeQuestion(mod, i) === true) got += w;
-      });
-      return max ? got / max : 0;
-    };
-
-    Session.prototype.advanceModule = function () {
-      this._chargeTime();
-      this.stopTimer();
-      var m = this.mod(); m.done = true;
-
-      var planPos = this.modules.length; // how many modules exist so far
-      var kindNow = m.kind, sec = m.section;
-
-      if (this.isDrill()) { return this.finish(); }
-
-      // decide what comes next based on the plan
-      if (this.cfg.kind === 'full') {
-        if (sec === 'rw' && m.num === 1) {
-          this.modules.push(this._mkModule('rw', this._route(m), 2));
-          this._enterModule(this.modules.length - 1);
-        } else if (sec === 'rw' && m.num === 2) {
-          this.modules.push({
-              section: 'break', kind: 'break', num: 0, label: 'Break',
-              seconds: 10 * 60, remaining: 10 * 60, questions: [], state: [], done: false
-          });
-          this._enterModule(this.modules.length - 1);
-        } else if (sec === 'break') {
-          this.modules.push(this._mkModule('math', 'module1', 1));
-          this._enterModule(this.modules.length - 1);
-        } else if (sec === 'math' && m.num === 1) {
-          this.modules.push(this._mkModule('math', this._route(m), 2));
-          this._enterModule(this.modules.length - 1);
-        } else {
-          return this.finish();
-        }
-      } else {
-        if (m.num === 1) {
-          this.modules.push(this._mkModule(sec, this._route(m), 2));
-          this._enterModule(this.modules.length - 1);
-        } else {
-          return this.finish();
-        }
-      }
-      this.emit('module-change');
-      this.emit('change');
-    };
-
-    // Routing uses the difficulty-weighted estimate, not the raw count, so a
-    // student who cleared the hard items routes up even a question or two short.
-    Session.prototype._route = function (mod) {
-      return this.moduleAbility(mod) >= 0.6 ? 'hard' : 'easy';
-    };
-
-    Session.prototype.skipBreak = function () { this.advanceModule(); };
-
     /* ---- results ---- */
     Session.prototype.finish = function () {
+      if (this.finished) return this.result;
       this._chargeTime();
-      this.stopTimer();
       this.finished = true;
       this.result = this.buildResult();
       var self = this, evs = [];
       this.modules.forEach(function (m) {
-          if (m.kind === 'break') return;
           m.questions.forEach(function (q, i) { evs.push(self.eventFor(m, i)); });
       });
       global.Store.recordEvents(evs);
@@ -430,44 +166,25 @@
         id: this.id, kind: this.cfg.kind, seed: this.seed,
         startedAt: this.startedAt, finishedAt: new Date().toISOString(),
         label: this.cfg.label || null,
-        sections: {}, items: [], path: {}
+        sections: {}, items: []
       };
-      ['rw', 'math'].forEach(function (sec) {
-          var mods = self.modules.filter(function (m) { return m.section === sec; });
-          if (!mods.length) return;
-          var raw = 0, total = 0;
-          mods.forEach(function (m) { raw += self.moduleRaw(m); total += m.questions.length; });
-          var m2 = mods[1];
-          var path = m2 ? (m2.kind === 'hard' ? 'hard' : 'easy') : null;
-          out.path[sec] = path;
-          var full = BLUEPRINT[sec].count * 2;
-          var ability = 0, wsum = 0;
-          mods.forEach(function (m) {
-              var w = m.questions.length;
-              ability += self.moduleAbility(m) * w; wsum += w;
+      /* Right and total per section, for the review filters. No score: a
+         ten-question set says nothing honest about one. */
+      this.modules.forEach(function (m) {
+          m.questions.forEach(function (q, i) {
+              var sec = out.sections[q.section] || (out.sections[q.section] = { raw: 0, total: 0, answered: 0 });
+              sec.total++;
+              var g = self.gradeQuestion(m, i);
+              if (g === true) sec.raw++;
+              if (g !== null) sec.answered++;
           });
-          ability = wsum ? ability / wsum : 0;
-          // half the estimate from the raw count, half from the difficulty-weighted
-          // performance, then pro-rated to a full section's worth of questions
-          var rawShare = total ? raw / total : 0;
-          var scaledRaw = full * (0.5 * rawShare + 0.5 * ability);
-          out.sections[sec] = {
-            raw: raw, total: total, answered: 0, ability: Math.round(ability * 100),
-            scaled: scaleScore(sec, scaledRaw, path),
-            path: path, prorated: total < full
-          };
       });
-      if (out.sections.rw && out.sections.math) {
-        out.total = out.sections.rw.scaled + out.sections.math.scaled;
-      }
-      this.modules.forEach(function (m, mIdx) {
-          if (m.kind === 'break') return;
+      this.modules.forEach(function (m) {
           m.questions.forEach(function (q, i) {
               var st = m.state[i], g = self.gradeQuestion(m, i);
-              if (g !== null && out.sections[m.section]) out.sections[m.section].answered++;
               var tg = global.tagsFor ? global.tagsFor(q) : { strat: null, traps: {} };
               out.items.push({
-                  qid: q.id, section: m.section, module: m.num, moduleKind: m.kind,
+                  qid: q.id, section: q.section,
                   domain: q.domain, skill: q.skill, difficulty: q.difficulty,
                   choice: st.choice, text: st.text, marked: st.marked,
                   correct: g, seconds: st.seconds,
@@ -718,11 +435,15 @@
       };
     },
 
+    /* Days are the student's local calendar days, the same as Daily LockIn,
+       so evening practice in the US is not filed under tomorrow. */
     streak: function () {
+        var key = function (dt) {
+          return dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2);
+        };
         var days = {};
-        this.data().events.forEach(function (e) { if (e.t) days[String(e.t).slice(0, 10)] = true; });
+        this.data().events.forEach(function (e) { if (e.t) days[key(new Date(e.t))] = true; });
         var n = 0, d = new Date();
-        var key = function (dt) { return dt.toISOString().slice(0, 10); };
         if (!days[key(d)]) { // today not done yet: start from yesterday
           d.setDate(d.getDate() - 1);
           if (!days[key(d)]) return 0;
@@ -732,8 +453,12 @@
       },
 
       answeredToday: function () {
-        var today = new Date().toISOString().slice(0, 10), n = 0;
-        this.data().events.forEach(function (e) { if (e.t && String(e.t).slice(0, 10) === today) n++; });
+        var t = new Date(), n = 0;
+        this.data().events.forEach(function (e) {
+            if (!e.t) return;
+            var d = new Date(e.t);
+            if (d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate()) n++;
+        });
         return n;
       },
 
@@ -787,15 +512,8 @@
 
 
     global.SATP = {
-      BLUEPRINT: BLUEPRINT, CURVES: CURVES, Session: Session, Store: Store,
-      scaleScore: scaleScore, shuffle: shuffle, mulberry32: mulberry32,
-      bankFor: bankFor,
-      fmtTime: function (s) {
-        if (s === null || s === undefined) return '--:--';
-        s = Math.max(0, Math.round(s));
-        var m = Math.floor(s / 60), r = s % 60;
-        return m + ':' + (r < 10 ? '0' : '') + r;
-      }
+      Session: Session, Store: Store, shuffle: shuffle, mulberry32: mulberry32,
+      bankFor: bankFor
     };
     global.Store = Store;
 })(window);

@@ -3,13 +3,15 @@
 
    Two jobs, and the app works without either of them:
 
-   1. Serve the static app. Railway (and any other host) needs a process
+   1. Serve the static app. Render (and any other host) needs a process
       listening on $PORT, which is all this is. Opening index.html
       directly still works exactly as before.
 
-   2. Optionally host the AI tutor at POST /api/tutor, so the Anthropic
-      API key lives in a Railway environment variable instead of in a
-      student's browser. Accounts, sync and the class view live here too,
+   2. Optionally host the paid AI features, so Anthropic is reached from the
+      server, signed in by workload identity federation, never from a
+      student's browser:
+      POST /api/tutor (task "analyze": classify a pasted Bluebook question)
+      and the coach agent at /api/coach/*. Accounts and sync live here too,
       backed by Postgres.
 
    Run locally:   node server.js        (static only, no npm install needed)
@@ -23,11 +25,45 @@ import { fileURLToPath } from 'node:url';
 import * as db from './lib/db.js';
 import * as api from './lib/routes.js';
 import * as auth from './lib/auth.js';
+import * as billing from './lib/billing.js';
+import * as coach from './lib/coach.js';
+import * as writer from './lib/writer.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8080;
 
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || '';
+/* How the server proves who it is to Anthropic.
+
+   Preferred: workload identity federation (OIDC). The host (Render) gives
+   this service a short-lived signed token and refreshes it; the SDK trades it
+   for a short-lived Anthropic access token. No long-lived key exists anywhere.
+   It is on when ANTHROPIC_FEDERATION_RULE_ID and ANTHROPIC_ORGANIZATION_ID are
+   set and the host has provided ANTHROPIC_IDENTITY_TOKEN_FILE.
+
+   Fallback, for local development only: ANTHROPIC_API_KEY.
+
+   When federation is configured an API key is never used, even if one is
+   left in the environment, because a forgotten key would silently take over. */
+const FED = {
+  ruleId: process.env.ANTHROPIC_FEDERATION_RULE_ID || '',
+  orgId: process.env.ANTHROPIC_ORGANIZATION_ID || '',
+  tokenFile: process.env.ANTHROPIC_IDENTITY_TOKEN_FILE || '',
+  serviceAccountId: process.env.ANTHROPIC_SERVICE_ACCOUNT_ID || undefined,
+  workspaceId: process.env.ANTHROPIC_WORKSPACE_ID || undefined
+};
+const FED_WANTED = !!(FED.ruleId || FED.orgId || FED.serviceAccountId || FED.workspaceId);
+const FED_READY = !!(FED.ruleId && FED.orgId && FED.tokenFile);
+const ANTHROPIC_KEY = FED_WANTED ? '' : (process.env.ANTHROPIC_API_KEY || '');
+const AI_AUTH = FED_READY ? 'oidc' : ANTHROPIC_KEY ? 'api_key' : '';
+const AI_ON = !!AI_AUTH;
+function aiAuthProblem() {
+  if (!FED_WANTED) return 'Set up workload identity federation (see SETUP-CLOUD.md), or ANTHROPIC_API_KEY for local development.';
+  const miss = [];
+  if (!FED.ruleId) miss.push('ANTHROPIC_FEDERATION_RULE_ID');
+  if (!FED.orgId) miss.push('ANTHROPIC_ORGANIZATION_ID');
+  if (!FED.tokenFile) miss.push('ANTHROPIC_IDENTITY_TOKEN_FILE (the host sets this once OIDC is enabled for the service)');
+  return 'Workload identity federation is incomplete. Missing: ' + miss.join(', ') + '.';
+}
 const DAILY_LIMIT = Number(process.env.AI_DAILY_LIMIT || '40');
 /* For running the tutor on your own machine with no database. Never set this
    on a public deployment: an open tutor endpoint lets anyone who finds the
@@ -38,6 +74,24 @@ const ALLOW_ANON_TUTOR = process.env.ALLOW_ANON_TUTOR === 'true';
 const ANON_DAILY_BUDGET = Number(process.env.ANON_DAILY_BUDGET || '60');
 let anonDay = '';
 let anonCount = 0;
+
+/* Which other websites may call this API from a browser. Unset means none:
+   the app served by this server is same-origin and needs no CORS at all.
+   Set it only if the app is hosted somewhere else with CONFIG.apiUrl
+   pointing here, e.g. ALLOWED_ORIGINS=https://satlockin.com */
+const ALLOWED_ORIGINS = new Set(
+  String(process.env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim().replace(/\/+$/, '')).filter(Boolean)
+);
+function allowCors(req, res) {
+  const origin = req.headers.origin;
+  if (!origin) return;
+  if (ALLOWED_ORIGINS.has('*') || ALLOWED_ORIGINS.has(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS.has('*') ? '*' : origin);
+    res.setHeader('Access-Control-Allow-Headers', 'authorization, content-type');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    res.setHeader('Vary', 'Origin');
+  }
+}
 
 /* ---------------- static files ---------------- */
 const TYPES = {
@@ -58,7 +112,7 @@ const TYPES = {
 /* Never serve these. The check runs on the RESOLVED path, not on the raw URL,
    because /js/../server.js and /js/../.env resolve back up into the project
    root and would otherwise slip past a URL-string blocklist. */
-const BLOCKED_FILES = new Set(['server.js', 'package.json', 'package-lock.json', 'railway.json']);
+const BLOCKED_FILES = new Set(['server.js', 'package.json', 'package-lock.json', 'render.yaml', '.node-version']);
 const BLOCKED_DIRS = new Set(['node_modules', '.git', 'lib', 'db']);
 
 function safePath(urlPath) {
@@ -129,38 +183,9 @@ async function serveStatic(req, res) {
 }
 
 /* ---------------- AI tutor ---------------- */
-const TUTOR_RULES = `You are a patient SAT tutor working with a high school student inside a practice app.
-
-Rules you always follow:
-- Be brief. Three short paragraphs at most, and prefer two.
-- Explain the reasoning, never just assert the answer.
-- Use plain language a 10th grader reads comfortably. No jargon without a gloss.
-- If the student is wrong, say so directly and kindly, then show the step where it went wrong.
-- Never invent facts about the passage or the question. Work only from what you were given.
-- Stay on this question and on SAT skills. If asked about anything else, say that is outside what you can help with here and redirect to the question.
-- Never tell the student their score is bad or compare them to other students.
-- Do not use em dashes.`;
-
+/* The one tutor task left: the paid "paste a Bluebook question" feature.
+   The coach is an agent of its own, in lib/coach.js. */
 const SYSTEMS = {
-  explain: `${TUTOR_RULES}
-
-Your task: re-explain this question a different way from the explanation the student already read. Change the angle, using a concrete example, an analogy, or smaller steps. Do not repeat the wording of the original explanation.`,
-
-  chat: `${TUTOR_RULES}
-
-Your task: answer the student's follow-up question about this problem. If their question reveals a misunderstanding, address that misunderstanding rather than only answering literally.`,
-
-  coach: `You are an SAT coach writing a short note to one student about their practice data.
-
-Rules:
-- Address the student directly as "you". Warm, specific, and honest.
-- Lead with the single most valuable thing to change, and say exactly what to do differently.
-- Refer to the named traps and strategies in the data by name.
-- Four short paragraphs maximum. No bullet lists, no headings.
-- Mention one genuine strength before the thing to fix.
-- Never guess at numbers you were not given.
-- Do not use em dashes.`,
-
   analyze: `You classify a real SAT question against a fixed catalog of strategies and traps, for a student who pasted it in from a practice test.
 
 You are given the catalog of strategy ids and trap ids in the context. You MUST use ids from that catalog and nothing else. Never invent an id, and never return a name where an id is wanted.
@@ -189,49 +214,17 @@ How to do the work:
 - "picked" is only present if the student told you which one they chose and it was wrong. Address them as "you" there.
 - walkthrough is 3 to 5 steps, each one short. Show the reasoning, do not just assert.
 - Be honest about confidence. A question missing its passage or its choices is "low".
-- Plain language a 10th grader reads comfortably. No em dashes.`,
-
-  generate: `You write SAT practice questions that are indistinguishable in format, scope, and difficulty from real digital SAT items. You are extending the question bank of a study app, and your output is parsed by a program.
-
-FORMAT RULES
-- Return a single JSON object and nothing else. No prose before or after, no markdown fences.
-- Shape: {"questions":[Q, ...]} where each Q has exactly these keys:
-  section ("rw"|"math"), domain, skill, difficulty ("E"|"M"|"H"), type ("mc"|"spr"),
-  blurb, passage, figure, prompt, choices, answer, answers,
-  strat, strategy, hint, steps, distractors
-- blurb, passage and figure are strings, empty string when not used. Simple HTML is allowed
-  in passage, figure, prompt and choices: p, em, strong, sup, sub, u, ul, li, table, tr, th, td, br.
-- Multiple choice: choices has exactly 4 strings, answer is the 0-based index of the correct
-  one, answers is []. Student response: choices is [], answer is -1, answers lists every
-  acceptable form of the answer as strings, e.g. ["2.5","5/2"].
-- steps is an array of 3 to 5 strings, each one step of the worked solution, in order.
-- distractors is an array with one entry per wrong choice: {"index":N,"trap":"trap-id","why":"..."}.
-  For multiple choice there must be exactly 3, covering every index that is not the answer.
-  For a student response question, distractors is [].
-- Use only the trap ids and strategy id supplied in the request. Never invent ids.
-
-CONTENT RULES
-- Write every passage yourself, 40 to 120 words. Never reproduce copyrighted text, song
-  lyrics, or any real published passage. Invent the study, the researcher, the story.
-- Exactly one defensible correct answer. If a second choice could be argued, rewrite it.
-- Every distractor must be genuinely tempting and must actually be an instance of the trap id
-  you assign it. A distractor nobody would pick is a wasted distractor.
-- Stay inside SAT scope. No calculus, no trigonometry beyond right triangles, no outside
-  knowledge required to answer a reading question.
-- Math must be arithmetically correct. Check your own answer before you emit it. If a
-  distractor is meant to come from a specific error, do that error and use its real result.
-- "strategy" is one or two sentences naming the move a strong test-taker makes here, written
-  as advice to the student. "hint" nudges without giving the answer away.
-- Write to a high school student. Plain language, second person where natural, US spelling,
-  and never use an em dash.`
+- Plain language a 10th grader reads comfortably. No em dashes.`
 };
 
-const ALLOWED_MODELS = ['claude-haiku-4-5', 'claude-sonnet-5', 'claude-opus-5'];
+const CAREFUL_MODEL = 'claude-sonnet-5-5';
+/* Classifying a question needs care, so it never runs on the cheap model;
+   a client may ask for Opus, nothing else. */
+const ALLOWED_MODELS = [CAREFUL_MODEL, 'claude-opus-5-5'];
 
-/* Models in the 5 family take adaptive thinking and an effort setting.
-   Haiku 4.5 predates both and rejects them. */
+/* Every allowed model takes adaptive thinking and an effort setting. Effort
+   is always sent explicitly, because the default differs between models. */
 function reasoningParams(model, effort) {
-  if (model === 'claude-haiku-4-5') return {};
   return { thinking: { type: 'adaptive' }, output_config: { effort } };
 }
 
@@ -242,14 +235,59 @@ async function getClient() {
   try {
     const mod = await import('@anthropic-ai/sdk');
     const Anthropic = mod.default;
-    anthropic = new Anthropic({ apiKey: ANTHROPIC_KEY });
+    if (AI_AUTH === 'oidc') {
+      const { oidcFederationProvider } = await import('@anthropic-ai/sdk/lib/credentials/oidc-federation');
+      const { identityTokenFromFile } = await import('@anthropic-ai/sdk/lib/credentials/identity-token');
+      const baseURL = process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com';
+      /* Passing credentials explicitly takes precedence over any key in the
+         environment. The token file is re-read on every exchange, so the
+         host's rotation is picked up without a restart. */
+      anthropic = new Anthropic({
+        baseURL,
+        credentials: oidcFederationProvider({
+          identityTokenProvider: identityTokenFromFile(FED.tokenFile),
+          federationRuleId: FED.ruleId,
+          organizationId: FED.orgId,
+          serviceAccountId: FED.serviceAccountId,
+          workspaceId: FED.workspaceId,
+          baseURL,
+          fetch
+        })
+      });
+    } else {
+      anthropic = new Anthropic({ apiKey: ANTHROPIC_KEY });
+    }
+    return anthropic;
   } catch (e) {
     sdkError = e;
   }
   return anthropic;
 }
 
-function readJSON(req, limit = 200000) {
+/* The server's own sign-in to Anthropic failed: a bad or expired key, or a
+   token exchange the federation rule refused. Not the student's fault, and
+   nothing they can fix, so they get a calm 503 and the log gets the detail. */
+function isAuthFailure(err) {
+  const status = err?.status ?? err?.statusCode;
+  return status === 401 || status === 403 || err?.constructor?.name === 'WorkloadIdentityError';
+}
+
+/* One cheap call at startup, so a broken sign-in shows up in the deploy log
+   instead of as a student's error. With federation this also proves the
+   token exchange works end to end. Never fatal. */
+async function checkAnthropic() {
+  try {
+    const client = await getClient();
+    if (!client) throw sdkError || new Error('the SDK did not load');
+    await client.models.list({ limit: 1 });
+    console.log(`  ai check:    ok (${AI_AUTH})`);
+  } catch (e) {
+    console.error(`  ai check:    FAILED (${AI_AUTH}): ${e?.status || ''} ${e?.message || e}`);
+    if (AI_AUTH === 'oidc') console.error('               Every federation failure reads "Authentication failed"; the reason is in the Claude Console under the rule authentication history.');
+  }
+}
+
+function readRaw(req, limit = 200000) {
   return new Promise((resolve, reject) => {
     let size = 0;
     const chunks = [];
@@ -258,21 +296,22 @@ function readJSON(req, limit = 200000) {
       if (size > limit) { reject(new Error('too large')); req.destroy(); return; }
       chunks.push(c);
     });
-    req.on('end', () => {
-      try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8') || '{}')); }
-      catch { reject(new Error('bad json')); }
-    });
+    req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
     req.on('error', reject);
   });
+}
+
+async function readJSON(req, limit = 200000) {
+  const raw = await readRaw(req, limit);
+  try { return JSON.parse(raw || '{}'); }
+  catch { throw new Error('bad json'); }
 }
 
 function send(res, status, obj) {
   const body = JSON.stringify(obj);
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Content-Length': Buffer.byteLength(body),
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, content-type'
+    'Content-Length': Buffer.byteLength(body)
   });
   res.end(body);
 }
@@ -297,48 +336,66 @@ async function identify(req) {
   );
 }
 
-async function usageToday(user) {
-  if (!user.anon) return api.usageToday(user.id);
+
+/* Once the server takes payments, the AI is part of what is paid for: it
+   costs real money per call and the price is paid once. COMP_EMAILS count
+   as paid. With payments off (someone running this privately) the AI
+   stays open to every signed-in student, as before. */
+function needsPurchase(user) {
+  return billing.configured() && (user.anon || !user.paid);
+}
+const PURCHASE_ERROR = 'The coach and the tutor come with the full version.';
+
+/* Claim one unit before the model call. Claiming first, atomically, is what
+   stops a burst of parallel requests from all passing the cap. */
+async function claimUsage(user) {
+  if (!user.anon) return api.claimUsage(user.id);
   const today = new Date().toISOString().slice(0, 10);
   if (anonDay !== today) { anonDay = today; anonCount = 0; }
+  anonCount += 1;
   return anonCount;
 }
 
-async function bumpUsage(user, n) {
-  if (!user.anon) return api.bumpUsage(user.id, n);
-  anonCount = n;
+async function releaseUsage(user) {
+  if (!user.anon) return api.releaseUsage(user.id);
+  anonCount = Math.max(0, anonCount - 1);
 }
 
 async function handleTutor(req, res) {
-  if (!ANTHROPIC_KEY) return send(res, 500, { error: 'The tutor is not configured. ANTHROPIC_API_KEY is not set.' });
+  if (!AI_ON) return send(res, 503, { error: 'The AI is not configured on this server.' });
 
   let user;
   try { user = await identify(req); }
   catch (e) { return send(res, e.status || 401, { error: e.message }); }
 
   const cap = user.anon ? ANON_DAILY_BUDGET : DAILY_LIMIT;
-  const used = await usageToday(user);
-  if (used >= cap) {
-    return send(res, 429, { error: `Today's ${cap} tutor questions are used up. It resets tomorrow.` });
-  }
+  if (needsPurchase(user)) return send(res, 402, { error: PURCHASE_ERROR, purchase: true });
 
   let body;
   try { body = await readJSON(req); }
   catch { return send(res, 400, { error: 'Bad request body.' }); }
 
-  const task = body.task || 'chat';
-  if (!SYSTEMS[task]) return send(res, 400, { error: 'Unknown task.' });
+  const task = body.task;
+  if (!Object.prototype.hasOwnProperty.call(SYSTEMS, task)) return send(res, 400, { error: 'Unknown task.' });
 
-  const asked = ALLOWED_MODELS.includes(body.model) ? body.model : 'claude-haiku-4-5';
-  /* Inventing a genuinely tempting wrong answer is the hard part of the job,
-     so question writing never runs on the cheap model. */
-  const needsCare = task === 'generate' || task === 'analyze';
-  const model = needsCare && asked === 'claude-haiku-4-5' ? 'claude-sonnet-5' : asked;
-  const effort = needsCare || task === 'coach' ? 'high' : 'low';
-  const maxTokens = task === 'generate' ? 16000 : task === 'analyze' ? 4000 : task === 'coach' ? 2000 : 1200;
+  let used;
+  try { used = await claimUsage(user); }
+  catch (e) {
+    console.error('usage counter unavailable', e?.message);
+    return send(res, 503, { error: 'The tutor is unavailable for a moment. Try again shortly.' });
+  }
+  if (used > cap) {
+    await releaseUsage(user);
+    return send(res, 429, { error: `Today's ${cap} tutor questions are used up. It resets tomorrow.` });
+  }
+
+  const model = ALLOWED_MODELS.includes(body.model) ? body.model : CAREFUL_MODEL;
+  const effort = 'high';
+  const maxTokens = 4000;
 
   const client = await getClient();
   if (!client) {
+    await releaseUsage(user);
     return send(res, 500, {
       error: 'The Anthropic SDK is not installed on the server. Run npm install, or redeploy so the host installs dependencies.'
     });
@@ -361,6 +418,7 @@ async function handleTutor(req, res) {
     });
 
     if (response.stop_reason === 'refusal') {
+      await releaseUsage(user);
       return send(res, 200, { error: 'The tutor declined that request. Try rephrasing it as a question about the problem.' });
     }
 
@@ -370,20 +428,89 @@ async function handleTutor(req, res) {
       .join('\n')
       .trim();
 
-    await bumpUsage(user, used + 1);
-
     send(res, 200, {
       text,
       model: response.model,
       usage: { input: response.usage.input_tokens, output: response.usage.output_tokens },
-      remaining: cap - used - 1
+      remaining: Math.max(0, cap - used)
     });
   } catch (err) {
-    const status = err?.status ?? 500;
+    await releaseUsage(user);
+    const status = err?.status ?? err?.statusCode ?? 500;
     if (status === 429) return send(res, 429, { error: 'The tutor is busy right now. Try again in a moment.' });
-    if (status === 401) return send(res, 500, { error: 'The tutor key is not valid. Check ANTHROPIC_API_KEY.' });
+    if (isAuthFailure(err)) {
+      console.error(`anthropic rejected the server's credentials (${AI_AUTH}); check the federation rule, or the console's authentication history`);
+      return send(res, 503, { error: 'The AI is unavailable right now. Try again later.' });
+    }
     console.error('anthropic error', status, err?.message);
     send(res, 500, { error: 'The tutor could not answer that. Try again.' });
+  }
+}
+
+/* ---------------- the coach agent ----------------
+   Works behind the scenes; the student only ever sees the questions.
+   POST /api/coach/today    {today}  today's latest session, no model call
+   POST /api/coach/prepare  {today}  run the agent and save a new session
+
+   A session is { id, qids: [8], moves: [8, matching qids], line,
+   questions: [full payloads of the pool questions among qids] }.
+
+   After a session is saved, any move in it that leaves this student with
+   fewer than two unseen questions gets fresh ones written in the
+   background (lib/writer.js). That is never awaited, so the response is
+   never slower for it, and it costs nothing from the student's allowance:
+   the pool is shared, and capped server-wide by POOL_DAILY_LIMIT. */
+async function handleCoach(req, res, url) {
+  if (!db.available()) return send(res, 503, { error: 'The coach needs accounts, so a database must be attached.' });
+  let user;
+  try {
+    const h = req.headers.authorization || '';
+    user = h.startsWith('Bearer ') ? await auth.userForToken(h.slice(7)) : null;
+  } catch { return send(res, 503, { error: 'The coach is unavailable for a moment.' }); }
+  if (!user) return send(res, 401, { error: 'Sign in first.' });
+
+  let body;
+  try { body = await readJSON(req); }
+  catch { return send(res, 400, { error: 'Bad request body.' }); }
+  const today = coach.studentDay(body.today);
+
+  if (needsPurchase(user)) return send(res, 402, { error: PURCHASE_ERROR, purchase: true });
+  const existing = await coach.plansToday(user.id, today);
+  const left = Math.max(0, coach.PLANS_PER_DAY - existing.length);
+
+  if (url === '/api/coach/today') {
+    return send(res, 200, { session: coach.latestSession(existing), left });
+  }
+
+  if (!AI_ON) return send(res, 503, { error: 'The coach is not configured on this server.' });
+  if (!left) return send(res, 429, { error: `The coach has prepared ${coach.PLANS_PER_DAY} sessions today. It is back tomorrow.` });
+
+  let used;
+  try { used = await claimUsage(user); }
+  catch { return send(res, 503, { error: 'The coach is unavailable for a moment. Try again shortly.' }); }
+  if (used > DAILY_LIMIT) {
+    await releaseUsage(user);
+    return send(res, 429, { error: `Today's ${DAILY_LIMIT} AI requests are used up. It resets tomorrow.` });
+  }
+
+  const client = await getClient();
+  if (!client) {
+    await releaseUsage(user);
+    return send(res, 500, { error: 'The Anthropic SDK is not installed on the server. Run npm install.' });
+  }
+
+  try {
+    const out = await coach.prepare({ client, model: CAREFUL_MODEL, userId: user.id, today });
+    const saved = await coach.saveSession(user.id, today, out.session, { model: CAREFUL_MODEL, turns: out.turns });
+    console.log('[coach] session', user.id, 'turns', out.turns, 'tokens', JSON.stringify(out.usage));
+    send(res, 200, { session: saved, left: left - 1, remaining: Math.max(0, DAILY_LIMIT - used) });
+    writer.refillAfterSession(client, user.id, saved);
+    return;
+  } catch (err) {
+    await releaseUsage(user);
+    console.error('[coach] failed', err?.status ?? err?.statusCode ?? 500, err?.message);
+    if (isAuthFailure(err)) console.error(`[coach] anthropic rejected the server's credentials (${AI_AUTH})`);
+    return send(res, 502, { error: 'The coach could not prepare a session just now. Try again in a moment.' });
   }
 }
 
@@ -391,29 +518,78 @@ async function handleTutor(req, res) {
 const server = http.createServer(async (req, res) => {
   const url = req.url.split('?')[0];
 
+  allowCors(req, res);
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'authorization, content-type',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-    });
+    res.writeHead(204);
     return res.end();
   }
 
   if (url === '/healthz') {
-    return send(res, 200, {
+    /* A database that is configured but unreachable fails the check, so a
+       deploy that can't serve accounts never takes traffic. With no database
+       configured the offline app is still healthy. */
+    return send(res, db.configured() && !db.available() ? 503 : 200, {
       ok: true,
       accounts: db.available(),
-      database: db.configured() ? (db.available() ? 'connected' : 'error: ' + db.lastError()) : 'not configured',
+      /* Booleans only: this endpoint is public, so no sender address and no
+         raw database error text. Those go to the server log instead. */
+      database: db.configured() ? (db.available() ? 'connected' : 'unavailable') : 'not configured',
       mail: mailConfigured,
-      mailDetail: mailStatus,
-      tutor: !!ANTHROPIC_KEY
+      mailProvider: mailStatus.provider,
+      mailSecretExpiresInDays: mailStatus.secretExpiresInDays ?? null,
+      payments: billing.configured(),
+      tutor: AI_ON,
+      coach: AI_ON && db.available(),
+      aiAuth: AI_AUTH || null
     });
+  }
+
+  /* Stripe calls this, not a browser. The signature is computed over the
+     exact bytes sent, so the body is read raw and parsed only after it
+     verifies. A 5xx makes Stripe retry, which is what we want while the
+     database is down; a bad signature gets a 400 and is never retried. */
+  if (url === '/api/billing/webhook') {
+    if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
+    if (!billing.configured()) return send(res, 404, { error: 'Payments are not set up on this server.' });
+    let raw;
+    try { raw = await readRaw(req, 1000000); }
+    catch { return send(res, 400, { error: 'Bad request body.' }); }
+    if (!billing.verifySignature(raw, req.headers['stripe-signature'])) {
+      return send(res, 400, { error: 'Signature did not verify.' });
+    }
+    if (!db.available()) return send(res, 503, { error: 'Database unavailable, retry later.' });
+    try {
+      const evt = JSON.parse(raw);
+      const note = await billing.handleEvent(evt);
+      console.log('[billing]', evt.type, evt.id, note);
+      return send(res, 200, { received: true });
+    } catch (e) {
+      console.error('[billing] failed', e?.message);
+      return send(res, 500, { error: 'Could not record that event.' });
+    }
+  }
+
+  if (url === '/api/coach/today' || url === '/api/coach/prepare') {
+    if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
+    return handleCoach(req, res, url).catch((e) => {
+      console.error('coach error', e?.message);
+      if (!res.headersSent) send(res, 500, { error: 'The coach could not answer that. Try again.' });
+    });
+  }
+
+  /* Test-only: waits for background question writing to finish, so the
+     integration test can check what it stored. Absent outside NODE_ENV=test. */
+  if (process.env.NODE_ENV === 'test' && url === '/api/test/pool-drain') {
+    await writer.drain();
+    return send(res, 200, { drained: true });
   }
 
   if (url === '/api/tutor') {
     if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
-    return handleTutor(req, res);
+    return handleTutor(req, res).catch((e) => {
+      console.error('tutor error', e?.message);
+      if (!res.headersSent) send(res, 500, { error: 'The tutor could not answer that. Try again.' });
+    });
   }
 
   if (url.startsWith('/api/')) {
@@ -449,8 +625,19 @@ async function boot() {
       console.log('  database:    connected, schema applied');
     } else {
       console.error('  database:    FAILED to connect:', db.lastError());
-      console.error('               the app still serves offline practice');
+      console.error('               the app still serves offline practice, retrying every 30s');
+      /* A database that was still starting when the app booted should not
+         leave accounts off until the next deploy. */
+      const retry = setInterval(async () => {
+        if (await db.init()) {
+          clearInterval(retry);
+          await auth.sweep();
+          console.log('  database:    connected on retry, schema applied');
+        }
+      }, 30000);
+      retry.unref();
     }
+    setInterval(() => { if (db.available()) auth.sweep(); }, 24 * 3600 * 1000).unref();
   }
 
   server.listen(PORT, () => {
@@ -463,8 +650,29 @@ async function boot() {
     : 'off, codes go to this log';
   console.log(`  mail:        ${mailLine}`);
   if (mailStatus.warning) console.warn(`               ${mailStatus.warning}`);
-    console.log(`  tutor:       ${ANTHROPIC_KEY ? 'enabled at POST /api/tutor' : 'off (no ANTHROPIC_API_KEY)'}`);
+  /* A server can run for months without a restart, so repeat the expiry
+     warning daily rather than only at boot. */
+  if (mailStatus.provider === 'graph') {
+    setInterval(() => {
+      const st = mail.status();
+      mailStatus = st;
+      if (st.warning) console.warn(`[mail] ${st.warning}`);
+    }, 24 * 3600 * 1000).unref();
+  }
+    console.log(`  ai:          ${AI_ON ? `on, signed in by ${AI_AUTH === 'oidc' ? 'workload identity federation (no stored key)' : 'ANTHROPIC_API_KEY (local development only)'}` : 'off'}`);
+    if (!AI_ON && FED_WANTED) console.warn(`               ${aiAuthProblem()}`);
+    if (FED_WANTED && process.env.ANTHROPIC_API_KEY) console.warn('               ANTHROPIC_API_KEY is set but ignored because federation is configured. Delete it.');
+    if (AI_ON) checkAnthropic();
+    if (AI_ON) console.log(`  pool:        ${writer.POOL_DAILY_LIMIT ? `fresh questions by ${writer.WRITER_MODEL}, checked by ${writer.VERIFIER_MODEL}, ${writer.POOL_DAILY_LIMIT} a day, ${writer.POOL_MAX_PER_MOVE} per move` : 'off (POOL_DAILY_LIMIT=0)'}`);
+    console.log(`  payments:    ${billing.configured() ? 'webhook at POST /api/billing/webhook' : 'off (no STRIPE_WEBHOOK_SECRET)'}`);
+    if (billing.configured() && !mailConfigured && process.env.LOG_SIGNIN_CODES !== 'true') {
+      console.warn('               payments are on but no mail provider is set, so sign-in codes are refused');
+    }
+    if (ALLOWED_ORIGINS.size) console.log(`  cors:        ${[...ALLOWED_ORIGINS].join(', ')}`);
   });
 }
+
+/* Log, do not die: one failed promise should not take every student offline. */
+process.on('unhandledRejection', (e) => { console.error('unhandled rejection:', e?.message || e); });
 
 boot();

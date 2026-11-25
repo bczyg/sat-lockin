@@ -26,7 +26,7 @@
     enabled: false,      // set true once the server reports a working database
     aiEnabled: false,    // set true once the server reports a tutor key
     session: null,       // { token, user }
-    profile: null,       // { id, email, display_name, role, class_code }
+    profile: null,       // { id, email, display_name, paid }
     lastError: null,
     ready: false,
     listeners: [],
@@ -71,7 +71,12 @@
             self.saveSession(null);
             self.emit();
           }
-          if (!r.ok || d.error) throw new Error(d.error || 'That did not work.');
+          if (!r.ok || d.error) {
+            var err = new Error(d.error || 'That did not work.');
+            err.status = r.status;
+            err.purchase = !!d.purchase;
+            throw err;
+          }
           return d;
         });
       });
@@ -80,6 +85,13 @@
     /* ---------------- what does this server support? ---------------- */
     probe: function () {
       var self = this;
+      /* Opened straight from disk with no API configured, there is no server
+         to ask. Skip the request rather than log a CORS error every load. */
+      if (global.location && global.location.protocol === 'file:' && !CFG.apiUrl) {
+        self.ready = true;
+        self.emit();
+        return Promise.resolve(false);
+      }
       return fetch(this.url('/healthz'), { method: 'GET' })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
@@ -88,6 +100,8 @@
           self.enabled = !!d.accounts;
           self.aiEnabled = !!(d.tutor && d.accounts) || !!(d.tutor && CFG.allowAnonTutor);
           self.mail = !!d.mail;
+          self.payments = !!d.payments;
+          self.coach = !!d.coach;
           if (self.enabled && self.signedIn()) {
             return self.afterSignIn().then(function () { return true; });
           }
@@ -124,7 +138,7 @@
         .then(function () { self.emit(); return true; });
     },
 
-    /* ---------------- profile and class ---------------- */
+    /* ---------------- profile ---------------- */
     updateProfile: function (patch) {
       var self = this;
       return this.post('/api/me/update', patch).then(function (d) {
@@ -135,48 +149,25 @@
       });
     },
 
-    joinClass: function (code) { return this.updateProfile({ class_code: code }); },
-
-    createClass: function (name, code) {
-      var self = this;
-      return this.post('/api/class/create', { name: name, code: code }).then(function (d) {
-        self.profile = d.user;
-        if (self.session) { self.session.user = d.user; self.saveSession(self.session); }
-        self.emit();
-        return d;
-      });
-    },
-
-    _classCache: null,
-    _classFetch: function () {
-      var self = this;
-      if (this._classCache && Date.now() - this._classCache.at < 4000) {
-        return Promise.resolve(this._classCache.data);
-      }
-      return this.post('/api/class/roster', {}).then(function (d) {
-        self._classCache = { at: Date.now(), data: d };
-        return d;
-      });
-    },
-    classRoster: function () {
-      return this._classFetch().then(function (d) { return d.roster || []; });
-    },
-    classTraps: function () {
-      return this._classFetch().then(function (d) { return d.traps || []; });
-    },
+    /* Has this account paid? Only the server can say, and only a signed
+       webhook from the payment provider can make it true. */
+    paid: function () { return !!(this.profile && this.profile.paid); },
 
     /* ---------------- outbound sync ---------------- */
     queue: function (kind, rows) {
       try {
-        var q = JSON.parse(localStorage.getItem(QKEY)) || { events: [], attempts: [], generated: [] };
+        var q = this.readQueue();
         q[kind] = (q[kind] || []).concat(rows);
         if (q.events.length > 4000) q.events = q.events.slice(-4000);
         localStorage.setItem(QKEY, JSON.stringify(q));
       } catch (e) {}
     },
     readQueue: function () {
-      try { return JSON.parse(localStorage.getItem(QKEY)) || { events: [], attempts: [], generated: [] }; }
-      catch (e) { return { events: [], attempts: [], generated: [] }; }
+      var q = null;
+      try { q = JSON.parse(localStorage.getItem(QKEY)); } catch (e) {}
+      q = q || {};
+      ['events', 'attempts', 'generated', 'naming'].forEach(function (k) { q[k] = q[k] || []; });
+      return q;
     },
     clearQueue: function () { try { localStorage.removeItem(QKEY); } catch (e) {} },
 
@@ -202,13 +193,13 @@
       });
     },
 
-    pushGenerated: function (list) {
+    pushNaming: function (reps) {
       var self = this;
-      if (!list || !list.length) return;
+      if (!reps || !reps.length) return;
       if (!this.enabled || !this.signedIn()) return;
-      this.post('/api/generated', { questions: list }).catch(function (err) {
+      this.post('/api/sync/naming', { reps: reps }).catch(function (err) {
         self.lastError = String(err.message || err);
-        self.queue('generated', list);
+        self.queue('naming', reps);
       });
     },
 
@@ -216,13 +207,20 @@
       var self = this;
       if (!this.enabled || !this.signedIn()) return Promise.resolve();
       var q = this.readQueue();
-      if (!q.events.length && !q.attempts.length && !(q.generated || []).length) return Promise.resolve();
+      /* Naming reps made while signed out were never queued, so send the
+         whole local log on every flush. The server skips keys it already
+         has, so this is cheap and makes the first sign-in on a device carry
+         that device's history up. */
+      var reps = global.Spot ? global.Spot.reps() : q.naming;
+      if (!q.events.length && !q.attempts.length && !reps.length) return Promise.resolve();
       var jobs = [];
+      for (var i = 0; i < reps.length; i += 2000) {
+        jobs.push(this.post('/api/sync/naming', { reps: reps.slice(i, i + 2000) }));
+      }
       if (q.events.length) jobs.push(this.post('/api/sync/events', { events: q.events }));
       (q.attempts || []).forEach(function (a) {
         jobs.push(self.post('/api/sync/attempt', { attempt: a }));
       });
-      if ((q.generated || []).length) jobs.push(this.post('/api/generated', { questions: q.generated }));
       return Promise.all(jobs).then(function () { self.clearQueue(); })
         .catch(function (err) { self.lastError = String(err.message || err); });
     },
@@ -252,33 +250,41 @@
         store.attempts.sort(function (a, b) { return (a.finishedAt < b.finishedAt) ? 1 : -1; });
 
         if (d.user && d.user.display_name) store.name = d.user.display_name;
-        if (d.user) { self.profile = d.user; }
+        if (d.user) {
+          self.profile = d.user;
+          if (self.session) { self.session.user = d.user; self.saveSession(self.session); }
+        }
         global.Store._write(store);
 
-        if ((d.generated || []).length && global.Generate) {
-          var mine = {};
-          global.Generate.stored().forEach(function (q) { mine[q.id] = 1; });
-          var fresh = d.generated.filter(function (q) { return q && q.id && !mine[q.id]; });
-          if (fresh.length) {
-            global.Generate.save(global.Generate.stored().concat(fresh));
-            global.Generate.install();
+        /* The naming record, and the Daily LockIn days it carries. */
+        if ((d.naming || []).length && global.Spot) {
+          global.Spot.merge(d.naming);
+          if (global.Daily && global.Daily.restore) {
+            d.naming.forEach(function (r) { if (r.daily) global.Daily.restore(r); });
           }
         }
+
         return true;
       }).catch(function (err) { self.lastError = String(err.message || err); });
     },
 
-    /* kept so callers written against the older shape still work */
-    pullGenerated: function () { return Promise.resolve(0); },
-    fetchProfile: function () { return Promise.resolve(this.profile); },
 
     /* ---------------- AI tutor ---------------- */
     ask: function (task, prompt, context, model) {
       if (!this.aiEnabled) return Promise.reject(new Error('The AI tutor is not switched on for this server.'));
-      var chosen = model || (CFG.aiModels && CFG.aiModels[task]) || 'claude-haiku-4-5';
+      var chosen = model || (CFG.aiModels && CFG.aiModels[task]) || 'claude-haiku-5-5';
       return this.post(CFG.tutorUrl || '/api/tutor', {
         task: task, prompt: prompt, context: context, model: chosen
       });
+    },
+
+    /* ---------------- the coach ---------------- */
+    coachToday: function (today) {
+      return this.post('/api/coach/today', { today: today });
+    },
+    /* The coach prepares the next session in the background. */
+    coachPrepare: function (today) {
+      return this.post('/api/coach/prepare', { today: today });
     },
 
     onLocalWrite: function () { /* hook kept for future incremental sync */ }

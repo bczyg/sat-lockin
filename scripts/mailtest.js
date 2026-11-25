@@ -9,7 +9,7 @@
      node scripts/mailtest.js you@example.com
 
    Reads the same variables the server does, so run it with the same
-   environment. On Railway: railway run node scripts/mailtest.js you@work.com
+   environment. On Render: open the service's Shell tab and run node scripts/mailtest.js you@work.com
    ============================================================ */
 import * as mail from '../lib/mail.js';
 

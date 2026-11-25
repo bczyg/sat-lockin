@@ -126,6 +126,8 @@
       /* Prefer something she has never answered, then something no previous
          daily has used, then anything rather than nothing. */
       var seen = global.Store.seenCount();
+      /* Questions named in a session count as seen too. */
+      if (global.Spot) global.Spot.reps().forEach(function (r) { if (r.qid) seen[r.qid] = (seen[r.qid] || 0) + 1; });
       var usedByDaily = {};
       var hist = this.all();
       Object.keys(hist).forEach(function (k) { if (hist[k].qid) usedByDaily[hist[k].qid] = 1; });
@@ -162,6 +164,17 @@
       this._put(key || this.todayKey(), {
           qid: qid, strat: strat, answered: true, correct: !!correct,
           at: new Date().toISOString()
+      });
+    },
+
+    /* A day answered on another device, carried by a synced naming rep.
+       Never overwrites a day already answered here. */
+    restore: function (rep) {
+      if (!rep || !/^\d{4}-\d{2}-\d{2}$/.test(String(rep.daily || ''))) return;
+      var have = this.all()[rep.daily];
+      if (have && have.answered) return;
+      this._put(rep.daily, {
+          qid: rep.qid, strat: rep.strat, answered: true, correct: !!rep.right, at: rep.t
       });
     },
 
