@@ -917,6 +917,9 @@ details.trick[open] > *:not(summary){animation:rise .25s var(--ease) both}
 }
 .demo-reveal p{color:var(--ink);line-height:1.6}
 .demo-reveal p + p{margin-top:var(--s3);color:var(--ink-2)}
+.demo-steps{margin:var(--s3) 0 0;padding-left:1.25em;color:var(--ink);line-height:1.6}
+.demo-steps li + li{margin-top:var(--s2)}
+.demo-steps + p{margin-top:var(--s3);color:var(--ink-2)}
 
 .how{margin-top:var(--s8)}
 .how h2,.landing .unlock-card h2{font-size:var(--fs-2xl);font-weight:800;letter-spacing:-.03em}

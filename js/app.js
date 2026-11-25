@@ -898,7 +898,15 @@
         var tp = window.TRAPS[tg.traps[k]];
         h += '<div class="demo-reveal">' + (demo.picked === q.answer
           ? '<p><b>Right.</b> Now look at ' + LETTERS[k] + ', <b>' + q.choices[k] + '</b>. That is the number you get if you do the math right and stop one line early. It is there on purpose.</p>'
-          : '<p><b>That is the one most people pick.</b> The answer is ' + LETTERS[q.answer] + '. Your choice is a trap called <b>' + esc(tp.name) + '</b>: ' + esc(tp.tell) + '</p>') +
+          /* A wrong pick: say what that number actually is (the question's
+             own note for that choice), name the trap, then show the two
+             lines that get the right answer. No claims about what "most
+             people" pick: the same text shows for every wrong choice. */
+          : '<p><b>Not quite. The answer is ' + LETTERS[q.answer] + ', ' + q.choices[q.answer] + '.</b> ' +
+            'You picked ' + LETTERS[demo.picked] + ', ' + q.choices[demo.picked] + '. ' +
+            (q.traps && q.traps[demo.picked] ? q.traps[demo.picked] + ' ' : '') +
+            'It is a trap called <b>' + esc(tp.name) + '</b>, and the SAT puts it there on purpose.</p>' +
+            '<ol class="demo-steps">' + q.steps.slice(0, 2).map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>') +
           '<p>Every SAT question wants one move, and every wrong answer is built to catch a specific slip. Learn the moves and the slips stop working.</p></div>';
       }
       return h + '</div>';
@@ -920,6 +928,14 @@
         '<li><b>Work it.</b> Then you solve it with that move, one step at a time, and see why each wrong answer looks right.</li>' +
         '<li><b>Lock it in.</b> Your coach picks tomorrow’s questions from what you mixed up today, until all ' + moveIds().length + ' moves stick.</li></ol></section>';
 
+      /* Launch: until Stripe is set up on the server, everything is free and
+         the page says so instead of quoting a price nobody can pay. */
+      if (!(window.Cloud && window.Cloud.payments)) {
+        h += '<section class="unlock-card plain"><div class="uc-tag">' + ic('star') + 'Launch</div><h2>Free during launch</h2>' +
+          '<ul class="ticks"><li>' + ic('check') + 'Daily LockIn is free, no account needed</li>' +
+          '<li>' + ic('check') + 'Sign in with your email to get your coach and paste your Bluebook misses</li>' +
+          '<li>' + ic('check') + 'Works on a phone or a laptop</li></ul></section>';
+      } else
       h += '<section class="unlock-card plain"><div class="uc-tag">' + ic('star') + 'One price</div><h2>' + esc(price()) + ', once</h2>' +
         '<ul class="ticks"><li>' + ic('check') + 'Daily LockIn is free forever, no account needed</li>' +
         '<li>' + ic('check') + 'One payment unlocks everything else. No subscription, no ads.</li>' +

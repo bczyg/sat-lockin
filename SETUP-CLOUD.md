@@ -265,10 +265,15 @@ rotate. This needs the Anthropic SDK 1.13.0 or later, which `package.json` alrea
   setup.
 - Find your **workspace ID** at the top of the workspace **Settings** page. It starts with
   `tea-`. Your issuer URL is `https://oidc.render.com/<workspace ID>`.
-- Each token's subject (`sub`) is built from the workspace ID (`tea-...`), the environment ID
-  (`evm-...`, or `default` if the service is not in an environment) and the service ID
-  (`srv-...`). **Copy the exact subject format from Render's OIDC docs page**; you need it in
-  3.2.
+- Each token's subject (`sub`) has this format (from Render's OIDC docs):
+  `workspace:<tea-...>:environment:<evm-...>:service:<srv-...>`. The environment is `default`
+  if the service is not in an environment. For this app on Render it is exactly:
+
+  ```
+  workspace:tea-dbce88jl550s738fs9h0:environment:evm-dc3dq39ksfps739r42hg:service:srv-dc3dqoc0916s738heq9g
+  ```
+
+  Use that exact value (no `*`), so only this one service can get an Anthropic token.
 
 ### 3.2 🔑 Set up Anthropic (Claude Console, Admin role)
 
@@ -281,7 +286,8 @@ service account and the rule in one flow. These are the same steps by hand:
    - Issuer URL: `https://oidc.render.com/<workspace ID>`
    - JWKS source: **OIDC Discovery**
 3. **Rules:** create a rule.
-   - Subject pattern: match this Render service. A prefix ending in `*` is allowed.
+   - Subject pattern: the exact subject from 3.1. (A prefix ending in `*` is allowed, but it
+     would let every matching service in on this rule.)
    - Expected audience: `api.anthropic.com`
    - Token lifetime: at least 30 minutes
    - Target: the service account from step 1
