@@ -518,7 +518,8 @@
         Object.keys(q.traps).forEach(function (k) {
             var t = tg.traps[k] ? window.TRAPS[tg.traps[k]] : null;
             h += '<div class="trap"><b>' + LETTERS[+k] + '</b><div>' +
-              (t ? '<span class="trap-name">' + esc(t.name) + '</span>' : '') + q.traps[k] + '</div></div>';
+              (t ? '<span class="trap-name">' + esc(t.name) + '</span>' : '') + q.traps[k] +
+              (t ? '<span class="trap-fix"><b>Next time:</b> ' + esc(t.fix) + '</span>' : '') + '</div></div>';
         });
         h += '</div>';
       }
@@ -896,18 +897,24 @@
           ? (Object.keys(tg.traps).filter(function (x) { return tg.traps[x] === 'wrong-target'; })[0] || Object.keys(tg.traps)[0])
           : demo.picked;
         var tp = window.TRAPS[tg.traps[k]];
-        h += '<div class="demo-reveal">' + (demo.picked === q.answer
-          ? '<p><b>Right.</b> Now look at ' + LETTERS[k] + ', <b>' + q.choices[k] + '</b>. That is the number you get if you do the math right and stop one line early. It is there on purpose.</p>'
-          /* A wrong pick: say what that number actually is (the question's
-             own note for that choice), name the trap, then show the two
-             lines that get the right answer. No claims about what "most
-             people" pick: the same text shows for every wrong choice. */
-          : '<p><b>Not quite. The answer is ' + LETTERS[q.answer] + ', ' + q.choices[q.answer] + '.</b> ' +
-            'You picked ' + LETTERS[demo.picked] + ', ' + q.choices[demo.picked] + '. ' +
-            (q.traps && q.traps[demo.picked] ? q.traps[demo.picked] + ' ' : '') +
-            'It is a trap called <b>' + esc(tp.name) + '</b>, and the SAT puts it there on purpose.</p>' +
-            '<ol class="demo-steps">' + q.steps.slice(0, 2).map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>') +
-          '<p>Every SAT question wants one move, and every wrong answer is built to catch a specific slip. Learn the moves and the slips stop working.</p></div>';
+        var st = window.STRATS[tg.strat];
+        var right = demo.picked === q.answer;
+        /* A first-time visitor does not know our words yet, so the reveal
+           teaches them: the trap (why a wrong answer looked right, and how to
+           dodge it) and the move (the strategy the question tests), each in
+           plain words about THIS question. */
+        h += '<div class="demo-reveal">' +
+          '<p class="demo-verdict"><b>' + (right ? 'Right, it is ' : 'Not quite. The answer is ') +
+            LETTERS[q.answer] + ', ' + q.choices[q.answer] + '.</b></p>' +
+          '<div class="demo-part"><div class="demo-label">The trap <span>a wrong answer built to look right</span></div>' +
+            '<p><b>' + esc(tp.name) + '.</b> ' +
+            (right ? 'Look at ' + LETTERS[k] + ', ' + q.choices[k] + '. ' : 'You picked ' + LETTERS[k] + ', ' + q.choices[k] + '. ') +
+            (q.traps && q.traps[k] ? q.traps[k] + ' ' : '') + 'The SAT puts it there on purpose.</p>' +
+            '<p class="demo-fix"><b>Next time:</b> ' + esc(tp.fix) + '</p></div>' +
+          '<div class="demo-part"><div class="demo-label">The move <span>the strategy this question tests</span></div>' +
+            '<p><b>' + esc(st.name) + '.</b> ' + (q.strategy || esc(st.move)) + '</p>' +
+            '<ol class="demo-steps">' + q.steps.slice(0, 2).map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol></div>' +
+          '<p class="demo-why">Every SAT question tests one move, and every wrong answer is a trap built from a common slip. SAT LockIn trains you to spot both, so the traps stop working on you.</p></div>';
       }
       return h + '</div>';
     }
