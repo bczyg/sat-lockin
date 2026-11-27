@@ -790,6 +790,12 @@ table.data td:first-child{text-align:left;font-weight:600}
   font-family:var(--sans);font-size:var(--fs-xs);font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:var(--ink-3);margin:var(--s7) 0 var(--s3) var(--s1);
 }
+.sec-head{font-size:var(--fs-lg);font-weight:800;color:var(--ink);margin:var(--s8) 0 0 var(--s1)}
+.dom-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);margin:var(--s5) var(--s1) var(--s3)}
+.dom-head .sec-title{margin:0}
+.dom-count{flex:none;font-size:var(--fs-xs);font-weight:700;color:var(--ink-3);white-space:nowrap}
+.dom-count.done{color:var(--ok)}
+.g-domain{margin:0 0 var(--s1);font-size:var(--fs-xs);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .move-list{
   border-radius:var(--r);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);overflow:hidden;
 }
@@ -6866,6 +6872,34 @@ window.STRATS = {
     } }
 };
 
+/* ---------------- moves by SAT domain ----------------
+   The four domains of each section, in test order, as the College Board
+   names them on score reports, so the moves list matches what a student
+   sees there. A move goes where its questions come from. Moves used on
+   any question of the section (graph it, check it, use the choices) get
+   their own group, last. verify.js checks every move is in exactly one. */
+window.MOVE_DOMAINS = {
+  rw: [
+    { name:'Craft and Structure', moves:['context-word', 'author-move', 'concession-map'] },
+    { name:'Information and Ideas', moves:['predict-first', 'claim-fit', 'data-discipline', 'smallest-step'] },
+    { name:'Standard English Conventions', moves:['boundary-test', 'subject-verb', 'verb-time', 'apostrophe-count', 'modifier-attach', 'parallel-pairs', 'pronoun-check'] },
+    { name:'Expression of Ideas', moves:['relationship-first', 'goal-checklist'] },
+    { name:'Every question', moves:['choice-split'] }
+  ],
+  math: [
+    { name:'Algebra', moves:['translate', 'count-solutions', 'systems-tactics'] },
+    { name:'Advanced Math', moves:['expression-structure', 'function-notation', 'function-behavior'] },
+    { name:'Problem-Solving and Data Analysis', moves:['proportional-reasoning', 'data-inference'] },
+    { name:'Geometry and Trigonometry', moves:['geometry-toolkit', 'coordinate-geometry'] },
+    { name:'Any math question', moves:['desmos-first', 'solve-check', 'choice-tactics'] }
+  ]
+};
+Object.keys(window.MOVE_DOMAINS).forEach(function (sec) {
+  window.MOVE_DOMAINS[sec].forEach(function (d) {
+    d.moves.forEach(function (id) { if (window.STRATS[id]) window.STRATS[id].domain = d.name; });
+  });
+});
+
 
 /* ---------------- telling look-alike strategies apart ----------------
    The pairs students actually confuse, and the one question that separates
@@ -10253,24 +10287,43 @@ window.tagsFor = function (q) {
       h += progressHTML(false);
       var first = section();
       SECTIONS.slice().sort(function (a, b) { return (b[0] === first) - (a[0] === first); }).forEach(function (sec) {
-          h += '<h2 class="sec-title">' + sec[1] + '</h2><div class="move-list">';
-          Object.keys(window.STRATS).forEach(function (id) {
-              var st = window.STRATS[id];
-              if (st.section !== sec[0]) return;
-              var ms = st.meta ? { key: 'habit', label: 'Every question' } : moveState(id);
-              h += '<button class="move-row" onclick="APP.guide(\'' + id + '\')">' +
-                '<span class="mr-dot ' + ms.key + '">' + (ms.key === 'locked' ? ic('check') : '') + '</span>' +
-                '<span class="mr-name">' + esc(st.name) + '</span>' +
-                '<span class="mr-state ' + ms.key + '">' + esc(ms.label) + '</span></button>';
+          h += '<h2 class="sec-head">' + sec[1] + '</h2>';
+          /* One list per SAT domain, with how many of its moves are locked in.
+             A move missing from every group (verify.js stops that shipping)
+             still shows, in the last group, rather than vanishing. */
+          var groups = ((window.MOVE_DOMAINS || {})[sec[0]] || []).map(function (d) { return { name: d.name, moves: d.moves.slice() }; });
+          var listed = {};
+          groups.forEach(function (d) { d.moves.forEach(function (id) { listed[id] = 1; }); });
+          var loose = Object.keys(window.STRATS).filter(function (id) { return window.STRATS[id].section === sec[0] && !listed[id]; });
+          if (loose.length) {
+              if (groups.length) groups[groups.length - 1].moves = groups[groups.length - 1].moves.concat(loose);
+              else groups.push({ name: 'Moves', moves: loose });
+          }
+          var locked = lockedSet(sec[0]);
+          groups.forEach(function (dom) {
+              var ids = dom.moves.filter(function (id) { return window.STRATS[id]; });
+              var counted = ids.filter(function (id) { return !window.STRATS[id].meta; });
+              var n = counted.filter(function (id) { return locked[id]; }).length;
+              h += '<div class="dom-head"><h3 class="sec-title">' + esc(dom.name) + '</h3>' +
+                (counted.length ? '<span class="dom-count' + (n === counted.length ? ' done' : '') + '">' +
+                  n + ' of ' + counted.length + ' locked in</span>' : '') + '</div><div class="move-list">';
+              ids.forEach(function (id) {
+                  var st = window.STRATS[id];
+                  var ms = st.meta ? { key: 'habit', label: 'Every question' } : moveState(id);
+                  h += '<button class="move-row" onclick="APP.guide(\'' + id + '\')">' +
+                    '<span class="mr-dot ' + ms.key + '">' + (ms.key === 'locked' ? ic('check') : '') + '</span>' +
+                    '<span class="mr-name">' + esc(st.name) + '</span>' +
+                    '<span class="mr-state ' + ms.key + '">' + esc(ms.label) + '</span></button>';
+              });
+              h += '</div>';
           });
-          h += '</div>';
       });
       return h + '</div>';
     }
 
     function guideHTML(id) {
       var st = window.STRATS[id];
-      var h = '<p class="g-move">' + esc(st.move) + '</p>';
+      var h = (st.domain ? '<p class="g-domain">' + esc(st.domain) + '</p>' : '') + '<p class="g-move">' + esc(st.move) + '</p>';
       h += '<div class="panel"><h3>How you know it is this one</h3>' + cuesHTML(id) + '</div>';
       var pairs = Object.keys(window.STRAT_VS).filter(function (k) { return k.split('|').indexOf(id) >= 0; });
       if (pairs.length) {
