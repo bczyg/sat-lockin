@@ -239,7 +239,7 @@
             key: row.key, attempt: row.attempt, t: row.t, qid: row.qid,
             section: row.section, domain: row.domain, skill: row.skill,
             difficulty: row.difficulty, strat: row.strat, trap: row.trap,
-            correct: row.correct, seconds: row.seconds
+            correct: row.correct, seconds: row.seconds, hints: row.hints
           });
         });
         store.events.sort(function (a, b) { return (a.t < b.t) ? -1 : 1; });

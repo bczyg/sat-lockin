@@ -131,6 +131,18 @@
       } catch (e) {}
       return null;
     }
+    /* Ends a quoted answer choice with exactly one period. */
+    function dot(c) {
+      c = String(c).replace(/(\s|&nbsp;|&#160;)+$/, '');
+      /* Test the visible text: tags out, quotes and ellipses decoded, and any
+         other entity (like &amp;) read as a letter so its ; is not punctuation. */
+      var text = c.replace(/<[^>]*>/g, '').replace(/&(nbsp|#160);/g, ' ').replace(/&(hellip|#8230);/g, '…')
+        .replace(/&(quot|rdquo|rsquo|#39|#x27);/g, '"').replace(/&#?[a-z0-9]+;/gi, 'x').trim();
+      if (/[.?!…]["'”’)\]]*$/.test(text)) return c;
+      /* A transition choice like "Nevertheless," ends the sentence without its comma. */
+      if (/[,;:]$/.test(text)) return c.replace(/[,;:]((?:<[^>]*>)*)$/, '.$1');
+      return c + '.';
+    }
     function price() { return (window.CONFIG || {}).price || '$9.99'; }
     /* The launch end date from config, while it is still ahead; else null. */
     function launchEnds() {
@@ -151,6 +163,7 @@
         view = 'unlock'; unlock.signinOnly = true; unlock.err = '';
         if (unlock.stage !== 'code') unlock.stage = 'email';
       }
+      if (sess && view !== 'session') sess.justAnswered = false;
       var key = view + (view === 'session' && sess ? ':' + sess.round.i + ':' + sess.phase : '');
       var same = key === lastScreen;
       lastScreen = key;
@@ -167,8 +180,9 @@
       if (view === 'session' && sess) {
         if (!same && sess.phase === 'named') reveal('.verdict', 'start');
         else if (sess.phase === 'work') {
-          if (!sess.answer) reveal('.page > .actions', 'end');
-          else if (same) reveal('.q-card .choices, .q-card .spr', 'start');
+          if (sess.justAnswered) { sess.justAnswered = false; reveal('.ans-verdict', 'start'); }
+          else if (!same) reveal('.q-card .stem', 'start');
+          else if (sess.choice === null) reveal('.page > .actions', 'end');
         }
       }
       if (view === 'session' && sess && sess.phase === 'done' && sess.celebrate) {
@@ -407,14 +421,15 @@
        One flow for everything: today's session, a single daily question,
        more practice, and a focused round on one move.
        ============================================================ */
-    var sess = null; // { kind, round, phase, step, answer, dailyIdx, dailyDate, line, before, streak, best }
+    var sess = null; // { kind, round, phase, step, choice, typed, t0, id, dailyIdx, dailyDate, line, focus, before, run, best }
 
     function startRound(kind, qids, opts) {
       opts = opts || {};
       var round = opts.focus ? window.Spot.build({ focus: opts.focus }) : window.Spot.build({ qids: qids });
       if (!round.items.length) { toast('No questions available for that right now'); return; }
       sess = {
-        kind: kind, round: round, phase: 'ask', step: 0, answer: false,
+        kind: kind, round: round, phase: 'ask', step: 0, choice: null, typed: '', t0: 0,
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         dailyIdx: opts.dailyDate ? 0 : -1, dailyDate: opts.dailyDate || null,
         line: opts.line || '', focus: opts.focus || null,
         before: lockedSet(), run: 0, best: 0
@@ -432,7 +447,10 @@
       return h + '</div>';
     }
 
-    function questionHTML(q, reveal) {
+    /* mode: null shows the question, 'pick' lets the student answer it,
+       'done' marks the right answer and their pick. */
+    function questionHTML(q, mode, chosen) {
+      var reveal = mode === 'done';
       var h = '<div class="q-card">';
       if (q.blurb || q.figure || q.passage) {
         h += '<div class="passage">';
@@ -443,15 +461,28 @@
       }
       h += '<div class="stem">' + q.prompt + '</div>';
       if (q.type === 'spr') {
-        h += reveal
-          ? '<p class="spr">Answer: <strong>' + q.answers.map(esc).join('</strong> or <strong>') + '</strong></p>'
-          : '<p class="spr">You type the answer in on this one.</p>';
+        if (mode === 'pick') {
+          h += '<div class="spr spr-in"><label for="spr-ans">Your answer</label>' +
+            '<input id="spr-ans" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="like 12, -3 or 3/2" ' +
+            'value="' + esc(sess && sess.typed || '') + '" oninput="APP.sprType(this.value)" ' +
+            'onkeydown="if(event.key===\'Enter\'&&!event.isComposing)APP.sprCheck()">' +
+            '<button class="btn primary sm" onclick="APP.sprCheck()">Check</button></div>';
+        } else {
+          h += reveal
+            ? '<p class="spr">Answer: <strong>' + q.answers.map(esc).join('</strong> or <strong>') + '</strong>' +
+              (typeof chosen === 'string' && !sprMatch(chosen, q.answers) ? '<span class="spr-you">You typed ' + esc(chosen) + '</span>' : '') + '</p>'
+            : '<p class="spr">You type the answer in on this one.</p>';
+        }
       } else {
         h += '<ul class="choices">';
         q.choices.forEach(function (c, i) {
             var ok = reveal && i === q.answer;
-            h += '<li class="choice' + (ok ? ' correct' : '') + '"><span class="ltr">' + LETTERS[i] + '</span><span class="txt">' + c + '</span>' +
-              (ok ? '<span class="tag">' + ic('check') + 'Answer</span>' : '') + '</li>';
+            var bad = reveal && i === chosen && i !== q.answer;
+            var inner = '<span class="ltr">' + LETTERS[i] + '</span><span class="txt">' + c + '</span>' +
+              (ok ? '<span class="tag">' + ic('check') + 'Answer</span>' : bad ? '<span class="tag no">Your pick</span>' : '');
+            h += mode === 'pick'
+              ? '<li><button type="button" class="choice pick" onclick="APP.choose(' + i + ')">' + inner + '</button></li>'
+              : '<li class="choice' + (ok ? ' correct' : bad ? ' wrong' : '') + '">' + inner + '</li>';
         });
         h += '</ul>';
       }
@@ -484,7 +515,7 @@
         '<span>' + esc(q.section === 'rw' ? 'Reading and Writing' : 'Math') + '</span>' +
         (sess.run >= 2 && sess.phase === 'ask' ? '<span class="pill run">' + ic('spark') + sess.run + ' in a row</span>' : '') + '</div>';
 
-      h += questionHTML(q, sess.phase === 'work' && sess.answer);
+      h += questionHTML(q, sess.phase === 'work' ? (sess.choice !== null ? 'done' : 'pick') : null, sess.choice);
 
       if (sess.phase === 'ask') {
         h += '<section class="ask"><h2>Which move does this question want?</h2>' +
@@ -515,32 +546,54 @@
         return h + '</div>';
       }
 
-      /* work: the move, then one step at a time, then the answer */
+      /* work: the student answers it. Steps come one at a time as hints
+         until they do; one try, then the full solution either way. */
+      var done = sess.choice !== null;
       h += '<div class="stack"><div class="panel move"><h3>' + esc(st.name) + '</h3><p class="move-txt">' + esc(st.move) + '</p>' +
         (q.strategy ? '<p class="move-q">' + q.strategy + '</p>' : '') + '</div>';
-      h += '<div class="panel"><h3>Step by step</h3>';
-      if (sess.step === 0) h += '<p class="muted">Try the first step yourself, then check it.</p>';
-      else {
-        h += '<ol class="steps">';
-        q.steps.slice(0, sess.step).forEach(function (s) { h += '<li>' + s + '</li>'; });
-        h += '</ol>';
-      }
-      h += '</div>';
 
-      if (sess.step < q.steps.length) {
-        h += '</div><div class="actions"><button class="btn primary" onclick="APP.step()">' +
-          (sess.step === 0 ? 'Show the first step' : 'Next step') + '</button>' +
-          '<button class="btn soft" onclick="APP.step(true)">Show all</button></div>';
+      if (!done) {
+        h += '<div class="panel"><h3>Step by step</h3>';
+        if (sess.step === 0) h += '<p class="muted">Use the move and ' + (q.type === 'spr' ? 'type your answer' : 'pick your answer') +
+          ' above. Stuck? Take it one step at a time.</p>';
+        else {
+          h += '<ol class="steps">';
+          q.steps.slice(0, sess.step).forEach(function (s) { h += '<li>' + s + '</li>'; });
+          h += '</ol>';
+          if (sess.step >= q.steps.length) h += '<p class="muted">That is every step. Now ' + (q.type === 'spr' ? 'type' : 'pick') + ' your answer above.</p>';
+        }
+        h += '</div></div><div class="actions">';
+        if (sess.step < q.steps.length) {
+          h += '<button class="btn soft" onclick="APP.step()">' + (sess.step === 0 ? 'Show the first step' : 'Show the next step') + '</button>';
+        }
+        h += '<button class="link-btn quiet" onclick="APP.stuck()">I’m stuck, show me the answer</button></div>';
         return h + '</div>';
       }
-      if (!sess.answer) {
-        h += '</div><div class="actions"><button class="btn primary" onclick="APP.answer()">Show the answer</button></div>';
-        return h + '</div>';
+
+      /* answered: the verdict, the trap behind a wrong pick, the full solution */
+      var it2 = sess.round.items[sess.round.i];
+      var tg = window.tagsFor(q);
+      var key = q.type === 'spr' ? esc(q.answers[0]) : LETTERS[q.answer] + ', ' + q.choices[q.answer];
+      h += '<section class="verdict ans-verdict ' + (it2.ans ? 'ok' : 'no') + '"><div class="v-ic">' + ic(it2.ans ? 'check' : 'bulb') + '</div><div>' +
+        '<div class="v-title">' + (it2.ans ? 'Right, it is ' + dot(key) : sess.choice === -1 ? 'Here is how it works.' : 'Not quite. The answer is ' + dot(key)) + '</div>' +
+        (it2.ans && !it2.solo ? '<div class="v-sub">You saw every step first, so this one does not count as solved yet.</div>'
+          : it2.ans && sess.step ? '<div class="v-sub">With ' + sess.step + ' step' + (sess.step === 1 ? '' : 's') + ' shown. Next time, try it with fewer.</div>' : '') +
+        '</div></section>';
+      if (!it2.ans && typeof sess.choice === 'number' && sess.choice >= 0 &&
+          ((tg.traps && window.TRAPS[tg.traps[sess.choice]]) || (q.traps && q.traps[sess.choice]))) {
+        var tp = tg.traps && tg.traps[sess.choice] ? window.TRAPS[tg.traps[sess.choice]] : null;
+        h += '<div class="panel warm"><h3>The trap you fell for</h3>' +
+          '<p>' + (tp ? '<b>' + esc(tp.name) + '.</b> ' : '') + 'You picked ' + LETTERS[sess.choice] + ', ' + dot(q.choices[sess.choice]) + ' ' +
+          (q.traps && q.traps[sess.choice] ? q.traps[sess.choice] : '') + '</p>' +
+          (tp ? '<p class="trap-fix"><b>Next time:</b> ' + esc(tp.fix) + '</p>' : '') + '</div>';
       }
+      h += '<div class="panel"><h3>The full solution</h3><ol class="steps">';
+      q.steps.forEach(function (s) { h += '<li>' + s + '</li>'; });
+      h += '</ol></div>';
       if (q.traps && Object.keys(q.traps).length) {
-        var tg = window.tagsFor(q);
         h += '<div class="panel traps"><h3>Why the wrong answers look right</h3>';
         Object.keys(q.traps).forEach(function (k) {
+            if (+k === sess.choice && !it2.ans) return;
             var t = tg.traps[k] ? window.TRAPS[tg.traps[k]] : null;
             h += '<div class="trap"><b>' + LETTERS[+k] + '</b><div>' +
               (t ? '<span class="trap-name">' + esc(t.name) + '</span>' : '') + q.traps[k] +
@@ -552,6 +605,32 @@
       h += '</div><div class="actions"><button class="btn primary xl" onclick="APP.next()">' +
         (last ? 'Finish ' : 'Next question ') + ic('arrow') + '</button></div>';
       return h + '</div>';
+    }
+
+    /* Grid-in grading uses the SAT rules in engine.js: 3/2 or 1.5, a rounded
+       or cut-off decimal like .666 or .667 for 2/3, and $ % , ignored. */
+    function sprMatch(v, answers) { return window.SATP.Session.checkSPR(v, answers); }
+
+    /* One answer, saved as a practice event: right or wrong, the trap behind
+       a wrong pick, how long it took, and how many steps were shown first.
+       The coach reads these to plan the next session. A right answer given
+       only after every step was shown is saved as not yet solved, so walking
+       through the whole solution does not count toward a move's accuracy. */
+    function logAnswer(right) {
+      var r = sess.round, it = r.items[r.i], q = ALLQ[it.qid];
+      var tg = window.tagsFor(q);
+      /* Saved as solved only when some step was still hidden. */
+      var solved = right && (!q.steps.length || sess.step < q.steps.length);
+      it.ans = right; it.solo = solved; it.hints = sess.step;
+      var trap = !right && typeof sess.choice === 'number' && sess.choice >= 0 && tg.traps ? (tg.traps[sess.choice] || null) : null;
+      window.Store.recordEvents([{
+        key: 'lk-' + sess.id + '|' + r.i + '|' + it.qid, attempt: 'lockin-' + sess.id, t: new Date().toISOString(),
+        qid: it.qid, section: q.section, domain: q.domain || null, skill: q.skill || null, difficulty: q.difficulty || null,
+        strat: it.strat, trap: trap, correct: solved,
+        seconds: Math.round((Date.now() - (sess.t0 || Date.now())) / 1000), hints: sess.step
+      }]);
+      sess.justAnswered = true;
+      render();
     }
 
     function sessionDoneHTML() {
@@ -567,7 +646,9 @@
         right === n ? 'Perfect round.' : ratio >= 0.75 ? 'Strong session.' : ratio >= 0.5 ? 'Good work.' : 'Every miss here is a pair to learn.';
       var sub = n === 1
         ? (right ? 'Name it on sight and the question is half done.' : 'A miss you understand is worth more than a lucky guess.')
-        : 'You named ' + right + ' of ' + n + ' before solving.';
+        : 'You named ' + right + ' of ' + n + ' before solving' +
+          (r.items.some(function (x) { return x.ans !== undefined; })
+            ? ' and solved ' + r.items.filter(function (x) { return x.solo && !x.hints; }).length + ' on your own.' : '.');
 
       var h = '<div class="page session done">';
       h += '<section class="done-hero">' +
@@ -934,10 +1015,10 @@
            plain words about THIS question. */
         h += '<div class="demo-reveal">' +
           '<p class="demo-verdict"><b>' + (right ? 'Right, it is ' : 'Not quite. The answer is ') +
-            LETTERS[q.answer] + ', ' + q.choices[q.answer] + '.</b></p>' +
+            LETTERS[q.answer] + ', ' + dot(q.choices[q.answer]) + '</b></p>' +
           '<div class="demo-part"><div class="demo-label">The trap <span>a wrong answer built to look right</span></div>' +
             '<p><b>' + esc(tp.name) + '.</b> ' +
-            (right ? 'Look at ' + LETTERS[k] + ', ' + q.choices[k] + '. ' : 'You picked ' + LETTERS[k] + ', ' + q.choices[k] + '. ') +
+            (right ? 'Look at ' : 'You picked ') + LETTERS[k] + ', ' + dot(q.choices[k]) + ' ' +
             (q.traps && q.traps[k] ? q.traps[k] + ' ' : '') + 'The SAT puts it there on purpose.</p>' +
             '<p class="demo-fix"><b>Next time:</b> ' + esc(tp.fix) + '</p></div>' +
           '<div class="demo-part"><div class="demo-label">The move <span>the strategy this question tests</span></div>' +
@@ -1037,19 +1118,49 @@
         sess.best = Math.max(sess.best, sess.run);
         sess.phase = 'named'; render();
       },
-      work: function () { if (sess) { sess.phase = 'work'; sess.step = 0; sess.answer = false; render(); } },
-      step: function (all) {
-        if (!sess) return;
+      work: function () { if (sess) { sess.phase = 'work'; sess.step = 0; sess.choice = null; sess.typed = ''; sess.t0 = Date.now(); render(); } },
+      sprType: function (v) { if (sess) sess.typed = String(v); },
+      step: function () {
+        if (!sess || sess.phase !== 'work' || sess.choice !== null) return;
         var q = ALLQ[sess.round.items[sess.round.i].qid];
-        sess.step = all ? q.steps.length : Math.min(q.steps.length, sess.step + 1);
+        sess.step = Math.min(q.steps.length, sess.step + 1);
         render();
+        /* Clicking the button took focus from the box; put it back if they had started typing. */
+        var box = q.type === 'spr' && sess.typed && document.getElementById('spr-ans');
+        if (box) { box.focus({ preventScroll: true }); box.setSelectionRange(box.value.length, box.value.length); }
       },
-      answer: function () { if (sess) { sess.answer = true; render(); } },
+      /* One try: the first answer counts, then the solution shows. */
+      choose: function (i) {
+        if (!sess || sess.phase !== 'work' || sess.choice !== null) return;
+        var q = ALLQ[sess.round.items[sess.round.i].qid];
+        if (q.type === 'spr' || i < 0 || i >= q.choices.length) return;
+        sess.choice = i;
+        logAnswer(i === q.answer);
+      },
+      sprCheck: function () {
+        if (!sess || sess.phase !== 'work' || sess.choice !== null) return;
+        var q = ALLQ[sess.round.items[sess.round.i].qid];
+        var box = document.getElementById('spr-ans');
+        var v = box ? box.value.trim() : '';
+        if (!v) { toast('Type your answer first'); return; }
+        /* A typo is not a try: only an answer that reads as a number is graded. */
+        var exact = q.answers.some(function (x) { return String(x).trim() === v; });
+        if (!exact && !window.SATP.Session.sprReadable(v)) {
+          toast('Type a number, like 12, -3, 3/2 or .75'); return;
+        }
+        sess.choice = v;
+        logAnswer(sprMatch(v, q.answers));
+      },
+      stuck: function () {
+        if (!sess || sess.phase !== 'work' || sess.choice !== null) return;
+        sess.choice = -1;
+        logAnswer(false);
+      },
       next: function () {
         if (!sess) return;
         var r = sess.round;
         if (r.i < r.items.length - 1) {
-          r.i++; sess.phase = 'ask'; sess.step = 0; sess.answer = false;
+          r.i++; sess.phase = 'ask'; sess.step = 0; sess.choice = null; sess.typed = '';
         } else {
           sess.phase = 'done';
           var right = r.items.filter(function (x) { return x.right; }).length;
@@ -1188,13 +1299,20 @@
     };
     window.APP = APP;
 
-    /* ---------------- keyboard: 1 to 4 to name the move ---------------- */
+    /* ---------- keyboard: 1 to 4 names the move, A to D picks an answer ---------- */
     function onKey(e) {
-      if (view !== 'session' || !sess || sess.phase !== 'ask') return;
+      if (view !== 'session' || !sess || (sess.phase !== 'ask' && sess.phase !== 'work')) return;
       var tg = (e.target.tagName || '').toLowerCase();
-      if (tg === 'input' || tg === 'textarea') return;
+      if (tg === 'input' || tg === 'textarea' || tg === 'select' || e.target.isContentEditable) return;
       if (!document.getElementById('modal-root').classList.contains('hidden')) return;
       var it = sess.round.items[sess.round.i];
+      if (sess.phase === 'work') {
+        var q = ALLQ[it.qid];
+        if (!q || q.type === 'spr' || sess.choice !== null || e.repeat || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+        var a = ['a', 'b', 'c', 'd'].indexOf(String(e.key).toLowerCase());
+        if (a >= 0 && a < q.choices.length) { e.preventDefault(); APP.choose(a); }
+        return;
+      }
       var k = ['1', '2', '3', '4'].indexOf(e.key);
       if (k >= 0 && k < it.options.length) { e.preventDefault(); APP.pick(it.options[k]); }
     }

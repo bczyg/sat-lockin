@@ -210,20 +210,30 @@
     };
 
     /* ---- student-produced response checking (SAT rules) ---- */
+    /* Spaces and $ are ignored, as is a leading +. A comma only counts as
+       a thousands separator (1,000 or 12,500.5); anything else, like a
+       decimal comma in 1,5, is left in and does not read as a number. */
+    function sprNorm(s) {
+      return String(s).replace(/[\u2212\u2013]/g, '-').replace(/[$\s]/g, '').replace(/(\d),(?=\d{3}(?!\d))/g, '$1').replace(/^\+/, '');
+    }
+    function sprToNum(s) {
+      if (!s) return null;
+      if (/^-?\d*\.?\d+\/-?\d*\.?\d+$/.test(s)) {
+        var p = s.split('/'); var d = parseFloat(p[1]);
+        if (!d) return null;
+        return parseFloat(p[0]) / d;
+      }
+      if (/^-?(\d+\.?\d*|\.\d+)%?$/.test(s)) return parseFloat(s);
+      return null;
+    }
+    /* True when a typed grid-in answer reads as a number at all. */
+    Session.sprReadable = function (raw) {
+      /* "1 1/2" would read as 11/2; ask for 3/2 or 1.5 instead of grading it. */
+      if (/\d\s+\d/.test(String(raw))) return false;
+      return sprToNum(sprNorm(raw)) !== null;
+    };
     Session.checkSPR = function (raw, accepted) {
-      function norm(s) {
-        return String(s).trim().replace(/[,$\s]/g, '').replace(/^\+/, '');
-      }
-      function toNum(s) {
-        if (!s) return null;
-        if (/^-?\d*\.?\d+\/-?\d*\.?\d+$/.test(s)) {
-          var p = s.split('/'); var d = parseFloat(p[1]);
-          if (!d) return null;
-          return parseFloat(p[0]) / d;
-        }
-        if (/^-?(\d+\.?\d*|\.\d+)%?$/.test(s)) return parseFloat(s);
-        return null;
-      }
+      var norm = sprNorm, toNum = sprToNum;
       var s = norm(raw);
       if (!s) return false;
       var list = [].concat(accepted);
@@ -393,11 +403,23 @@
 
       this.data().events.forEach(function (e) {
         if (e.correct === null || e.correct === undefined) return;
-        var q = bank[e.qid];
+        /* Questions made for this student live in TAGS, not the banks. */
+        var q = bank[e.qid] || (e.qid && global.TAGS && global.TAGS[e.qid] ? { id: e.qid, skill: e.skill } : null);
         var tg = (q && global.tagsFor) ? global.tagsFor(q) : null;
         var strat = e.strat || (tg && tg.strat);
         if (strat) note('strats', strat, e.correct);
-        if (tg) {
+        if (tg && String(e.attempt).indexOf('lockin-') === 0) {
+          /* A practice answer is one pick: a right one dodged every trap, a
+             wrong one fell for at most the trap it picked. A right answer
+             after steps were shown, "stuck", or seeing every step first
+             says nothing about the traps: the steps may have ruled them out. */
+          if (e.correct && !e.hints) {
+            var dodged = {};
+            Object.keys(tg.traps).forEach(function (k) { dodged[tg.traps[k]] = 1; });
+            Object.keys(dodged).forEach(function (t) { note('traps', t, true); });
+          }
+          else if (e.trap) note('traps', e.trap, false);
+        } else if (tg) {
           var ids = {};
           Object.keys(tg.traps).forEach(function (k) { ids[tg.traps[k]] = 1; });
           Object.keys(ids).forEach(function (t) { note('traps', t, e.correct); });
