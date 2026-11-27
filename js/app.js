@@ -965,24 +965,43 @@
       h += progressHTML(false);
       var first = section();
       SECTIONS.slice().sort(function (a, b) { return (b[0] === first) - (a[0] === first); }).forEach(function (sec) {
-          h += '<h2 class="sec-title">' + sec[1] + '</h2><div class="move-list">';
-          Object.keys(window.STRATS).forEach(function (id) {
-              var st = window.STRATS[id];
-              if (st.section !== sec[0]) return;
-              var ms = st.meta ? { key: 'habit', label: 'Every question' } : moveState(id);
-              h += '<button class="move-row" onclick="APP.guide(\'' + id + '\')">' +
-                '<span class="mr-dot ' + ms.key + '">' + (ms.key === 'locked' ? ic('check') : '') + '</span>' +
-                '<span class="mr-name">' + esc(st.name) + '</span>' +
-                '<span class="mr-state ' + ms.key + '">' + esc(ms.label) + '</span></button>';
+          h += '<h2 class="sec-head">' + sec[1] + '</h2>';
+          /* One list per SAT domain, with how many of its moves are locked in.
+             A move missing from every group (verify.js stops that shipping)
+             still shows, in the last group, rather than vanishing. */
+          var groups = ((window.MOVE_DOMAINS || {})[sec[0]] || []).map(function (d) { return { name: d.name, moves: d.moves.slice() }; });
+          var listed = {};
+          groups.forEach(function (d) { d.moves.forEach(function (id) { listed[id] = 1; }); });
+          var loose = Object.keys(window.STRATS).filter(function (id) { return window.STRATS[id].section === sec[0] && !listed[id]; });
+          if (loose.length) {
+              if (groups.length) groups[groups.length - 1].moves = groups[groups.length - 1].moves.concat(loose);
+              else groups.push({ name: 'Moves', moves: loose });
+          }
+          var locked = lockedSet(sec[0]);
+          groups.forEach(function (dom) {
+              var ids = dom.moves.filter(function (id) { return window.STRATS[id]; });
+              var counted = ids.filter(function (id) { return !window.STRATS[id].meta; });
+              var n = counted.filter(function (id) { return locked[id]; }).length;
+              h += '<div class="dom-head"><h3 class="sec-title">' + esc(dom.name) + '</h3>' +
+                (counted.length ? '<span class="dom-count' + (n === counted.length ? ' done' : '') + '">' +
+                  n + ' of ' + counted.length + ' locked in</span>' : '') + '</div><div class="move-list">';
+              ids.forEach(function (id) {
+                  var st = window.STRATS[id];
+                  var ms = st.meta ? { key: 'habit', label: 'Every question' } : moveState(id);
+                  h += '<button class="move-row" onclick="APP.guide(\'' + id + '\')">' +
+                    '<span class="mr-dot ' + ms.key + '">' + (ms.key === 'locked' ? ic('check') : '') + '</span>' +
+                    '<span class="mr-name">' + esc(st.name) + '</span>' +
+                    '<span class="mr-state ' + ms.key + '">' + esc(ms.label) + '</span></button>';
+              });
+              h += '</div>';
           });
-          h += '</div>';
       });
       return h + '</div>';
     }
 
     function guideHTML(id) {
       var st = window.STRATS[id];
-      var h = '<p class="g-move">' + esc(st.move) + '</p>';
+      var h = (st.domain ? '<p class="g-domain">' + esc(st.domain) + '</p>' : '') + '<p class="g-move">' + esc(st.move) + '</p>';
       h += '<div class="panel"><h3>How you know it is this one</h3>' + cuesHTML(id) + '</div>';
       var pairs = Object.keys(window.STRAT_VS).filter(function (k) { return k.split('|').indexOf(id) >= 0; });
       if (pairs.length) {

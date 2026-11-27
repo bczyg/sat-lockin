@@ -183,6 +183,17 @@ Object.entries(window.STRATS).forEach(([k, v]) => {
   if (v.section !== 'math' && (v.gen.spr || v.gen.grid)) sprBad.push(`${k} is Reading and Writing but asks for grid-ins`);
 });
 if (sprBad.length) fail(`grid-in recipe problems: ${sprBad.join(', ')}`);
+/* Domains: every move sits in exactly one domain group of its own section. */
+const domBad = [];
+const placed = {};
+Object.entries(window.MOVE_DOMAINS || {}).forEach(([sec, groups]) => groups.forEach((g) => g.moves.forEach((id) => {
+  if (!window.STRATS[id]) domBad.push(`${g.name} lists unknown move ${id}`);
+  else if (window.STRATS[id].section !== sec) domBad.push(`${id} is listed under ${sec} but is a ${window.STRATS[id].section} move`);
+  if (placed[id]) domBad.push(`${id} is in both ${placed[id]} and ${g.name}`);
+  placed[id] = g.name;
+})));
+Object.keys(window.STRATS).forEach((k) => { if (!placed[k]) domBad.push(`${k} is in no domain group`); });
+if (domBad.length) fail(`moves-by-domain problems: ${domBad.join(', ')}`);
 const meta =Object.keys(window.STRATS).filter((k) => window.STRATS[k].meta);
 notes.push(`${Object.keys(window.STRATS).length} strategies, all with recipes, ` +
            `all drillable (${meta.length} habit${meta.length === 1 ? '' : 's'}: ${meta.join(', ')})`);

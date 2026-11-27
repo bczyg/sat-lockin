@@ -786,6 +786,12 @@ table.data td:first-child{text-align:left;font-weight:600}
   font-family:var(--sans);font-size:var(--fs-xs);font-weight:800;letter-spacing:.08em;text-transform:uppercase;
   color:var(--ink-3);margin:var(--s7) 0 var(--s3) var(--s1);
 }
+.sec-head{font-size:var(--fs-lg);font-weight:800;color:var(--ink);margin:var(--s8) 0 0 var(--s1)}
+.dom-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);margin:var(--s5) var(--s1) var(--s3)}
+.dom-head .sec-title{margin:0}
+.dom-count{flex:none;font-size:var(--fs-xs);font-weight:700;color:var(--ink-3);white-space:nowrap}
+.dom-count.done{color:var(--ok)}
+.g-domain{margin:0 0 var(--s1);font-size:var(--fs-xs);font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
 .move-list{
   border-radius:var(--r);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);overflow:hidden;
 }

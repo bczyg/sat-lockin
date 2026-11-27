@@ -436,6 +436,34 @@ window.STRATS = {
     } }
 };
 
+/* ---------------- moves by SAT domain ----------------
+   The four domains of each section, in test order, as the College Board
+   names them on score reports, so the moves list matches what a student
+   sees there. A move goes where its questions come from. Moves used on
+   any question of the section (graph it, check it, use the choices) get
+   their own group, last. verify.js checks every move is in exactly one. */
+window.MOVE_DOMAINS = {
+  rw: [
+    { name:'Craft and Structure', moves:['context-word', 'author-move', 'concession-map'] },
+    { name:'Information and Ideas', moves:['predict-first', 'claim-fit', 'data-discipline', 'smallest-step'] },
+    { name:'Standard English Conventions', moves:['boundary-test', 'subject-verb', 'verb-time', 'apostrophe-count', 'modifier-attach', 'parallel-pairs', 'pronoun-check'] },
+    { name:'Expression of Ideas', moves:['relationship-first', 'goal-checklist'] },
+    { name:'Every question', moves:['choice-split'] }
+  ],
+  math: [
+    { name:'Algebra', moves:['translate', 'count-solutions', 'systems-tactics'] },
+    { name:'Advanced Math', moves:['expression-structure', 'function-notation', 'function-behavior'] },
+    { name:'Problem-Solving and Data Analysis', moves:['proportional-reasoning', 'data-inference'] },
+    { name:'Geometry and Trigonometry', moves:['geometry-toolkit', 'coordinate-geometry'] },
+    { name:'Any math question', moves:['desmos-first', 'solve-check', 'choice-tactics'] }
+  ]
+};
+Object.keys(window.MOVE_DOMAINS).forEach(function (sec) {
+  window.MOVE_DOMAINS[sec].forEach(function (d) {
+    d.moves.forEach(function (id) { if (window.STRATS[id]) window.STRATS[id].domain = d.name; });
+  });
+});
+
 
 /* ---------------- telling look-alike strategies apart ----------------
    The pairs students actually confuse, and the one question that separates
