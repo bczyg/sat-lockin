@@ -49,7 +49,7 @@ const SECRET = 'whsec_itest_' + crypto.randomBytes(8).toString('hex');
    stripped), one the checker answers differently, one malformed. */
 const FAKE_PORT = Number(PORT) + 1000;
 const fake = {
-  requests: [], writer: [], verifier: [], failNext: false,
+  requests: [], writer: [], verifier: [], gridVerifier: [], gridRun: null, failNext: false,
   writeMove: null, writerDelay: 0, detailMove: 'subject-verb', trapDetail: null
 };
 const fakeQuestion = (marker, extra = {}) => ({
@@ -60,11 +60,38 @@ const fakeQuestion = (marker, extra = {}) => ({
   strategy: 'Cross out the phrase after the subject, then match the verb to what is left.',
   hint: 'What is left in front of the blank once "of local volunteers" is gone?',
   steps: ['Remove "of local volunteers", which leaves "The committee ______".', '"Committee" is one group, so it takes the singular "meets".'],
+  second_method: 'Swap in the pronoun "it" for the committee: "it meets" sounds right, "it meet" does not.',
   wrong_choices: [
     { index: 0, trap_id: 'agreement-by-ear', explanation: 'It agrees with "volunteers", the nearest noun, not the subject.' },
     { index: 2, trap_id: 'agreement-by-ear', explanation: 'Plural "are" again matches "volunteers".' },
     { index: 3, trap_id: 'wrong-tense', explanation: 'Plural "have", and it shifts a yearly habit into the past.' }
   ],
+  ...extra
+});
+// A math multiple choice and a grid-in, for the grid-in run on 'translate'.
+const fakeMath = (marker) => ({
+  domain: 'Algebra', skill: 'Linear equations in two variables', difficulty: 'E', passage: '',
+  prompt: `${marker} A gym charges a $20 joining fee and $15 a month. Which equation gives the cost C after m months?`,
+  choices: ['C = 15m + 20', 'C = 20m + 15', 'C = 15m', 'C = 35m'], answer: 0,
+  strategy: 'The per-month amount multiplies m; the one-time fee is added once.',
+  hint: 'Which number is paid only once?',
+  steps: ['The fee is paid once: + 20.', 'Each month adds 15: 15m. So C = 15m + 20.'],
+  second_method: 'Check m = 1: the first month costs 20 + 15 = 35, and only C = 15m + 20 gives 35 while also giving 20 at m = 0.',
+  wrong_choices: [
+    { index: 1, trap_id: 'reversed', explanation: 'You swapped the fee and the monthly charge.' },
+    { index: 2, trap_id: 'one-step-short', explanation: 'You dropped the joining fee.' },
+    { index: 3, trap_id: 'setup-error', explanation: 'You charged the fee every month.' }
+  ]
+});
+const fakeGrid = (marker, extra = {}) => ({
+  domain: 'Algebra', skill: 'Linear equations in one variable', difficulty: 'M',
+  prompt: `${marker} A plan charges a $12 fee plus $3 per class. Ana paid $22.50 in all. How many classes did she take?`,
+  answers: ['7/2', '3.5'],
+  strategy: 'Fee plus rate times classes equals the total; solve for classes.',
+  hint: 'Take the fee away from the total first.',
+  steps: ['12 + 3c = 22.5', '3c = 10.5, so c = 3.5'],
+  second_method: 'Without the fee Ana paid 10.50, and 10.50 / 3 = 3.5.',
+  likely_wrong: [{ value: '7.5', trap_id: 'one-step-short', explanation: 'You divided the whole total by 3 and forgot the fee.' }],
   ...extra
 });
 // What the scripted Claude submits once it fixes its first try: five moves,
@@ -95,17 +122,30 @@ const fakeApi = http.createServer((req, res) => {
       fake.writer.push(body);
       const move = (/MOVE: (\S+)/.exec(body.messages[0].content) || [])[1];
       if (move !== fake.writeMove) return reply(200, fakeMsg([], 'refusal'));
+      if (fake.gridRun) {
+        // More of each kind than asked for: the server must keep only what it asked for.
+        return reply(200, fakeMsg([think('Two and one.'), use('submit_questions', {
+          questions: [fakeMath('MATHQ1'), fakeMath('MATHQ2'), fakeMath('MATHQ3')],
+          grid_ins: [fakeGrid(fake.gridRun === 'bad' ? 'BADG' : 'GOODG', fake.gridRun === 'bad' ? { answers: ['1 1/2'] } : {}), fakeGrid('EXTRAG')]
+        })], 'tool_use'));
+      }
       return setTimeout(() => reply(200, fakeMsg([think('Three questions.'), use('submit_questions', { questions: [
         fakeQuestion('GOODQ <img src=x onerror=alert(1)><script>alert(1)</script>'),
         fakeQuestion('VARYQ'),
         fakeQuestion('BADQ', { prompt: 'Which choice completes the text \u2014 correctly?' })
-      ] })], 'tool_use')), fake.writerDelay);
+      ], grid_ins: [] })], 'tool_use')), fake.writerDelay);
+    }
+    if (tools.includes('submit_grid_verdict')) {
+      fake.gridVerifier.push(body);
+      return reply(200, fakeMsg([think('Checked.'), use('submit_grid_verdict', {
+        answer_value: '3.5', move_id: fake.writeMove, confidence: 'high', difficulty: 'M', problems: []
+      })], 'tool_use'));
     }
     if (tools.includes('submit_verdict')) {
       fake.verifier.push(body);
       const text = body.messages[0].content;
       return reply(200, fakeMsg([think('Checked.'), use('submit_verdict', {
-        answer_index: /VARYQ/.test(text) ? 2 : 1, move_id: fake.writeMove, confidence: 'high', problems: []
+        answer_index: /VARYQ/.test(text) ? 2 : /MATHQ/.test(text) ? 0 : 1, move_id: fake.writeMove, confidence: 'high', difficulty: 'M', problems: []
       })], 'tool_use'));
     }
     fake.requests.push({ body, headers: req.headers });
@@ -145,7 +185,7 @@ const server = spawn(process.execPath, ['server.js'], {
   env: {
     ...process.env, DATABASE_URL: DB, PORT,
     ALLOW_CODE_IN_RESPONSE: 'true', LOG_SIGNIN_CODES: 'true',
-    STRIPE_WEBHOOK_SECRET: SECRET, COMP_EMAILS: 'comp@example.com',
+    STRIPE_WEBHOOK_SECRET: SECRET, COMP_EMAILS: 'comp@example.com', ADMIN_EMAILS: 'Admin-IT@example.com',
     ALLOWED_ORIGINS: 'https://allowed.example',
     NODE_ENV: 'test', POOL_DAILY_LIMIT: String(POOL_LIMIT),
     ANTHROPIC_API_KEY: 'test-key-not-real', ANTHROPIC_BASE_URL: `http://127.0.0.1:${FAKE_PORT}`
@@ -172,6 +212,7 @@ const pgc = new pg.Client({ connectionString: DB });
 await pgc.connect();
 await pgc.query('delete from pool_questions');
 await pgc.query('delete from pool_usage');
+await pgc.query('delete from pool_rejects').catch(() => {});   // absent until the server first applies the schema
 
 let failures = 0;
 const ok = (cond, msg) => { console.log((cond ? '  ok   ' : '  FAIL ') + msg); if (!cond) failures++; };
@@ -587,6 +628,9 @@ try {
       'writer: Opus 5.5, adaptive thinking, high effort, one strict tool, no forced choice, cached system prompt');
     ok(/TRAPS/.test(wr.system[0].text || '') && /<example>/.test(wr.messages[0].content) && /Look-alikes/.test(wr.messages[0].content),
       'the writer gets the trap catalog, the look-alikes and real bank examples');
+    ok(/all multiple choice\. Leave grid_ins empty/.test(wr.messages[0].content) && !/<grid_example>/.test(wr.messages[0].content) &&
+      /at least one E, one M and one H/.test(wr.messages[0].content) && /Solve every question twice/.test(wr.system[0].text || ''),
+      'a Reading and Writing move gets no grid-ins, a difficulty spread, and the solve-it-twice rule');
     const vreqs = fake.verifier.slice(vBefore);
     ok(vreqs.length === 2, `two questions reached the blind check, the malformed one never did (${vreqs.length})`);
     const v0 = vreqs[0] || { tools: [{}], messages: [{ content: '' }] };
@@ -641,6 +685,68 @@ try {
       'today returns the same questions');
     await drain();
 
+    // ---------- grid-ins: a math move that suits them gets one per batch ----------
+    {
+      const tq = cat.byStrat['translate'];
+      const exhaustT = (u, tag) => post('/api/sync/naming', { reps: tq.map((q, i) => ({
+        k: `${tag}${i}-` + run, t: new Date(base + i * 3600000).toISOString(), qid: q, strat: 'translate', picked: 'translate', right: true
+      })) }, u.token);
+      fake.writeMove = 'translate';
+
+      // 1. a bad grid-in (a mixed number as the key) is rejected and kept for review
+      fake.gridRun = 'bad';
+      const G1 = await paidUser('grid1');
+      await exhaustT(G1, 'g1');
+      const nw1 = fake.writer.length;
+      const nv1 = fake.verifier.length;
+      const ng1 = fake.gridVerifier.length;
+      const g1 = await post('/api/coach/prepare', { today, section: 'math' }, G1.token);
+      await drain();
+      const tw = fake.writer.slice(nw1).find((b) => /MOVE: translate /.test(b.messages[0].content)) || { messages: [{ content: '' }], tools: [{ input_schema: { properties: {} } }] };
+      const msg = tw.messages[0].content;
+      ok(g1.status === 200 && /Write 2 multiple choice questions and 1 grid-in for this move\./.test(msg) && /<grid_example>\{/.test(msg) && /- As a grid-in: /.test(msg),
+        'a math move with an empty pool asks for 2 multiple choice and 1 grid-in, with a bank grid-in as the example');
+      ok(tw.tools.length === 1 && tw.tools[0].strict === true && tw.tools[0].input_schema.properties.grid_ins &&
+        tw.tools[0].input_schema.required.includes('grid_ins'), 'still one strict tool, now with grid_ins');
+      ok(fake.verifier.length - nv1 === 2, `only the 2 multiple choice asked for were checked, the third was dropped (${fake.verifier.length - nv1})`);
+      ok(fake.gridVerifier.length === ng1, 'the bad grid-in never reached the checker');
+      const rej = (await pgc.query(`select kind, payload, reasons from pool_rejects where strat = 'translate' and kind = 'spr'`)).rows;
+      ok(rej.length === 1 && /not an integer, a fraction or a decimal/.test(JSON.stringify(rej[0].reasons)) && /BADG/.test(rej[0].payload.prompt),
+        'the rejected grid-in is kept in pool_rejects with its reason and its text');
+      ok(/\[pool\] translate rejected #3 \(grid-in\): structure: the first answer "1 1\/2"/.test(log), 'and logged as a grid-in');
+      const afterBad = (await pgc.query(`select payload->>'type' as t from pool_questions where strat = 'translate'`)).rows;
+      ok(afterBad.length === 2 && afterBad.every((r) => r.t === 'mc'), `two multiple choice kept, no grid-in (${afterBad.map((r) => r.t)})`);
+
+      // 2. the pool still has no grid-in, so the next batch asks again, and a good one is kept
+      fake.gridRun = 'good';
+      const G2 = await paidUser('grid2');
+      await exhaustT(G2, 'g2');
+      const ng2 = fake.gridVerifier.length;
+      await post('/api/coach/prepare', { today, section: 'math' }, G2.token);
+      await drain();
+      const gv = fake.gridVerifier.slice(ng2);
+      ok(gv.length === 1, `one grid-in was checked, the extra one was dropped (${gv.length})`);
+      const gvt = (gv[0] || { messages: [{ content: '' }], tools: [{}], system: [{}] });
+      ok(gvt.tools[0].name === 'submit_grid_verdict' && gvt.tools[0].strict === true && /answer_value/.test(gvt.system[0].text || ''),
+        'grid-ins go to the grid-in checker');
+      ok(/\[The student types a number/.test(gvt.messages[0].content) && /GOODG/.test(gvt.messages[0].content) &&
+        !/7\/2|7\.5|forgot the fee|Without the fee|Take the fee away/.test(gvt.messages[0].content),
+        'the grid-in check is blind: no key, wrong answers, steps, hint or second method');
+      const spr = (await pgc.query(`select payload, verdict from pool_questions where strat = 'translate' and payload->>'type' = 'spr'`)).rows;
+      const sp = (spr[0] || {}).payload || {};
+      ok(spr.length === 1 && /GOODG/.test(sp.prompt) && sp.answers.join() === '7/2,3.5' && !sp.choices &&
+        sp.wrong_answers.length === 1 && sp.wrong_answers[0].value === '7.5' && sp.wrong_answers[0].trap === 'one-step-short' &&
+        Object.keys(sp.traps).length === 0 && sp.tags.strat === 'translate' && sp.tags.traps.w0 === 'one-step-short',
+        'the good grid-in is stored as type spr with its answers and likely wrong answers');
+      ok(spr[0] && spr[0].verdict.answer_value === '3.5' && /10\.50/.test(spr[0].verdict.second_method) && !JSON.stringify(sp).includes('Without the fee'),
+        'the checker typed 3.5 for a 7/2 key and it counted; the second method is kept with the verdict, not the question');
+      const u2 = (await pgc.query('select grid_asked, grid_kept from pool_usage where day = $1', [utc])).rows[0] || {};
+      ok(u2.grid_asked === 2 && u2.grid_kept === 1, `grid-ins asked and kept are counted (${JSON.stringify(u2)})`);
+      // (The 25% cut-off itself is unit-tested in scripts/writer-test.mjs.)
+      fake.gridRun = null;
+      fake.writeMove = null;
+    }
+
     // POOL_DAILY_LIMIT: once today's count is spent, nothing more is written
     await pgc.query(`insert into pool_usage (day, attempts) values ($1, $2)
                      on conflict (day) do update set attempts = excluded.attempts`, [utc, POOL_LIMIT]);
@@ -652,7 +758,7 @@ try {
     await drain();
     ok(rx.status === 200 && fake.writer.length === wBeforeX, 'at POOL_DAILY_LIMIT the writer is not called');
     ok(new RegExp(`subject-verb skipped: today's POOL_DAILY_LIMIT of ${POOL_LIMIT} is used`).test(log), 'and the skip is logged');
-    ok((await pgc.query('select count(*)::int as n from pool_questions')).rows[0].n === 1, 'and the pool did not grow');
+    ok((await pgc.query(`select count(*)::int as n from pool_questions where strat = 'subject-verb'`)).rows[0].n === 1, 'and the pool did not grow');
     fake.writeMove = null;
 
     // ---------- Bluebook misses steer the coach ----------
@@ -685,6 +791,174 @@ try {
     const ys = ry.body.session || { moves: [] };
     ok(ry.status === 200 && !FAKE_MOVES.includes('pronoun-check') && ys.moves.includes('pronoun-check'),
       'the server fill reaches for the move missed on Bluebook first');
+
+    // ---------- student feedback ----------
+    {
+      const fb = (u, body) => post('/api/feedback', body, u.token);
+      const t = (s = 0) => new Date(Date.now() + s * 1000).toISOString();
+      const fillers = cat.bank.slice(0, 25).map((q) => q.id);
+      /* A student who has answered `count` different questions, plus each of
+         `also`, which the coach served them (served: false skips that). */
+      const answer = (u, name, qids, from = 0) => post('/api/sync/events', { events: qids.map((q, i) => ({
+        key: `fb-${name}-${from + i}-` + run, attempt: 'lockin-fb' + name, t: t(-100 + from + i), qid: q, correct: true
+      })) }, u.token);
+      const serve = (u, qids) => pgc.query(
+        `insert into coach_plans (user_id, day, plan) values ($1, current_date, $2)`, [u.user.id, JSON.stringify({ qids, moves: [], line: '' })]);
+      const voter = async (name, count = 20, also = [], served = true) => {
+        const u = await signIn(mail(name));
+        await answer(u, name, [...fillers.slice(0, count), ...also]);
+        if (served && also.length) await serve(u, also);
+        return u;
+      };
+      const pid = pq.id;
+      const row = async (u, qid) => (await pgc.query('select rating, reason from question_feedback where user_id = $1 and qid = $2', [u.user.id, qid])).rows[0];
+      const retired = async (qid) => !!(await pgc.query('select retired_at from pool_questions where id = $1', [qid])).rows[0]?.retired_at;
+
+      // saving
+      const F1 = await voter('fb1', 20);
+      let r = await fb(F1, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t() }] });
+      ok(r.status === 200 && r.body.questions[pid] === 'retry' && !(await row(F1, pid)),
+        'a vote on a question the student has not answered (as far as the server knows) is held for retry, not saved');
+      await post('/api/sync/events', { events: [{ key: 'fb-fb1-target-' + run, attempt: 'lockin-fbx', t: t(), qid: pid, correct: false }] }, F1.token);
+      await serve(F1, [pid]);
+      r = await fb(F1, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t(1) }, { qid: 'nope', rating: 1, t: t() }, { qid: fillers[0], rating: 2, t: t() }] });
+      ok(r.body.questions[pid] === 'saved' && r.body.questions.nope === 'dropped' && r.body.questions[fillers[0]] === 'dropped',
+        'once answered it saves; an unknown question or a bad rating is dropped');
+      r = await fb(F1, { questions: [{ qid: pid, rating: 1, t: t(-50) }] });
+      const kept = await row(F1, pid);
+      ok(r.body.questions[pid] === 'saved' && kept.rating === -1 && kept.reason === 'wrong', 'an older resend never undoes a newer tap');
+      await fb(F1, { questions: [{ qid: fillers[1], rating: 1, reason: 'wrong', t: t(2) }] });
+      ok((await row(F1, fillers[1])).reason === null, 'a reason is kept only on a thumbs down');
+      await fb(F1, { questions: [{ qid: fillers[1], rating: 0, t: t(3) }] });
+      ok((await row(F1, fillers[1])).rating === 0, 'tapping again clears the vote');
+      ok((await post('/api/feedback', { questions: [] })).status === 401, 'feedback needs a signed-in student');
+      const nb = await post('/api/feedback', 'null', F1.token);
+      ok(nb.status === 200 && Object.keys(nb.body.questions).length === 0, 'an empty or null body is an empty request, not an error');
+      const both = await Promise.all([
+        fb(F1, { questions: [{ qid: fillers[3], rating: 1, t: t(10) }] }),
+        fb(F1, { questions: [{ qid: fillers[4], rating: -1, t: t(10) }] })
+      ]);
+      ok(both.every((x) => x.status === 200) && (await row(F1, fillers[3])).rating === 1 && (await row(F1, fillers[4])).rating === -1,
+        'two saves from the same student at once both go through, one after the other');
+
+      // a device clock running an hour fast cannot lock a vote against a later tap
+      await fb(F1, { questions: [{ qid: fillers[2], rating: 1, t: t(3600) }] });
+      await new Promise((res) => setTimeout(res, 1100));
+      await fb(F1, { questions: [{ qid: fillers[2], rating: -1, t: t() }] });
+      ok((await row(F1, fillers[2])).rating === -1, 'a vote stamped in the future is capped at now, so a later tap still wins');
+
+      // retiring: "answer looks wrong" from 3 qualified students
+      const unserved = await voter('fbunserved', 20, [pid], false);
+      await fb(unserved, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t(4) }] });
+      const lightweight = await voter('fblight', 5, [pid]);
+      await fb(lightweight, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t(4) }] });
+      const F2 = await voter('fb2', 20, [pid]);
+      await fb(F2, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t(4) }] });
+      ok(!(await retired(pid)), 'two qualified reports, one from a student with only a handful of answers and one from a student never served it: not retired');
+      const F3 = await voter('fb3', 20, [pid]);
+      await fb(F3, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t(4) }] });
+      ok(await retired(pid), 'the third qualified "answer looks wrong" retires the pool question');
+      ok(((await post('/api/sync/pull', {}, F1.token)).body.retired_pool || []).includes(pid),
+        'the next sync tells every device it is retired, so the app stops picking it');
+      ok(/\[feedback\] retired p[0-9a-f]{10}: 3 said the answer looks wrong/.test(log), 'and the retirement is logged');
+
+      // a retired question is never served anew, but a prepared session still loads
+      const tW2 = await post('/api/coach/today', { today }, W.token);
+      ok((tW2.body.session?.questions || []).some((q) => q.id === pid), 'a session prepared before the retirement still carries its payload');
+      const Z = await paidUser('zpaid');
+      await exhaust(Z, 'z');
+      const rz = await post('/api/coach/prepare', { today }, Z.token);
+      await drain();
+      ok(rz.status === 200 && !rz.body.session.qids.includes(pid), 'a new session never gets the retired question');
+
+      // votes cast before their students qualified count once they do
+      const lateQ = (await pgc.query(`select id from pool_questions where strat = 'translate' and retired_at is null order by id desc limit 1`)).rows[0].id;
+      const late = [];
+      for (let i = 0; i < 3; i++) {
+        const u = await voter('fblate' + i, 10, [lateQ]);
+        await fb(u, { questions: [{ qid: lateQ, rating: -1, reason: 'wrong', t: t(6) }] });
+        late.push(u);
+      }
+      ok(!(await retired(lateQ)), 'three reports from students with only 10 answers each: not yet');
+      for (let i = 0; i < 3; i++) await answer(late[i], 'fblate' + i, fillers.slice(10, 20), 10);
+      const sw = await post('/api/test/feedback-sweep', {});
+      ok(sw.status === 200 && (await retired(lateQ)), 'once they reach 20 answers, the sweep retires it with no new vote');
+
+      // the net rule: plain thumbs down count, "too easy" never does
+      const tqs = (await pgc.query(`select id from pool_questions where strat = 'translate' and retired_at is null order by id`)).rows.map((x) => x.id);
+      const [easyQ, netQ] = tqs.filter((q) => q !== lateQ);
+      for (let i = 0; i < 5; i++) {
+        const u = await voter('fbe' + i, 20, [easyQ]);
+        await fb(u, { questions: [{ qid: easyQ, rating: -1, reason: 'easy', t: t(5) }] });
+      }
+      ok(!(await retired(easyQ)), 'five "too easy" votes never retire a question');
+      for (let i = 0; i < 3; i++) {
+        const u = await voter('fbc' + i, 20, [easyQ]);
+        await fb(u, { questions: [{ qid: easyQ, rating: -1, reason: 'confusing', t: t(5) }] });
+      }
+      ok(!(await retired(easyQ)), 'three "confusing" plus five "too easy": net -3 from only 3 ratings that count, so not retired');
+      const votes = [-1, -1, -1, -1, 1];
+      for (let i = 0; i < votes.length; i++) {
+        const u = await voter('fbn' + i, 20, [netQ]);
+        await fb(u, { questions: [{ qid: netQ, rating: votes[i], t: t(5) }] });
+        if (i === 3) ok(!(await retired(netQ)), 'four thumbs down alone are under the five-rating minimum');
+      }
+      ok(await retired(netQ), 'the fifth rating makes five that net -3 (four down, one up): retired');
+      // "answer looks wrong" counts -1 in the net as well
+      const wrongNet = tqs.filter((q) => q !== lateQ)[2];
+      const wv = [['wrong'], ['wrong'], ['confusing'], ['confusing'], [null, 1]];
+      for (let i = 0; i < wv.length; i++) {
+        const u = await voter('fbw' + i, 20, [wrongNet]);
+        await fb(u, { questions: [{ qid: wrongNet, rating: wv[i][1] || -1, reason: wv[i][0], t: t(5) }] });
+      }
+      ok(await retired(wrongNet), 'two "wrong", two "confusing" and one thumbs up net -3: retired');
+
+      // move votes: only for a session the student played
+      const M = await voter('fbm', 20);
+      const played = ['s1', 's2', ...Array.from({ length: 12 }, (_, i) => 'm' + i)];
+      r = await fb(M, { moves: [{ session: 'ghost', strat: 'translate', t: t() }] });
+      ok(r.body.moves.ghost === 'retry' && !(await pgc.query('select 1 from move_feedback where user_id = $1', [M.user.id])).rowCount,
+        'a move vote for a session with no answers behind it is not saved');
+      await post('/api/sync/events', { events: [...played.map((sid, i) => ({
+        key: `fbm-play-${sid}-` + run, attempt: 'lockin-' + sid, t: t(-10 + i), qid: fillers[i % fillers.length], strat: 'translate', correct: true
+      })), { key: 'fbm-play-s1b-' + run, attempt: 'lockin-s1', t: t(-1), qid: fillers[20], strat: 'solve-check', correct: true }] }, M.token);
+      r = await fb(M, { moves: [{ session: 's1', strat: 'geometry-toolkit', t: t() }] });
+      ok(r.body.moves.s1 === 'retry' && !(await pgc.query('select 1 from move_feedback where user_id = $1', [M.user.id])).rowCount,
+        'a move vote for a move not (yet) in the session is held for retry and not saved');
+      r = await fb(M, { moves: [{ session: 's1', strat: 'translate', t: t() }, { session: 's2', strat: 'made-up', t: t() }] });
+      ok(r.body.moves.s1 === 'saved' && r.body.moves.s2 === 'dropped', 'a move vote saves; an unknown move is dropped');
+      await fb(M, { moves: [{ session: 's1', strat: 'solve-check', t: t(1) }] });
+      ok((await pgc.query('select strat from move_feedback where user_id = $1', [M.user.id])).rows.map((x) => x.strat).join() === 'solve-check',
+        'one vote per session; a newer tap changes it');
+      const many = await fb(M, { moves: Array.from({ length: 12 }, (_, i) => ({ session: 'm' + i, strat: 'translate', t: t(2) })) });
+      ok(Object.values(many.body.moves).filter((x) => x === 'retry').length === 3, 'at most 10 move votes a day');
+      await fb(M, { moves: [{ session: 's1', strat: '', t: t(3) }] });
+      ok(!(await pgc.query('select 1 from move_feedback where user_id = $1 and session_id = $2', [M.user.id, 's1'])).rowCount, 'an empty move clears the vote');
+
+      // the admin page: ADMIN_EMAILS only, totals only
+      ok((await post('/api/admin/feedback', {}, W.token)).status === 403, 'a paid student who is not an admin is refused');
+      ok((await post('/api/admin/feedback', {}, (await signIn('comp@example.com')).token)).status === 403, 'a comped account is not an admin either');
+      const A = await signIn('admin-it@example.com');
+      const rep = await post('/api/admin/feedback', {}, A.token);
+      const rq = (rep.body.questions || []).find((q) => q.qid === pid);
+      ok(/^\d{4}-\d{2}-\d{2}$/.test((rep.body.writer[0] || {}).day) && rep.body.writer[0].day === utc, 'writer days are plain dates, not shifted by time zone');
+      ok(rep.status === 200 && rq && rq.source === 'pool' && rq.retired === true && rq.wrong >= 3 && rq.move === 'subject-verb',
+        'the admin report lists the rated question with its counts and its retirement');
+      ok((rep.body.retired || []).some((q) => q.qid === pid) && rep.body.writer.length >= 1 && rep.body.rejects.length >= 1 &&
+        rep.body.moves.some((m) => m.move === 'translate' && m.helped >= 1), 'and the retired list, the writer numbers, the rejection reasons and the move votes');
+      const flat = JSON.stringify(rep.body);
+      ok(!/@/.test(flat) && !flat.includes(F1.user.id) && !flat.includes(M.user.id), 'it never includes an email or a user id');
+
+      // restore: old votes stop counting
+      ok((await post('/api/admin/restore', { qid: pid }, W.token)).status === 403, 'only an admin can restore');
+      const rs = await post('/api/admin/restore', { qid: pid }, A.token);
+      ok(rs.status === 200 && !(await retired(pid)), 'restore brings the question back');
+      const rep2 = await post('/api/admin/feedback', {}, A.token);
+      ok(!(rep2.body.questions || []).some((q) => q.qid === pid), 'and its old votes no longer show on the admin page');
+      await fb(F2, { questions: [{ qid: pid, rating: -1, reason: 'wrong', t: t(30) }] });
+      ok(!(await retired(pid)), 'one new report after a restore does not retire it again: the old reports no longer count');
+      ok((await post('/api/admin/restore', { qid: pid }, A.token)).status === 404, 'restoring a question that is not retired is a 404');
+    }
 
     const h = await (await fetch(BASE + '/healthz')).json();
     ok(h.coach === true, 'healthz reports the coach');

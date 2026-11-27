@@ -30,6 +30,7 @@
     var COACH_USED = 'lockin.coach.used.v1';
     var SEEN_LANDING = 'lockin.seenlanding';
     var POOL_KEY = 'lockin.pool.v1';
+    var RETIRED_KEY = 'lockin.pool.retired.v1';
     var SECTION_KEY = 'lockin.section.v1';
     var SECTIONS = [['rw', 'Reading and Writing'], ['math', 'Math']];
 
@@ -37,21 +38,51 @@
        session. They join the bank on this device, and are kept so a session
        still renders after a reload. The server checks and sanitizes them
        before they are ever served. */
+    /* Pool questions students reported as broken: from this load's sync, or
+       the last one saved, so they apply at boot and offline too. */
+    function retiredIds() {
+      var out = {};
+      var list = (window.Cloud && window.Cloud.retiredPool) || store(RETIRED_KEY) || [];
+      if (Array.isArray(list)) list.forEach(function (id) { out[id] = 1; });
+      return out;
+    }
     function installPool(list, keep) {
       if (!Array.isArray(list) || !list.length) return;
       var saved = keep ? (store(POOL_KEY) || []) : null;
+      var gone = retiredIds();
       window.TAGS = window.TAGS || {};
       list.forEach(function (q) {
-          if (!q || !q.id || !q.tags || !q.tags.strat || !Array.isArray(q.choices) || !Array.isArray(q.steps)) return;
-          if (!ALLQ[q.id]) {
-            (q.section === 'math' ? window.MATH_BANK : window.RW_BANK).push(q);
-            ALLQ[q.id] = q;
-          }
+          if (!q || !q.id || !q.tags || !q.tags.strat || !Array.isArray(q.steps)) return;
+          /* Multiple choice needs its choices; a grid-in needs at least one accepted answer. */
+          if (q.type === 'spr' ? !(Array.isArray(q.answers) && q.answers.length) : !Array.isArray(q.choices)) return;
+          /* A retired one can still arrive in a session prepared before it was
+             retired: it renders (ALLQ), but never joins the banks a round is
+             built from, and is not kept. */
+          var bank = q.section === 'math' ? window.MATH_BANK : window.RW_BANK;
+          if (!ALLQ[q.id]) ALLQ[q.id] = q;
+          /* In the bank unless retired, including one restored since this
+             device dropped it. */
+          if (!gone[q.id] && !bank.some(function (x) { return x.id === q.id; })) bank.push(ALLQ[q.id]);
           window.TAGS[q.id] = { strat: q.tags.strat, traps: q.tags.traps || {} };
-          if (saved && !saved.some(function (x) { return x.id === q.id; })) saved.push(q);
+          if (saved && !gone[q.id] && !saved.some(function (x) { return x.id === q.id; })) saved.push(q);
       });
       if (saved) store(POOL_KEY, saved.slice(-400));
     }
+    /* After a sync: forget retired pool questions this device kept. */
+    function dropRetired() {
+      if (window.Cloud && Array.isArray(window.Cloud.retiredPool)) store(RETIRED_KEY, window.Cloud.retiredPool);
+      var gone = retiredIds();
+      if (!Object.keys(gone).length) return;
+      var saved = store(POOL_KEY) || [];
+      var kept = saved.filter(function (q) { return q && !gone[q.id]; });
+      if (kept.length !== saved.length) store(POOL_KEY, kept);
+      [window.MATH_BANK, window.RW_BANK].forEach(function (b) {
+          for (var i = b.length - 1; i >= 0; i--) if (b[i] && gone[b[i].id]) b.splice(i, 1);
+      });
+    }
+    /* For rounds built from exact ids (a coach session), which may name a
+       question that is no longer in the banks. */
+    window.questionById = function (id) { return ALLQ[id] || null; };
 
     function boot() {
       (window.RW_BANK || []).concat(window.MATH_BANK || []).forEach(function (q) { ALLQ[q.id] = q; });
@@ -72,6 +103,7 @@
       if (window.Cloud) {
         var cameBack = true;   // the first load is the student coming back to their section
         window.Cloud.on(function () {
+            dropRetired();
             if (view === 'unlock' && unlock.stage === 'confirming') confirmPurchase();
             if (coachOn()) { ensureCoach(null, cameBack); cameBack = false; }
             if (view !== 'session') render();
@@ -100,6 +132,8 @@
       spark:  '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
       bulb:   '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>',
       star:   '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+      thumbUp:   '<path d="M7 11v9H4v-9z"/><path d="M7 11l4-7a2 2 0 0 1 3 1.7V10h4.6a2 2 0 0 1 2 2.3l-1.2 6.4A2 2 0 0 1 17.4 20H7"/>',
+      thumbDown: '<path d="M7 13V4H4v9z"/><path d="M7 13l4 7a2 2 0 0 0 3-1.7V14h4.6a2 2 0 0 0 2-2.3l-1.2-6.4A2 2 0 0 0 17.4 4H7"/>',
       calc:   '<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7.5h7"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/>'
     };
     function ic(name, cls) {
@@ -724,6 +758,13 @@
           (q.traps && q.traps[sess.choice] ? q.traps[sess.choice] : '') + '</p>' +
           (tp ? '<p class="trap-fix"><b>Next time:</b> ' + esc(tp.fix) + '</p>' : '') + '</div>';
       }
+      var gm = it2.ans ? null : gridMiss(q, sess.choice);
+      if (gm) {
+        var gt = window.TRAPS[gm.trap] || null;
+        h += '<div class="panel warm"><h3>The trap you fell for</h3>' +
+          '<p>' + (gt ? '<b>' + esc(gt.name) + '.</b> ' : '') + gm.explanation + '</p>' +
+          (gt ? '<p class="trap-fix"><b>Next time:</b> ' + esc(gt.fix) + '</p>' : '') + '</div>';
+      }
       h += '<div class="panel"><h3>The full solution</h3><ol class="steps">';
       q.steps.forEach(function (s) { h += '<li>' + s + '</li>'; });
       h += '</ol></div>';
@@ -738,6 +779,7 @@
         });
         h += '</div>';
       }
+      h += rateHTML(it2.qid);
       var last = r.i === r.items.length - 1;
       h += '</div><div class="actions"><button class="btn primary xl" onclick="APP.next()">' +
         (last ? 'Finish ' : 'Next question ') + ic('arrow') + '</button></div>';
@@ -747,6 +789,16 @@
     /* Grid-in grading uses the SAT rules in engine.js: 3/2 or 1.5, a rounded
        or cut-off decimal like .666 or .667 for 2/3, and $ % , ignored. */
     function sprMatch(v, answers) { return window.SATP.Session.checkSPR(v, answers); }
+    /* The likely wrong answer a typed grid-in matches, if the question has
+       them (pool grid-ins do). checkSPR is one-way, so both directions. */
+    function gridMiss(q, typed) {
+      if (!q || q.type !== 'spr' || typeof typed !== 'string' || !Array.isArray(q.wrong_answers)) return null;
+      for (var i = 0; i < q.wrong_answers.length; i++) {
+        var w = q.wrong_answers[i];
+        if (w && w.value && (sprMatch(typed, [w.value]) || sprMatch(w.value, [typed]))) return w;
+      }
+      return null;
+    }
 
     /* One answer, saved as a practice event: right or wrong, the trap behind
        a wrong pick, how long it took, and how many steps were shown first.
@@ -759,7 +811,9 @@
       /* Saved as solved only when some step was still hidden. */
       var solved = right && (!q.steps.length || sess.step < q.steps.length);
       it.ans = right; it.solo = solved; it.hints = sess.step;
-      var trap = !right && typeof sess.choice === 'number' && sess.choice >= 0 && tg.traps ? (tg.traps[sess.choice] || null) : null;
+      var gm = right ? null : gridMiss(q, sess.choice);
+      var trap = !right && typeof sess.choice === 'number' && sess.choice >= 0 && tg.traps ? (tg.traps[sess.choice] || null)
+        : gm && window.TRAPS[gm.trap] ? gm.trap : null;
       window.Store.recordEvents([{
         key: 'lk-' + sess.id + '|' + r.i + '|' + it.qid, attempt: 'lockin-' + sess.id, t: new Date().toISOString(),
         qid: it.qid, section: q.section, domain: q.domain || null, skill: q.skill || null, difficulty: q.difficulty || null,
@@ -768,6 +822,44 @@
       }]);
       sess.justAnswered = true;
       render();
+    }
+
+    /* ---------- feedback: optional, one tap, never in the way ---------- */
+    var RATE_WHY = [['wrong', 'Answer looks wrong'], ['confusing', 'Confusing'], ['easy', 'Too easy'], ['hard', 'Too hard']];
+    function canRate() {
+      var C = window.Cloud;
+      return !!(C && C.enabled && C.signedIn() && C.rateQuestion);
+    }
+    function rateHTML(qid) {
+      if (!canRate()) return '';
+      var v = window.Cloud.questionVote(qid);
+      var r = v ? v.r : 0;
+      var h = '<div class="rate" role="group" aria-label="Rate this question"><span class="rate-q">Was this a good question?</span>' +
+        '<button type="button" class="rate-btn" aria-pressed="' + (r === 1) + '" aria-label="Good question" onclick="APP.rateQ(1)">' + ic('thumbUp') + '</button>' +
+        '<button type="button" class="rate-btn down" aria-pressed="' + (r === -1) + '" aria-label="Not a good question" onclick="APP.rateQ(-1)">' + ic('thumbDown') + '</button></div>';
+      if (r === -1) {
+        h += '<div class="rate-why" role="group" aria-label="What was off with it? Optional"><span>What was off? Optional.</span>' +
+          RATE_WHY.map(function (w) {
+              return '<button type="button" class="chip-btn" aria-pressed="' + (v.why === w[0]) + '" onclick="APP.rateWhy(\'' + w[0] + '\')">' + w[1] + '</button>';
+          }).join('') + '</div>';
+      }
+      return h;
+    }
+    /* Which move helped most: only when the session had more than one. */
+    function helpedHTML() {
+      if (!canRate() || !sess) return '';
+      var moves = [];
+      sess.round.items.forEach(function (it) { if (it.strat && moves.indexOf(it.strat) < 0 && window.STRATS[it.strat]) moves.push(it.strat); });
+      if (moves.length < 2) return '';
+      var cur = window.Cloud.moveVote(sess.id);
+      return '<section class="panel helped"><h3>Which move helped most today?</h3><p class="muted">Optional. One tap tells us what to keep.</p>' +
+        '<div class="chip-row" role="group" aria-label="Which move helped most today">' +
+        moves.map(function (id) {
+            return '<button type="button" class="chip-btn" aria-pressed="' + (cur === id) + '" onclick="APP.rateMove(\'' + id + '\')">' + esc(stratName(id)) + '</button>';
+        }).join('') + '</div></section>';
+    }
+    function currentQid() {
+      return sess && sess.phase === 'work' && sess.choice !== null ? sess.round.items[sess.round.i].qid : null;
     }
 
     function sessionDoneHTML() {
@@ -816,6 +908,8 @@
         });
         h += '</section>';
       }
+
+      h += helpedHTML();
 
       h += '<div class="actions center">';
       if (!full()) {
@@ -1465,6 +1559,31 @@
       },
 
       demoPick: function (i) { demo.picked = i; render(); },
+      /* Tapping the same thumb again clears the vote. */
+      rateQ: function (r) {
+        var qid = currentQid();
+        if (!qid || !canRate()) return;
+        var v = window.Cloud.questionVote(qid);
+        var next = v && v.r === r ? 0 : r;
+        window.Cloud.rateQuestion(qid, next, null);
+        if (!v && next) toast(next === 1 ? 'Thanks, noted' : 'Thanks. Tell us what was off, if you like');
+        render();
+      },
+      rateWhy: function (why) {
+        var qid = currentQid();
+        if (!qid || !canRate()) return;
+        var v = window.Cloud.questionVote(qid);
+        if (!v || v.r !== -1) return;
+        window.Cloud.rateQuestion(qid, -1, v.why === why ? null : why);
+        render();
+      },
+      rateMove: function (id) {
+        if (!sess || sess.phase !== 'done' || !canRate() || !window.STRATS[id]) return;
+        var cur = window.Cloud.moveVote(sess.id);
+        window.Cloud.rateMove(sess.id, cur === id ? '' : id);
+        if (!cur) toast('Thanks, noted');
+        render();
+      },
       calc: function () { if (window.Calc && calcQid()) window.Calc.toggle(); },
       calcTips: function () {
         if (!window.DESMOS) return;

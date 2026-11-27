@@ -1091,3 +1091,30 @@ html.calc-open.calc-bare #shell{padding-bottom:240px}
 .tile.wide .tile-name{margin-top:0}
 .tile-txt{display:flex;flex-direction:column;gap:2px}
 .tile.wide .tile-ic{background:var(--brand-soft);color:var(--brand-ink)}
+
+/* ---------------- feedback ----------------
+   Quiet on purpose: under the solution, one tap, easy to skip. */
+.rate{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;padding:var(--s2) 0 0}
+.rate-q{flex:1;min-width:12ch;font-size:var(--fs-sm);font-weight:600;color:var(--ink-3)}
+.rate-btn{
+  display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;
+  transition:background-color .15s, color .15s, border-color .15s, transform .12s;
+}
+.rate-btn:hover{color:var(--ink);border-color:var(--line-2)}
+.rate-btn:active{transform:scale(.94)}
+.rate-btn .ic{width:20px;height:20px;vertical-align:0}
+.rate-btn[aria-pressed="true"]{background:var(--brand-soft);color:var(--brand-ink);border-color:var(--brand-line)}
+.rate-btn.down[aria-pressed="true"]{background:var(--surface-3);color:var(--ink);border-color:var(--line-2)}
+.rate-btn:focus-visible,.chip-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.rate-why{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;padding-top:var(--s2)}
+.rate-why > span{width:100%;font-size:var(--fs-xs);color:var(--ink-3)}
+.chip-row{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
+.chip-btn{
+  min-height:40px;padding:6px 14px;border-radius:var(--r-pill);
+  border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);
+  font:inherit;font-weight:700;font-size:var(--fs-sm);line-height:1.25;cursor:pointer;text-align:left;
+}
+.chip-btn:hover{color:var(--ink);border-color:var(--ink-3)}
+.chip-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel.helped .muted{margin:var(--s1) 0 0;font-size:var(--fs-sm)}

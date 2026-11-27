@@ -65,6 +65,11 @@ services:
       - key: DESMOS_API_KEY
         sync: false
 
+      # Who can open /admin.html (student feedback and the question writer's
+      # numbers). Comma separated. Separate from COMP_EMAILS.
+      - key: ADMIN_EMAILS
+        sync: false
+
       # Sign-in emails by Microsoft Graph: see SETUP-CLOUD.md, Part 2.3.
       # The client secret expires (Microsoft's rule). Record its expiry date in
       # GRAPH_SECRET_EXPIRES (YYYY-MM-DD) so the server warns 30 days ahead.

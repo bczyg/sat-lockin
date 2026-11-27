@@ -222,6 +222,9 @@
       if (opts.qids) {
         opts.qids.forEach(function (id) {
             var q = all.filter(function (x) { return x.id === id; })[0];
+            /* An exact id can name a question no longer in the banks (a pool
+               question retired after its session was prepared). */
+            if (!q && global.questionById) { q = global.questionById(id); if (q && !usable(q)) q = null; }
             if (q) chosen.push(q);
         });
       } else {

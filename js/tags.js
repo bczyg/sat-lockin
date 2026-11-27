@@ -251,7 +251,9 @@ window.STRATS = {
       shape: "A word problem with two or three conditions that turn into equations, or a real-world model to interpret.",
       key: "The correct choice reflects a correct setup.",
       traps: ["setup-error", "reversed", "unit-miss", "wrong-target"],
-      avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean."
+      avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean. One distractor should drop the fixed amount (the flat fee or starting value) and keep only the per-unit part.",
+      spr: true,
+      grid: "Ask for one value the equations give, such as the number of tickets sold, so the answer is a whole number."
     } },
   'desmos-first': { section:'math', name:'Graph it before you solve it',
     cues:[
@@ -265,7 +267,9 @@ window.STRATS = {
       shape: "An equation, system, or inequality that is tedious by hand but immediate on a graph: a radical or rational equation, a system with ugly coefficients, or a quadratic whose vertex or zeros are wanted.",
       key: "The intersection, crossing point, vertex, or zero the graph shows.",
       traps: ["extraneous-root", "wrong-target", "arith-slip", "sign-slip"],
-      avoid: "The question still has to ask for something specific, so make at least one distractor the other coordinate of the point. Graphing finds the point; reading the question tells you which half of it to report."
+      avoid: "The question still has to ask for something specific, so make at least one distractor the other coordinate of the point. Graphing finds the point; reading the question tells you which half of it to report. Give the equations in forms that are awkward to solve by hand, such as a non-integer intersection, and make the strategy sentence say exactly what to type into Desmos.",
+      spr: true,
+      grid: "Ask for one coordinate of an intersection, or a zero, with an exact value that fits the grid, such as 7/2 or -1.5."
     } },
   'count-solutions': { section:'math', name:'Count the solutions by comparing sides',
     cues:[
@@ -278,7 +282,9 @@ window.STRATS = {
       shape: "An equation or system containing an unknown constant, asking for the value that produces no solution or infinitely many, or a quadratic asking how many real solutions it has.",
       key: "The constant value making the two sides proportional (infinitely many), or proportional in the variables but not the constant (none), or the discriminant's sign.",
       traps: ["setup-error", "algebra-rule", "sign-slip", "wrong-target"],
-      avoid: "Be explicit about which case you are asking for, since no solution and infinitely many differ only in the constant term and it is easy to key the wrong one. Verify by substituting your constant back and checking the count is what you claimed."
+      avoid: "Be explicit about which case you are asking for, since no solution and infinitely many differ only in the constant term and it is easy to key the wrong one. Verify by substituting your constant back and checking the count is what you claimed. For a hard version, use a system where the student must match the slopes first and then compare the constants; the trap is forgetting that the constants must differ for no solution.",
+      spr: true,
+      grid: "Ask for the value of the constant k that gives no solution, or infinitely many."
     } },
   'solve-check': { section:'math', name:'Solve it, then check it',
     cues:[
@@ -291,7 +297,9 @@ window.STRATS = {
       shape: "An equation to solve. For a radical or rational equation, design it so squaring or clearing produces exactly one extraneous root.",
       key: "The value that satisfies the ORIGINAL equation.",
       traps: ["extraneous-root", "sign-slip", "one-step-short", "arith-slip"],
-      avoid: "Verify both roots yourself before writing the choices. For a radical equation the extraneous root is the one making the other side negative. Never offer 'both roots' as the correct answer."
+      avoid: "Verify both roots yourself before writing the choices. For a radical equation the extraneous root is the one making the other side negative. Never offer 'both roots' as the correct answer. Some questions should ask for an expression built from x, such as 3x + 2, and then x itself must be one of the wrong choices.",
+      spr: true,
+      grid: "Ask for x, or for an expression in x. The likely wrong answers include the extraneous root, and x itself when an expression was asked for."
     } },
   'systems-tactics': { section:'math', name:'Pick the cheaper way through a system',
     cues:[
@@ -304,7 +312,9 @@ window.STRATS = {
       shape: "Two linear equations, or a word problem that becomes two. Ask for a combination like x + y, or for the variable a careless solver would not report.",
       key: "The quantity actually named in the question.",
       traps: ["wrong-target", "operation-swap", "one-step-short", "arith-slip"],
-      avoid: "One distractor must be the other variable, and one the value one step before the end. Choose coefficients so the solution is an integer."
+      avoid: "One distractor must be the other variable, and one the value one step before the end. Choose coefficients so the solution is an integer. Some questions should ask for x + y or x - y that falls straight out of adding or subtracting the two equations, without solving for each variable.",
+      spr: true,
+      grid: "Ask for the sum, the difference or the one variable named, as a clean integer."
     } },
   'expression-structure': { section:'math', name:'Look at the shape of the expression',
     cues:[
@@ -317,7 +327,9 @@ window.STRATS = {
       shape: "An expression to simplify, factor, rewrite in vertex form, or match coefficients on. Recognising the shape should be faster than grinding.",
       key: "The equivalent expression.",
       traps: ["algebra-rule", "sign-slip", "arith-slip"],
-      avoid: "Test every distractor at x = 2 and confirm none of them coincidentally equals the original there, otherwise plugging in a number cannot separate them."
+      avoid: "Test every distractor at x = 2 and confirm none of them coincidentally equals the original there, otherwise plugging in a number cannot separate them. Build expressions that look hard but collapse with one pattern, never ones that need a long expansion. One distractor should be the expansion with a single sign error.",
+      spr: true,
+      grid: "Ask for one constant after rewriting, such as the value of a in an equivalent form."
     } },
   'function-notation': { section:'math', name:'Substitute in parentheses, inside out',
     cues:[
@@ -330,7 +342,9 @@ window.STRATS = {
       shape: "Evaluate a function at a value, or a composition of two functions.",
       key: "The correct value, worked inside out.",
       traps: ["wrong-order", "sign-slip", "one-step-short"],
-      avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling."
+      avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling. Use negative inputs or inputs that are expressions, and include cases where dropping parentheses changes the answer: -3^2 is -9 but (-3)^2 is 9, and f(x + 1) is not f(x) + 1.",
+      spr: true,
+      grid: "Ask for a single value, such as f(g(-2))."
     } },
   'function-behavior': { section:'math', name:'Use how the function behaves',
     cues:[
@@ -343,7 +357,9 @@ window.STRATS = {
       shape: "A quadratic or exponential where the vertex, discriminant, root sum, growth factor or period answers the question without fully solving it.",
       key: "Exactly the quantity asked for, which is often the value at the vertex rather than the vertex x.",
       traps: ["wrong-target", "arith-slip", "setup-error", "unit-miss"],
-      avoid: "If the question asks for a minimum or maximum VALUE, one distractor must be the x at which it occurs. For exponentials, define the time unit and make one distractor ignore the conversion."
+      avoid: "If the question asks for a minimum or maximum VALUE, one distractor must be the x at which it occurs. For exponentials, define the time unit and make one distractor ignore the conversion. Give the function in factored or vertex form so the answer reads off the form, and ask something that is slower to answer by expanding. For exponentials, a base of 1.04 means 4% growth, not 104%, and one distractor should mix up the time unit (monthly versus yearly).",
+      spr: true,
+      grid: "Ask for a minimum or maximum value, a zero, or a growth rate as a number."
     } },
   'proportional-reasoning': { section:'math', name:'Think in rates, ratios, and percents',
     cues:[
@@ -356,7 +372,9 @@ window.STRATS = {
       shape: "Percent change, successive percent changes, a rate with a unit conversion, a scale, or a mixture.",
       key: "The correctly computed value.",
       traps: ["wrong-denominator", "operation-swap", "unit-miss", "one-step-short"],
-      avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean."
+      avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean. Include conversions with squared or cubed units, where the conversion factor must be squared or cubed too, and state the conversion facts in the question.",
+      spr: true,
+      grid: "Ask for one number, such as a final price or a converted measure, that fits the grid."
     } },
   'data-inference': { section:'math', name:'Know what a statistic is allowed to say',
     cues:[
@@ -369,7 +387,8 @@ window.STRATS = {
       shape: "A two-way table, a line of best fit to interpret, a comparison of mean and median, or a margin of error.",
       key: "The statement the statistic actually licenses.",
       traps: ["wrong-denominator", "extreme", "wrong-target", "misread-data"],
-      avoid: "For conditional probability, one distractor must use the grand total as the denominator. For a margin of error, one must treat the estimate as exact. If an axis is in thousands, one distractor must ignore that."
+      avoid: "For conditional probability, one distractor must use the grand total as the denominator. For a margin of error, one must treat the estimate as exact. If an axis is in thousands, one distractor must ignore that. Include study-design questions: a random sample supports conclusions only about the group it was drawn from, and only random assignment supports cause. Wrong choices should overreach (cause from an observational study, or a claim about people outside the sample) and the correct choice should be modest. For center and spread, an extreme value moves the mean much more than the median.",
+      spr: false
     } },
   'geometry-toolkit': { section:'math', name:'Find the radius, open the formula sheet',
     cues:[
@@ -382,7 +401,9 @@ window.STRATS = {
       shape: "A circle, a right triangle, similar triangles, an angle relationship, a volume, or a scaling question. Include a simple figure only if it is genuinely needed.",
       key: "The correct measure.",
       traps: ["formula-mixup", "wrong-ratio", "flipped-ratio", "wrong-target", "setup-error"],
-      avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean."
+      avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean. Write some questions that give an area or volume and ask for a length, and some scaling questions (if the radius doubles, the volume is multiplied by 8). Include a distractor that uses the diameter where the formula needs the radius. Describe every figure fully in words.",
+      spr: true,
+      grid: "Ask for a single length, area or angle measure in degrees."
     } },
   'coordinate-geometry': { section:'math', name:'Work in the coordinate plane',
     cues:[
@@ -395,7 +416,9 @@ window.STRATS = {
       shape: "Slope from two points, a parallel or perpendicular line, a distance, a midpoint, or a circle equation to complete the square on.",
       key: "The correct line, value or radius.",
       traps: ["formula-mixup", "flipped-ratio", "sign-slip", "arith-slip"],
-      avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope."
+      avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope. Include a circle equation that must be rewritten by completing the square before the center shows, with distractors that read the center as (-h, -k) with the wrong signs or take r squared as the radius. For perpendicular lines the slope is the negative reciprocal.",
+      spr: true,
+      grid: "Ask for a slope, a radius or one coordinate of the center."
     } },
   'choice-tactics': { section:'math', name:'Use the answer choices',
     cues:[
@@ -408,7 +431,8 @@ window.STRATS = {
       shape: "A question where testing the four choices is genuinely faster than solving: a system of inequalities to test points against, an equivalent expression to plug a number into, or a word problem to back-solve.",
       key: "The only choice that survives testing.",
       traps: ["half-right", "arith-slip", "wrong-target"],
-      avoid: "Each distractor must fail a specific, checkable test, and the trap explanation must say which test it fails and with what numbers. For a system of inequalities, make each distractor satisfy exactly one of the two."
+      avoid: "Each distractor must fail a specific, checkable test, and the trap explanation must say which test it fails and with what numbers. For a system of inequalities, make each distractor satisfy exactly one of the two. When the choices are numbers, list them in increasing order so testing B or C first splits the field.",
+      spr: false
     } }
 };
 
