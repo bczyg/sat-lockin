@@ -9205,7 +9205,8 @@ window.tagsFor = function (q) {
       }
       document.addEventListener('keydown', onKey);
       document.getElementById('modal-root').addEventListener('click', function (e) {
-          if (e.target.dataset && e.target.dataset.close) closeModal();
+          /* closest: a click on the X usually lands on its icon, not the button */
+          if (e.target.closest && e.target.closest('[data-close]')) closeModal();
       });
       render();
     }
