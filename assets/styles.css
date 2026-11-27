@@ -548,6 +548,25 @@ table.data td:first-child{text-align:left;font-weight:600}
 }
 @media (prefers-color-scheme: dark){.choice.correct .ltr,.choice .tag{color:#08251a}}
 .choice .tag .ic{width:14px;height:14px;stroke-width:3;vertical-align:0}
+/* answering: the choices are buttons until the first pick */
+.choices li{list-style:none}
+.choice.pick{width:100%;text-align:left;font:inherit;cursor:pointer;
+  box-shadow:0 2px 0 var(--line);transition:border-color .15s,transform .08s,box-shadow .08s}
+.choice.pick:hover{border-color:var(--brand)}
+.choice.pick:hover .ltr{border-color:var(--brand);color:var(--brand)}
+.choice.pick:active{transform:translateY(2px);box-shadow:none}
+.choice.pick:focus-visible{outline:3px solid var(--brand-line);outline-offset:2px}
+.choice.wrong{border-color:var(--warn);background:var(--warn-soft);color:var(--ink)}
+.choice.wrong .ltr{background:var(--warn);border-color:var(--warn);color:#3a2400}
+.choice .tag.no{background:var(--warn);box-shadow:none;color:#3a2400}
+.spr-in{flex-wrap:wrap;border-style:solid;border-color:var(--brand-line);background:var(--surface)}
+.spr-in label{font-weight:700;color:var(--ink)}
+.spr-in input{flex:1;min-width:120px;height:44px;padding:0 12px;border-radius:var(--r-xs);border:1.5px solid var(--line-2);
+  font:inherit;font-family:var(--mono);font-size:var(--fs-lg);background:var(--surface);color:var(--ink)}
+.spr-in input:focus{outline:none;border-color:var(--brand)}
+.spr-you{margin-left:auto;color:var(--warn-ink, var(--ink-2));font-weight:600}
+.verdict .v-sub{font-size:var(--fs-sm);color:var(--ink-2);margin-top:2px}
+.ans-verdict{scroll-margin-top:76px}
 
 .mathwork{
   font-family:var(--mono);font-size:var(--fs-sm);line-height:1.7;white-space:pre-wrap;
@@ -913,7 +932,7 @@ details.trick[open] > *:not(summary){animation:rise .25s var(--ease) both}
 .demo-choice.right{border-color:var(--ok);background:var(--ok-soft);box-shadow:0 3px 0 var(--ok-line);animation:pop .4s var(--spring)}
 .demo-choice.right .ltr{background:var(--ok);color:#fff}
 .demo-choice.wrong{border-color:var(--warn);background:var(--warn-soft);box-shadow:0 3px 0 var(--warn-line)}
-.demo-choice.wrong .ltr{background:var(--warn);color:#fff}
+.demo-choice.wrong .ltr{background:var(--warn);color:#3a2400}
 .demo-choice.dim{opacity:.5}
 .demo-reveal{
   margin-top:var(--s4);padding:var(--s4) var(--s5);border-radius:var(--r);
@@ -981,7 +1000,7 @@ details.trick[open] > *:not(summary){animation:rise .25s var(--ease) both}
   position:fixed;left:50%;bottom:max(24px, env(safe-area-inset-bottom));z-index:200;
   max-width:calc(100% - 32px);padding:12px 20px;border-radius:var(--r-pill);
   background:var(--ink);color:var(--bg);font-weight:600;font-size:var(--fs-sm);text-align:center;
-  box-shadow:var(--shadow-lg);
+  box-shadow:var(--shadow-lg);pointer-events:none;
   transform:translateX(-50%);
   animation:toast-in .35s var(--spring) both, toast-out .3s ease 2.1s forwards;
 }

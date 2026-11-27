@@ -247,6 +247,18 @@ try {
     ok(r.status === 200 && r.body.stored === 2, `mixed batch stored ${r.body?.stored} good rows (status ${r.status})`);
   }
 
+  // 6. A practice answer keeps how many steps were shown before it
+  {
+    await post('/api/sync/events', { events: [
+      { key: 'hint-1-' + run, attempt: 'lockin-x', qid: 'm001', correct: true, seconds: 40, hints: 2, t: new Date().toISOString() },
+      { key: 'hint-2-' + run, attempt: 'lockin-x', qid: 'm002', correct: false, hints: 'lots', t: new Date().toISOString() }
+    ] }, A0);
+    const pa = await post('/api/sync/pull', {}, A0);
+    const h1 = pa.body.events.find((e) => e.key === 'hint-1-' + run);
+    const h2 = pa.body.events.find((e) => e.key === 'hint-2-' + run);
+    ok(h1 && h1.hints === 2 && h2 && h2.hints === null, `hints saved (${h1 && h1.hints}) and a bad value dropped (${h2 && h2.hints})`);
+  }
+
   // 7. Health endpoint leaks nothing sensitive
   {
     const h = await (await fetch(BASE + '/healthz')).json();

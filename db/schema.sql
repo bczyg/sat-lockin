@@ -104,6 +104,8 @@ create table if not exists events (
   seconds     int,
   created_at  timestamptz not null default now()
 );
+-- steps the student opened before answering a practice question
+alter table events add column if not exists hints int;
 create index if not exists events_user_idx  on events (user_id, t desc);
 create index if not exists events_trap_idx  on events (user_id, trap);
 create index if not exists events_strat_idx on events (user_id, strat);
