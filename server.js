@@ -75,6 +75,18 @@ const ANON_DAILY_BUDGET = Number(process.env.ANON_DAILY_BUDGET || '60');
 let anonDay = '';
 let anonCount = 0;
 
+/* The Desmos graphing calculator. Desmos gives each site an API key that
+   goes in the URL of its script, so it is not a secret from the browser, but
+   it lives in the environment rather than in git so it can be swapped (trial
+   key now, paid key later) without a code change. The app loads
+   /calculator.js and the server sends it on to Desmos with the key. With no
+   key the route is a 404 and the app offers a link to desmos.com instead.
+   Desmos keys are 32 hex characters; anything else is refused, because the
+   value is written into a Location header. */
+const DESMOS_VERSION = 'v1.13';
+const DESMOS_RAW = String(process.env.DESMOS_API_KEY || '').trim();
+const DESMOS_KEY = /^[A-Za-z0-9]{16,64}$/.test(DESMOS_RAW) ? DESMOS_RAW : '';
+
 /* Which other websites may call this API from a browser. Unset means none:
    the app served by this server is same-origin and needs no CORS at all.
    Set it only if the app is hosted somewhere else with CONFIG.apiUrl
@@ -547,8 +559,24 @@ const server = http.createServer(async (req, res) => {
       payments: billing.configured(),
       tutor: AI_ON,
       coach: AI_ON && db.available(),
+      calculator: !!DESMOS_KEY,
       aiAuth: AI_AUTH || null
     });
+  }
+
+  if (url === '/calculator.js') {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { error: 'GET only' });
+    if (!DESMOS_KEY) {
+      res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+      return res.end('Calculator not configured');
+    }
+    /* no-store, so a new key takes effect on the next load, not next week. */
+    res.writeHead(302, {
+      Location: `https://www.desmos.com/api/${DESMOS_VERSION}/calculator.js?apiKey=${DESMOS_KEY}`,
+      'Cache-Control': 'no-store',
+      'Referrer-Policy': 'no-referrer'
+    });
+    return res.end();
   }
 
   /* Stripe calls this, not a browser. The signature is computed over the
@@ -675,6 +703,8 @@ async function boot() {
     if (billing.configured() && !mailConfigured && process.env.LOG_SIGNIN_CODES !== 'true') {
       console.warn('               payments are on but no mail provider is set, so sign-in codes are refused');
     }
+    console.log(`  calculator:  ${DESMOS_KEY ? `Desmos ${DESMOS_VERSION}` : 'off (no DESMOS_API_KEY), students get a link to desmos.com'}`);
+    if (DESMOS_RAW && !DESMOS_KEY) console.warn('               DESMOS_API_KEY is set but is not a Desmos key (letters and digits only). Ignored.');
     if (ALLOWED_ORIGINS.size) console.log(`  cors:        ${[...ALLOWED_ORIGINS].join(', ')}`);
   });
 }
