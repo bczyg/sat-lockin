@@ -70,6 +70,9 @@ const fakeQuestion = (marker, extra = {}) => ({
 // What the scripted Claude submits once it fixes its first try: five moves,
 // so the server has to fill the last three itself.
 const FAKE_MOVES = ['subject-verb', 'subject-verb', 'verb-time', 'boundary-test', 'predict-first'];
+// For a Math-only session it first resubmits the reading moves above (to be
+// refused for the section), then these.
+const FAKE_MATH_MOVES = ['solve-check', 'solve-check', 'translate', 'geometry-toolkit', 'data-inference'];
 const fakeMsg = (content, stop) => ({
   id: 'msg_' + crypto.randomBytes(6).toString('hex'), type: 'message', role: 'assistant',
   model: 'claude-sonnet-5-5', content, stop_reason: stop, stop_sequence: null,
@@ -121,6 +124,12 @@ const fakeApi = http.createServer((req, res) => {
       return reply(200, fakeMsg([use('prepare_session', {
         moves: ['not-a-move', 'subject-verb', 'subject-verb', 'subject-verb', 'subject-verb'],
         line: 'Today is about the subject and the verb.'
+      })], 'tool_use'));
+    }
+    const math = /SECTION: math/.test(String(body.messages[0].content));
+    if (math && turn >= 4) {
+      return reply(200, fakeMsg([think('Math moves only.'), use('prepare_session', {
+        moves: FAKE_MATH_MOVES, line: 'Today leans on checking your solutions and translating words into equations.'
       })], 'tool_use'));
     }
     return reply(200, fakeMsg([think('Fix the ids.'), use('prepare_session', {
@@ -488,6 +497,53 @@ try {
     ok(capped.status === 429, 'the fourth session in a day is refused with 429');
     const t2 = await post('/api/coach/today', { today }, P.token);
     ok(t2.body.left === 0 && t2.body.session && t2.body.session.qids.length === 8, 'today still returns the latest session');
+
+    // A section has its own sessions and its own daily cap
+    const mt0 = await post('/api/coach/today', { today, section: 'math' }, P.token);
+    ok(mt0.status === 200 && mt0.body.session === null && mt0.body.left === 3,
+      'Math has its own sessions: none yet and three left, though the mixed ones are used up');
+    const nm0 = fake.requests.length;
+    const mr = await post('/api/coach/prepare', { today, section: 'math' }, P.token);
+    const ms = mr.body.session || { qids: [], moves: [] };
+    const sectionOfMove = (m) => (cat.strats[m] || {}).section;
+    ok(mr.status === 200 && ms.section === 'math' && ms.qids.length === 8 && new Set(ms.qids).size === 8,
+      `a Math session comes back marked as Math, 8 questions (${mr.status} ${JSON.stringify(mr.body).slice(0, 160)})`);
+    ok(ms.moves.every((m) => sectionOfMove(m) === 'math') && ms.qids.every((q, i) => moveOf[q] === ms.moves[i]),
+      'every move and every question in it is Math, including the fill');
+    ok(['solve-check', 'translate', 'geometry-toolkit', 'data-inference'].every((m) => ms.moves.includes(m)), "the coach's Math moves are all there");
+    const mreqs = fake.requests.slice(nm0).map((x) => x.body);
+    ok(/SECTION: math/.test(mreqs[0]?.messages?.[0]?.content || ''), 'the request tells Claude the section');
+    const mov = JSON.parse(((mreqs[1] || { messages: [] }).messages[2] || {}).content?.[0]?.content || '{}');
+    ok(mov.session_section === 'Math' && mov.previous_session === null,
+      "the overview names the section, and the previous session is the section's own (none yet)");
+    const offSection = ((mreqs[4] || { messages: [] }).messages.at(-1) || {}).content?.[0] || {};
+    ok(offSection.is_error === true && /Math only/.test(offSection.content) && /subject-verb/.test(offSection.content),
+      'reading moves in a Math session go back to Claude as an error to fix');
+    const mt1 = await post('/api/coach/today', { today, section: 'math' }, P.token);
+    ok(mt1.body.session && mt1.body.session.id === ms.id && mt1.body.left === 2, "today returns the Math session for Math");
+    const rt = await post('/api/coach/today', { today, section: 'rw' }, P.token);
+    ok(rt.body.session === null && rt.body.left === 2,
+      'nothing for Reading and Writing, and two left: four of the day’s six are used (three mixed, one Math)');
+    const mixed = await post('/api/coach/today', { today }, P.token);
+    ok(mixed.body.session && mixed.body.session.id !== ms.id && !mixed.body.session.section,
+      'a request without a section still gets the mixed session');
+    const junk = await post('/api/coach/today', { today, section: 'science' }, P.token);
+    ok(junk.status === 200 && junk.body.left === 0 && junk.body.session && !junk.body.session.section,
+      'an unknown section is treated as no section');
+
+    // Five of six used; Reading and Math prepared at the same moment get one slot between them
+    const fifth = await post('/api/coach/prepare', { today, section: 'math' }, P.token);
+    ok(fifth.status === 200 && fifth.body.left === 1, `a fifth session leaves one for the day (${fifth.status} left ${fifth.body.left})`);
+    const both = await Promise.all([
+      post('/api/coach/prepare', { today, section: 'rw' }, P.token),
+      post('/api/coach/prepare', { today, section: 'math' }, P.token)
+    ]);
+    ok(both.map((x) => x.status).sort().join() === '200,429',
+      `two prepares at once with one slot left: one saved, one refused (${both.map((x) => x.status).join(', ')})`);
+    ok(both.filter((x) => x.status === 200).every((x) => x.body.left === 0), 'the saved one reports none left, counted under the lock');
+    const capRw = await post('/api/coach/today', { today, section: 'rw' }, P.token);
+    const capMath = await post('/api/coach/today', { today, section: 'math' }, P.token);
+    ok(capRw.body.left === 0 && capMath.body.left === 0, 'and the day stops at six sessions in all');
 
     // Q has met every subject-verb question: the oldest two come back
     const Q = await paidUser('qpaid');

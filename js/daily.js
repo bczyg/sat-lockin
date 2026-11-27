@@ -9,6 +9,8 @@
    2. The rotation is a plain cycle over the moves, so over one pass
       every strategy comes up exactly once and a student can see that
       the app is working through the whole list rather than guessing.
+      A student who picked a section gets that section's own cycle; it is
+      still one daily question a day, so the streak counts either section.
 
    Everything is derived from the date, so nothing has to be scheduled
    and it works with the tab closed for a week.
@@ -53,16 +55,19 @@
 
   /* ---------- the rotation ---------- */
 
-  var ORDER = null;
-  function order() {
-    if (!ORDER) {
+  /* section: 'rw' | 'math', or nothing for both. */
+  function sectionOf(s) { return s === 'rw' || s === 'math' ? s : ''; }
+  var ORDER = {};
+  function order(section) {
+    var sec = sectionOf(section);
+    if (!ORDER[sec]) {
       /* Habit strategies apply to every question rather than owning a set,
          so there is nothing to serve as a daily question for them. */
-      ORDER = Object.keys(global.STRATS || {}).filter(function (id) {
-          return !global.STRATS[id].meta;
+      ORDER[sec] = Object.keys(global.STRATS || {}).filter(function (id) {
+          return !global.STRATS[id].meta && (!sec || global.STRATS[id].section === sec);
       });
     }
-    return ORDER;
+    return ORDER[sec];
   }
 
   function bank() {
@@ -92,14 +97,15 @@
     todayKey: function () { return localKey(new Date()); },
 
     /* Which day of the rotation this is, 1-based, for display. */
-    dayIndex: function (key) {
-      return (dayNumber(key || this.todayKey()) % order().length + order().length) % order().length + 1;
+    dayIndex: function (key, section) {
+      var n = order(section).length;
+      return (dayNumber(key || this.todayKey()) % n + n) % n + 1;
     },
 
-    cycleLength: function () { return order().length; },
+    cycleLength: function (section) { return order(section).length; },
 
-    stratFor: function (key) {
-      var list = order();
+    stratFor: function (key, section) {
+      var list = order(section);
       if (!list.length) return null;
       var n = dayNumber(key || this.todayKey());
       return list[((n % list.length) + list.length) % list.length];
@@ -107,19 +113,23 @@
 
     /* Today's question. Stable for the whole day: once a question has been
        chosen for a date it is remembered, so a bank change mid-day cannot
-       swap the question out from under a half-finished attempt. */
-    pick: function (key) {
+       swap the question out from under a half-finished attempt. The one
+       exception: a question claimed but not answered yet gives way when the
+       student switches section, so the daily always matches their pick. */
+    pick: function (key, section) {
       key = key || this.todayKey();
+      var sec = sectionOf(section);
       var rec = this.all()[key];
-      var strat = this.stratFor(key);
+      var strat = this.stratFor(key, sec);
       if (!strat) return null;
 
-      if (rec && rec.qid && byId(rec.qid)) {
+      var had = rec && rec.qid ? byId(rec.qid) : null;
+      if (had && (rec.answered || !sec || had.section === sec)) {
         return { date: key, strat: rec.strat || strat, qid: rec.qid, done: !!rec.answered };
       }
 
       var pool = bank().filter(function (q) {
-          return global.tagsFor(q).strat === strat;
+          return global.tagsFor(q).strat === strat && (!sec || q.section === sec);
       });
       if (!pool.length) return null;
 

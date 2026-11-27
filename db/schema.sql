@@ -178,7 +178,8 @@ create index if not exists purchases_user_idx on purchases (user_id);
 
 -- ---------- the coach's sessions ----------
 -- One row per session the coach agent prepares. `plan` holds
--- { id, qids: [8], moves: [8], line }; older rows hold the retired
+-- { id, qids: [8], moves: [8], line, questions, section? } (section is
+-- 'rw' or 'math' when the student picked one); older rows hold the retired
 -- step-based plan shape and are ignored. `day` is the student's own date,
 -- so it lines up with their Daily LockIn. A few per day at most (the server
 -- caps it), kept so the coach can see the last session and vary the next.

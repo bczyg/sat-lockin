@@ -254,6 +254,37 @@ await load('js/daily.js');
   const stable = window.Daily.pick('2026-01-01').qid === window.Daily.pick('2026-01-01').qid;
   if (!stable) fail('the daily question is not stable for a given date');
   notes.push(`daily rotation: ${cycle} days, ${seenStrat.size} distinct moves, no repeats`);
+
+  /* A student who picked a section gets that section's own rotation. */
+  for (const sec of ['rw', 'math']) {
+    const n = window.Daily.cycleLength(sec);
+    const want = Object.keys(window.STRATS).filter((id) => !window.STRATS[id].meta && window.STRATS[id].section === sec);
+    if (n !== want.length) fail(`the ${sec} rotation has ${n} days for ${want.length} moves`);
+    const got = new Set();
+    for (let i = 0; i < n; i++) {
+      const key = new Date(Date.UTC(2027, 0, 1) + i * 86400000).toISOString().slice(0, 10);
+      const pick = window.Daily.pick(key, sec);
+      if (!pick) { fail(`the ${sec} rotation could not serve a question on ${key}`); continue; }
+      if (window.Daily.question(pick.qid).section !== sec) fail(`the ${sec} daily on ${key} served a question from the other section`);
+      got.add(pick.strat);
+    }
+    if (got.size !== want.length) fail(`one ${sec} rotation covered ${got.size} of ${want.length} moves`);
+  }
+  /* Switching section before answering gives a question from the new one;
+     after answering, the day is done whatever the section. */
+  {
+    const key = '2028-03-03';
+    const a = window.Daily.pick(key, 'rw');
+    window.Daily.claim(a);
+    const b = window.Daily.pick(key, 'math');
+    if (window.Daily.question(b.qid).section !== 'math') fail('switching to math before answering kept the reading question');
+    window.Daily.claim(b);
+    window.Daily.record(key, b.qid, b.strat, true);
+    const c = window.Daily.pick(key, 'rw');
+    if (c.qid !== b.qid || !c.done) fail('an answered daily changed when the student switched section');
+    if (window.Daily.pick(key, 'math').qid !== b.qid) fail('the daily is not stable within a section');
+  }
+  notes.push('daily rotation per section: reading and math each cover their own moves');
 }
 
 /* ---------- 4c. the calculator page points at questions that exist ----------
