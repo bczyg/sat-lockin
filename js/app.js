@@ -30,6 +30,8 @@
     var COACH_USED = 'lockin.coach.used.v1';
     var SEEN_LANDING = 'lockin.seenlanding';
     var POOL_KEY = 'lockin.pool.v1';
+    var SECTION_KEY = 'lockin.section.v1';
+    var SECTIONS = [['rw', 'Reading and Writing'], ['math', 'Math']];
 
     /* Questions the coach's writer added to the shared pool arrive inside a
        session. They join the bank on this device, and are kept so a session
@@ -68,9 +70,10 @@
       }
 
       if (window.Cloud) {
+        var cameBack = true;   // the first load is the student coming back to their section
         window.Cloud.on(function () {
             if (view === 'unlock' && unlock.stage === 'confirming') confirmPurchase();
-            ensureCoach();
+            if (coachOn()) { ensureCoach(null, cameBack); cameBack = false; }
             if (view !== 'session') render();
         });
       }
@@ -131,6 +134,23 @@
       } catch (e) {}
       return null;
     }
+    /* The section the student practices: 'rw', 'math', or null before they pick. */
+    /* Kept in memory as well as in storage, so a browser that will not save
+       (private mode, blocked or full storage) still lets the student practice. */
+    var chosenSection = null;
+    function section() {
+      if (chosenSection) return chosenSection;
+      var s = store(SECTION_KEY);
+      return s === 'rw' || s === 'math' ? s : null;
+    }
+    function chooseSection(sec) {
+      if (sec !== 'rw' && sec !== 'math') return false;
+      chosenSection = sec;
+      store(SECTION_KEY, sec);
+      return true;
+    }
+    function sectionName(sec) { return sec === 'rw' ? 'Reading and Writing' : sec === 'math' ? 'Math' : ''; }
+
     /* Ends a quoted answer choice with exactly one period. */
     function dot(c) {
       c = String(c).replace(/(\s|&nbsp;|&#160;)+$/, '');
@@ -231,12 +251,15 @@
        tries, right at least four times in five. One number for the
        student to watch grow.
        ============================================================ */
-    function moveIds() {
-      return Object.keys(window.STRATS).filter(function (id) { return !window.STRATS[id].meta; });
+    /* sec: 'rw' | 'math' for one section's moves, or nothing for all of them. */
+    function moveIds(sec) {
+      return Object.keys(window.STRATS).filter(function (id) {
+          return !window.STRATS[id].meta && (!sec || window.STRATS[id].section === sec);
+      });
     }
-    function lockedSet() {
+    function lockedSet(sec) {
       var d = window.Spot.data().strats, out = {};
-      moveIds().forEach(function (id) {
+      moveIds(sec).forEach(function (id) {
           var s = d[id];
           if (s && s.seen >= 3 && s.right / s.seen >= 0.8) out[id] = 1;
       });
@@ -248,14 +271,17 @@
       if (s.seen >= 3 && s.right / s.seen >= 0.8) return { key: 'locked', label: 'Locked in' };
       return { key: 'learning', label: s.right + ' of ' + s.seen + ' right' };
     }
-    function progressHTML(compact) {
-      var total = moveIds().length;
-      var n = Object.keys(lockedSet()).length;
-      var met = window.Spot.summary().seen;
+    function progressHTML(compact, sec) {
+      var ids = moveIds(sec);
+      var total = ids.length;
+      var n = Object.keys(lockedSet(sec)).length;
+      var strats = window.Spot.data().strats;
+      var met = ids.filter(function (id) { return strats[id] && strats[id].seen; }).length;
       var h = '<div class="progress-card' + (compact ? ' compact' : '') + '">' +
         '<div class="pc-top"><div><div class="pc-num">' + n + '<span>/' + total + '</span></div>' +
-        '<div class="pc-lbl">moves locked in</div></div>' +
-        '<div class="pc-side">' + (n === total ? 'Every move. Go take a practice test.' :
+        '<div class="pc-lbl">' + (sec ? esc(sectionName(sec)) + ' moves' : 'moves') + ' locked in</div></div>' +
+        '<div class="pc-side">' + (n === total ? (sec && Object.keys(lockedSet()).length < moveIds().length
+            ? 'Every one. Now try ' + esc(sectionName(sec === 'rw' ? 'math' : 'rw')) + '.' : 'Every move. Go take a practice test.') :
           n ? (total - n) + ' to go' : met ? 'You have met ' + met + ' so far' : 'Your first session starts the count') + '</div></div>' +
         '<div class="bar"><div class="bar-fill" style="width:' + Math.round(100 * n / total) + '%"></div></div>';
       if (!compact) h += '<p class="pc-help">A move locks in once you name it right almost every time, at least three tries.</p>';
@@ -280,57 +306,132 @@
        uses it when the student presses Start and asks for the next one in
        the background. If it is not ready, or the server has no coach, the
        round is built here from the same record, so Start never waits.
+       Each section has its own sessions, kept apart in coach.by.
        ============================================================ */
-    var coach = { day: null, session: null, left: 0, busy: false };
+    var coach = { day: null, by: {} };
+    /* A prepare in flight, per section. Kept outside coach.by so a reset
+       (sign-in, purchase, a new day) cannot start a second one meanwhile. */
+    var coachBusy = {};
+    function coachSlot(sec) {
+      return coach.by[sec] || (coach.by[sec] = { session: null, left: 0, loaded: false, ready: false, want: false, seq: 0 });
+    }
     function coachOn() {
       var C = window.Cloud;
       return !!(C && C.coach && C.enabled && C.signedIn() && full());
     }
     function coachUsed() { return store(COACH_USED) || []; }
-    function coachReady() {
-      var s = coach.session;
+    function coachReady(sec) {
+      if (!sec || coach.day !== window.Daily.todayKey()) return null;
+      var s = coachSlot(sec).session;
       return s && s.qids && s.qids.length && coachUsed().indexOf(s.id) < 0 ? s : null;
     }
-    function ensureCoach() {
-      if (!coachOn()) return;
+    /* Loads today's session for a section (the chosen one by default), once
+       per section a day; that read costs nothing. Preparing a new session is
+       a model call, so it happens only for a section the student is using:
+       the one they came back to (prepare), or one they pressed Start in
+       (wantNext). Tapping a section just to look never prepares one. */
+    function ensureCoach(sec, prepare) {
+      sec = sec || section();
+      if (!coachOn() || !sec) return false;
       var today = window.Daily.todayKey();
-      if (coach.day === today) return;
-      coach.day = today;
-      window.Cloud.coachToday(today).then(function (d) {
+      if (coach.day !== today) { coach.day = today; coach.by = {}; }
+      var c = coachSlot(sec);
+      if (prepare) c.want = true;
+      if (c.loaded) {
+        if (prepare && c.ready && !coachReady(sec)) prepareNext(sec);
+        return true;
+      }
+      c.loaded = true;
+      var seq = ++c.seq;   // only the newest load's answer counts
+      window.Cloud.coachToday(today, sec).then(function (d) {
+          if (coach.by[sec] !== c || c.seq !== seq) return;   // reset or reloaded since
           if (d.session) installPool(d.session.questions, true);
-          coach.session = d.session; coach.left = d.left;
-          if (!coachReady()) prepareNext();
+          c.session = d.session; c.left = d.left; c.ready = true;
+          if (!coachReady(sec)) { if (c.want) prepareNext(sec); }
           else if (view === 'home') render();
-      }).catch(function () {});
+      }).catch(function () { if (coach.by[sec] === c && c.seq === seq) c.loaded = false; });
+      return true;
     }
-    function prepareNext() {
-      if (!coachOn() || coach.busy || coach.left <= 0) return;
-      coach.busy = true;
+    /* The student is practicing this section: have the next session ready. */
+    function wantNext(sec) {
+      if (!sec) return;
+      ensureCoach(sec, true);
+      var c = coach.by[sec];
+      if (c && c.ready) prepareNext(sec);
+    }
+    function prepareNext(sec) {
+      if (!sec || !coachOn()) return;
+      var c = coachSlot(sec);
+      if (coachBusy[sec] || c.left <= 0) return;
+      coachBusy[sec] = true;
+      /* Done, either way. If the slots were reset while this ran, its result
+         may belong to another sign-in, so it is not used and the section
+         reloads instead (the new slot could not start its own meanwhile). */
+      function settle() {
+        coachBusy[sec] = false;
+        if (coach.by[sec] === c) return true;
+        if (coach.by[sec]) coach.by[sec].loaded = false;
+        ensureCoach(sec);
+        return false;
+      }
       window.Cloud.flushQueue().then(function () {
-          return window.Cloud.coachPrepare(window.Daily.todayKey());
+          return window.Cloud.coachPrepare(window.Daily.todayKey(), sec);
       }).then(function (d) {
+          if (!settle()) return;
           if (d.session) installPool(d.session.questions, true);
-          coach.busy = false; coach.session = d.session; coach.left = d.left;
+          c.session = d.session; c.left = d.left;
           if (view === 'home') render();
-      }).catch(function () { coach.busy = false; });
+      }).catch(function (e) {
+          /* 429: the day's sessions are used up, so stop asking until tomorrow. */
+          if (settle() && e && e.status === 429) c.left = 0;
+      });
     }
-    /* Eight question ids for the next round: the coach's, or built here. */
+    /* Eight question ids for the next round in the chosen section: the
+       coach's, or built here. */
     function nextRoundQids(exclude) {
-      var s = coachReady();
+      var sec = section();
+      var s = coachReady(sec);
       if (s) {
         var used = coachUsed(); used.push(s.id); store(COACH_USED, used.slice(-50));
-        return { qids: s.qids.filter(function (id) { return id !== exclude; }), line: s.line, coach: true };
+        var qids = s.qids.filter(function (id) { return id !== exclude; });
+        /* The coach may have picked today's daily question; fill its place. */
+        if (qids.length < s.qids.length) {
+          window.Spot.build({ section: sec, count: 9 }).items.forEach(function (x) {
+              if (qids.length < s.qids.length && x.qid !== exclude && qids.indexOf(x.qid) < 0) qids.push(x.qid);
+          });
+        }
+        return { qids: qids, line: s.line, coach: true };
       }
-      var r = window.Spot.build({});
+      var r = window.Spot.build({ section: sec || undefined, count: 9 });
       return { qids: r.items.map(function (x) { return x.qid; }).filter(function (id) { return id !== exclude; }), line: '', coach: false };
     }
 
     /* ============================================================
        HOME
        ============================================================ */
-    function todayDone() {
+    /* Today's session is done per section. A record from before sections
+       (no "sections") counts as done for both. */
+    function todayDone(sec) {
+      sec = sec || section();
       var t = store(TODAY_KEY);
-      return !!(t && t.day === window.Daily.todayKey());
+      if (!t || t.day !== window.Daily.todayKey()) return false;
+      if (!t.sections) return true;
+      return !!(sec && t.sections[sec]);
+    }
+    function markTodayDone(sec, day) {
+      var today = window.Daily.todayKey();
+      /* A session that began before midnight belongs to a day that is over. */
+      if (day && day !== today) return;
+      var t = store(TODAY_KEY);
+      var secs = t && t.day === today && t.sections ? t.sections : {};
+      if (sec) secs[sec] = 1;
+      store(TODAY_KEY, { day: today, sections: secs });
+    }
+    function sectionSwitch(sec) {
+      return '<div class="sec-switch" role="group" aria-label="Section">' + SECTIONS.map(function (s) {
+          return '<button type="button" class="' + (s[0] === sec ? 'on' : '') + '" aria-pressed="' + (s[0] === sec) + '" ' +
+            'onclick="APP.setSection(\'' + s[0] + '\')">' + s[1] + '</button>';
+      }).join('') + '</div>';
     }
     function greeting() {
       var h = new Date().getHours();
@@ -354,32 +455,46 @@
       var C = window.Cloud;
       var name = C && C.profile && C.profile.display_name ? String(C.profile.display_name).split(' ')[0] : '';
       var streak = D.streak();
+      var sec = section();
+      var secName = sectionName(sec);
 
       var h = '<div class="page home">' + topbar();
       h += '<p class="hello">' + greeting() + (name ? ', ' + esc(name) : '') + '</p>';
+      if (sec) h += sectionSwitch(sec);
 
       /* ---- the one big thing ---- */
       h += '<section class="hero-card">';
-      if (paid && !todayDone()) {
-        var s = coachReady();
+      if (!sec && (paid || !dailyDone)) {
+        h += '<div class="hc-kicker">' + ic('target') + 'Daily LockIn</div>' +
+          '<h1>Which section today?</h1>' +
+          '<p class="hc-sub">Pick one to start. You can switch any time, and your streak counts either one.</p>' +
+          '<div class="hc-pick">' + SECTIONS.map(function (s) {
+              return '<button class="btn primary xl" onclick="APP.setSection(\'' + s[0] + '\')">' + s[1] + ' ' + ic('arrow') + '</button>';
+          }).join('') + '</div>';
+      } else if (paid && !todayDone()) {
+        var s = coachReady(sec);
         h += '<div class="hc-kicker">' + ic('target') + 'Today’s session</div>' +
           '<h1>' + (dailyDone ? 'Eight more, picked for you' : 'Ready to lock in?') + '</h1>' +
           '<p class="hc-sub">' + esc(s && s.line ? s.line :
-            dailyDone ? 'Your daily question is done. Eight more questions, chosen from what you mix up.' :
-            'Today’s question plus eight picked for you. Name the move, then work it.') + '</p>' +
+            dailyDone ? 'Your daily question is done. Eight more ' + secName + ' questions, chosen from what you mix up.' :
+            'Today’s question plus eight ' + secName + ' questions picked for you. Name the move, then work it.') + '</p>' +
           '<div class="hc-meta"><span>' + (dailyDone ? 8 : 9) + ' questions</span><span>About 10 minutes</span></div>' +
           '<button class="btn primary xl" onclick="APP.startToday()">Start ' + ic('arrow') + '</button>';
       } else if (!dailyDone) {
         h += '<div class="hc-kicker">' + ic('target') + 'Daily LockIn</div>' +
           '<h1>Can you spot the move?</h1>' +
-          '<p class="hc-sub">One question. Name the strategy it wants, then work it. Two minutes.</p>' +
+          '<p class="hc-sub">One ' + secName + ' question. Name the strategy it wants, then work it. Two minutes.</p>' +
           '<button class="btn primary xl" onclick="APP.startToday()">Start today’s question ' + ic('arrow') + '</button>';
       } else {
+        var other = sec === 'rw' ? 'math' : 'rw';
+        var otherOpen = paid && !todayDone(other);
         h += '<div class="hc-done">' + ic('check') + '</div>' +
-          '<h1>Done for today</h1>' +
+          '<h1>' + (otherOpen ? 'Done with ' + secName + ' today' : 'Done for today') + '</h1>' +
           '<p class="hc-sub">' + (streak > 1 ? 'That is ' + streak + ' days in a row. Come back tomorrow to make it ' + (streak + 1) + '.' :
             streak === 1 ? 'Day one is in the books. Come back tomorrow to make it two in a row.' :
-            'Come back tomorrow and start a streak.') + '</p>' +
+            'Come back tomorrow and start a streak.') +
+          (otherOpen ? ' ' + sectionName(other) + ' has its own session if you want more today.' : '') + '</p>' +
+          (otherOpen ? '<button class="btn primary xl" onclick="APP.setSection(\'' + other + '\')">Switch to ' + sectionName(other) + ' ' + ic('arrow') + '</button>' : '') +
           (paid ? '<button class="btn soft" onclick="APP.practiceMore()">Practice more</button>' : '');
       }
       h += weekHTML();
@@ -388,7 +503,7 @@
       /* ---- the upgrade, only for someone who has not bought it ---- */
       if (!paid) h += unlockCardHTML();
 
-      h += progressHTML(true);
+      h += progressHTML(true, sec);
 
       h += '<div class="tiles">' +
         '<button class="tile" onclick="APP.go(\'moves\')"><span class="tile-ic">' + ic('book') + '</span>' +
@@ -431,7 +546,8 @@
         kind: kind, round: round, phase: 'ask', step: 0, choice: null, typed: '', t0: 0,
         id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
         dailyIdx: opts.dailyDate ? 0 : -1, dailyDate: opts.dailyDate || null,
-        line: opts.line || '', focus: opts.focus || null,
+        line: opts.line || '', focus: opts.focus || null, section: opts.section || null,
+        day: window.Daily.todayKey(),
         before: lockedSet(), run: 0, best: 0
       };
       closeModal();
@@ -684,8 +800,15 @@
       if (!full()) {
         h += '</div>' + unlockCardHTML() + '<div class="actions center"><button class="btn soft" onclick="APP.go(\'home\')">Back home</button>';
       } else if (sess.kind === 'today') {
-        h += '<button class="btn primary xl" onclick="APP.go(\'home\')">Done for today</button>' +
-          '<button class="btn soft" onclick="APP.practiceMore()">Keep going</button>';
+        var other = sess.section === 'rw' ? 'math' : sess.section === 'math' ? 'rw' : null;
+        if (other && !todayDone(other)) {
+          h += '<button class="btn primary xl" onclick="APP.go(\'home\'); APP.setSection(\'' + other + '\')">Switch to ' + sectionName(other) + ' ' + ic('arrow') + '</button>' +
+            '<button class="btn soft" onclick="APP.practiceMore()">Keep going</button>' +
+            '<button class="link-btn" onclick="APP.go(\'home\')">Back home</button>';
+        } else {
+          h += '<button class="btn primary xl" onclick="APP.go(\'home\')">Done for today</button>' +
+            '<button class="btn soft" onclick="APP.practiceMore()">Keep going</button>';
+        }
       } else {
         h += '<button class="btn primary xl" onclick="APP.practiceMore()">Another round</button>' +
           '<button class="btn soft" onclick="APP.go(\'home\')">Back home</button>';
@@ -725,7 +848,8 @@
       var h = '<div class="page moves">' + pageHead('All ' + moveIds().length + ' moves',
         'Every SAT question wants one of these. Tap a move to see how to spot it.');
       h += progressHTML(false);
-      [['rw', 'Reading and Writing'], ['math', 'Math']].forEach(function (sec) {
+      var first = section();
+      SECTIONS.slice().sort(function (a, b) { return (b[0] === first) - (a[0] === first); }).forEach(function (sec) {
           h += '<h2 class="sec-title">' + sec[1] + '</h2><div class="move-list">';
           Object.keys(window.STRATS).forEach(function (id) {
               var st = window.STRATS[id];
@@ -975,7 +1099,7 @@
       var C = window.Cloud;
       if (!C || !C.enabled) return;
       if (!C.signedIn()) { unlock.tries = 99; render(); return; }
-      if (C.paid()) { unlock.stage = 'owned'; coach.day = null; ensureCoach(); if (view === 'unlock') render(); return; }
+      if (C.paid()) { unlock.stage = 'owned'; coach.day = null; ensureCoach(null, true); if (view === 'unlock') render(); return; }
       if (unlock.tries > 20) { render(); return; }
       unlock.tries++;
       setTimeout(function () {
@@ -1084,9 +1208,16 @@
       closeModal: closeModal,
 
       /* ---------- sessions ---------- */
+      setSection: function (sec) {
+        if (!chooseSection(sec)) return;
+        ensureCoach();
+        render();
+      },
       startToday: function () {
         var D = window.Daily;
-        var pick = D.isDone() ? null : D.pick();
+        var sec = section();
+        if (!sec) { toast('Pick a section first'); return; }
+        var pick = D.isDone() ? null : D.pick(null, sec);
         if (pick) D.claim(pick);
         if (!full()) {
           if (!pick) { toast('Today’s question is done. See you tomorrow.'); return; }
@@ -1095,14 +1226,19 @@
         }
         var next = nextRoundQids(pick ? pick.qid : null);
         var qids = (pick ? [pick.qid] : []).concat(next.qids.slice(0, 8));
-        startRound('today', qids, { dailyDate: pick ? pick.date : null, line: next.line });
-        if (next.coach) prepareNext();
+        startRound('today', qids, { dailyDate: pick ? pick.date : null, line: next.line, section: sec });
+        wantNext(sec);
       },
       practiceMore: function () {
         if (!needFull()) return;
+        /* After a drill on one move with no section picked yet, carry on in
+           that move's section. */
+        var drilled = sess && sess.focus && window.STRATS[sess.focus] ? window.STRATS[sess.focus].section : null;
+        if (!section()) chooseSection(drilled);
+        var sec = section();
         var next = nextRoundQids(null);
-        startRound('practice', next.qids.slice(0, 8), { line: next.line });
-        if (next.coach) prepareNext();
+        startRound('practice', next.qids.slice(0, 8), { line: next.line, section: sec });
+        wantNext(sec);
       },
       focus: function (id) {
         if (!needFull()) return;
@@ -1165,7 +1301,7 @@
           sess.phase = 'done';
           var right = r.items.filter(function (x) { return x.right; }).length;
           sess.celebrate = right / r.items.length >= 0.75 || Object.keys(lockedSet()).some(function (id) { return !sess.before[id]; });
-          if (sess.kind === 'today') store(TODAY_KEY, { day: window.Daily.todayKey() });
+          if (sess.kind === 'today') markTodayDone(sess.section, sess.day);
           window.Cloud && window.Cloud.flushQueue && window.Cloud.flushQueue();
         }
         render();
@@ -1250,7 +1386,7 @@
         unlock.busy = true; unlock.err = ''; render();
         window.Cloud.verifyCode(unlock.email, code).then(function () {
             unlock.busy = false; unlock.stage = 'email';
-            coach.day = null; ensureCoach();
+            coach.day = null; ensureCoach(null, true);
             if (window.Cloud.paid() || unlock.signinOnly || !window.Cloud.payments) {
               view = 'home'; render();
               toast(window.Cloud.paid() ? 'Welcome back. Everything is unlocked.' : 'Signed in');
@@ -1282,7 +1418,7 @@
         openModal('Account', h);
       },
       signOut: function () {
-        window.Cloud.signOut().then(function () { closeModal(); coach = { day: null, session: null, left: 0, busy: false }; view = 'landing'; render(); toast('Signed out'); });
+        window.Cloud.signOut().then(function () { closeModal(); coach = { day: null, by: {} }; view = 'landing'; render(); toast('Signed out'); });
       },
       resetData: function () {
         openModal('Clear your progress?', '<p>This deletes your naming record, your streak, and your daily history in this browser. It cannot be undone.</p>' +
@@ -1291,7 +1427,9 @@
       },
       confirmReset: function () {
         window.Store.reset(); window.Spot.reset();
-        try { localStorage.removeItem(TODAY_KEY); localStorage.removeItem(COACH_USED); } catch (e) {}
+        try { localStorage.removeItem(TODAY_KEY); localStorage.removeItem(COACH_USED); localStorage.removeItem(SECTION_KEY); } catch (e) {}
+        chosenSection = null;
+        coach = { day: null, by: {} };
         closeModal(); view = 'home'; render(); toast('Progress cleared');
       },
 

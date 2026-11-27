@@ -449,11 +449,15 @@ async function handleTutor(req, res) {
 
 /* ---------------- the coach agent ----------------
    Works behind the scenes; the student only ever sees the questions.
-   POST /api/coach/today    {today}  today's latest session, no model call
-   POST /api/coach/prepare  {today}  run the agent and save a new session
+   POST /api/coach/today    {today, section?}  today's latest session, no model call
+   POST /api/coach/prepare  {today, section?}  run the agent and save a new session
 
    A session is { id, qids: [8], moves: [8, matching qids], line,
-   questions: [full payloads of the pool questions among qids] }.
+   questions: [full payloads of the pool questions among qids], section? }.
+   section is 'rw' or 'math' when the student picked one; each section has
+   its own sessions and its own PLANS_PER_DAY, within PLANS_PER_DAY_TOTAL for
+   the whole day. Without one, a session may mix both, as it did before
+   sections existed.
 
    After a session is saved, any move in it that leaves this student with
    fewer than two unseen questions gets fresh ones written in the
@@ -473,17 +477,19 @@ async function handleCoach(req, res, url) {
   try { body = await readJSON(req); }
   catch { return send(res, 400, { error: 'Bad request body.' }); }
   const today = coach.studentDay(body.today);
+  const section = coach.sectionOf(body.section);
 
   if (needsPurchase(user)) return send(res, 402, { error: PURCHASE_ERROR, purchase: true });
-  const existing = await coach.plansToday(user.id, today);
-  const left = Math.max(0, coach.PLANS_PER_DAY - existing.length);
+  const all = await coach.plansToday(user.id, today);
+  const existing = coach.forSection(all, section);
+  const left = Math.max(0, Math.min(coach.PLANS_PER_DAY - existing.length, coach.PLANS_PER_DAY_TOTAL - all.length));
 
   if (url === '/api/coach/today') {
     return send(res, 200, { session: coach.latestSession(existing), left });
   }
 
   if (!AI_ON) return send(res, 503, { error: 'The coach is not configured on this server.' });
-  if (!left) return send(res, 429, { error: `The coach has prepared ${coach.PLANS_PER_DAY} sessions today. It is back tomorrow.` });
+  if (!left) return send(res, 429, { error: 'The coach has prepared all of today’s sessions. It is back tomorrow.' });
 
   let used;
   try { used = await claimUsage(user); }
@@ -500,14 +506,15 @@ async function handleCoach(req, res, url) {
   }
 
   try {
-    const out = await coach.prepare({ client, model: CAREFUL_MODEL, userId: user.id, today });
-    const saved = await coach.saveSession(user.id, today, out.session, { model: CAREFUL_MODEL, turns: out.turns });
+    const out = await coach.prepare({ client, model: CAREFUL_MODEL, userId: user.id, today, section });
+    const { session: saved, left: leftNow } = await coach.saveSession(user.id, today, out.session, { model: CAREFUL_MODEL, turns: out.turns });
     console.log('[coach] session', user.id, 'turns', out.turns, 'tokens', JSON.stringify(out.usage));
-    send(res, 200, { session: saved, left: left - 1, remaining: Math.max(0, DAILY_LIMIT - used) });
+    send(res, 200, { session: saved, left: leftNow, remaining: Math.max(0, DAILY_LIMIT - used) });
     writer.refillAfterSession(client, user.id, saved);
     return;
   } catch (err) {
     await releaseUsage(user);
+    if (err?.capped) return send(res, 429, { error: 'The coach has prepared all of today’s sessions. It is back tomorrow.' });
     console.error('[coach] failed', err?.status ?? err?.statusCode ?? 500, err?.message);
     if (isAuthFailure(err)) console.error(`[coach] anthropic rejected the server's credentials (${AI_AUTH})`);
     return send(res, 502, { error: 'The coach could not prepare a session just now. Try again in a moment.' });

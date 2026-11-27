@@ -279,12 +279,13 @@
     },
 
     /* ---------------- the coach ---------------- */
-    coachToday: function (today) {
-      return this.post('/api/coach/today', { today: today });
+    /* section: 'rw' | 'math'; each has its own sessions. */
+    coachToday: function (today, section) {
+      return this.post('/api/coach/today', { today: today, section: section || null });
     },
     /* The coach prepares the next session in the background. */
-    coachPrepare: function (today) {
-      return this.post('/api/coach/prepare', { today: today });
+    coachPrepare: function (today, section) {
+      return this.post('/api/coach/prepare', { today: today, section: section || null });
     },
 
     onLocalWrite: function () { /* hook kept for future incremental sync */ }

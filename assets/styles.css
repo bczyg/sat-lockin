@@ -332,6 +332,21 @@ p .link-btn,.small .link-btn{min-height:0;padding:6px 2px}
 }
 .hero-card .btn.soft:hover{background:rgba(255,255,255,.22);color:#fff}
 .hero-card .link-btn{color:#fff}
+.hc-pick{display:grid;gap:var(--s3);margin-top:var(--s5)}
+.hero-card .hc-pick .btn.primary{margin-top:0;width:100%;min-width:0}
+
+/* Reading and Writing | Math, above the hero card */
+.sec-switch{
+  display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:0 0 var(--s4);
+  border-radius:var(--r-pill);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);
+}
+.sec-switch button{
+  min-height:44px;padding:0 var(--s3);border:0;border-radius:var(--r-pill);background:transparent;
+  color:var(--ink-2);font:inherit;font-weight:700;font-size:var(--fs-sm);line-height:1.2;cursor:pointer;
+}
+.sec-switch button:hover{color:var(--ink)}
+.sec-switch button.on{background:var(--ink);color:var(--bg)}
+.sec-switch button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 @media (min-width:560px){
   .hero-card{padding:var(--s7) var(--s7) var(--s6)}
   .hero-card .btn.primary{width:auto;min-width:260px}
@@ -1010,7 +1025,9 @@ details.trick[open] > *:not(summary){animation:rise .25s var(--ease) both}
 /* a re-render of the same screen (next step, the answer) stays still */
 .static .page,.static .panel:not(.traps),.static .opt,.static .verdict,.static .v-ic,
 .static .pill.run,.static .steps li:not(:last-child){animation:none}
-.verdict,.q-card .choices,.q-card .spr{scroll-margin-top:76px}
+.verdict,.q-card .stem,.q-card .choices,.q-card .spr{scroll-margin-top:76px}
+/* Keyboard focus never lands a choice under the sticky session bar. */
+html:has(.s-top){scroll-padding-top:76px}
 .page > .actions{scroll-margin-bottom:var(--s5)}
 
 /* ---------------- reduced motion ---------------- */
