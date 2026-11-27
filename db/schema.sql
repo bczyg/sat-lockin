@@ -223,3 +223,53 @@ create table if not exists pool_usage (
   accepted  int not null default 0,
   rejected  int not null default 0
 );
+-- grid-ins asked of the writer and kept, out of the totals above
+alter table pool_usage add column if not exists grid_asked int not null default 0;
+alter table pool_usage add column if not exists grid_kept  int not null default 0;
+
+-- A pool question students reported as broken is retired: never served in a
+-- new session, but still returned for a session already prepared. Reversible.
+alter table pool_questions add column if not exists retired_at timestamptz;
+
+-- ---------- what the writer's checks threw away ----------
+-- Kept 60 days (lib/writer.js prunes on insert) so the briefs that fail
+-- most can be fixed. kind: 'mc', 'spr', or 'batch' for a whole-batch failure.
+create table if not exists pool_rejects (
+  id              bigserial primary key,
+  strat           text not null,
+  kind            text not null,
+  payload         jsonb,
+  reasons         jsonb not null,
+  verdict         jsonb,
+  writer_model    text,
+  verifier_model  text,
+  created_at      timestamptz not null default now()
+);
+create index if not exists pool_rejects_strat_idx on pool_rejects (strat, created_at desc);
+-- When you restore a retired question, votes cast before this no longer count.
+alter table pool_questions add column if not exists restored_at timestamptz;
+
+-- ---------- student feedback (lib/feedback.js) ----------
+-- One vote per student per question; the latest tap wins (client_t), so a
+-- resend never undoes a later choice. rating 0 means the vote was cleared.
+-- reason (thumbs down only): wrong, confusing, easy, hard.
+create table if not exists question_feedback (
+  user_id     uuid not null references users (id) on delete cascade,
+  qid         text not null,
+  rating      smallint not null check (rating in (-1, 0, 1)),
+  reason      text check (reason in ('wrong', 'confusing', 'easy', 'hard')),
+  client_t    timestamptz not null,
+  updated_at  timestamptz not null default now(),
+  primary key (user_id, qid)
+);
+create index if not exists question_feedback_qid_idx on question_feedback (qid);
+
+-- Which move helped most, one per session.
+create table if not exists move_feedback (
+  user_id     uuid not null references users (id) on delete cascade,
+  session_id  text not null,
+  strat       text not null,
+  client_t    timestamptz not null,
+  updated_at  timestamptz not null default now(),
+  primary key (user_id, session_id)
+);

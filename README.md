@@ -153,6 +153,29 @@ Start and get the questions.
   is paid for once and the supply keeps growing. Pool questions travel to the app inside the
   session. Writing never touches a student's AI allowance; `POOL_DAILY_LIMIT` caps it for the
   whole server. The code is in `lib/writer.js`.
+  - Math moves that suit a typed answer also get **grid-ins**, about one in four of their pool.
+    Grid-in answers are graded on the server with the app's own grader (`js/engine.js`), the
+    exact value first (7/2, never a rounded .6667), within the SAT's length limit. The writer
+    also lists likely wrong values; a student who types one sees why it is wrong.
+  - Easy, medium and hard follow fixed definitions, and each batch asks for a spread. The checker
+    estimates difficulty too; both are stored.
+  - The writer must solve every question a second way (`second_method`), kept with the verdict
+    and never shown to students.
+  - Rejected questions are kept 60 days in `pool_rejects`, with the reasons.
+  - Unit checks for the structural rules: `node scripts/writer-test.mjs`.
+- **Student feedback.** After answering, a student can tap thumbs up or down on the question
+  (thumbs down offers: answer looks wrong, confusing, too easy, too hard), and at the end of a
+  session pick the move that helped most. All optional, kept on the device until the server
+  has it, so it works offline. An AI pool question is **retired** (never served in a new
+  session) when 3 students say the answer looks wrong, or 5 or more ratings net -3 or worse.
+  Only students the server served it to (in one of their coach sessions), who answered it and
+  have answered 20 different questions, count, and "too easy" or "too
+  hard" never count toward retiring. Bank questions are never retired automatically. The code
+  is in `lib/feedback.js`.
+- **Admin page.** `/admin.html`, for the addresses in `ADMIN_EMAILS` (sign in on the app first, in
+  the same browser): rated questions, retired questions with a Restore button, the moves that
+  helped most, the writer's daily numbers and its top rejection reasons. Totals only, never who
+  voted.
 - If the coach is not ready, or not configured, the app builds the round itself from the
   student's record, so Start never waits.
 
@@ -185,6 +208,7 @@ on `$PORT` and hosts the API.
 ```bash
 npm start          # serve the app, http://localhost:8080
 npm run verify     # question bank integrity and house style checks
+node scripts/writer-test.mjs   # the question writer's structural checks, no database
 TEST_DATABASE_URL=postgresql://... npm run itest   # API against a scratch Postgres (never production: it empties the question pool)
 npm run bundle     # rebuild the single-file version in dist/
 npm run schema     # apply db/schema.sql to $DATABASE_URL by hand
@@ -230,6 +254,8 @@ lib/routes.js           the JSON API: sign-in, profile, sync
 lib/billing.js          the signed Stripe webhook and who has paid
 lib/coach.js            the coach agent: its tools, the move check, picking questions
 lib/writer.js           writing new questions and checking them blind
+lib/feedback.js         student votes on questions and moves, retiring, the admin report
+admin.html, js/admin.js the admin page (ADMIN_EMAILS only)
 scripts/oidc-test.mjs   checks the OIDC sign-in to Anthropic against a fake API
 render.yaml             the Render Blueprint: web service and Postgres
 .node-version           pins Node 22
@@ -258,7 +284,8 @@ A multiple-choice item needs `domain`, `skill`, `difficulty` (`E`/`M`/`H`), `pro
 - **The fixed bank is 179 questions.** On its own, a student doing a session every day would
   start seeing repeats after a few weeks. With the AI on, the coach's writer tops up any move
   that runs low, but those questions are only as good as the blind check that passed them.
-  Watch the accept rate (`pool_usage`) and read a sample of `pool_questions` after launch.
+  Watch the accept rate and rejection reasons on `/admin.html`, and what students say about
+  the questions there, after launch.
 - **Math naming is coarser than reading naming.** Several moves often work on one math
   question, so the wrong options come from other families of problem. It trains "is this an
   algebra, data, or geometry move" well, and the finer choice between solving by hand and

@@ -173,7 +173,17 @@ Object.entries(window.STRATS).forEach(([k, v]) => {
   (v.gen.traps || []).forEach((t) => { if (!window.TRAPS[t]) badRef.push(`${k} -> ${t}`); });
 });
 if (badRef.length) fail(`recipes referencing traps that do not exist: ${badRef.join(', ')}`);
-const meta = Object.keys(window.STRATS).filter((k) => window.STRATS[k].meta);
+/* Grid-ins: every math move says whether it takes them (spr true or false),
+   a move that does says how (grid), and Reading and Writing never does. */
+const sprBad = [];
+Object.entries(window.STRATS).forEach(([k, v]) => {
+  if (v.meta) return;
+  if (v.section === 'math' && typeof v.gen.spr !== 'boolean') sprBad.push(`${k} has no spr true/false`);
+  if (v.section === 'math' && v.gen.spr === true && !v.gen.grid) sprBad.push(`${k} takes grid-ins but has no grid note`);
+  if (v.section !== 'math' && (v.gen.spr || v.gen.grid)) sprBad.push(`${k} is Reading and Writing but asks for grid-ins`);
+});
+if (sprBad.length) fail(`grid-in recipe problems: ${sprBad.join(', ')}`);
+const meta =Object.keys(window.STRATS).filter((k) => window.STRATS[k].meta);
 notes.push(`${Object.keys(window.STRATS).length} strategies, all with recipes, ` +
            `all drillable (${meta.length} habit${meta.length === 1 ? '' : 's'}: ${meta.join(', ')})`);
 

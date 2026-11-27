@@ -1096,6 +1096,33 @@ html.calc-open.calc-bare #shell{padding-bottom:240px}
 .tile-txt{display:flex;flex-direction:column;gap:2px}
 .tile.wide .tile-ic{background:var(--brand-soft);color:var(--brand-ink)}
 
+/* ---------------- feedback ----------------
+   Quiet on purpose: under the solution, one tap, easy to skip. */
+.rate{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;padding:var(--s2) 0 0}
+.rate-q{flex:1;min-width:12ch;font-size:var(--fs-sm);font-weight:600;color:var(--ink-3)}
+.rate-btn{
+  display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-3);cursor:pointer;
+  transition:background-color .15s, color .15s, border-color .15s, transform .12s;
+}
+.rate-btn:hover{color:var(--ink);border-color:var(--line-2)}
+.rate-btn:active{transform:scale(.94)}
+.rate-btn .ic{width:20px;height:20px;vertical-align:0}
+.rate-btn[aria-pressed="true"]{background:var(--brand-soft);color:var(--brand-ink);border-color:var(--brand-line)}
+.rate-btn.down[aria-pressed="true"]{background:var(--surface-3);color:var(--ink);border-color:var(--line-2)}
+.rate-btn:focus-visible,.chip-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.rate-why{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;padding-top:var(--s2)}
+.rate-why > span{width:100%;font-size:var(--fs-xs);color:var(--ink-3)}
+.chip-row{display:flex;flex-wrap:wrap;gap:var(--s2);margin-top:var(--s3)}
+.chip-btn{
+  min-height:40px;padding:6px 14px;border-radius:var(--r-pill);
+  border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);
+  font:inherit;font-weight:700;font-size:var(--fs-sm);line-height:1.25;cursor:pointer;text-align:left;
+}
+.chip-btn:hover{color:var(--ink);border-color:var(--ink-3)}
+.chip-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel.helped .muted{margin:var(--s1) 0 0;font-size:var(--fs-sm)}
+
 </style>
 <div id="shell"></div>
 
@@ -6654,7 +6681,9 @@ window.STRATS = {
       shape: "A word problem with two or three conditions that turn into equations, or a real-world model to interpret.",
       key: "The correct choice reflects a correct setup.",
       traps: ["setup-error", "reversed", "unit-miss", "wrong-target"],
-      avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean."
+      avoid: "Make one distractor come from swapping the two quantities. If the model has units, one distractor should ignore a conversion. Numbers must come out clean. One distractor should drop the fixed amount (the flat fee or starting value) and keep only the per-unit part.",
+      spr: true,
+      grid: "Ask for one value the equations give, such as the number of tickets sold, so the answer is a whole number."
     } },
   'desmos-first': { section:'math', name:'Graph it before you solve it',
     cues:[
@@ -6668,7 +6697,9 @@ window.STRATS = {
       shape: "An equation, system, or inequality that is tedious by hand but immediate on a graph: a radical or rational equation, a system with ugly coefficients, or a quadratic whose vertex or zeros are wanted.",
       key: "The intersection, crossing point, vertex, or zero the graph shows.",
       traps: ["extraneous-root", "wrong-target", "arith-slip", "sign-slip"],
-      avoid: "The question still has to ask for something specific, so make at least one distractor the other coordinate of the point. Graphing finds the point; reading the question tells you which half of it to report."
+      avoid: "The question still has to ask for something specific, so make at least one distractor the other coordinate of the point. Graphing finds the point; reading the question tells you which half of it to report. Give the equations in forms that are awkward to solve by hand, such as a non-integer intersection, and make the strategy sentence say exactly what to type into Desmos.",
+      spr: true,
+      grid: "Ask for one coordinate of an intersection, or a zero, with an exact value that fits the grid, such as 7/2 or -1.5."
     } },
   'count-solutions': { section:'math', name:'Count the solutions by comparing sides',
     cues:[
@@ -6681,7 +6712,9 @@ window.STRATS = {
       shape: "An equation or system containing an unknown constant, asking for the value that produces no solution or infinitely many, or a quadratic asking how many real solutions it has.",
       key: "The constant value making the two sides proportional (infinitely many), or proportional in the variables but not the constant (none), or the discriminant's sign.",
       traps: ["setup-error", "algebra-rule", "sign-slip", "wrong-target"],
-      avoid: "Be explicit about which case you are asking for, since no solution and infinitely many differ only in the constant term and it is easy to key the wrong one. Verify by substituting your constant back and checking the count is what you claimed."
+      avoid: "Be explicit about which case you are asking for, since no solution and infinitely many differ only in the constant term and it is easy to key the wrong one. Verify by substituting your constant back and checking the count is what you claimed. For a hard version, use a system where the student must match the slopes first and then compare the constants; the trap is forgetting that the constants must differ for no solution.",
+      spr: true,
+      grid: "Ask for the value of the constant k that gives no solution, or infinitely many."
     } },
   'solve-check': { section:'math', name:'Solve it, then check it',
     cues:[
@@ -6694,7 +6727,9 @@ window.STRATS = {
       shape: "An equation to solve. For a radical or rational equation, design it so squaring or clearing produces exactly one extraneous root.",
       key: "The value that satisfies the ORIGINAL equation.",
       traps: ["extraneous-root", "sign-slip", "one-step-short", "arith-slip"],
-      avoid: "Verify both roots yourself before writing the choices. For a radical equation the extraneous root is the one making the other side negative. Never offer 'both roots' as the correct answer."
+      avoid: "Verify both roots yourself before writing the choices. For a radical equation the extraneous root is the one making the other side negative. Never offer 'both roots' as the correct answer. Some questions should ask for an expression built from x, such as 3x + 2, and then x itself must be one of the wrong choices.",
+      spr: true,
+      grid: "Ask for x, or for an expression in x. The likely wrong answers include the extraneous root, and x itself when an expression was asked for."
     } },
   'systems-tactics': { section:'math', name:'Pick the cheaper way through a system',
     cues:[
@@ -6707,7 +6742,9 @@ window.STRATS = {
       shape: "Two linear equations, or a word problem that becomes two. Ask for a combination like x + y, or for the variable a careless solver would not report.",
       key: "The quantity actually named in the question.",
       traps: ["wrong-target", "operation-swap", "one-step-short", "arith-slip"],
-      avoid: "One distractor must be the other variable, and one the value one step before the end. Choose coefficients so the solution is an integer."
+      avoid: "One distractor must be the other variable, and one the value one step before the end. Choose coefficients so the solution is an integer. Some questions should ask for x + y or x - y that falls straight out of adding or subtracting the two equations, without solving for each variable.",
+      spr: true,
+      grid: "Ask for the sum, the difference or the one variable named, as a clean integer."
     } },
   'expression-structure': { section:'math', name:'Look at the shape of the expression',
     cues:[
@@ -6720,7 +6757,9 @@ window.STRATS = {
       shape: "An expression to simplify, factor, rewrite in vertex form, or match coefficients on. Recognising the shape should be faster than grinding.",
       key: "The equivalent expression.",
       traps: ["algebra-rule", "sign-slip", "arith-slip"],
-      avoid: "Test every distractor at x = 2 and confirm none of them coincidentally equals the original there, otherwise plugging in a number cannot separate them."
+      avoid: "Test every distractor at x = 2 and confirm none of them coincidentally equals the original there, otherwise plugging in a number cannot separate them. Build expressions that look hard but collapse with one pattern, never ones that need a long expansion. One distractor should be the expansion with a single sign error.",
+      spr: true,
+      grid: "Ask for one constant after rewriting, such as the value of a in an equivalent form."
     } },
   'function-notation': { section:'math', name:'Substitute in parentheses, inside out',
     cues:[
@@ -6733,7 +6772,9 @@ window.STRATS = {
       shape: "Evaluate a function at a value, or a composition of two functions.",
       key: "The correct value, worked inside out.",
       traps: ["wrong-order", "sign-slip", "one-step-short"],
-      avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling."
+      avoid: "One distractor must be the composition done in the reverse order, and you must verify that reversed value is actually different. Use a negative input if you want to test sign handling. Use negative inputs or inputs that are expressions, and include cases where dropping parentheses changes the answer: -3^2 is -9 but (-3)^2 is 9, and f(x + 1) is not f(x) + 1.",
+      spr: true,
+      grid: "Ask for a single value, such as f(g(-2))."
     } },
   'function-behavior': { section:'math', name:'Use how the function behaves',
     cues:[
@@ -6746,7 +6787,9 @@ window.STRATS = {
       shape: "A quadratic or exponential where the vertex, discriminant, root sum, growth factor or period answers the question without fully solving it.",
       key: "Exactly the quantity asked for, which is often the value at the vertex rather than the vertex x.",
       traps: ["wrong-target", "arith-slip", "setup-error", "unit-miss"],
-      avoid: "If the question asks for a minimum or maximum VALUE, one distractor must be the x at which it occurs. For exponentials, define the time unit and make one distractor ignore the conversion."
+      avoid: "If the question asks for a minimum or maximum VALUE, one distractor must be the x at which it occurs. For exponentials, define the time unit and make one distractor ignore the conversion. Give the function in factored or vertex form so the answer reads off the form, and ask something that is slower to answer by expanding. For exponentials, a base of 1.04 means 4% growth, not 104%, and one distractor should mix up the time unit (monthly versus yearly).",
+      spr: true,
+      grid: "Ask for a minimum or maximum value, a zero, or a growth rate as a number."
     } },
   'proportional-reasoning': { section:'math', name:'Think in rates, ratios, and percents',
     cues:[
@@ -6759,7 +6802,9 @@ window.STRATS = {
       shape: "Percent change, successive percent changes, a rate with a unit conversion, a scale, or a mixture.",
       key: "The correctly computed value.",
       traps: ["wrong-denominator", "operation-swap", "unit-miss", "one-step-short"],
-      avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean."
+      avoid: "For percent change, one distractor must divide by the final rather than the original. For successive percents, one must add the rates instead of compounding. Keep the numbers clean. Include conversions with squared or cubed units, where the conversion factor must be squared or cubed too, and state the conversion facts in the question.",
+      spr: true,
+      grid: "Ask for one number, such as a final price or a converted measure, that fits the grid."
     } },
   'data-inference': { section:'math', name:'Know what a statistic is allowed to say',
     cues:[
@@ -6772,7 +6817,8 @@ window.STRATS = {
       shape: "A two-way table, a line of best fit to interpret, a comparison of mean and median, or a margin of error.",
       key: "The statement the statistic actually licenses.",
       traps: ["wrong-denominator", "extreme", "wrong-target", "misread-data"],
-      avoid: "For conditional probability, one distractor must use the grand total as the denominator. For a margin of error, one must treat the estimate as exact. If an axis is in thousands, one distractor must ignore that."
+      avoid: "For conditional probability, one distractor must use the grand total as the denominator. For a margin of error, one must treat the estimate as exact. If an axis is in thousands, one distractor must ignore that. Include study-design questions: a random sample supports conclusions only about the group it was drawn from, and only random assignment supports cause. Wrong choices should overreach (cause from an observational study, or a claim about people outside the sample) and the correct choice should be modest. For center and spread, an extreme value moves the mean much more than the median.",
+      spr: false
     } },
   'geometry-toolkit': { section:'math', name:'Find the radius, open the formula sheet',
     cues:[
@@ -6785,7 +6831,9 @@ window.STRATS = {
       shape: "A circle, a right triangle, similar triangles, an angle relationship, a volume, or a scaling question. Include a simple figure only if it is genuinely needed.",
       key: "The correct measure.",
       traps: ["formula-mixup", "wrong-ratio", "flipped-ratio", "wrong-target", "setup-error"],
-      avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean."
+      avoid: "For a trig ratio, one distractor must be a different ratio of the same triangle and one the reciprocal. Check that sine and cosine values you offer never exceed 1. Prefer Pythagorean triples so the numbers stay clean. Write some questions that give an area or volume and ask for a length, and some scaling questions (if the radius doubles, the volume is multiplied by 8). Include a distractor that uses the diameter where the formula needs the radius. Describe every figure fully in words.",
+      spr: true,
+      grid: "Ask for a single length, area or angle measure in degrees."
     } },
   'coordinate-geometry': { section:'math', name:'Work in the coordinate plane',
     cues:[
@@ -6798,7 +6846,9 @@ window.STRATS = {
       shape: "Slope from two points, a parallel or perpendicular line, a distance, a midpoint, or a circle equation to complete the square on.",
       key: "The correct line, value or radius.",
       traps: ["formula-mixup", "flipped-ratio", "sign-slip", "arith-slip"],
-      avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope."
+      avoid: "If the question is about parallel lines, one distractor must use the perpendicular slope. For slope, one must be run over rise. Choose points giving an integer or simple fractional slope. Include a circle equation that must be rewritten by completing the square before the center shows, with distractors that read the center as (-h, -k) with the wrong signs or take r squared as the radius. For perpendicular lines the slope is the negative reciprocal.",
+      spr: true,
+      grid: "Ask for a slope, a radius or one coordinate of the center."
     } },
   'choice-tactics': { section:'math', name:'Use the answer choices',
     cues:[
@@ -6811,7 +6861,8 @@ window.STRATS = {
       shape: "A question where testing the four choices is genuinely faster than solving: a system of inequalities to test points against, an equivalent expression to plug a number into, or a word problem to back-solve.",
       key: "The only choice that survives testing.",
       traps: ["half-right", "arith-slip", "wrong-target"],
-      avoid: "Each distractor must fail a specific, checkable test, and the trap explanation must say which test it fails and with what numbers. For a system of inequalities, make each distractor satisfy exactly one of the two."
+      avoid: "Each distractor must fail a specific, checkable test, and the trap explanation must say which test it fails and with what numbers. For a system of inequalities, make each distractor satisfy exactly one of the two. When the choices are numbers, list them in increasing order so testing B or C first splits the field.",
+      spr: false
     } }
 };
 
@@ -8525,6 +8576,9 @@ window.tagsFor = function (q) {
       if (opts.qids) {
         opts.qids.forEach(function (id) {
             var q = all.filter(function (x) { return x.id === id; })[0];
+            /* An exact id can name a question no longer in the banks (a pool
+               question retired after its session was prepared). */
+            if (!q && global.questionById) { q = global.questionById(id); if (q && !usable(q)) q = null; }
             if (q) chosen.push(q);
         });
       } else {
@@ -8657,6 +8711,7 @@ window.tagsFor = function (q) {
   var API = (CFG.apiUrl || '').replace(/\/+$/, '');
   var SKEY = 'decoy.session.v2';
   var QKEY = 'decoy.queue.v2';
+  var FKEY = 'lockin.feedback.v1';
 
   var Cloud = {
     enabled: false,      // set true once the server reports a working database
@@ -8839,7 +8894,113 @@ window.tagsFor = function (q) {
       });
     },
 
+    /* ---------------- feedback ----------------
+       A student's thumbs up or down on a question, and which move helped
+       most in a session. Kept on this device in its own store (not the sync
+       queue, which a successful flush clears whole) until the server says
+       saved or dropped. "retry" means send again later: usually the answer
+       itself has not reached the server yet.
+       One store per account, so a second student on the same browser never
+       sees, or sends, the first one's votes. */
+    _fkey: function () {
+      var u = this.session && this.session.user;
+      return u && u.id ? FKEY + ':' + u.id : null;
+    },
+    feedbackData: function (key) {
+      key = key || this._fkey();
+      var d = null;
+      if (key) { try { d = JSON.parse(localStorage.getItem(key)); } catch (e) {} }
+      d = d && typeof d === 'object' ? d : {};
+      d.q = d.q || {}; d.m = d.m || {};
+      return d;
+    },
+    _writeFeedback: function (d, key) {
+      key = key || this._fkey();
+      if (!key) return;
+      /* Bounded: past 600, the oldest votes the server already has go.
+         A vote not yet sent is never dropped. */
+      ['q', 'm'].forEach(function (k) {
+        var sent = Object.keys(d[k]).filter(function (x) { return d[k][x].sent; });
+        var over = Object.keys(d[k]).length - 600;
+        if (over > 0) {
+          sent.sort(function (a, b) { return d[k][a].t < d[k][b].t ? -1 : 1; })
+            .slice(0, over).forEach(function (x) { delete d[k][x]; });
+        }
+      });
+      try { localStorage.setItem(key, JSON.stringify(d)); } catch (e) {}
+    },
+    questionVote: function (qid) { var v = this.feedbackData().q[qid]; return v && v.r ? v : null; },
+    moveVote: function (sid) { var v = this.feedbackData().m[sid]; return v && v.s ? v.s : null; },
+    /* r: 1, -1, or 0 to clear. why: a reason for a thumbs down, or null. */
+    rateQuestion: function (qid, r, why) {
+      this._fbTries = 0;   // a new tap gets a fresh set of retries
+      var d = this.feedbackData();
+      d.q[qid] = { r: r, why: r === -1 ? (why || null) : null, t: new Date().toISOString(), sent: false };
+      this._writeFeedback(d);
+      this._soonFeedback(1500);
+    },
+    /* strat '' clears the vote. */
+    rateMove: function (sid, strat) {
+      this._fbTries = 0;
+      var d = this.feedbackData();
+      d.m[sid] = { s: strat || '', t: new Date().toISOString(), sent: false };
+      this._writeFeedback(d);
+      this._soonFeedback(1500);
+    },
+    _soonFeedback: function (ms) {
+      var self = this;
+      clearTimeout(this._fbTimer);
+      this._fbTimer = setTimeout(function () { self.flushFeedback(); }, ms);
+    },
+    flushFeedback: function () {
+      var self = this;
+      if (!this.enabled || !this.signedIn()) return Promise.resolve();
+      /* One request at a time; a tap made meanwhile gets its own pass after. */
+      if (this._fbBusy) { this._fbAgain = true; return this._fbBusy; }
+      var key = this._fkey();
+      var d = this.feedbackData(key);
+      var qs = Object.keys(d.q).filter(function (k) { return !d.q[k].sent; }).slice(0, 100);
+      var ms = Object.keys(d.m).filter(function (k) { return !d.m[k].sent; }).slice(0, 100);
+      if (!qs.length && !ms.length) return Promise.resolve();
+      var sentAt = {};
+      qs.forEach(function (k) { sentAt['q' + k] = d.q[k].t; });
+      ms.forEach(function (k) { sentAt['m' + k] = d.m[k].t; });
+      this._fbBusy = this.post('/api/feedback', {
+        questions: qs.map(function (k) { return { qid: k, rating: d.q[k].r, reason: d.q[k].why, t: d.q[k].t }; }),
+        moves: ms.map(function (k) { return { session: k, strat: d.m[k].s, t: d.m[k].t }; })
+      }).then(function (res) {
+        /* Re-read: a tap made while this was in flight must not be marked sent. */
+        var now = self.feedbackData(key);
+        var again = false;
+        function settle(group, key, status) {
+          var v = now[group][key];
+          if (!v || v.t !== sentAt[group + key]) return;
+          if (status === 'saved' || status === 'dropped') v.sent = true;
+          else again = true;
+        }
+        qs.forEach(function (k) { settle('q', k, (res.questions || {})[k]); });
+        ms.forEach(function (k) { settle('m', k, (res.moves || {})[k]); });
+        self._writeFeedback(now, key);
+        if (again && (self._fbTries = (self._fbTries || 0) + 1) <= 3) self._soonFeedback(8000 * self._fbTries);
+        else if (!again) self._fbTries = 0;
+      }).catch(function (err) { self.lastError = String(err.message || err); })
+        .then(function () {
+          self._fbBusy = null;
+          if (self._fbAgain) { self._fbAgain = false; self.flushFeedback(); }
+        });
+      return this._fbBusy;
+    },
+
     flushQueue: function () {
+      var self = this;
+      if (!this.enabled || !this.signedIn()) return Promise.resolve();
+      /* After this flush's events land, so a vote's answer is already there.
+         Not waited on: the coach waits for this flush, and should not also
+         wait for feedback. */
+      var after = function () { self._fbTries = 0; self.flushFeedback(); };
+      return this._flushQueue().then(after, after);
+    },
+    _flushQueue: function () {
       var self = this;
       if (!this.enabled || !this.signedIn()) return Promise.resolve();
       var q = this.readQueue();
@@ -8885,6 +9046,7 @@ window.tagsFor = function (q) {
         (d.attempts || []).forEach(function (a) { if (a && !seen[a.id]) store.attempts.push(a); });
         store.attempts.sort(function (a, b) { return (a.finishedAt < b.finishedAt) ? 1 : -1; });
 
+        if (Array.isArray(d.retired_pool)) self.retiredPool = d.retired_pool;
         if (d.user && d.user.display_name) store.name = d.user.display_name;
         if (d.user) {
           self.profile = d.user;
@@ -9156,6 +9318,7 @@ window.tagsFor = function (q) {
     var COACH_USED = 'lockin.coach.used.v1';
     var SEEN_LANDING = 'lockin.seenlanding';
     var POOL_KEY = 'lockin.pool.v1';
+    var RETIRED_KEY = 'lockin.pool.retired.v1';
     var SECTION_KEY = 'lockin.section.v1';
     var SECTIONS = [['rw', 'Reading and Writing'], ['math', 'Math']];
 
@@ -9163,21 +9326,51 @@ window.tagsFor = function (q) {
        session. They join the bank on this device, and are kept so a session
        still renders after a reload. The server checks and sanitizes them
        before they are ever served. */
+    /* Pool questions students reported as broken: from this load's sync, or
+       the last one saved, so they apply at boot and offline too. */
+    function retiredIds() {
+      var out = {};
+      var list = (window.Cloud && window.Cloud.retiredPool) || store(RETIRED_KEY) || [];
+      if (Array.isArray(list)) list.forEach(function (id) { out[id] = 1; });
+      return out;
+    }
     function installPool(list, keep) {
       if (!Array.isArray(list) || !list.length) return;
       var saved = keep ? (store(POOL_KEY) || []) : null;
+      var gone = retiredIds();
       window.TAGS = window.TAGS || {};
       list.forEach(function (q) {
-          if (!q || !q.id || !q.tags || !q.tags.strat || !Array.isArray(q.choices) || !Array.isArray(q.steps)) return;
-          if (!ALLQ[q.id]) {
-            (q.section === 'math' ? window.MATH_BANK : window.RW_BANK).push(q);
-            ALLQ[q.id] = q;
-          }
+          if (!q || !q.id || !q.tags || !q.tags.strat || !Array.isArray(q.steps)) return;
+          /* Multiple choice needs its choices; a grid-in needs at least one accepted answer. */
+          if (q.type === 'spr' ? !(Array.isArray(q.answers) && q.answers.length) : !Array.isArray(q.choices)) return;
+          /* A retired one can still arrive in a session prepared before it was
+             retired: it renders (ALLQ), but never joins the banks a round is
+             built from, and is not kept. */
+          var bank = q.section === 'math' ? window.MATH_BANK : window.RW_BANK;
+          if (!ALLQ[q.id]) ALLQ[q.id] = q;
+          /* In the bank unless retired, including one restored since this
+             device dropped it. */
+          if (!gone[q.id] && !bank.some(function (x) { return x.id === q.id; })) bank.push(ALLQ[q.id]);
           window.TAGS[q.id] = { strat: q.tags.strat, traps: q.tags.traps || {} };
-          if (saved && !saved.some(function (x) { return x.id === q.id; })) saved.push(q);
+          if (saved && !gone[q.id] && !saved.some(function (x) { return x.id === q.id; })) saved.push(q);
       });
       if (saved) store(POOL_KEY, saved.slice(-400));
     }
+    /* After a sync: forget retired pool questions this device kept. */
+    function dropRetired() {
+      if (window.Cloud && Array.isArray(window.Cloud.retiredPool)) store(RETIRED_KEY, window.Cloud.retiredPool);
+      var gone = retiredIds();
+      if (!Object.keys(gone).length) return;
+      var saved = store(POOL_KEY) || [];
+      var kept = saved.filter(function (q) { return q && !gone[q.id]; });
+      if (kept.length !== saved.length) store(POOL_KEY, kept);
+      [window.MATH_BANK, window.RW_BANK].forEach(function (b) {
+          for (var i = b.length - 1; i >= 0; i--) if (b[i] && gone[b[i].id]) b.splice(i, 1);
+      });
+    }
+    /* For rounds built from exact ids (a coach session), which may name a
+       question that is no longer in the banks. */
+    window.questionById = function (id) { return ALLQ[id] || null; };
 
     function boot() {
       (window.RW_BANK || []).concat(window.MATH_BANK || []).forEach(function (q) { ALLQ[q.id] = q; });
@@ -9198,6 +9391,7 @@ window.tagsFor = function (q) {
       if (window.Cloud) {
         var cameBack = true;   // the first load is the student coming back to their section
         window.Cloud.on(function () {
+            dropRetired();
             if (view === 'unlock' && unlock.stage === 'confirming') confirmPurchase();
             if (coachOn()) { ensureCoach(null, cameBack); cameBack = false; }
             if (view !== 'session') render();
@@ -9226,6 +9420,8 @@ window.tagsFor = function (q) {
       spark:  '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
       bulb:   '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>',
       star:   '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+      thumbUp:   '<path d="M7 11v9H4v-9z"/><path d="M7 11l4-7a2 2 0 0 1 3 1.7V10h4.6a2 2 0 0 1 2 2.3l-1.2 6.4A2 2 0 0 1 17.4 20H7"/>',
+      thumbDown: '<path d="M7 13V4H4v9z"/><path d="M7 13l4 7a2 2 0 0 0 3-1.7V14h4.6a2 2 0 0 0 2-2.3l-1.2-6.4A2 2 0 0 0 17.4 4H7"/>',
       calc:   '<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7.5h7"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/>'
     };
     function ic(name, cls) {
@@ -9850,6 +10046,13 @@ window.tagsFor = function (q) {
           (q.traps && q.traps[sess.choice] ? q.traps[sess.choice] : '') + '</p>' +
           (tp ? '<p class="trap-fix"><b>Next time:</b> ' + esc(tp.fix) + '</p>' : '') + '</div>';
       }
+      var gm = it2.ans ? null : gridMiss(q, sess.choice);
+      if (gm) {
+        var gt = window.TRAPS[gm.trap] || null;
+        h += '<div class="panel warm"><h3>The trap you fell for</h3>' +
+          '<p>' + (gt ? '<b>' + esc(gt.name) + '.</b> ' : '') + gm.explanation + '</p>' +
+          (gt ? '<p class="trap-fix"><b>Next time:</b> ' + esc(gt.fix) + '</p>' : '') + '</div>';
+      }
       h += '<div class="panel"><h3>The full solution</h3><ol class="steps">';
       q.steps.forEach(function (s) { h += '<li>' + s + '</li>'; });
       h += '</ol></div>';
@@ -9864,6 +10067,7 @@ window.tagsFor = function (q) {
         });
         h += '</div>';
       }
+      h += rateHTML(it2.qid);
       var last = r.i === r.items.length - 1;
       h += '</div><div class="actions"><button class="btn primary xl" onclick="APP.next()">' +
         (last ? 'Finish ' : 'Next question ') + ic('arrow') + '</button></div>';
@@ -9873,6 +10077,16 @@ window.tagsFor = function (q) {
     /* Grid-in grading uses the SAT rules in engine.js: 3/2 or 1.5, a rounded
        or cut-off decimal like .666 or .667 for 2/3, and $ % , ignored. */
     function sprMatch(v, answers) { return window.SATP.Session.checkSPR(v, answers); }
+    /* The likely wrong answer a typed grid-in matches, if the question has
+       them (pool grid-ins do). checkSPR is one-way, so both directions. */
+    function gridMiss(q, typed) {
+      if (!q || q.type !== 'spr' || typeof typed !== 'string' || !Array.isArray(q.wrong_answers)) return null;
+      for (var i = 0; i < q.wrong_answers.length; i++) {
+        var w = q.wrong_answers[i];
+        if (w && w.value && (sprMatch(typed, [w.value]) || sprMatch(w.value, [typed]))) return w;
+      }
+      return null;
+    }
 
     /* One answer, saved as a practice event: right or wrong, the trap behind
        a wrong pick, how long it took, and how many steps were shown first.
@@ -9885,7 +10099,9 @@ window.tagsFor = function (q) {
       /* Saved as solved only when some step was still hidden. */
       var solved = right && (!q.steps.length || sess.step < q.steps.length);
       it.ans = right; it.solo = solved; it.hints = sess.step;
-      var trap = !right && typeof sess.choice === 'number' && sess.choice >= 0 && tg.traps ? (tg.traps[sess.choice] || null) : null;
+      var gm = right ? null : gridMiss(q, sess.choice);
+      var trap = !right && typeof sess.choice === 'number' && sess.choice >= 0 && tg.traps ? (tg.traps[sess.choice] || null)
+        : gm && window.TRAPS[gm.trap] ? gm.trap : null;
       window.Store.recordEvents([{
         key: 'lk-' + sess.id + '|' + r.i + '|' + it.qid, attempt: 'lockin-' + sess.id, t: new Date().toISOString(),
         qid: it.qid, section: q.section, domain: q.domain || null, skill: q.skill || null, difficulty: q.difficulty || null,
@@ -9894,6 +10110,44 @@ window.tagsFor = function (q) {
       }]);
       sess.justAnswered = true;
       render();
+    }
+
+    /* ---------- feedback: optional, one tap, never in the way ---------- */
+    var RATE_WHY = [['wrong', 'Answer looks wrong'], ['confusing', 'Confusing'], ['easy', 'Too easy'], ['hard', 'Too hard']];
+    function canRate() {
+      var C = window.Cloud;
+      return !!(C && C.enabled && C.signedIn() && C.rateQuestion);
+    }
+    function rateHTML(qid) {
+      if (!canRate()) return '';
+      var v = window.Cloud.questionVote(qid);
+      var r = v ? v.r : 0;
+      var h = '<div class="rate" role="group" aria-label="Rate this question"><span class="rate-q">Was this a good question?</span>' +
+        '<button type="button" class="rate-btn" aria-pressed="' + (r === 1) + '" aria-label="Good question" onclick="APP.rateQ(1)">' + ic('thumbUp') + '</button>' +
+        '<button type="button" class="rate-btn down" aria-pressed="' + (r === -1) + '" aria-label="Not a good question" onclick="APP.rateQ(-1)">' + ic('thumbDown') + '</button></div>';
+      if (r === -1) {
+        h += '<div class="rate-why" role="group" aria-label="What was off with it? Optional"><span>What was off? Optional.</span>' +
+          RATE_WHY.map(function (w) {
+              return '<button type="button" class="chip-btn" aria-pressed="' + (v.why === w[0]) + '" onclick="APP.rateWhy(\'' + w[0] + '\')">' + w[1] + '</button>';
+          }).join('') + '</div>';
+      }
+      return h;
+    }
+    /* Which move helped most: only when the session had more than one. */
+    function helpedHTML() {
+      if (!canRate() || !sess) return '';
+      var moves = [];
+      sess.round.items.forEach(function (it) { if (it.strat && moves.indexOf(it.strat) < 0 && window.STRATS[it.strat]) moves.push(it.strat); });
+      if (moves.length < 2) return '';
+      var cur = window.Cloud.moveVote(sess.id);
+      return '<section class="panel helped"><h3>Which move helped most today?</h3><p class="muted">Optional. One tap tells us what to keep.</p>' +
+        '<div class="chip-row" role="group" aria-label="Which move helped most today">' +
+        moves.map(function (id) {
+            return '<button type="button" class="chip-btn" aria-pressed="' + (cur === id) + '" onclick="APP.rateMove(\'' + id + '\')">' + esc(stratName(id)) + '</button>';
+        }).join('') + '</div></section>';
+    }
+    function currentQid() {
+      return sess && sess.phase === 'work' && sess.choice !== null ? sess.round.items[sess.round.i].qid : null;
     }
 
     function sessionDoneHTML() {
@@ -9942,6 +10196,8 @@ window.tagsFor = function (q) {
         });
         h += '</section>';
       }
+
+      h += helpedHTML();
 
       h += '<div class="actions center">';
       if (!full()) {
@@ -10591,6 +10847,31 @@ window.tagsFor = function (q) {
       },
 
       demoPick: function (i) { demo.picked = i; render(); },
+      /* Tapping the same thumb again clears the vote. */
+      rateQ: function (r) {
+        var qid = currentQid();
+        if (!qid || !canRate()) return;
+        var v = window.Cloud.questionVote(qid);
+        var next = v && v.r === r ? 0 : r;
+        window.Cloud.rateQuestion(qid, next, null);
+        if (!v && next) toast(next === 1 ? 'Thanks, noted' : 'Thanks. Tell us what was off, if you like');
+        render();
+      },
+      rateWhy: function (why) {
+        var qid = currentQid();
+        if (!qid || !canRate()) return;
+        var v = window.Cloud.questionVote(qid);
+        if (!v || v.r !== -1) return;
+        window.Cloud.rateQuestion(qid, -1, v.why === why ? null : why);
+        render();
+      },
+      rateMove: function (id) {
+        if (!sess || sess.phase !== 'done' || !canRate() || !window.STRATS[id]) return;
+        var cur = window.Cloud.moveVote(sess.id);
+        window.Cloud.rateMove(sess.id, cur === id ? '' : id);
+        if (!cur) toast('Thanks, noted');
+        render();
+      },
       calc: function () { if (window.Calc && calcQid()) window.Calc.toggle(); },
       calcTips: function () {
         if (!window.DESMOS) return;

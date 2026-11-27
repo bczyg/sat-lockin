@@ -21,6 +21,9 @@ jobs:
       - name: Verify question bank and house style
         run: node scripts/verify.js
 
+      - name: Check the question writer's structural checks
+        run: node scripts/writer-test.mjs
+
       - name: Confirm the committed bundle matches the sources
         run: |
           cp dist/sat-lockin.html /tmp/committed.html

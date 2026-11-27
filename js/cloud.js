@@ -21,6 +21,7 @@
   var API = (CFG.apiUrl || '').replace(/\/+$/, '');
   var SKEY = 'decoy.session.v2';
   var QKEY = 'decoy.queue.v2';
+  var FKEY = 'lockin.feedback.v1';
 
   var Cloud = {
     enabled: false,      // set true once the server reports a working database
@@ -203,7 +204,113 @@
       });
     },
 
+    /* ---------------- feedback ----------------
+       A student's thumbs up or down on a question, and which move helped
+       most in a session. Kept on this device in its own store (not the sync
+       queue, which a successful flush clears whole) until the server says
+       saved or dropped. "retry" means send again later: usually the answer
+       itself has not reached the server yet.
+       One store per account, so a second student on the same browser never
+       sees, or sends, the first one's votes. */
+    _fkey: function () {
+      var u = this.session && this.session.user;
+      return u && u.id ? FKEY + ':' + u.id : null;
+    },
+    feedbackData: function (key) {
+      key = key || this._fkey();
+      var d = null;
+      if (key) { try { d = JSON.parse(localStorage.getItem(key)); } catch (e) {} }
+      d = d && typeof d === 'object' ? d : {};
+      d.q = d.q || {}; d.m = d.m || {};
+      return d;
+    },
+    _writeFeedback: function (d, key) {
+      key = key || this._fkey();
+      if (!key) return;
+      /* Bounded: past 600, the oldest votes the server already has go.
+         A vote not yet sent is never dropped. */
+      ['q', 'm'].forEach(function (k) {
+        var sent = Object.keys(d[k]).filter(function (x) { return d[k][x].sent; });
+        var over = Object.keys(d[k]).length - 600;
+        if (over > 0) {
+          sent.sort(function (a, b) { return d[k][a].t < d[k][b].t ? -1 : 1; })
+            .slice(0, over).forEach(function (x) { delete d[k][x]; });
+        }
+      });
+      try { localStorage.setItem(key, JSON.stringify(d)); } catch (e) {}
+    },
+    questionVote: function (qid) { var v = this.feedbackData().q[qid]; return v && v.r ? v : null; },
+    moveVote: function (sid) { var v = this.feedbackData().m[sid]; return v && v.s ? v.s : null; },
+    /* r: 1, -1, or 0 to clear. why: a reason for a thumbs down, or null. */
+    rateQuestion: function (qid, r, why) {
+      this._fbTries = 0;   // a new tap gets a fresh set of retries
+      var d = this.feedbackData();
+      d.q[qid] = { r: r, why: r === -1 ? (why || null) : null, t: new Date().toISOString(), sent: false };
+      this._writeFeedback(d);
+      this._soonFeedback(1500);
+    },
+    /* strat '' clears the vote. */
+    rateMove: function (sid, strat) {
+      this._fbTries = 0;
+      var d = this.feedbackData();
+      d.m[sid] = { s: strat || '', t: new Date().toISOString(), sent: false };
+      this._writeFeedback(d);
+      this._soonFeedback(1500);
+    },
+    _soonFeedback: function (ms) {
+      var self = this;
+      clearTimeout(this._fbTimer);
+      this._fbTimer = setTimeout(function () { self.flushFeedback(); }, ms);
+    },
+    flushFeedback: function () {
+      var self = this;
+      if (!this.enabled || !this.signedIn()) return Promise.resolve();
+      /* One request at a time; a tap made meanwhile gets its own pass after. */
+      if (this._fbBusy) { this._fbAgain = true; return this._fbBusy; }
+      var key = this._fkey();
+      var d = this.feedbackData(key);
+      var qs = Object.keys(d.q).filter(function (k) { return !d.q[k].sent; }).slice(0, 100);
+      var ms = Object.keys(d.m).filter(function (k) { return !d.m[k].sent; }).slice(0, 100);
+      if (!qs.length && !ms.length) return Promise.resolve();
+      var sentAt = {};
+      qs.forEach(function (k) { sentAt['q' + k] = d.q[k].t; });
+      ms.forEach(function (k) { sentAt['m' + k] = d.m[k].t; });
+      this._fbBusy = this.post('/api/feedback', {
+        questions: qs.map(function (k) { return { qid: k, rating: d.q[k].r, reason: d.q[k].why, t: d.q[k].t }; }),
+        moves: ms.map(function (k) { return { session: k, strat: d.m[k].s, t: d.m[k].t }; })
+      }).then(function (res) {
+        /* Re-read: a tap made while this was in flight must not be marked sent. */
+        var now = self.feedbackData(key);
+        var again = false;
+        function settle(group, key, status) {
+          var v = now[group][key];
+          if (!v || v.t !== sentAt[group + key]) return;
+          if (status === 'saved' || status === 'dropped') v.sent = true;
+          else again = true;
+        }
+        qs.forEach(function (k) { settle('q', k, (res.questions || {})[k]); });
+        ms.forEach(function (k) { settle('m', k, (res.moves || {})[k]); });
+        self._writeFeedback(now, key);
+        if (again && (self._fbTries = (self._fbTries || 0) + 1) <= 3) self._soonFeedback(8000 * self._fbTries);
+        else if (!again) self._fbTries = 0;
+      }).catch(function (err) { self.lastError = String(err.message || err); })
+        .then(function () {
+          self._fbBusy = null;
+          if (self._fbAgain) { self._fbAgain = false; self.flushFeedback(); }
+        });
+      return this._fbBusy;
+    },
+
     flushQueue: function () {
+      var self = this;
+      if (!this.enabled || !this.signedIn()) return Promise.resolve();
+      /* After this flush's events land, so a vote's answer is already there.
+         Not waited on: the coach waits for this flush, and should not also
+         wait for feedback. */
+      var after = function () { self._fbTries = 0; self.flushFeedback(); };
+      return this._flushQueue().then(after, after);
+    },
+    _flushQueue: function () {
       var self = this;
       if (!this.enabled || !this.signedIn()) return Promise.resolve();
       var q = this.readQueue();
@@ -249,6 +356,7 @@
         (d.attempts || []).forEach(function (a) { if (a && !seen[a.id]) store.attempts.push(a); });
         store.attempts.sort(function (a, b) { return (a.finishedAt < b.finishedAt) ? 1 : -1; });
 
+        if (Array.isArray(d.retired_pool)) self.retiredPool = d.retired_pool;
         if (d.user && d.user.display_name) store.name = d.user.display_name;
         if (d.user) {
           self.profile = d.user;

@@ -28,6 +28,7 @@ import * as auth from './lib/auth.js';
 import * as billing from './lib/billing.js';
 import * as coach from './lib/coach.js';
 import * as writer from './lib/writer.js';
+import * as feedback from './lib/feedback.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8080;
@@ -618,6 +619,10 @@ const server = http.createServer(async (req, res) => {
     await writer.drain();
     return send(res, 200, { drained: true });
   }
+  /* Test-only: runs the feedback sweep now instead of on its timer. */
+  if (process.env.NODE_ENV === 'test' && url === '/api/test/feedback-sweep') {
+    return send(res, 200, { retired: await feedback.sweep() });
+  }
 
   if (url === '/api/tutor') {
     if (req.method !== 'POST') return send(res, 405, { error: 'POST only' });
@@ -673,6 +678,8 @@ async function boot() {
       retry.unref();
     }
     setInterval(() => { if (db.available()) auth.sweep(); }, 24 * 3600 * 1000).unref();
+    /* Student votes that qualified after they were cast (lib/feedback.js). */
+    setInterval(() => { if (db.available()) feedback.sweep(); }, 3600 * 1000).unref();
   }
 
   server.listen(PORT, () => {
