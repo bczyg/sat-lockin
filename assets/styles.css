@@ -845,6 +845,7 @@ details.trick[open] > *:not(summary){animation:rise .25s var(--ease) both}
 .type code{
   font-family:var(--mono);font-size:var(--fs-sm);padding:4px 10px;border-radius:var(--r-xs);
   background:var(--surface-2);border:1px solid var(--line);color:var(--ink);overflow-wrap:anywhere;
+  white-space:pre-wrap;
 }
 
 /* ---------------- forms (paste, unlock) ---------------- */
@@ -1038,3 +1039,55 @@ html:has(.s-top){scroll-padding-top:76px}
   }
   .confetti{display:none}
 }
+
+/* ---------------- calculator ----------------
+   A bottom sheet on phones, a docked panel beside the question on wide
+   screens. The page makes room for it rather than hiding under it. */
+.s-top .calc-btn{
+  margin-left:0;width:auto;gap:6px;padding:0 10px;display:inline-flex;align-items:center;
+  font:inherit;font-weight:700;font-size:var(--fs-sm);color:var(--ink-2);
+  border:1px solid var(--line);background:var(--surface);
+}
+.s-top .calc-btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.s-top .calc-btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media (max-width:479px){.s-top .calc-btn span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.s-top .calc-btn{padding:0;width:44px}}
+
+.calc{
+  --calc-h:min(56vh, 520px);
+  position:fixed;left:0;right:0;bottom:0;z-index:50;height:var(--calc-h);
+  display:flex;flex-direction:column;
+  background:var(--surface);border-top:1px solid var(--line-2);box-shadow:var(--shadow-lg);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.calc[hidden],.calc-note[hidden],.calc-host[hidden]{display:none}
+.calc:focus{outline:none}
+.calc-head{display:flex;align-items:center;gap:var(--s3);padding:2px var(--s2) 2px var(--s4);border-bottom:1px solid var(--line)}
+.calc-head h2{flex:1;font-size:var(--fs-md);font-weight:800}
+.calc-head .link-btn{font-size:var(--fs-sm)}
+.calc-note{padding:var(--s4);color:var(--ink-2)}
+.calc-note p{margin:0 0 var(--s3)}
+.calc-host{flex:1;min-height:0;position:relative;background:#fff}
+/* scroll-padding too, so a scroll to the buttons lands above the sheet, not behind it */
+html.calc-open{scroll-padding-bottom:min(56vh, 520px)}
+html.calc-open #shell{padding-bottom:min(56vh, 520px)}
+.calc.calc-bare{height:auto}
+html.calc-open.calc-bare{scroll-padding-bottom:240px}
+html.calc-open.calc-bare #shell{padding-bottom:240px}
+
+@media (min-width:960px){
+  .calc{
+    top:0;left:auto;width:min(460px, 40vw);height:auto;
+    border-top:0;border-left:1px solid var(--line-2);padding-bottom:0;
+  }
+  html.calc-open,html.calc-open.calc-bare{scroll-padding-bottom:0}
+  html.calc-open #shell,html.calc-open.calc-bare #shell{padding-bottom:0;margin-right:min(460px, 40vw)}
+}
+
+.tips-group{margin-top:var(--s5)}
+.tips-group h4{font-size:var(--fs-md);font-weight:800;margin-bottom:var(--s1)}
+.tips-group > p.muted{margin:0 0 var(--s2);font-size:var(--fs-sm)}
+.tile.wide{grid-column:1 / -1;min-height:0;flex-direction:row;align-items:center;gap:var(--s4)}
+.tile.wide .tile-ic{margin-bottom:0}
+.tile.wide .tile-name{margin-top:0}
+.tile-txt{display:flex;flex-direction:column;gap:2px}
+.tile.wide .tile-ic{background:var(--brand-soft);color:var(--brand-ink)}

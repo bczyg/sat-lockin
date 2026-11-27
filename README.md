@@ -60,7 +60,22 @@ against these rules.
 ## The built-in calculator
 
 Bluebook puts a Desmos graphing calculator on every math question, and most students use it as
-a four-function calculator. The "graph it first" move guide carries 16 tricks, each written as
+a four-function calculator.
+
+Every math question here has a **Calculator** button in its top bar. It opens Desmos beside the
+question on a wide screen and as a sheet along the bottom on a phone. Each question keeps its own
+graph for the rest of the session, so showing a step never wipes it. The panel lives outside the
+part of the page that redraws, in `js/calc.js`.
+
+The script comes from Desmos with the site's API key. Set `DESMOS_API_KEY` on the server; the app
+loads `/calculator.js` and the server sends it on to Desmos with the key. With no key (or the app
+opened from disk) the panel says the calculator would not load and links to desmos.com in a new
+tab instead. `/healthz` reports `"calculator": true` once the key is set. The key reaches every
+browser that loads the calculator, so it is not a secret, but it stays out of git so the trial key
+can be swapped for a paid one without a code change.
+
+The tips are on their own sheet, **Calculator tips**, from the home screen or the panel's Tips
+link, and inside the "graph it first" move guide. There are 16 tricks, each written as
 *what you literally type* and *what happens*, because "use the calculator" is not advice. The
 content lives in `js/desmos.js` as data, and `verify.js` fails if a trick loses its keystrokes
 or cites a question that no longer exists.
@@ -201,6 +216,7 @@ js/data-rw.js           100 Reading and Writing questions, fully explained
 js/data-math.js         79 Math questions, fully explained
 js/tags.js              43 traps, 30 moves, and the tags for every question
 js/desmos.js            the calculator tricks, as data
+js/calc.js              the Desmos calculator panel on math questions
 js/engine.js            the answer log and local storage
 js/daily.js             Daily LockIn: the date-driven rotation, the streak, the history
 js/spot.js              naming: round building, fair wrong options, the naming record

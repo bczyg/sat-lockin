@@ -98,7 +98,8 @@
       back:   '<path d="M19 12H5M11 6l-6 6 6 6"/>',
       spark:  '<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
       bulb:   '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>',
-      star:   '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>'
+      star:   '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+      calc:   '<rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7.5h7"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/>'
     };
     function ic(name, cls) {
       return '<svg class="ic ' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
@@ -197,6 +198,7 @@
         view === 'unlock' ? unlockHTML() :
         homeHTML();
       window.scrollTo(0, same ? y : 0);
+      syncCalc();
       if (view === 'session' && sess) {
         if (!same && sess.phase === 'named') reveal('.verdict', 'start');
         else if (sess.phase === 'work') {
@@ -209,6 +211,18 @@
         sess.celebrate = false;
         confetti();
       }
+    }
+
+    /* The calculator follows the screen: open on a math question, shut
+       anywhere else. Graphs are kept per question until the session ends. */
+    function calcQid() {
+      if (view !== 'session' || !sess || sess.phase === 'done') return null;
+      var it = sess.round.items[sess.round.i];
+      var q = it && ALLQ[it.qid];
+      return q && q.section === 'math' ? it.qid : null;
+    }
+    function syncCalc() {
+      if (window.Calc) window.Calc.sync(view === 'session' && sess ? sess.id : null, calcQid());
     }
 
     function reveal(sel, block) {
@@ -510,6 +524,9 @@
         '<span class="tile-name">All ' + moveIds().length + ' moves</span><span class="tile-sub">How to spot each one</span></button>' +
         '<button class="tile" onclick="APP.openPaste()"><span class="tile-ic">' + ic(paid ? 'scope' : 'lock') + '</span>' +
         '<span class="tile-name">Missed one in Bluebook?</span><span class="tile-sub">Paste it, get the move and the trap</span></button>' +
+        (window.DESMOS ? '<button class="tile wide" onclick="APP.calcTips()"><span class="tile-ic">' + ic('calc') + '</span>' +
+          '<span class="tile-txt"><span class="tile-name">Calculator tips</span><span class="tile-sub">' + tipCount() +
+          ' Desmos tricks that save time on math</span></span></button>' : '') +
         '</div>';
 
       h += '<footer class="foot"><button class="link-btn" onclick="APP.go(\'landing\')">How SAT LockIn works</button>';
@@ -626,7 +643,10 @@
       var h = '<div class="page session">';
       h += '<header class="s-top"><button class="icon-btn" aria-label="Exit" onclick="APP.exitSession()">' + ic('close') + '</button>' +
         progressDots() +
-        '<span class="s-count">' + (r.i + 1) + '/' + r.items.length + '</span></header>';
+        '<span class="s-count">' + (r.i + 1) + '/' + r.items.length + '</span>' +
+        (q.section === 'math' && window.Calc ? '<button type="button" class="icon-btn calc-btn" data-calc-btn aria-label="Calculator" aria-pressed="' +
+          (window.Calc.isOpen() ? 'true' : 'false') + '" onclick="APP.calc()">' + ic('calc') + '<span>Calculator</span></button>' : '') +
+        '</header>';
       h += '<div class="s-label">' + (isDaily ? '<span class="pill daily">' + ic('flame') + 'Daily LockIn</span>' : '') +
         '<span>' + esc(q.section === 'rw' ? 'Reading and Writing' : 'Math') + '</span>' +
         (sess.run >= 2 && sess.phase === 'ask' ? '<span class="pill run">' + ic('spark') + sess.run + ' in a row</span>' : '') + '</div>';
@@ -888,19 +908,29 @@
       return h;
     }
 
-    /* The calculator tips live inside the "graph it first" move. */
-    function desmosHTML() {
-      var h = '<div class="panel"><h3>What the built-in calculator can do</h3>' +
-        '<p class="muted">Desmos is open on every math question in Bluebook. These are the tricks most students never find.</p>';
+    function tipCount() {
+      return window.DESMOS ? window.DESMOS.groups.reduce(function (n, g) { return n + g.tricks.length; }, 0) : 0;
+    }
+    /* Every calculator tip, in its group. Shown on the tips sheet and inside
+       the "graph it first" move. */
+    function tipsHTML() {
+      var h = '';
       window.DESMOS.groups.forEach(function (g) {
+          h += '<div class="tips-group"><h4>' + esc(g.name) + '</h4>' + (g.blurb ? '<p class="muted">' + esc(g.blurb) + '</p>' : '');
           g.tricks.forEach(function (t) {
               h += '<details class="trick"><summary>' + esc(t.name) + '</summary>' +
                 '<div class="type"><span>Type</span><code>' + esc(t.type) + '</code></div>' +
                 '<p>' + esc(t.then) + '</p>' + (t.edge ? '<p class="muted">Careful: ' + esc(t.edge) + '</p>' : '') +
                 (t.confirm ? '<p class="muted">Try this one in Bluebook once before test day.</p>' : '') + '</details>';
           });
+          h += '</div>';
       });
-      return h + '</div>';
+      return h;
+    }
+    function desmosHTML() {
+      return '<div class="panel"><h3>What the built-in calculator can do</h3>' +
+        '<p class="muted">Desmos is open on every math question in Bluebook. These are the tricks most students never find.</p>' +
+        tipsHTML() + '</div>';
     }
 
     /* ============================================================
@@ -1433,7 +1463,13 @@
         closeModal(); view = 'home'; render(); toast('Progress cleared');
       },
 
-      demoPick: function (i) { demo.picked = i; render(); }
+      demoPick: function (i) { demo.picked = i; render(); },
+      calc: function () { if (window.Calc && calcQid()) window.Calc.toggle(); },
+      calcTips: function () {
+        if (!window.DESMOS) return;
+        openModal('Calculator tips', window.DESMOS.intro.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') +
+          '<p>To practice with it here, tap <b>Calculator</b> at the top of any math question.</p>' + tipsHTML());
+      }
     };
     window.APP = APP;
 
@@ -1442,6 +1478,7 @@
       if (view !== 'session' || !sess || (sess.phase !== 'ask' && sess.phase !== 'work')) return;
       var tg = (e.target.tagName || '').toLowerCase();
       if (tg === 'input' || tg === 'textarea' || tg === 'select' || e.target.isContentEditable) return;
+      if (window.Calc && window.Calc.owns(e.target)) return;
       if (!document.getElementById('modal-root').classList.contains('hidden')) return;
       var it = sess.round.items[sess.round.i];
       if (sess.phase === 'work') {

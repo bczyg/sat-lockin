@@ -59,6 +59,12 @@ services:
       - key: COMP_EMAILS
         sync: false
 
+      # The Desmos graphing calculator on math questions. Desmos issues the
+      # key; it is visible to browsers once loaded, but stays out of git so
+      # the trial key can be swapped for the paid one in the dashboard.
+      - key: DESMOS_API_KEY
+        sync: false
+
       # Sign-in emails by Microsoft Graph: see SETUP-CLOUD.md, Part 2.3.
       # The client secret expires (Microsoft's rule). Record its expiry date in
       # GRAPH_SECRET_EXPIRES (YYYY-MM-DD) so the server warns 30 days ahead.
